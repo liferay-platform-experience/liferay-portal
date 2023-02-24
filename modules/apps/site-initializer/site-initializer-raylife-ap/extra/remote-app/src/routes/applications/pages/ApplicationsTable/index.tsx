@@ -95,6 +95,8 @@ type Application = {
 	firstName: string;
 	lastName: string;
 	productName: string;
+
+	
 };
 
 type TableContent = {[keys: string]: string};
