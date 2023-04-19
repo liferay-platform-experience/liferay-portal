@@ -3767,7 +3767,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		mailTemplateContextBuilder.put(
 			"[$FROM_NAME$]", new EscapableObject<>(fromName));
 		mailTemplateContextBuilder.put(
-			"[$PORTAL_URL$]", serviceContext.getPortalURL());
+			"[$PORTAL_URL$]", company.getVirtualHostname());
 		mailTemplateContextBuilder.put(
 			"[$REMOTE_ADDRESS$]", serviceContext.getRemoteAddr());
 		mailTemplateContextBuilder.put(
@@ -6149,7 +6149,9 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return true;
 	}
 
-	protected void notifyUser(User user, ServiceContext serviceContext) {
+	protected void notifyUser(User user, ServiceContext serviceContext)
+		throws PortalException {
+
 		if (!PrefsPropsUtil.getBoolean(
 				user.getCompanyId(),
 				PropsKeys.ADMIN_EMAIL_USER_ADDED_ENABLED)) {
@@ -6159,12 +6161,12 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		boolean autoPassword = GetterUtil.getBoolean(
 			serviceContext.getAttribute("autoPassword"));
+		Company company = _companyLocalService.getCompany(user.getCompanyId());
 		String fromAddress = PrefsPropsUtil.getString(
 			user.getCompanyId(), PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
 		String fromName = PrefsPropsUtil.getString(
 			user.getCompanyId(), PropsKeys.ADMIN_EMAIL_FROM_NAME);
 		String passwordResetURL = StringPool.BLANK;
-		String portalURL = serviceContext.getPortalURL();
 
 		PortletPreferences companyPortletPreferences =
 			PrefsPropsUtil.getPreferences(user.getCompanyId());
@@ -6225,7 +6227,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		mailTemplateContextBuilder.put("[$FROM_ADDRESS$]", fromAddress);
 		mailTemplateContextBuilder.put(
 			"[$FROM_NAME$]", new EscapableObject<>(fromName));
-		mailTemplateContextBuilder.put("[$PORTAL_URL$]", portalURL);
+		mailTemplateContextBuilder.put(
+			"[$PORTAL_URL$]", company.getVirtualHostname());
 		mailTemplateContextBuilder.put(
 			"[$TO_ADDRESS$]", user.getEmailAddress());
 		mailTemplateContextBuilder.put(
@@ -6329,9 +6332,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	protected void sendPasswordNotification(
-		User user, long companyId, String newPassword, String passwordResetURL,
-		String fromName, String fromAddress, String subject, String body,
-		ServiceContext serviceContext) {
+			User user, long companyId, String newPassword,
+			String passwordResetURL, String fromName, String fromAddress,
+			String subject, String body, ServiceContext serviceContext)
+		throws PortalException {
 
 		if (Validator.isNull(fromName)) {
 			fromName = PrefsPropsUtil.getString(
@@ -6387,6 +6391,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				localizedSubjectMap, user.getLocale(), LocaleUtil.getDefault());
 		}
 
+		Company company = _companyLocalService.getCompany(companyId);
+
 		MailTemplateContextBuilder mailTemplateContextBuilder =
 			MailTemplateFactoryUtil.createMailTemplateContextBuilder();
 
@@ -6396,7 +6402,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		mailTemplateContextBuilder.put(
 			"[$PASSWORD_RESET_URL$]", passwordResetURL);
 		mailTemplateContextBuilder.put(
-			"[$PORTAL_URL$]", serviceContext.getPortalURL());
+			"[$PORTAL_URL$]", company.getVirtualHostname());
 		mailTemplateContextBuilder.put(
 			"[$REMOTE_ADDRESS$]", serviceContext.getRemoteAddr());
 		mailTemplateContextBuilder.put(

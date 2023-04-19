@@ -679,7 +679,7 @@ public class AnnouncementsEntryLocalServiceImpl
 		mailTemplateContextBuilder.put(
 			"[$FROM_NAME$]", new EscapableObject<>(fromName));
 		mailTemplateContextBuilder.put(
-			"[$PORTAL_URL$]", company.getPortalURL(0));
+			"[$PORTAL_URL$]", company.getVirtualHostname());
 		mailTemplateContextBuilder.put(
 			"[$PORTLET_NAME$]",
 			new EscapableLocalizableFunction(
