@@ -145,7 +145,7 @@ kbGroupServiceConfiguration = ParameterMapUtil.setParameterMap(KBGroupServiceCon
 			).put(
 				"[$FROM_NAME$]", HtmlUtil.escape(kbGroupServiceConfiguration.emailFromName())
 			).put(
-				"[$PORTAL_URL$]", PortalUtil.getPortalURL(themeDisplay)
+				"[$PORTAL_URL$]", company.getVirtualHostname()
 			).put(
 				"[$PORTLET_NAME$]", HtmlUtil.escape(portletDisplay.getTitle())
 			).put(
