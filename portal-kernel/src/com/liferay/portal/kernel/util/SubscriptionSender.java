@@ -337,7 +337,8 @@ public class SubscriptionSender implements Serializable {
 					company.getPortalURL(
 						groupId,
 						_entryURL.contains(
-							_LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING)));
+							_LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING),
+						secureConnection));
 			}
 			else {
 				int endIndex = _entryURL.indexOf(
