@@ -16,10 +16,11 @@ definition {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		if (${testPortalInstance} == "true") {
-			PortalInstances.tearDownCP();
+			PortalSettings.tearDownCP();
+
 		}
 		else {
-			PortalSettings.tearDownCP();
+			PortalInstances.tearDownCP();
 
 			JSONUser.tearDownNonAdminUsers();
 
