@@ -17,7 +17,6 @@ definition {
 
 		if (${testPortalInstance} == "true") {
 			PortalSettings.tearDownCP();
-
 		}
 		else {
 			PortalInstances.tearDownCP();
