@@ -48,13 +48,7 @@
 	</c:when>
 	<c:when test="<%= themeDisplay.isShowSignOutIcon() %>">
 		<span class="sign-out text-default" role="presentation">
-			<aui:icon
-				cssClass="sign-out text-default"
-				image="user"
-				label="sign-out"
-				markupView="lexicon"
-				url="<%= themeDisplay.getURLSignOut() %>"
-			/>
+			<aui:icon cssClass="sign-out text-default" image="user" label="sign-out" markupView="lexicon" url="<%= themeDisplay.getURLSignOut() %>" />
 		</span>
 	</c:when>
 	<c:when test="<%= themeDisplay.isShowSignInIcon() %>">

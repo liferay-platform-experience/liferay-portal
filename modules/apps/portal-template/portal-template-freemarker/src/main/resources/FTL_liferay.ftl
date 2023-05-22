@@ -34,7 +34,6 @@ LPS-30525.
 	<#elseif !is_setup_complete>
 		<#assign is_setup_complete = themeDisplay.isImpersonated() />
 	</#if>
-
 </#if>
 
 <#function max x y>
