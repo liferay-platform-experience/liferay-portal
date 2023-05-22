@@ -56,6 +56,7 @@ layoutIsSystem = true
 time_zone = user.getTimeZoneId()
 is_login_redirect_required = portalUtil.isLoginRedirectRequired(request)
 is_signed_in = theme_display.isSignedIn()
+is_user_active = user.isActive()
 group_id = theme_display.getScopeGroupId()
 />
 
@@ -85,7 +86,9 @@ group_id = theme_display.getScopeGroupId()
 	/>
 </#if>
 
-<#if !is_setup_complete>
+<#if !is_user_active>
+	<#assign is_setup_complete = false />
+<#elseif !is_setup_complete>
 	<#assign is_setup_complete = theme_display.isImpersonated() />
 </#if>
 
