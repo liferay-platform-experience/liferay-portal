@@ -10,12 +10,16 @@ LPS-30525.
 <#assign
 	css_main_file = ""
 	is_signed_in = false
+	is_user_active = true
 	js_main_file = ""
 	is_setup_complete = false
 />
 
 <#if user??>
-	<#assign is_setup_complete = user.isSetupComplete() />
+	<#assign
+		is_setup_complete = user.isSetupComplete()
+		is_user_active = user.isActive()
+	/>
 </#if>
 
 <#if themeDisplay??>
@@ -25,9 +29,12 @@ LPS-30525.
 		js_main_file = htmlUtil.escape(themeDisplay.getMainJSURL())
 	/>
 
-	<#if !is_setup_complete>
+	<#if !is_user_active>
+		<#assign is_setup_complete = false />
+	<#elseif !is_setup_complete>
 		<#assign is_setup_complete = themeDisplay.isImpersonated() />
 	</#if>
+
 </#if>
 
 <#function max x y>
@@ -152,7 +159,7 @@ ${languageUtil.format(locale, key, arguments)}</#macro>
 </#macro>
 
 <#macro user_personal_bar>
-	<#if is_setup_complete || !is_signed_in>
+	<#if is_setup_complete || !is_signed_in || !is_user_active>
 		<@liferay_portlet["runtime"]
 			portletProviderAction=portletProviderAction.VIEW
 			portletProviderClassName="com.liferay.admin.kernel.util.PortalUserPersonalBarApplicationType$UserPersonalBar"

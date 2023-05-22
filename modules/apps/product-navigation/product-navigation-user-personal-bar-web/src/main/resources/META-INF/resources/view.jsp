@@ -17,7 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <c:choose>
-	<c:when test="<%= themeDisplay.isSignedIn() %>">
+	<c:when test="<%= themeDisplay.isSignedIn() && user.isActive() %>">
 		<span class="user-avatar-link">
 			<liferay-product-navigation:personal-menu
 				size="lg"
@@ -44,6 +44,17 @@
 					/>
 				</aui:a>
 			</c:if>
+		</span>
+	</c:when>
+	<c:when test="<%= themeDisplay.isShowSignOutIcon() %>">
+		<span class="sign-out text-default" role="presentation">
+			<aui:icon
+				cssClass="sign-out text-default"
+				image="user"
+				label="sign-out"
+				markupView="lexicon"
+				url="<%= themeDisplay.getURLSignOut() %>"
+			/>
 		</span>
 	</c:when>
 	<c:when test="<%= themeDisplay.isShowSignInIcon() %>">
