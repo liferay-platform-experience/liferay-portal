@@ -261,7 +261,7 @@ export function FieldBase({
 	const accessiblePropsFields = {
 		...(hasFieldDetails && {'aria-labelledby': fieldDetailsId}),
 		...(showFor && {htmlFor: id ?? name}),
-		...(readFieldDetails && {tabIndex: 0}),
+		...(readFieldDetails && {tabIndex: 0} && {role: 'none'}),
 	};
 
 	const defaultRows = nestedFields?.map((field) => ({
