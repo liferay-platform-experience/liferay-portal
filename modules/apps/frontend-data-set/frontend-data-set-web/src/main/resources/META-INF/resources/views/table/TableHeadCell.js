@@ -77,12 +77,14 @@ function TableHeadCell({
 		>
 			{sortable ? (
 				<ClayButton
-					className="btn-sorting inline-item text-nowrap text-truncate-inline"
+					className="inline-item text-nowrap text-truncate-inline"
 					displayType="unstyled"
 					onClick={handleSortingCellClick}
-					small
+					size="sm"
 				>
-					{!hideColumnLabel && label}
+					{!hideColumnLabel && (
+						<span className="text-truncate">label</span>
+					)}
 
 					<span className="inline-item inline-item-after sorting-icons-wrapper">
 						<ClayIcon
