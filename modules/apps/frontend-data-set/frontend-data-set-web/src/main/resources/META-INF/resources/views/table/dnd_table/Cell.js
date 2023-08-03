@@ -84,7 +84,7 @@ function Cell({children, className, columnName, heading, resizable}) {
 			headingCell={heading}
 			ref={cellRef}
 			style={{
-				width,
+				width: width ?? 'auto',
 			}}
 		>
 			{children}

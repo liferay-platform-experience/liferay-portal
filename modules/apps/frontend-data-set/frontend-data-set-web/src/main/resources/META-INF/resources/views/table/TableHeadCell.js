@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
@@ -76,36 +76,28 @@ function TableHeadCell({
 			resizable
 		>
 			{sortable ? (
-				<ClayButton
-					className="inline-item text-nowrap text-truncate-inline"
-					displayType="unstyled"
+				<ClayLink
+					className="inline-item text-truncate-inline"
+					href="#"
 					onClick={handleSortingCellClick}
-					size="sm"
 				>
 					{!hideColumnLabel && (
 						<span className="text-truncate">label</span>
 					)}
 
-					<span className="inline-item inline-item-after sorting-icons-wrapper">
-						<ClayIcon
-							className={classNames(
-								'sorting-icon',
-								sortingMatch?.direction === 'asc' && 'active'
-							)}
-							draggable
-							symbol="order-arrow-up"
-						/>
-
-						<ClayIcon
-							className={classNames(
-								'sorting-icon',
-								sortingMatch?.direction === 'desc' && 'active'
-							)}
-							draggable
-							symbol="order-arrow-down"
-						/>
-					</span>
-				</ClayButton>
+					{sortingMatch && (
+						<span className="inline-item inline-item-after">
+							<ClayIcon
+								draggable
+								symbol={
+									sortingMatch?.direction === 'asc'
+										? 'order-arrow-up'
+										: 'order-arrow-down'
+								}
+							/>
+						</span>
+					)}
+				</ClayLink>
 			) : (
 				!hideColumnLabel && label
 			)}
