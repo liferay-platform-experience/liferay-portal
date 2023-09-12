@@ -19,6 +19,31 @@ definition {
 		}
 	}
 
+	@description = "LPS-194725 - This test asserts that hyperlink is not embeded within the cancel button."
+	@priority = 3
+	test AssertHyperlinkIsRendered {
+		task ("Given signed into portal as admin") {
+			Navigator.openURL();
+		}
+
+		task ("When navigate to Bundle Blacklist edit configuration page ") {
+			Navigator.openSpecificURL(url = "${portalURL}/group/control_panel/manage?p_p_id=com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&_com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet_factoryPid=com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration&_com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet_mvcRenderCommandName=%2Fconfiguration_admin%2Fedit_configuration&_com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet_pid=com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration");
+		}
+
+		task ("Then hyperlink is available within an anchor tag") {
+			AssertElementPresent(
+				key_text = "How does bundle blacklisting work?",
+				locator1 = "SystemSettings#HYPERLINK_TEXT");
+		}
+
+		task ("And Then text of hyperlink says “How does bundle blacklist work?") {
+			AssertTextEquals(
+				key_text = "How does bundle blacklisting work?",
+				locator1 = "SystemSettings#HYPERLINK_TEXT",
+				value1 = ${key_text});
+		}
+	}
+
 	@priority = 5
 	test CanOverrideValueSetInConfigFile {
 		property custom.properties = "configuration.override.com.liferay.journal.configuration.JournalServiceConfiguration_articleCommentsEnabled=B\"false\"";
