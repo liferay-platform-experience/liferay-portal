@@ -66,6 +66,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>HYPERLINK_TEXT</td>`
+	<td>//a[contains(text(),'${key_text}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SETTINGS_TEXT</td>
 	<td>//div[contains(@id,'fieldHelp')][contains(.,'${key_settingsText}')]</td>
 	<td></td>
