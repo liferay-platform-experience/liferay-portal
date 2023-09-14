@@ -9,6 +9,7 @@
 String labelOff = LanguageUtil.get(request, "disabled");
 String labelOn = LanguageUtil.get(request, "enabled");
 
+String featureFlagTitle = featureFlagDisplay.getTitle() + " ";
 String inputName = featureFlagDisplay.getKey() + "-toggle";
 %>
 
@@ -32,6 +33,8 @@ String inputName = featureFlagDisplay.getKey() + "-toggle";
 			"disabled", !featureFlagDisplay.isDependenciesFulfilled()
 		).put(
 			"featureFlagKey", featureFlagDisplay.getKey()
+		).put(
+			"featureFlagTitle", featureFlagTitle
 		).put(
 			"inputName", inputName
 		).put(

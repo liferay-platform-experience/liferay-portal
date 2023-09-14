@@ -8,6 +8,7 @@
 interface IProps {
 	disabled: boolean;
 	featureFlagKey: string;
+	featureFlagTitle: string;
 	inputName: string;
 	labelOff: string;
 	labelOn: string;
@@ -16,6 +17,7 @@ interface IProps {
 declare const FeatureFlagToggle: ({
 	disabled: initialDisabled,
 	featureFlagKey,
+	featureFlagTitle,
 	inputName,
 	labelOff,
 	labelOn,

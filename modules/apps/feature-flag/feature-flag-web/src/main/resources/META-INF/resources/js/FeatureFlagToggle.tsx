@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 interface IProps {
 	disabled: boolean;
 	featureFlagKey: string;
+	featureFlagTitle: string;
 	inputName: string;
 	labelOff: string;
 	labelOn: string;
@@ -18,6 +19,7 @@ interface IProps {
 const FeatureFlagToggle = ({
 	disabled: initialDisabled,
 	featureFlagKey,
+	featureFlagTitle,
 	inputName,
 	labelOff,
 	labelOn,
@@ -25,6 +27,8 @@ const FeatureFlagToggle = ({
 }: IProps) => {
 	const [disabled, setDisabled] = useState(initialDisabled);
 	const [toggled, setToggled] = useState(initialToggled);
+
+	const featureFlagLabel = toggled ? labelOn : labelOff;
 
 	async function updateToggled(newToggled: boolean) {
 		setDisabled(true);
@@ -61,9 +65,10 @@ const FeatureFlagToggle = ({
 	return (
 		<>
 			<ClayToggle
+				aria-label={featureFlagTitle + featureFlagLabel}
 				disabled={disabled}
 				id={inputName}
-				label={toggled ? labelOn : labelOff}
+				label={featureFlagLabel}
 				onToggle={updateToggled}
 				toggled={toggled}
 				type="checkbox"
