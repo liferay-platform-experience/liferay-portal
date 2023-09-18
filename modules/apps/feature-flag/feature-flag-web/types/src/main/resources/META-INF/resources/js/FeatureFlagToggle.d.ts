@@ -6,18 +6,18 @@
 /// <reference types="react" />
 
 interface IProps {
+	ariaDescribedBy: string;
 	disabled: boolean;
 	featureFlagKey: string;
-	featureFlagTitle: string;
 	inputName: string;
 	labelOff: string;
 	labelOn: string;
 	toggled: boolean;
 }
 declare const FeatureFlagToggle: ({
+	ariaDescribedBy,
 	disabled: initialDisabled,
 	featureFlagKey,
-	featureFlagTitle,
 	inputName,
 	labelOff,
 	labelOn,
