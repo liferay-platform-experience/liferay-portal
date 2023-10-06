@@ -64,7 +64,7 @@ html#{$cadmin-selector} {
 			}
 
 			.btn {
-				&:not(.btn-unstyled) {
+				&:not(.btn-unstyled, .btn-beta) {
 					border-radius: 3px;
 					font-size: 14px;
 					line-height: 1.15;
