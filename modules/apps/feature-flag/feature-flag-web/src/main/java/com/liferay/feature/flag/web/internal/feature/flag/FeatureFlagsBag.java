@@ -86,7 +86,8 @@ public class FeatureFlagsBag {
 		_log.error(
 			StringBundler.concat(
 				"Feature flag ", key, " is not available for company ",
-				_companyId));
+				_companyId),
+			new RuntimeException());
 
 		return GetterUtil.getBoolean(
 			PropsUtil.get(FeatureFlagConstants.getKey(key)));
