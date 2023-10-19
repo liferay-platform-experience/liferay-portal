@@ -55,6 +55,16 @@ definition {
 			locator1 = "AccessibilityMenu#MODAL_TITLE");
 	}
 
+	macro assertCanAccessAccessibilityMenuModalByTheUserProfileMenu {
+		Navigator.openURL();
+
+		UserBar.gotoDropdownItem(dropdownItem = "Accessibility Menu");
+
+		AssertElementPresent(
+			key_modal_title = "Accessibility Menu",
+			locator1 = "AccessibilityMenu#MODAL_TITLE");
+	}
+
 	macro assertCannotAccessAccessibilityMenuModal {
 		KeyPress(
 			locator1 = "//body",
