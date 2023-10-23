@@ -681,7 +681,7 @@ definition {
 	}
 
 	@description = "This is a use case for LPS-130750."
-	@priority = 4
+	@priority = 1
 	test AssertRelevanceSortOptionDisplaysWhenSearching {
 		JSONUser.addUser(
 			userEmailAddress = "userea1@liferay.com",
