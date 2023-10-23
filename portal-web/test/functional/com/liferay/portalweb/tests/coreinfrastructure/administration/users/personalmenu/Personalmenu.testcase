@@ -484,7 +484,7 @@ definition {
 		LexiconEntry.viewNoEntry(rowEntry = "Organization2 Name");
 	}
 
-	@priority = 4
+	@priority = 3
 	test ViewNoMyDashboardMyProfileLink {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}layout.user.private.layouts.power.user.required=true${line.separator}layout.user.public.layouts.power.user.required=true";
 
