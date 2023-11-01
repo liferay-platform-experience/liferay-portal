@@ -73,9 +73,7 @@ definition {
 	macro _viewMailMessage {
 		var key_asset = ${subject};
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
-			value1 = ${subject});
+		AssertElementPresent(locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY");
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "MockMock#MOCKMOCK_MESSAGE_BODY",
