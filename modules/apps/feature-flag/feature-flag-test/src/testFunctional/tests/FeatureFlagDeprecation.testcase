@@ -53,6 +53,33 @@ definition {
 		}
 	}
 
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag can be utilized."
+	@priority = 5
+	test CannotBeUtilized {
+		property portal.acceptance = "true";
+
+		task ("And When disable deprecation feature flag at Instance Settings") {
+			if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Test Deprecation Title 404 sample page", toggle_state = "Disabled")) {
+				Check.checkToggleSwitch(
+					locator1 = "FeatureFlag#TOGGLE_ROW",
+					title_row = "Test Deprecation Title 404 sample page",
+					toggle_state = "Disabled");
+			}
+
+			ClickNoError(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Enabled");
+		}
+
+		task ("Then the feature cannot be utilized") {
+			AssertElementNotPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Enabled");
+		}
+	}
+
 	@description = "LPS-189292 - This test asserts that a deprecated feature flag is disabled by default."
 	@priority = 4
 	test IsDisabledByFefault {
