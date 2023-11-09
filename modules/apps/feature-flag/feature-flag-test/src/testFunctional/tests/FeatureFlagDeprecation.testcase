@@ -12,7 +12,7 @@ definition {
 
 		User.firstLoginPG();
 
-		task ("Given a feature flag deprecation property is set") {
+		task ("Given a feature flag deprecation property is set, When access deprecation feature flag at Instance Settings") {
 			ApplicationsMenu.gotoPortlet(
 				category = "Configuration",
 				panel = "Control Panel",
@@ -38,7 +38,7 @@ definition {
 	test CanBeUtilized {
 		property portal.acceptance = "true";
 
-		task ("When enable deprecation feature flag at Instance Settings") {
+		task ("And enable deprecation feature flag at Instance Settings") {
 			Check.checkToggleSwitch(
 				locator1 = "FeatureFlag#TOGGLE_ROW",
 				title_row = "Test Deprecation Title 404 sample page",
@@ -50,6 +50,19 @@ definition {
 				locator1 = "FeatureFlag#TOGGLE_ROW",
 				title_row = "Test Deprecation Title 404 sample page",
 				toggle_state = "Enabled");
+		}
+	}
+
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag is disabled by default."
+	@priority = 4
+	test IsDisabledByFefault {
+		property portal.acceptance = "true";
+
+		task ("Then the feature flag is disabled by default") {
+			AssertElementPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Disabled");
 		}
 	}
 
