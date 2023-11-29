@@ -1,0 +1,76 @@
+@component-name = "portal-feature-flag"
+definition {
+
+	property app.server.types = "tomcat";
+	property database.bare.enabled = "true";
+	property database.types = "db2,mariadb,mysql,oracle,postgresql,sqlserver";
+	property minimum.slave.ram = "24";
+	property portal.release = "true";
+	property portal.smoke.upgrades = "false";
+	property portal.upstream = "true";
+	property skip.start.app.server = "true";
+	property test.liferay.virtual.instance = "false";
+	property test.run.type = "single";
+	property testcase.url = "file:///opt/dev/projects/github/liferay-portal/";
+	property testray.main.component.name = "Database Upgrade Framework";
+
+	setUp {
+		Upgrade.startReleasedBundle();
+	}
+
+	tearDown {
+		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+
+		if (${testLiferayVirtualInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+	}
+
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag is Enabled by default when upgraded from a legacy version."
+	@priority = 3
+	test IsEnabledByDefaultWhenUpgradedFromLegacyVersion {
+		property custom.properties = "feature.flag.LPS-162766=true${line.separator}feature.flag.LPS-162766.description=Test Deprecation Description 404 sample page${line.separator}feature.flag.LPS-162766.title=Test Deprecation Title 404 sample page${line.separator}feature.flag.LPS-162766.type=deprecation${line.separator}feature.flag.ui.visible[deprecation]=true";
+		property portal.release = "true";
+		property portal.upstream = "true";
+
+		User.firstLoginPG(
+			password = "test",
+			userEmailAddress = "test@liferay.com",
+			virtualHostsURL = "http://localhost:8080");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Instance Settings");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Feature Flags",
+			configurationName = "Deprecation",
+			configurationScope = "Virtual Instance Scope");
+
+		if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Test Deprecation Title 404 sample page", toggle_state = "Disabled")) {
+			Check.checkToggleSwitch(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Disabled");
+		}
+
+		Upgrade.restoreOriginalBundleAndUpgrade();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Instance Settings");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Feature Flags",
+			configurationName = "Deprecation",
+			configurationScope = "Virtual Instance Scope");
+
+		AssertElementPresent(
+			locator1 = "FeatureFlag#TOGGLE_ROW",
+			title_row = "Test Deprecation Title 404 sample page",
+			toggle_state = "Enabled");
+	}
+
+}
