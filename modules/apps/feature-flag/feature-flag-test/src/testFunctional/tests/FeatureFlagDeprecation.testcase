@@ -1,0 +1,143 @@
+@component-name = "portal-feature-flag"
+definition {
+
+	property custom.properties = "feature.flag.LPS-162766=true${line.separator}feature.flag.LPS-162766.description=Test Deprecation Description 404 sample page${line.separator}feature.flag.LPS-162766.title=Test Deprecation Title 404 sample page${line.separator}feature.flag.LPS-162766.type=deprecation${line.separator}feature.flag.ui.visible[deprecation]=true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.component.names = "Feature Flag";
+	property testray.main.component.name = "Feature Flag";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		task ("Given a feature flag deprecation property is set, When access deprecation feature flag at Instance Settings") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "Instance Settings");
+
+			PortalSettings.gotoConfiguration(
+				configurationCategory = "Feature Flags",
+				configurationName = "Deprecation",
+				configurationScope = "Virtual Instance Scope");
+		}
+	}
+
+	tearDown {
+		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+
+		if (${testLiferayVirtualInstance} == "true") {
+			PortalInstances.tearDownCP();
+		}
+	}
+
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag can be utilized."
+	@priority = 5
+	test CanBeUtilized {
+		property portal.acceptance = "true";
+
+		task ("And enable deprecation feature flag at Instance Settings") {
+			Check.checkToggleSwitch(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Disabled");
+		}
+
+		task ("Then the feature can be utilized") {
+			AssertElementPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Enabled");
+		}
+	}
+
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag can be utilized."
+	@priority = 5
+	test CannotBeUtilized {
+		property portal.acceptance = "true";
+
+		task ("And When disable deprecation feature flag at Instance Settings") {
+			if (IsElementPresent(locator1 = "FeatureFlag#TOGGLE_ROW", title_row = "Test Deprecation Title 404 sample page", toggle_state = "Disabled")) {
+				Check.checkToggleSwitch(
+					locator1 = "FeatureFlag#TOGGLE_ROW",
+					title_row = "Test Deprecation Title 404 sample page",
+					toggle_state = "Disabled");
+			}
+
+			ClickNoError(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Enabled");
+		}
+
+		task ("Then the feature cannot be utilized") {
+			AssertElementNotPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Enabled");
+		}
+	}
+
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag is disabled by default."
+	@priority = 4
+	test IsDisabledByFefaultOnMaster {
+		property portal.acceptance = "true";
+
+		task ("Then the feature flag is disabled by default") {
+			AssertElementPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Disabled");
+		}
+	}
+
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag is Enabled by default when upgraded from a legacy version."
+	@priority = 3
+	test IsEnabledByDefaultWhenUpgradedFromLegacyVersion {
+		property database.bare.enabled = "true";
+		property skip.start.app.server = "true";
+		property test.assert.warning.exceptions = "true";
+
+		var releaseBundleVersion = PropsUtil.get("test.released.release.bundle.version");
+		var releaseBundleZipURL = PropsUtil.get("test.released.test.portal.bundle.zip.url");
+
+		AntCommands.runCommand("build-test.xml", "prepare-upgrade-released-bundle-test-environment -Dtest.released.release.bundle.version=${releaseBundleVersion} -Dtest.released.test.portal.bundle.zip.url=${releaseBundleZipURL}");
+
+		Portlet.startServer(keepOsGiState = "true");
+
+		AntCommands.runCommand("build-test.xml", "wait-for-license-activation");
+
+		Navigator.openSpecificURL(url = "http://localhost:8080");
+
+		User.firstLoginUI(
+			password = "test",
+			specificURL = "http://localhost:8080",
+			userEmailAddress = "test@liferay.com");
+
+		//			WebContentNavigator.openWebContentAdmin(
+		//					baseURL = "http://localhost:8080",
+		//					siteURLKey = "guest");
+		//			WebContentNavigator.gotoAddCP();
+		//			PortletEntry.inputTitle(title = "WC WebContent Title");
+		//			CKEditor.addContentInWebContent(
+		//				content = "WC WebContent Content",
+		//				fieldLabel = "Content");
+		//			PortletEntry.publish();
+		//			WebContent.viewTitle(webContentTitle = "WC WebContent Title");
+
+		Portlet.shutdownServer();
+
+		AntCommands.runCommand("build-test.xml", "prepare-upgrade-original-bundle-test-environment");
+
+		Portlet.startServer(deleteLiferayHome = "false");
+
+		Navigator.openSpecificURL(url = "http://localhost:8080");
+
+		// Code the FF test
+		// ant -f build-test-tomcat-mysql.xml run-selenium-tomcat-mysql -Ddatabase.version=5.7 -Dtest.released.release.bundle.version=7.4.13.u70 -Dtest.released.test.portal.bundle.zip.url="file:///home/me/Downloads/liferay-dxp-tomcat-7.4.13.u102-20231109153600206.7z" -Dtest.license.xml.url=/home/me/Documents/ci-license.xml -Dtest.class=FeatureFlagDeprecation#IsEnabledByDefaultWhenUpgradedFromLegacyVersion
+
+	}
+
+}
