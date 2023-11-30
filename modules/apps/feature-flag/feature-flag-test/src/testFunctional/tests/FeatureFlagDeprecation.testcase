@@ -93,4 +93,33 @@ definition {
 		}
 	}
 
+	@description = "LPS-189292 - This test asserts that a deprecated feature flag is not visible when 'ui.visible[deprecation]=false'."
+	@priority = 4
+	test IsNotVisibleWhenUIVisibleIsSetToFalse {
+		property portal.acceptance = "true";
+
+		task ("Then the Deprecation scope is not visible") {
+			AssertElementNotPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Disabled");
+		}
+		task ("Then deprecation feature flag is not listed in other virtual scopes") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "Instance Settings");
+
+			PortalSettings.gotoConfiguration(
+				configurationCategory = "Feature Flags",
+				configurationName = "Deprecation",
+				configurationScope = "Virtual Instance Scope");
+			
+			AssertElementNotPresent(
+				locator1 = "FeatureFlag#TOGGLE_ROW",
+				title_row = "Test Deprecation Title 404 sample page",
+				toggle_state = "Disabled");
+		}
+	}
+
 }
