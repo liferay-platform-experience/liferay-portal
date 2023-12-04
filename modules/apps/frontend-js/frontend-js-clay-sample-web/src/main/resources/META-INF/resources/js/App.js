@@ -6,6 +6,8 @@
 import ClayAlert from '@clayui/alert';
 import React from 'react';
 
+import {FeatureIndicator} from 'frontend-js-components-web';
+
 import '../css/main.scss';
 
 export default function App() {
@@ -16,7 +18,27 @@ export default function App() {
 				whatever JS you want to App.js and redeploy.
 			</ClayAlert>
 
-			<div className="clay-test-class">This is where your code goes.</div>
+			<div className="p-3">
+				<div className="h1">Feature Indicator (JS)</div>
+
+				<FeatureIndicator interactive type="beta" />
+
+				<FeatureIndicator type="beta" />
+
+				<FeatureIndicator interactive type="deprecated" />
+
+				<FeatureIndicator type="deprecated" />
+			</div>
+
+			<div className="clay-dark bg-dark p-3">
+				<FeatureIndicator interactive type="beta" />
+
+				<FeatureIndicator type="beta" />
+
+				<FeatureIndicator interactive type="deprecated" />
+
+				<FeatureIndicator type="deprecated" />
+			</div>
 		</div>
 	);
 }
