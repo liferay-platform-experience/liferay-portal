@@ -47,9 +47,9 @@ SelectTeamsDisplayContext selectTeamsDisplayContext = new SelectTeamsDisplayCont
 							/>
 						</h5>
 
-						<h6 class="text-default">
+						<div class="h6 text-default">
 							<span><%= HtmlUtil.escape(team.getDescription()) %></span>
-						</h6>
+						</div>
 					</liferay-ui:search-container-column-text>
 				</c:when>
 				<c:when test='<%= Objects.equals(selectTeamsDisplayContext.getDisplayStyle(), "list") %>'>

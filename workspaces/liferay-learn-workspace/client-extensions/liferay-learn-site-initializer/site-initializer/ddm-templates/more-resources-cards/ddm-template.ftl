@@ -16,9 +16,9 @@
 						</svg>
 					</#if>
 
-					<h6 class="${navItemIconId?has_content?then("pt-3", "")} title">
+					<div class="h6 ${navItemIconId?has_content?then("pt-3", "")} title">
 						${navigationEntry.getName()}
-					</h6>
+					</div>
 				</a>
 			</div>
 		</#list>

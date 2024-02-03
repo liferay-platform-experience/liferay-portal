@@ -70,9 +70,9 @@
 					</#if>
 
 					<div>
-						<h6 class="product-name responsive-text title">
+						<div class="h6 product-name responsive-text title">
 							${navigationEntry.getName()}
-						</h6>
+						</div>
 
 						<p class="pt-2 responsive-text subtitle">
 							${navItemDescription}

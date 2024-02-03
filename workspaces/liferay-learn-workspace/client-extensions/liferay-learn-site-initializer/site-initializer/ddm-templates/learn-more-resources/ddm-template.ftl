@@ -16,9 +16,9 @@
 						</svg>
 					</#if>
 
-					<h6 class="pt-3 title">
+					<div class="h6 pt-3 title">
 						${navigationEntry.getName()}
-					</h6>
+					</div>
 				</a>
 			</div>
 		</#list>

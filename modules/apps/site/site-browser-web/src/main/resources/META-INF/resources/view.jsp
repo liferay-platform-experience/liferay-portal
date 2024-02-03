@@ -64,9 +64,9 @@
 							</c:choose>
 						</h5>
 
-						<h6 class="text-default">
+						<div class="h6 text-default">
 							<span><liferay-ui:message key="<%= group.getScopeLabel(themeDisplay) %>" /></span>
-						</h6>
+						</div>
 					</liferay-ui:search-container-column-text>
 				</c:when>
 				<c:when test='<%= Objects.equals(siteBrowserDisplayContext.getDisplayStyle(), "icon") %>'>

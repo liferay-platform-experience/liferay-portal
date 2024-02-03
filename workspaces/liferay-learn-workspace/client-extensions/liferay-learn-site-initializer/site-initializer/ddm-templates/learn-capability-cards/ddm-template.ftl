@@ -61,9 +61,9 @@
 				</#if>
 
 				<div>
-					<h6 class="responsive-text title">
+					<div class="h6 responsive-text title">
 						${taxonomyCategory.name}
-					</h6>
+					</div>
 
 					<p class="pt-2 responsive-text subtitle">
 						${taxonomyCategory.description}
