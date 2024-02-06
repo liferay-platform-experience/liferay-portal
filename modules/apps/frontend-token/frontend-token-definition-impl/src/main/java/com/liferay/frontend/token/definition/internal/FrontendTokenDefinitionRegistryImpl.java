@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.util.Portal;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -39,7 +37,7 @@ public class FrontendTokenDefinitionRegistryImpl
 		long companyId, String externalReferenceCode, String themeId) {
 
 		if (FeatureFlagManagerUtil.isEnabled("LPD-10773") &&
-			externalReferenceCode != null) {
+			(externalReferenceCode != null)) {
 
 			FrontendTokenDefinition frontendTokenDefinition =
 				_frontendTokenDefinitionManager.getFrontendTokenDefinition(
@@ -50,23 +48,24 @@ public class FrontendTokenDefinitionRegistryImpl
 			}
 		}
 
-		return  _frontendTokenDefinitionManager.getFrontendTokenDefinition(_openBundleTracker, themeId);
+		return _frontendTokenDefinitionManager.getFrontendTokenDefinition(
+			_bundleTracker::open, themeId);
 	}
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_frontendTokenDefinitionManager = new FrontendTokenDefinitionManager(
-				jsonFactory, new DCLSingleton<>(), new ConcurrentHashMap<>(),
-				new ConcurrentHashMap<>());
+			new ConcurrentHashMap<>(), _jsonFactory, new ConcurrentHashMap<>(),
+			new DCLSingleton<>());
 
 		_bundleTracker = new BundleTracker<>(
 			bundleContext, Bundle.ACTIVE,
-			new ThemeBundleTrackerCustomizer(
-				_frontendTokenDefinitionManager, portal));
+			new ThemeTrackerCustomizer(
+				_frontendTokenDefinitionManager, _portal));
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, ThemeCSSCET.class, "external.reference.code",
-			new ThemeClientExtensionServiceTracker(
+			new ThemeCSSClientExtensionServiceTrackerCustomizer(
 				bundleContext, _frontendTokenDefinitionManager));
 	}
 
@@ -77,15 +76,15 @@ public class FrontendTokenDefinitionRegistryImpl
 		_serviceTrackerMap.close();
 	}
 
-	@Reference
-	protected JSONFactory jsonFactory;
-
-	@Reference
-	protected Portal portal;
-
 	private BundleTracker<FrontendTokenDefinitionImpl> _bundleTracker;
 	private FrontendTokenDefinitionManager _frontendTokenDefinitionManager;
+
+	@Reference
+	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Portal _portal;
+
 	private ServiceTrackerMap<String, ThemeCSSCET> _serviceTrackerMap;
-	private final Runnable _openBundleTracker = () -> _bundleTracker.open();
 
 }
