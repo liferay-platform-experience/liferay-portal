@@ -8,18 +8,27 @@ import {Locator, Page} from '@playwright/test';
 import {ApplicationsMenuPage} from '../../../pages/product-navigation-applications-menu/ApplicationsMenuPage';
 
 export class ClientExtensionsPage {
+	readonly addThemeCSSMenuItem: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly editorConfigContributorMenuItem: Locator;
 	readonly itemDeleteButton: Locator;
 	readonly itemEditButton: Locator;
 	readonly newClientExtensionButton: Locator;
 	readonly page: Page;
+	readonly themeCSSFrontendTokenDefinitionSelectFileButton: Locator;
 
 	constructor(page: Page) {
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 
 		this.editorConfigContributorMenuItem = page.getByRole('menuitem', {
 			name: 'Add Editor Config Contributor',
+		});
+
+		this.themeCSSFrontendTokenDefinitionSelectFileButton = page
+			.getByText('Select JSON')
+			.or(page.getByText('Replace JSON'));
+		this.addThemeCSSMenuItem = page.getByRole('menuitem', {
+			name: 'Add Theme CSS',
 		});
 
 		this.itemDeleteButton = page.getByRole('menuitem', {

@@ -7,11 +7,15 @@ import {Locator, Page} from '@playwright/test';
 
 export class ProductMenuPage {
 	readonly closeProductMenuButton: Locator;
+	readonly documentsAndMediaMenuItem: Locator;
+	readonly designMenuItem: Locator;
 	readonly contentAndDataMenuItem: Locator;
 	readonly knowledgeBaseMenuItem: Locator;
 	readonly openProductMenuButton: Locator;
 	readonly page: Page;
-	readonly documentsAndMediaMenuItem: Locator;
+	readonly pagesMenuItem: Locator;
+	readonly siteBuilderMenuItem: Locator;
+	readonly styleBooksMenuItem: Locator;
 
 	constructor(page: Page) {
 		this.closeProductMenuButton = page.getByLabel('Close Product Menu');
@@ -25,6 +29,22 @@ export class ProductMenuPage {
 		});
 		this.documentsAndMediaMenuItem = page.getByRole('menuitem', {
 			name: 'Documents and Media',
+		});
+		this.designMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Design',
+		});
+		this.styleBooksMenuItem = page.getByRole('menuitem', {
+			name: 'Style Books',
+		});
+
+		this.siteBuilderMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Site Builder',
+		});
+		this.pagesMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Pages',
 		});
 
 		this.openProductMenuButton = page.getByLabel('Open Product Menu');
@@ -59,6 +79,38 @@ export class ProductMenuPage {
 	async goToDocumentsAndMediaMenuItem() {
 		await this.goToContentAndData();
 		await this.documentsAndMediaMenuItem.click();
+	}
+
+	async goToStyleBooksMenuItem() {
+		await this.goToDesign();
+		await this.styleBooksMenuItem.click();
+	}
+
+	async goToDesign() {
+		await this.openProductMenu();
+		const isClosed =
+			(await this.designMenuItem.getAttribute('aria-expanded')) ===
+			'false';
+
+		if (isClosed) {
+			await this.designMenuItem.click();
+		}
+	}
+
+	async goToPagesMenuItem() {
+		await this.goToSiteBuilder();
+		await this.pagesMenuItem.click();
+	}
+
+	async goToSiteBuilder() {
+		await this.openProductMenu();
+		const isClosed =
+			(await this.siteBuilderMenuItem.getAttribute('aria-expanded')) ===
+			'false';
+
+		if (isClosed) {
+			await this.siteBuilderMenuItem.click();
+		}
 	}
 
 	async goToContentAndData() {
