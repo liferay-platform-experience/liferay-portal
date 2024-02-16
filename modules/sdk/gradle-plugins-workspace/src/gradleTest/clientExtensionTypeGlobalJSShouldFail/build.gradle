@@ -1,0 +1,23 @@
+task runGradleTest
+
+gradle.taskGraph.afterTask {
+	Task task, TaskState taskState ->
+
+	if (task.getName().equals("validateClientExtensions")) {
+		assert taskState.failure != null : "expected task ${task.path} to fail"
+
+		String actualErrorMessage = taskState.failure.cause.message
+
+		assert actualErrorMessage.equals("Use the 'url' field instead of the script attribute 'src'")
+
+		taskState.failure = null
+	}
+}
+
+runGradleTest {
+	dependsOn ":with-src-global-js-client-extension:deploy"
+
+	doLast {
+		assert true
+	}
+}
