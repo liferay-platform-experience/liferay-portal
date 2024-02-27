@@ -20,3 +20,9 @@ GlobalJSCET globalJSCET = editClientExtensionEntryDisplayContext.getCET();
 		<liferay-ui:message key="this-javascript-is-appended-to-main-js" />
 	</div>
 </aui:field-wrapper>
+
+<aui:field-wrapper cssClass="form-group">
+	<react:component
+		module="{ScriptElementAttributes} from client-extension-web"
+	/>
+</aui:field-wrapper>
