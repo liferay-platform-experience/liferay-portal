@@ -1,4 +1,17 @@
 .portlet-client-extension-admin {
+	.inline-item-after {
+		margin-left: 0.25rem;
+	}
+
+	.btn-monospaced.btn-xs {
+		height: 1rem;
+		width: 1rem;
+
+		.lexicon-icon.lexicon-icon-plus,
+		.lexicon-icon.lexicon-icon-hr {
+			height: 10px;
+		}
+	}
 	.configured-from-ui {
 		border-color: rgb(90, 202, 117);
 		color: rgb(40, 125, 60);
