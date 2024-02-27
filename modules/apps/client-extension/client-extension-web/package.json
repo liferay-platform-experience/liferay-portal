@@ -2,10 +2,15 @@
 	"dependencies": {
 		"@clayui/alert": "3.111.0",
 		"@clayui/button": "3.111.0",
+		"@clayui/core": "3.111.0",
 		"@clayui/form": "3.111.0",
+		"@clayui/icon": "3.111.0",
+		"@clayui/layout": "3.111.0",
 		"@clayui/modal": "3.111.0",
 		"frontend-js-web": "*",
-		"react": "16.12.0"
+		"prop-types": "15.7.2",
+		"react": "16.12.0",
+		"uuid": "^9.0.1"
 	},
 	"main": "js/index.ts",
 	"name": "@liferay/client-extension-web",
