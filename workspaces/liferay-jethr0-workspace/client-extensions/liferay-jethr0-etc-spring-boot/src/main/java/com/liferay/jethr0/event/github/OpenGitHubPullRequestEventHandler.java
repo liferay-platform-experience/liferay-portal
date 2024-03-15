@@ -12,10 +12,10 @@ import org.json.JSONObject;
 /**
  * @author Michael Hashimoto
  */
-public class PortalOpenGitHubPullRequestEventHandler
+public class OpenGitHubPullRequestEventHandler
 	extends BaseOpenGitHubPullRequestEventHandler {
 
-	protected PortalOpenGitHubPullRequestEventHandler(
+	protected OpenGitHubPullRequestEventHandler(
 		EventHandlerContext eventHandlerContext, JSONObject messageJSONObject) {
 
 		super(eventHandlerContext, messageJSONObject);
