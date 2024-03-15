@@ -26,22 +26,13 @@ export class JournalEditArticlePage {
 		);
 	}
 
-	async goto({
-		siteUrl,
-		structureName,
-	}: {
-		siteUrl?: Site['friendlyUrlPath'];
-		structureName?: string;
-	} = {}) {
-		await this.journalPage.goto(siteUrl);
+	async goto(structureName = null) {
 		await this.journalPage.goToCreateArticle(structureName);
 
 		// Do it twice so we decrease flakiness
 
-		await this.journalPage.goto(siteUrl);
+		await this.journalPage.goto();
 		await this.journalPage.goToCreateArticle(structureName);
-
-		await this.propertiesTab.waitFor();
 	}
 
 	async fillTitle(title: string) {
@@ -65,6 +56,8 @@ export class JournalEditArticlePage {
 	}
 
 	async publishNewBasicArticle(title: string) {
+		await this.goto();
+
 		await this.fillTitle(title);
 
 		await this.publishButton.waitFor();

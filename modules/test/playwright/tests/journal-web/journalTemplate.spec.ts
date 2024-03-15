@@ -37,20 +37,24 @@ const RESERVED_VARIABLES = [
 
 test('This is a test for LPS-177690. The tooltip of the back button should be Go to Web Content in the editor of Templates.', async ({
 	journalEditTemplatePage,
+	journalPage,
 	page,
 	site,
 }) => {
-	await journalEditTemplatePage.goto(site.friendlyUrlPath);
+	await journalPage.goto(site.friendlyUrlPath);
+	await journalEditTemplatePage.goto();
 
 	await expect(page.getByTitle('Go to Web Content')).toBeVisible();
 });
 
 test('This is a test for LPS-153976 and LPD-16407. Check Featured image and reserved variables are present', async ({
 	journalEditTemplatePage,
+	journalPage,
 	page,
 	site,
 }) => {
-	await journalEditTemplatePage.goto(site.friendlyUrlPath);
+	await journalPage.goto(site.friendlyUrlPath);
+	await journalEditTemplatePage.goto();
 
 	// Featured image is present when we are editing a template.
 

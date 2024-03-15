@@ -55,6 +55,8 @@ export class JournalPage {
 	}
 
 	async goToJournalArticleAction(action: string, title: string) {
+		await this.goto();
+
 		await this.page.getByLabel(`Actions for ${title}`).waitFor();
 
 		await clickAndExpectToBeVisible({
