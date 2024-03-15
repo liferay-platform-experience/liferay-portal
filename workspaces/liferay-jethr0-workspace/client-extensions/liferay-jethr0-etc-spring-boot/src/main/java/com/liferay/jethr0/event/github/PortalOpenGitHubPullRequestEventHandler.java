@@ -66,8 +66,8 @@ public class PortalOpenGitHubPullRequestEventHandler
 
 		Set<JobEntity> jobEntities = new HashSet<>();
 
-		for (String testOption : getTestOptions()) {
-			jobEntities.add(createPortalPullRequestJobEntity(testOption));
+		for (String testSuite : getTestSuites()) {
+			jobEntities.add(createPortalPullRequestJobEntity(testSuite));
 		}
 
 		return jobEntities;
