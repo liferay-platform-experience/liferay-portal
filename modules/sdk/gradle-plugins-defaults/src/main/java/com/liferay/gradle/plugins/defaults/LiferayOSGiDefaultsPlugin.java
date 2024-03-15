@@ -1681,7 +1681,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 							dependencyNotation + ":" + value);
 					}
 
-					substitution.using(newComponentSelector);
+					substitution.with(newComponentSelector);
 				}
 			}
 
@@ -2433,7 +2433,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						dependencySubstitutions.substitute(
 							dependencySubstitutions.module(oldNotation));
 
-					substitution.using(
+					substitution.with(
 						dependencySubstitutions.module(newNotation));
 				}
 
@@ -2540,7 +2540,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						dependencySubstitutions.substitute(
 							dependencySubstitutions.module(oldNotation));
 
-					substitution.using(
+					substitution.with(
 						dependencySubstitutions.module(newNotation));
 				}
 

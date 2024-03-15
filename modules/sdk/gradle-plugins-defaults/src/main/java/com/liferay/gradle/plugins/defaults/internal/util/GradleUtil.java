@@ -316,7 +316,7 @@ public class GradleUtil extends com.liferay.gradle.util.GradleUtil {
 		ComponentSelector projectComponentSelector =
 			dependencySubstitutions.project(project.getPath());
 
-		substitution.using(projectComponentSelector);
+		substitution.with(projectComponentSelector);
 	}
 
 	public static <P extends Plugin<? extends Project>> void withPlugin(
