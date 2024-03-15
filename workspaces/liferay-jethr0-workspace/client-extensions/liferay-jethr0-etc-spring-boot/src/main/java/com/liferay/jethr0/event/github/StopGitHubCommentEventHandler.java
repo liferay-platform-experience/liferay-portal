@@ -6,10 +6,8 @@
 package com.liferay.jethr0.event.github;
 
 import com.liferay.jethr0.event.EventHandlerContext;
-import com.liferay.jethr0.event.github.client.GitHubClient;
 import com.liferay.jethr0.event.github.comment.GitHubComment;
 import com.liferay.jethr0.event.github.pullrequest.GitHubPullRequest;
-import com.liferay.jethr0.event.jenkins.client.JenkinsClient;
 import com.liferay.jethr0.util.StringUtil;
 
 import java.io.IOException;
@@ -27,10 +25,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tomcat.util.codec.binary.Base64;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * @author Michael Hashimoto
@@ -86,12 +88,20 @@ public class StopGitHubCommentEventHandler
 		super(eventHandlerContext, messageJSONObject);
 	}
 
-	private Map<String, String> _getBuildParameters(String buildURL) {
-		GitHubClient gitHubClient = getGitHubClient();
+	private Map<String, String> _getBuildParameters(String buildURL)
+		throws IOException {
 
-		String response = gitHubClient.requestGet(
-			StringUtil.toURL(
-				buildURL + "/api/json?tree=actions[parameters[name,value]]"));
+		String response = WebClient.create(
+			buildURL + "/api/json?tree=actions[parameters[name,value]]"
+		).get(
+		).accept(
+			MediaType.APPLICATION_JSON
+		).header(
+			"Authorization", _getJenkinsAuthorization(buildURL)
+		).retrieve(
+		).bodyToMono(
+			String.class
+		).block();
 
 		if (response == null) {
 			throw new RuntimeException("Unable to get authorization");
@@ -129,11 +139,20 @@ public class StopGitHubCommentEventHandler
 		return buildParameters;
 	}
 
-	private Set<String> _getDownstreamBuildURLs(String buildURL) {
-		GitHubClient gitHubClient = getGitHubClient();
+	private Set<String> _getDownstreamBuildURLs(String buildURL)
+		throws IOException {
 
-		String response = gitHubClient.requestGet(
-			StringUtil.toURL(buildURL + "/logText/progressiveText"));
+		String response = WebClient.create(
+			buildURL + "/logText/progressiveText"
+		).get(
+		).accept(
+			MediaType.APPLICATION_JSON
+		).header(
+			"Authorization", _getJenkinsAuthorization(buildURL)
+		).retrieve(
+		).bodyToMono(
+			String.class
+		).block();
 
 		if (StringUtil.isNullOrEmpty(response)) {
 			return Collections.emptySet();
@@ -171,11 +190,39 @@ public class StopGitHubCommentEventHandler
 		return buildURLs;
 	}
 
-	private void _stopBuild(String buildURL) throws IOException {
-		JenkinsClient jenkinsClient = getJenkinsClient();
+	private String _getJenkinsAuthorization(String buildURL)
+		throws IOException {
 
-		String response = jenkinsClient.requestGet(
-			StringUtil.toURL(buildURL + "/api/json?tree=result"));
+		String jenkinsAdminUserName = getJenkinsBranchBuildPropertyValue(
+			"jenkins.admin.user.name");
+
+		String jenkinsAdminUserToken = getJenkinsBranchBuildPropertyValue(
+			"jenkins.admin.user.token");
+
+		if (buildURL.matches("https?://test-1-0(.liferay.com)?/.+")) {
+			jenkinsAdminUserToken = getJenkinsBranchBuildPropertyValue(
+				"jenkins.admin.user.password");
+		}
+
+		String authorization = StringUtil.combine(
+			jenkinsAdminUserName, ":", jenkinsAdminUserToken);
+
+		return StringUtil.combine(
+			"Basic ", Base64.encodeBase64String(authorization.getBytes()));
+	}
+
+	private void _stopBuild(String buildURL) throws IOException {
+		String response = WebClient.create(
+			buildURL + "/api/json?tree=result"
+		).get(
+		).accept(
+			MediaType.APPLICATION_JSON
+		).header(
+			"Authorization", _getJenkinsAuthorization(buildURL)
+		).retrieve(
+		).bodyToMono(
+			String.class
+		).block();
 
 		if (StringUtil.isNullOrEmpty(response)) {
 			throw new RuntimeException();
@@ -196,7 +243,17 @@ public class StopGitHubCommentEventHandler
 			return;
 		}
 
-		jenkinsClient.requestPost(StringUtil.toURL(buildURL + "/stop"));
+		WebClient.create(
+			buildURL + "/stop"
+		).post(
+		).accept(
+			MediaType.APPLICATION_JSON
+		).header(
+			"Authorization", _getJenkinsAuthorization(buildURL)
+		).retrieve(
+		).bodyToMono(
+			String.class
+		).block();
 	}
 
 	private void _stopTopLevelBuild(String buildURL) throws IOException {
