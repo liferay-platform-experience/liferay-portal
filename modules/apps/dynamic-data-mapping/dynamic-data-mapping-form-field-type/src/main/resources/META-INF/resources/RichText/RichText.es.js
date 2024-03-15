@@ -184,7 +184,6 @@ const RichText = ({
 	return (
 		<FieldBase
 			{...otherProps}
-			fieldName={fieldName}
 			id={id}
 			name={name}
 			readOnly={readOnly}
