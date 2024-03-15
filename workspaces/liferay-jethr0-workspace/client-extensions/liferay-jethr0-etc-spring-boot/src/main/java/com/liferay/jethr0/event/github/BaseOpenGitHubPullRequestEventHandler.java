@@ -6,8 +6,10 @@
 package com.liferay.jethr0.event.github;
 
 import com.liferay.jethr0.event.EventHandlerContext;
+import com.liferay.jethr0.event.github.file.GitHubFile;
 import com.liferay.jethr0.event.github.pullrequest.GitHubPullRequest;
 import com.liferay.jethr0.event.github.user.GitHubUser;
+import com.liferay.jethr0.git.branch.GitBranchEntity;
 import com.liferay.jethr0.job.JobEntity;
 import com.liferay.jethr0.util.StringUtil;
 
@@ -34,21 +36,23 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 	public String process() throws InvalidJSONException, IOException {
 		if (checkLiferayGitHubUser() ||
 			closeInvalidUpstreamGitHubBranchName() ||
-			skipCISenderBlacklistGitHubUser()) {
+			_skipCISenderBlacklistGitHubUser()) {
 
 			return null;
 		}
 
-		commentAutoCommentMessage();
-		commentBroadcastMessage();
+		_commentAutoCommentMessage();
+		_commentBroadcastMessage();
 
-		if (checkForwardedPullRequest()) {
-			commentDefaultMessage();
+		if (_checkForwardedPullRequest() ||
+			_checkMergeSubrepositoryPullRequest()) {
+
+			_commentDefaultMessage();
 
 			return null;
 		}
 
-		invokeJobEntities();
+		_invokeJobEntities();
 
 		return String.valueOf(getMessageJSONObject());
 	}
@@ -59,7 +63,7 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 		super(eventHandlerContext, messageJSONObject);
 	}
 
-	protected boolean checkForwardedPullRequest()
+	private boolean _checkForwardedPullRequest()
 		throws InvalidJSONException, IOException {
 
 		GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
@@ -93,7 +97,67 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 		return false;
 	}
 
-	protected void commentAutoCommentMessage()
+	private boolean _checkMergeSubrepositoryPullRequest()
+		throws InvalidJSONException, IOException {
+
+		GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
+
+		if (gitHubPullRequest == null) {
+			return false;
+		}
+
+		GitBranchEntity upstreamGitBranchEntity = getUpstreamGitBranchEntity();
+
+		GitHubUser receiverGitHubUser =
+			gitHubPullRequest.getReceiverGitHubUser();
+
+		String subrepositoryMergeReceiverUserName =
+			getJenkinsBranchBuildPropertyValue(
+				StringUtil.combine(
+					"subrepo.merge.receiver.name[",
+					upstreamGitBranchEntity.getBranchName(), "]"));
+
+		if (!gitHubPullRequest.isMergeSubrepositoryPullRequest() ||
+			!Objects.equals(
+				receiverGitHubUser.getName(),
+				subrepositoryMergeReceiverUserName)) {
+
+			return false;
+		}
+
+		GitRepo gitRepo = new GitRepo(
+			upstreamGitBranchEntity.getFileContent(
+				gitHubPullRequest.getGitRepoFilePath()));
+
+		GitHubFile ciMergeGitHubFile = gitHubPullRequest.getCIMergeGitHubFile();
+
+		Matcher matcher = _branchSHAPattern.matcher(
+			ciMergeGitHubFile.getPatch());
+
+		String ciMergeBranchSHA = "";
+
+		if (matcher.find()) {
+			ciMergeBranchSHA = matcher.group("branchSHA");
+		}
+
+		String compareURL = StringUtil.combine(
+			"https://github.com/liferay/", gitRepo.getRepositoryName(),
+			"/compare/", gitRepo.getRepositorySHA(), "..." + ciMergeBranchSHA);
+
+		gitHubPullRequest.comment(
+			StringUtil.combine(
+				"Subrepo changes: ", compareURL, "\n\nci:test:sf and ",
+				"ci:test:relevant must pass in order for auto-merge to ",
+				"initiate."));
+
+		invokeJobEntity(createPortalPullRequestJobEntity("relevant"));
+
+		invokeJobEntity(createPortalPullRequestJobEntity("sf"));
+
+		return true;
+	}
+
+	private void _commentAutoCommentMessage()
 		throws InvalidJSONException, IOException {
 
 		GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
@@ -117,7 +181,7 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 				"\n"));
 	}
 
-	protected void commentBroadcastMessage()
+	private void _commentBroadcastMessage()
 		throws InvalidJSONException, IOException {
 
 		String broadcastMessage = getCIProperty(
@@ -132,7 +196,7 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 		gitHubPullRequest.comment(broadcastMessage);
 	}
 
-	protected void commentDefaultMessage() throws InvalidJSONException {
+	private void _commentDefaultMessage() throws InvalidJSONException {
 		GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
 
 		GitHubUser senderGitHubUser = gitHubPullRequest.getSenderGitHubUser();
@@ -167,10 +231,19 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 		gitHubPullRequest.comment(sb.toString());
 	}
 
-	protected abstract Set<JobEntity> createJobEntities()
-		throws InvalidJSONException, IOException;
+	private Set<JobEntity> _createJobEntities()
+		throws InvalidJSONException, IOException {
 
-	protected Set<String> getTestSuites()
+		Set<JobEntity> jobEntities = new HashSet<>();
+
+		for (String testSuite : _getTestSuites()) {
+			jobEntities.add(createPortalPullRequestJobEntity(testSuite));
+		}
+
+		return jobEntities;
+	}
+
+	private Set<String> _getTestSuites()
 		throws InvalidJSONException, IOException {
 
 		GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
@@ -217,17 +290,15 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 		return testSuites;
 	}
 
-	protected void invokeJobEntities()
-		throws InvalidJSONException, IOException {
-
-		Set<JobEntity> jobEntities = createJobEntities();
+	private void _invokeJobEntities() throws InvalidJSONException, IOException {
+		Set<JobEntity> jobEntities = _createJobEntities();
 
 		for (JobEntity jobEntity : jobEntities) {
 			invokeJobEntity(jobEntity);
 		}
 	}
 
-	protected boolean skipCISenderBlacklistGitHubUser()
+	private boolean _skipCISenderBlacklistGitHubUser()
 		throws InvalidJSONException, IOException {
 
 		GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
@@ -265,7 +336,45 @@ public abstract class BaseOpenGitHubPullRequestEventHandler
 		return true;
 	}
 
+	private static final Pattern _branchSHAPattern = Pattern.compile(
+		"\\+(?<branchSHA>[0-9a-f]{40})");
 	private static final Pattern _ciTestAutoRecipientPattern = Pattern.compile(
 		"(?<userName>[^\\]]+)\\[(?<testSuites>[^\\]]+)\\]");
+
+	private static class GitRepo {
+
+		public String getRepositoryName() {
+			Matcher matcher = _gitRepoRepositoryNamePattern.matcher(
+				_gitRepoFileContent);
+
+			if (!matcher.find()) {
+				return null;
+			}
+
+			return matcher.group("repositoryName");
+		}
+
+		public String getRepositorySHA() {
+			Matcher matcher = _gitRepoSHAPattern.matcher(_gitRepoFileContent);
+
+			if (!matcher.find()) {
+				return null;
+			}
+
+			return matcher.group("repositorySHA");
+		}
+
+		private GitRepo(String gitRepoFileContent) {
+			_gitRepoFileContent = gitRepoFileContent;
+		}
+
+		private static final Pattern _gitRepoRepositoryNamePattern =
+			Pattern.compile("remote = .*/(?<repositoryName>[^\\.]*)\\.git");
+		private static final Pattern _gitRepoSHAPattern = Pattern.compile(
+			"commit = (?<repositorySHA>[0-9a-f]{40})");
+
+		private final String _gitRepoFileContent;
+
+	}
 
 }
