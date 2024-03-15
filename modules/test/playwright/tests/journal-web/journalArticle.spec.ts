@@ -70,6 +70,7 @@ translationTest(
 		journalEditArticlePage,
 		journalEditArticleTranslationsPage,
 		journalPage,
+		page,
 		site,
 	}) => {
 		await journalPage.goto(site.friendlyUrlPath);
@@ -77,6 +78,14 @@ translationTest(
 		const title = getRandomString();
 
 		await journalEditArticlePage.publishNewBasicArticle(title);
+
+		const article = page
+			.locator(
+				'#_com_liferay_journal_web_portlet_JournalPortlet_articlesSearchContainer .list-group-item'
+			)
+			.filter({hasText: title});
+
+		await article.waitFor();
 
 		const editBasicArticleTranslationUrl =
 			await journalEditArticleTranslationsPage.editBasicArticleTranslations(
