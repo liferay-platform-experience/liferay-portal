@@ -32,10 +32,12 @@ public class CommerceOrderUpgradeProcess extends UpgradeProcess {
 				while (resultSet1.next()) {
 					long commerceOrderId = resultSet1.getLong(1);
 
+					String shippable = _getShippable(
+						connection, commerceOrderId);
+
 					runSQL(
 						StringBundler.concat(
-							"update CommerceOrder set shippable = ",
-							_getShippable(connection, commerceOrderId),
+							"update CommerceOrder set shippable = ", shippable,
 							" where commerceOrderId = ", commerceOrderId));
 				}
 			}
