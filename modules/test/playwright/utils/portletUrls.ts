@@ -13,4 +13,5 @@ export const PORTLET_URLS = {
 	lockedItems:
 		'/~/control_panel/manage?p_p_id=com_liferay_locked_items_web_internal_portlet_LockedItemsPortlet',
 	pages: '/~/control_panel/manage?p_p_id=com_liferay_layout_admin_web_portlet_GroupPagesPortlet',
+	styleBooks: '/~/control_panel/manage/-/style_books/style_books',
 };
