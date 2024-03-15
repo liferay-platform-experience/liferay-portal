@@ -46,7 +46,6 @@ import org.gradle.api.plugins.Convention;
 import org.gradle.api.plugins.ExtensionContainer;
 import org.gradle.api.plugins.JavaLibraryPlugin;
 import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Copy;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskProvider;
@@ -294,10 +293,7 @@ public class LiferayOSGiExtPlugin implements Plugin<Project> {
 
 								@Override
 								public String toString() {
-									Property<String> property =
-										jar.getArchiveVersion();
-
-									return property.get();
+									return jar.getVersion();
 								}
 
 							}));
