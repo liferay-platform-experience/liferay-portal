@@ -61,6 +61,9 @@ public abstract class BasePortalToolsTask extends JavaExec {
 	}
 
 	@Override
+	public abstract String getMain();
+
+	@Override
 	public JavaExec setArgs(Iterable<?> args) {
 		throw new UnsupportedOperationException();
 	}
