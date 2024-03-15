@@ -5,8 +5,6 @@
 
 package com.liferay.jethr0.job;
 
-import java.net.URL;
-
 import org.json.JSONObject;
 
 /**
@@ -26,11 +24,6 @@ public abstract class BasePortalPullRequestJobEntity
 	}
 
 	@Override
-	public URL getPortalBundlesDistURL() {
-		return getParameterValueURL("portalBundlesDistURL");
-	}
-
-	@Override
 	public void setForwardReceiverUserName(String forwardReceiverUserName) {
 		setParameterValue("forwardReceiverUserName", forwardReceiverUserName);
 	}
@@ -38,11 +31,6 @@ public abstract class BasePortalPullRequestJobEntity
 	@Override
 	public void setGitHubGistID(String gitHubGistID) {
 		setParameterValue("gitHubGistID", gitHubGistID);
-	}
-
-	@Override
-	public void setPortalBundlesDistURL(URL portalBundlesDistURL) {
-		setParameterValueURL("portalBundlesDistURL", portalBundlesDistURL);
 	}
 
 	protected BasePortalPullRequestJobEntity(JSONObject jsonObject) {
