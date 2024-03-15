@@ -40,12 +40,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.gradle.api.AntBuilder;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
-import org.gradle.api.file.Directory;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.SourceDirectorySet;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 
 /**
@@ -211,15 +209,7 @@ public class FileUtil {
 	public static File getJavaClassesDir(SourceSet sourceSet) {
 		SourceDirectorySet sourceDirectorySet = sourceSet.getJava();
 
-		Provider<Directory> provider = sourceDirectorySet.getClassesDirectory();
-
-		Directory directory = provider.getOrNull();
-
-		if (directory == null) {
-			return null;
-		}
-
-		return directory.getAsFile();
+		return sourceDirectorySet.getOutputDir();
 	}
 
 	public static boolean isChild(File file, File parentFile) {

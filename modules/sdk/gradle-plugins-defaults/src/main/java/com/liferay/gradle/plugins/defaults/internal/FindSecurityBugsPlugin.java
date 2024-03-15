@@ -470,7 +470,7 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 					SourceSet mainSourceSet = _getSourceSet(
 						javaPluginConvention, SourceSet.MAIN_SOURCE_SET_NAME);
 
-					SourceDirectorySet javaSourceDirectorySet =
+					final SourceDirectorySet javaSourceDirectorySet =
 						mainSourceSet.getJava();
 
 					final JavaCompile compileJSPJavaCompile =
@@ -495,8 +495,8 @@ public class FindSecurityBugsPlugin implements Plugin<Project> {
 
 								@Override
 								public File call() throws Exception {
-									return FileUtil.getJavaClassesDir(
-										mainSourceSet);
+									return javaSourceDirectorySet.
+										getOutputDir();
 								}
 
 							}));

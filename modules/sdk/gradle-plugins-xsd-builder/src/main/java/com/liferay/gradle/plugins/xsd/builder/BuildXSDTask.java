@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
 import org.gradle.api.Project;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFiles;
@@ -33,13 +32,9 @@ import org.gradle.api.tasks.bundling.Zip;
 public class BuildXSDTask extends Zip {
 
 	public BuildXSDTask() {
-		Property<String> archiveAppendixProperty = getArchiveAppendix();
-		Property<String> archiveExtensionProperty = getArchiveExtension();
-		Property<String> archiveVersionProperty = getArchiveVersion();
-
-		archiveAppendixProperty.set("xbean");
-		archiveExtensionProperty.set(Jar.DEFAULT_EXTENSION);
-		archiveVersionProperty.set("");
+		setAppendix("xbean");
+		setExtension(Jar.DEFAULT_EXTENSION);
+		setVersion("");
 	}
 
 	@Override

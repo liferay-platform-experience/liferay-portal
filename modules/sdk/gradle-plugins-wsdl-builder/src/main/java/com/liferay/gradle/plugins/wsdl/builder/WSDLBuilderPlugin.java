@@ -328,9 +328,7 @@ public class WSDLBuilderPlugin implements Plugin<Project> {
 
 		String wsdlName = FileUtil.stripExtension(inputFile.getName());
 
-		Property<String> property = jar.getArchiveFileName();
-
-		property.set(wsdlName + "-ws.jar");
+		jar.setArchiveName(wsdlName + "-ws.jar");
 
 		return jar;
 	}
