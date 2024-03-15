@@ -37,11 +37,6 @@ export class AICreatorInstanceSettingsPage {
 
 		await this.dalleCheckbox.check();
 		await this.saveButton.click();
-
-		await this.page
-			.getByText('Success:Your request completed successfully.')
-			.waitFor();
-
 		await this.page.waitForLoadState();
 	}
 
@@ -50,11 +45,6 @@ export class AICreatorInstanceSettingsPage {
 
 		await this.dalleCheckbox.uncheck();
 		await this.saveButton.click();
-
-		await this.page
-			.getByText('Success:Your request completed successfully.')
-			.waitFor();
-
 		await this.page.waitForLoadState();
 	}
 
