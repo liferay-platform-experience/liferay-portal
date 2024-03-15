@@ -24,7 +24,6 @@ import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.file.CopySpec;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.SourceDirectorySet;
@@ -195,10 +194,7 @@ public class WSDLBuilderPlugin implements Plugin<Project> {
 
 		File tmpBinDir = new File(tmpDir, "bin");
 
-		DirectoryProperty directoryProperty =
-			javaCompile.getDestinationDirectory();
-
-		directoryProperty.set(tmpBinDir);
+		javaCompile.setDestinationDir(tmpBinDir);
 
 		javaCompile.setSource(generateTask.getOutputs());
 
@@ -322,9 +318,7 @@ public class WSDLBuilderPlugin implements Plugin<Project> {
 				});
 		}
 
-		DirectoryProperty directoryProperty = jar.getDestinationDirectory();
-
-		directoryProperty.set(buildWSDLTask.getDestinationDir());
+		jar.setDestinationDir(buildWSDLTask.getDestinationDir());
 
 		String wsdlName = FileUtil.stripExtension(inputFile.getName());
 
