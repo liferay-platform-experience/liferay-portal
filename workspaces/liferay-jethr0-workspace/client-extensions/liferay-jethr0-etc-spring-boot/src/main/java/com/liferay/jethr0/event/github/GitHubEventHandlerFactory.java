@@ -153,13 +153,9 @@ public class GitHubEventHandlerFactory extends BaseEventHandlerFactory {
 						return new PortalOpenGitHubPullRequestEventHandler(
 							eventHandlerContext, messageJSONObject);
 					}
-					else if (repositoryName.equals("liferay-qa-websites-ee")) {
-						return new QAWebsitesOpenGitHubPullRequestEventHandler(
-							eventHandlerContext, messageJSONObject);
-					}
 
 					throw new IllegalArgumentException(
-						"Invalid repository " + repositoryName);
+						"Invalid \"repository\" from message JSON");
 				}
 			}
 			else if (action.equals("synchronize")) {
