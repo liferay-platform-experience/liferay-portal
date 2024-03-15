@@ -27,12 +27,17 @@ export class JournalEditArticlePage {
 	}
 
 	async goto(structureName = null) {
-		await this.journalPage.goToCreateArticle(structureName);
+		if (structureName) {
+			await this.journalPage.goToCreateStructureArticle(structureName);
+		}
+		else {
+			await this.journalPage.goToCreateNewBasicArticle();
 
-		// Do it twice so we decrease flakiness
+			// Do it twice so we decrease flakiness
 
-		await this.journalPage.goto();
-		await this.journalPage.goToCreateArticle(structureName);
+			await this.journalPage.goto();
+			await this.journalPage.goToCreateNewBasicArticle();
+		}
 	}
 
 	async fillTitle(title: string) {

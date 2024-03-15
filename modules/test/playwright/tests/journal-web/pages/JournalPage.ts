@@ -35,16 +35,20 @@ export class JournalPage {
 		);
 	}
 
-	async goToCreateArticle(structureName?: string) {
-		const target = structureName
-			? this.page.getByRole('menuitem', {
-					name: structureName,
-			  })
-			: this.createBasicWebContentLink;
-
+	async goToCreateNewBasicArticle() {
 		await clickAndExpectToBeVisible({
 			autoClick: true,
-			target,
+			target: this.createBasicWebContentLink,
+			trigger: this.newButton,
+		});
+	}
+
+	async goToCreateStructureArticle(structureName) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				name: structureName,
+			}),
 			trigger: this.newButton,
 		});
 	}
