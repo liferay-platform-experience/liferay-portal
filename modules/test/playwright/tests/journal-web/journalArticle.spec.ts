@@ -71,9 +71,8 @@ translationTest(
 		journalEditArticleTranslationsPage,
 		journalPage,
 		page,
-		site,
 	}) => {
-		await journalPage.goto(site.friendlyUrlPath);
+		await journalPage.goto();
 
 		const title = getRandomString();
 
@@ -105,13 +104,13 @@ translationTest(
 
 bulkTest(
 	'LPD-17782: This is a test for bulk permissions of web content',
-	async ({journalEditArticlePage, journalPage, page, site}) => {
+	async ({journalEditArticlePage, journalPage, page}) => {
 		const PERMISSIONS_LOCATORS = [
 			{enabled: true, locator: '#guest_ACTION_DELETE'},
 			{enabled: true, locator: '#guest_ACTION_PERMISSIONS'},
 		];
 
-		await journalPage.goto(site.friendlyUrlPath);
+		await journalPage.goto();
 
 		const title1 = getRandomString();
 		const title2 = getRandomString();
@@ -157,8 +156,8 @@ bulkTest(
 
 translationTest(
 	'LPD-19627: Translate several fields in a Basic Web Content and check how many fields have been translated',
-	async ({journalEditArticlePage, journalPage, page, site}) => {
-		await journalPage.goto(site.friendlyUrlPath);
+	async ({journalEditArticlePage, journalPage, page}) => {
+		await journalPage.goto();
 
 		const title = getRandomString();
 
@@ -202,7 +201,7 @@ translationTest(
 
 		await apiHelpers.dataEngine.createStructure(site.id, dataDefinition);
 
-		await journalPage.goto(site.friendlyUrlPath);
+		await journalPage.goto();
 
 		await journalEditArticlePage.goto(structureName);
 
@@ -269,7 +268,7 @@ translationTest(
 
 		await apiHelpers.dataEngine.createStructure(site.id, dataDefinition);
 
-		await journalPage.goto(site.friendlyUrlPath);
+		await journalPage.goto();
 
 		await journalEditArticlePage.goto(structureName);
 
@@ -295,8 +294,8 @@ translationTest(
 
 scheduleTest(
 	'Create a web content selecting permissions in the modal',
-	async ({journalEditArticlePage, journalPage, page, site}) => {
-		await journalPage.goto(site.friendlyUrlPath);
+	async ({journalEditArticlePage, journalPage, page}) => {
+		await journalPage.goto();
 
 		await journalEditArticlePage.goToCreateNewBasicArticle();
 
@@ -344,8 +343,8 @@ scheduleTest(
 
 scheduleTest(
 	'Change permission of a web content in edition mode',
-	async ({journalEditArticlePage, journalPage, page, site}) => {
-		await journalPage.goto(site.friendlyUrlPath);
+	async ({journalEditArticlePage, journalPage, page}) => {
+		await journalPage.goto();
 
 		const title = getRandomString();
 
