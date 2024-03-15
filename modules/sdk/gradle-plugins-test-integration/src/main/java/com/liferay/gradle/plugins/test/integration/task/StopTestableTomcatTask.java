@@ -12,7 +12,9 @@ import java.io.File;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 
 /**
  * @author Andrea Di Giorgi
@@ -21,8 +23,9 @@ import org.gradle.api.tasks.Internal;
 public class StopTestableTomcatTask
 	extends StopAppServerTask implements ModuleFrameworkBaseDirSpec {
 
-	@Internal
+	@InputDirectory
 	@Override
+	@PathSensitive(PathSensitivity.RELATIVE)
 	public File getModuleFrameworkBaseDir() {
 		return GradleUtil.toFile(getProject(), _moduleFrameworkBaseDir);
 	}
