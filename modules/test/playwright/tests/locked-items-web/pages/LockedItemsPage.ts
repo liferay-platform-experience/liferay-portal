@@ -31,6 +31,7 @@ export class LockedItemsPage {
 	}
 
 	async goToLockedPages() {
+		await this.goto();
 		await this.lockedPagesMenuItem.click();
 	}
 }
