@@ -221,11 +221,9 @@ const ActivityClaimPanel = ({
 							<ClayIcon symbol="angle-down" />
 						</span>
 					)}
-					{expanded && activity.selected && (
-						<span className="collapse-icon-open mt-2">
-							<ClayIcon symbol="angle-up" />
-						</span>
-					)}
+					<span className="collapse-icon-open mt-2">
+						<ClayIcon symbol="angle-up" />
+					</span>
 				</PanelHeader>
 
 				<PanelBody expanded={activity.selected && expanded}>
