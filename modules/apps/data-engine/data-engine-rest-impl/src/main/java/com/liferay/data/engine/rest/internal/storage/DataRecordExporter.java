@@ -13,7 +13,6 @@ import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesRegistry;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.spi.converter.SPIDDMFormRuleConverter;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -33,13 +32,11 @@ public class DataRecordExporter {
 		DDLRecordSetLocalService ddlRecordSetLocalService,
 		DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry,
 		DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
-		DDMStructureLocalService ddmStructureLocalService,
 		SPIDDMFormRuleConverter spiDDMFormRuleConverter) {
 
 		_ddlRecordSetLocalService = ddlRecordSetLocalService;
 		_ddmFormFieldTypeServicesRegistry = ddmFormFieldTypeServicesRegistry;
 		_ddmStructureLayoutLocalService = ddmStructureLayoutLocalService;
-		_ddmStructureLocalService = ddmStructureLocalService;
 		_spiDDMFormRuleConverter = spiDDMFormRuleConverter;
 	}
 
@@ -55,8 +52,7 @@ public class DataRecordExporter {
 
 		DataDefinition dataDefinition = DataDefinitionUtil.toDataDefinition(
 			_ddmFormFieldTypeServicesRegistry, ddlRecordSet.getDDMStructure(),
-			_ddmStructureLayoutLocalService, _ddmStructureLocalService, null,
-			_spiDDMFormRuleConverter);
+			_ddmStructureLayoutLocalService, null, _spiDDMFormRuleConverter);
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
@@ -91,7 +87,6 @@ public class DataRecordExporter {
 		_ddmFormFieldTypeServicesRegistry;
 	private final DDMStructureLayoutLocalService
 		_ddmStructureLayoutLocalService;
-	private final DDMStructureLocalService _ddmStructureLocalService;
 	private final SPIDDMFormRuleConverter _spiDDMFormRuleConverter;
 
 }

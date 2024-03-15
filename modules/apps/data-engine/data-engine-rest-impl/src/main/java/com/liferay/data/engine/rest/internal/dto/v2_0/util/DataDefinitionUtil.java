@@ -14,7 +14,6 @@ import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServices
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.spi.converter.SPIDDMFormRuleConverter;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -30,7 +29,6 @@ public class DataDefinitionUtil {
 			DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry,
 			DDMStructure ddmStructure,
 			DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
-			DDMStructureLocalService ddmStructureLocalService,
 			HttpServletRequest httpServletRequest,
 			SPIDDMFormRuleConverter spiDDMFormRuleConverter)
 		throws Exception {
@@ -63,7 +61,7 @@ public class DataDefinitionUtil {
 							DataDefinitionFieldUtil.toDataDefinitionField(
 								ddmFormField, ddmFormFieldTypeServicesRegistry,
 								ddmStructureLayoutLocalService,
-								ddmStructureLocalService, httpServletRequest),
+								httpServletRequest),
 						DataDefinitionField.class));
 				setDataDefinitionKey(ddmStructure::getStructureKey);
 				setDateCreated(ddmStructure::getCreateDate);

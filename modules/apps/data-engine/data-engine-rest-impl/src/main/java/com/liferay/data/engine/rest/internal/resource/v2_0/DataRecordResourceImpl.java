@@ -147,8 +147,7 @@ public class DataRecordResourceImpl extends BaseDataRecordResourceImpl {
 
 		DataRecordExporter dataRecordExporter = new DataRecordExporter(
 			_ddlRecordSetLocalService, _ddmFormFieldTypeServicesRegistry,
-			_ddmStructureLayoutLocalService, _ddmStructureLocalService,
-			_spiDDMFormRuleConverter);
+			_ddmStructureLayoutLocalService, _spiDDMFormRuleConverter);
 
 		return dataRecordExporter.export(
 			transform(

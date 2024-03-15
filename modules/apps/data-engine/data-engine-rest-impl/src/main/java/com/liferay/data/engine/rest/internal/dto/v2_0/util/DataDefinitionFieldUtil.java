@@ -13,11 +13,9 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidation;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldValidationExpression;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMStructureLayout;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.util.SettingsDDMFormFieldsUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
@@ -109,7 +107,6 @@ public class DataDefinitionFieldUtil {
 			DDMFormField ddmFormField,
 			DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry,
 			DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
-			DDMStructureLocalService ddmStructureLocalService,
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
@@ -119,8 +116,7 @@ public class DataDefinitionFieldUtil {
 					() -> _getCustomProperties(
 						ddmFormField.getProperties(), ddmFormField.getType(),
 						ddmFormField.getProperty("ddmStructureLayoutId"),
-						ddmStructureLayoutLocalService,
-						ddmStructureLocalService, httpServletRequest,
+						ddmStructureLayoutLocalService, httpServletRequest,
 						SettingsDDMFormFieldsUtil.getSettingsDDMFormFields(
 							ddmFormFieldTypeServicesRegistry,
 							ddmFormField.getType())));
@@ -143,8 +139,7 @@ public class DataDefinitionFieldUtil {
 						ddmFormField.getNestedDDMFormFields(),
 						ddmFormField -> toDataDefinitionField(
 							ddmFormField, ddmFormFieldTypeServicesRegistry,
-							ddmStructureLayoutLocalService,
-							ddmStructureLocalService, httpServletRequest),
+							ddmStructureLayoutLocalService, httpServletRequest),
 						DataDefinitionField.class));
 				setReadOnly(ddmFormField::isReadOnly);
 				setRepeatable(ddmFormField::isRepeatable);
@@ -161,7 +156,6 @@ public class DataDefinitionFieldUtil {
 			Map<String, Object> ddmFormFieldProperties, String ddmFormFieldType,
 			Object ddmStructureLayoutId,
 			DDMStructureLayoutLocalService ddmStructureLayoutLocalService,
-			DDMStructureLocalService ddmStructureLocalService,
 			HttpServletRequest httpServletRequest,
 			Map<String, DDMFormField> settingsDDMFormFieldsMap)
 		throws Exception {
@@ -305,19 +299,6 @@ public class DataDefinitionFieldUtil {
 			}
 			else {
 				customProperties.put(entry.getKey(), entry.getValue());
-			}
-		}
-
-		if (Validator.isNotNull(customProperties.get("ddmStructureId")) &&
-			Validator.isNull(customProperties.get("ddmStructureKey"))) {
-
-			DDMStructure ddmStructure =
-				ddmStructureLocalService.fetchDDMStructure(
-					GetterUtil.getLong(customProperties.get("ddmStructureId")));
-
-			if (ddmStructure != null) {
-				customProperties.put(
-					"ddmStructureKey", ddmStructure.getStructureKey());
 			}
 		}
 
