@@ -146,9 +146,9 @@ translationTest(
 	async ({journalEditArticlePage, journalPage, page, site}) => {
 		await journalPage.goto(site.friendlyUrlPath);
 
-		await journalEditArticlePage.goto();
+		const title = getRandomString();
 
-		await journalEditArticlePage.fillTitle(getRandomString());
+		await journalEditArticlePage.goToCreateNewBasicArticle(title);
 
 		const translationButton = page.getByRole('combobox', {
 			name: 'Select a language',
@@ -284,7 +284,7 @@ scheduleTest(
 	async ({journalEditArticlePage, journalPage, page, site}) => {
 		await journalPage.goto(site.friendlyUrlPath);
 
-		await journalEditArticlePage.goto();
+		await journalEditArticlePage.goToCreateNewBasicArticle();
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -333,11 +333,9 @@ scheduleTest(
 	async ({journalEditArticlePage, journalPage, page, site}) => {
 		await journalPage.goto(site.friendlyUrlPath);
 
-		await journalEditArticlePage.goto();
-
 		const title = getRandomString();
 
-		await journalEditArticlePage.fillTitle(title);
+		await journalEditArticlePage.goToCreateNewBasicArticle(title);
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
