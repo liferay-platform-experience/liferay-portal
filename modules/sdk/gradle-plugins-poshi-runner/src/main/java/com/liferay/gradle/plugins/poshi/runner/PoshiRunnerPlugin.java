@@ -49,8 +49,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.file.CopySpec;
-import org.gradle.api.file.Directory;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.logging.Logger;
@@ -620,7 +618,7 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 		Test test, Properties poshiProperties,
 		PoshiRunnerExtension poshiRunnerExtension) {
 
-		_configureTaskRunPoshiBinaryResultsDirectory(test);
+		_configureTaskRunPoshiBinResultsDir(test);
 		_configureTaskRunPoshiReports(test);
 
 		Project project = test.getProject();
@@ -644,18 +642,14 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 		_populateWebDriverSystemProperties(test, poshiProperties);
 	}
 
-	private void _configureTaskRunPoshiBinaryResultsDirectory(Test test) {
-		DirectoryProperty directoryProperty = test.getBinaryResultsDirectory();
-
-		Directory directory = directoryProperty.getOrNull();
-
-		if (directory != null) {
+	private void _configureTaskRunPoshiBinResultsDir(Test test) {
+		if (test.getBinResultsDir() != null) {
 			return;
 		}
 
 		Project project = test.getProject();
 
-		directoryProperty.set(
+		test.setBinResultsDir(
 			project.file("test-results/binary/" + RUN_POSHI_TASK_NAME));
 	}
 
@@ -666,25 +660,16 @@ public class PoshiRunnerPlugin implements Plugin<Project> {
 
 		DirectoryReport directoryReport = testTaskReports.getHtml();
 
-		DirectoryProperty directoryProperty =
-			directoryReport.getOutputLocation();
-
-		Directory directory = directoryProperty.getOrNull();
-
-		if (directory == null) {
-			directoryProperty.set(project.file("tests"));
+		if (directoryReport.getDestination() == null) {
+			directoryReport.setDestination(project.file("tests"));
 		}
 
 		JUnitXmlReport jUnitXmlReport = testTaskReports.getJunitXml();
 
 		jUnitXmlReport.setOutputPerTestCase(true);
 
-		directoryProperty = jUnitXmlReport.getOutputLocation();
-
-		directory = directoryProperty.getOrNull();
-
-		if (directory == null) {
-			directoryProperty.set(project.file("test-results"));
+		if (jUnitXmlReport.getDestination() == null) {
+			jUnitXmlReport.setDestination(project.file("test-results"));
 		}
 	}
 
