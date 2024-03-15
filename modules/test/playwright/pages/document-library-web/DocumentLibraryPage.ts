@@ -5,12 +5,12 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {PORTLET_URLS} from '../../utils/portletUrls';
-
+import {ProductMenuPage} from '../product-navigation-product-menu/ProductMenuPage';
 export class DocumentLibraryPage {
 	readonly optionsMenu: Locator;
 	readonly page: Page;
 	readonly exportImportOptionsMenuItem: Locator;
+	readonly productMenuPage: ProductMenuPage;
 
 	constructor(page: Page) {
 		this.exportImportOptionsMenuItem = page.getByRole('menuitem', {
@@ -20,12 +20,12 @@ export class DocumentLibraryPage {
 			.getByTestId('headerOptions')
 			.getByLabel('Options');
 		this.page = page;
+		this.productMenuPage = new ProductMenuPage(page);
 	}
 
-	async goto(siteUrl?: Site['friendlyUrlPath']) {
-		await this.page.goto(
-			`/group${siteUrl || '/guest'}${PORTLET_URLS.documentLibrary}`
-		);
+	async goto() {
+		await this.productMenuPage.goToDocumentsAndMediaMenuItem();
+		await this.page.waitForLoadState();
 	}
 
 	async deleteAllFileEntries() {
