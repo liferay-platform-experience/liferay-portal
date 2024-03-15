@@ -7,36 +7,34 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {knowledgeBasePages} from '../../fixtures/knowledgeBasePagesTest';
+import {loginTest} from '../../fixtures/loginTest';
 import getRandomString from '../../utils/getRandomString';
 
 const testFeatureFlagsEnabled = mergeTests(
+	loginTest(),
 	apiHelpersTest,
 	featureFlagsTest({
 		'LPS-188058': true,
 	}),
-	isolatedSiteTest,
 	knowledgeBasePages
 );
 
 const testFeatureFlagsDisabled = mergeTests(
+	loginTest(),
 	apiHelpersTest,
 	featureFlagsTest({
 		'LPS-188058': false,
 	}),
-	isolatedSiteTest,
 	knowledgeBasePages
 );
 
 testFeatureFlagsDisabled(
 	'can publish and delete an article with scheduling disabled',
-	async ({knowledgeBaseEditArticlePage, knowledgeBasePage, page, site}) => {
+	async ({knowledgeBaseEditArticlePage, knowledgeBasePage, page}) => {
 		const content = getRandomString();
 		const title = getRandomString();
 		const kbArticle = page.getByRole('link', {name: title});
-
-		await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
 
 		await knowledgeBaseEditArticlePage.publishNewKnowledgeBaseArticle(
 			content,
@@ -44,7 +42,6 @@ testFeatureFlagsDisabled(
 		);
 		await expect(kbArticle).toBeVisible();
 
-		await knowledgeBasePage.goto(site.friendlyUrlPath);
 		await knowledgeBasePage.deleteKnowledgeBaseArticle(title);
 		await expect(kbArticle).toBeHidden();
 	}
@@ -56,13 +53,10 @@ testFeatureFlagsEnabled(
 		knowledgeBaseEditArticlePage,
 		knowledgeBaseViewArticlePage,
 		page,
-		site,
 	}) => {
 		const content = getRandomString();
 		const title = getRandomString();
 		const kbArticle = page.getByRole('link', {name: title});
-
-		await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
 
 		await knowledgeBaseEditArticlePage.publishNewKnowledgeBaseArticleWithSchedule(
 			content,
@@ -70,9 +64,7 @@ testFeatureFlagsEnabled(
 		);
 		await expect(kbArticle).toBeVisible();
 
-		await knowledgeBaseViewArticlePage.goto(site.friendlyUrlPath, title);
-		await knowledgeBaseViewArticlePage.deleteKnowledgeBaseArticle();
-
+		await knowledgeBaseViewArticlePage.deleteKnowledgeBaseArticle(title);
 		await expect(
 			page.locator(
 				'[id="_com_liferay_knowledge_base_web_portlet_AdminPortlet_recycleBinAlert"]'
@@ -84,15 +76,12 @@ testFeatureFlagsEnabled(
 
 testFeatureFlagsDisabled(
 	'can delete all articles with a recycle bin disabled',
-	async ({knowledgeBaseEditArticlePage, knowledgeBasePage, page, site}) => {
-		await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
-
+	async ({knowledgeBaseEditArticlePage, knowledgeBasePage, page}) => {
 		await knowledgeBaseEditArticlePage.publishNewKnowledgeBaseArticle(
 			getRandomString(),
 			getRandomString()
 		);
 
-		await knowledgeBasePage.goto(site.friendlyUrlPath);
 		await knowledgeBasePage.deleteAll(false);
 		await expect(
 			page.getByRole('heading', {name: 'Knowledge base is empty.'})
@@ -102,23 +91,18 @@ testFeatureFlagsDisabled(
 
 testFeatureFlagsEnabled(
 	'can delete all articles with a recycle bin enabled',
-	async ({knowledgeBaseEditArticlePage, knowledgeBasePage, page, site}) => {
-		await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
-
+	async ({knowledgeBaseEditArticlePage, knowledgeBasePage, page}) => {
 		await knowledgeBaseEditArticlePage.publishNewKnowledgeBaseArticleWithSchedule(
 			getRandomString(),
 			getRandomString()
 		);
 
-		await knowledgeBasePage.goto(site.friendlyUrlPath);
 		await knowledgeBasePage.deleteAll(true);
-
 		await expect(
 			page.locator(
 				'[id="_com_liferay_knowledge_base_web_portlet_AdminPortlet_recycleBinAlert"]'
 			)
 		).toBeVisible();
-
 		await expect(
 			page.getByRole('heading', {name: 'Knowledge base is empty.'})
 		).toBeVisible();
@@ -131,12 +115,9 @@ testFeatureFlagsEnabled(
 		knowledgeBaseEditArticlePage,
 		knowledgeBaseViewArticlePage,
 		page,
-		site,
 	}) => {
 		const title = getRandomString();
 		const kbArticle = page.getByRole('link', {name: title});
-
-		await knowledgeBaseEditArticlePage.goto(site.friendlyUrlPath);
 
 		await knowledgeBaseEditArticlePage.scheduleNewKnowledgeBaseArticle(
 			getRandomString(),
@@ -145,9 +126,7 @@ testFeatureFlagsEnabled(
 		);
 		await expect(kbArticle).toBeVisible();
 
-		await knowledgeBaseViewArticlePage.goto(site.friendlyUrlPath, title);
-
-		await knowledgeBaseViewArticlePage.deleteKnowledgeBaseArticle();
+		await knowledgeBaseViewArticlePage.deleteKnowledgeBaseArticle(title);
 		await expect(
 			page.locator(
 				'[id="_com_liferay_knowledge_base_web_portlet_AdminPortlet_recycleBinAlert"]'

@@ -20,17 +20,14 @@ export class KnowledgeBaseViewArticlePage {
 		this.page = page;
 	}
 
-	async goto(siteUrl: Site['friendlyUrlPath'], articleTitle: string) {
-		await this.knowledgeBasePage.goto(siteUrl);
-
-		await this.page.getByRole('link', {name: articleTitle}).click();
-		await this.page
-			.locator('.kb-article-title')
-			.getByText(articleTitle)
-			.waitFor();
+	async goto(title: string) {
+		await this.knowledgeBasePage.goto();
+		await this.page.getByRole('link', {name: title}).click();
+		await this.page.locator('.kb-article-title').getByText(title).waitFor();
 	}
 
-	async deleteKnowledgeBaseArticle() {
+	async deleteKnowledgeBaseArticle(title: string) {
+		await this.goto(title);
 		clickAndExpectToBeVisible({
 			autoClick: true,
 			target: this.page.getByRole('menuitem', {name: 'Delete'}),

@@ -43,10 +43,13 @@ export class KnowledgeBasePage {
 	}
 
 	private async goToFoldersAndArticles() {
+		await this.goto();
 		await this.foldersAndArticlesButton.click();
 	}
 
 	async deleteKnowledgeBaseArticle(title: string) {
+		await this.goto();
+
 		const kbArticle = await this.page
 			.locator(
 				'#_com_liferay_knowledge_base_web_portlet_AdminPortlet_kbObjectsSearchContainer .list-group-item'
@@ -64,6 +67,8 @@ export class KnowledgeBasePage {
 	}
 
 	async deleteAll(recycleBin: boolean) {
+		await this.goto();
+
 		if (await this.selectAllCheckBox.isDisabled()) {
 			return;
 		}
