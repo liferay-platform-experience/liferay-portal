@@ -75,41 +75,13 @@ public abstract class BaseTestGitHubCommentEventHandler
 
 		_pullRequestJobEntity = createPullRequestJobEntity(getTestSuite());
 
-		String rebaseBranchSHA = getRebaseBranchSHA();
+		String rebaseBranchSHA = _getRebaseBranchSHA();
 
 		if (!StringUtil.isNullOrEmpty(rebaseBranchSHA)) {
 			_pullRequestJobEntity.setUpstreamBranchSHA(rebaseBranchSHA);
 		}
 
 		return _pullRequestJobEntity;
-	}
-
-	protected String getRebaseBranchSHA()
-		throws InvalidJSONException, IOException {
-
-		for (String testOption : getTestOptions()) {
-			if (StringUtil.isNullOrEmpty(testOption)) {
-				continue;
-			}
-
-			Matcher gitHubCommitIDMatcher = _gitHubCommitIDPattern.matcher(
-				testOption);
-
-			if (gitHubCommitIDMatcher.matches()) {
-				return gitHubCommitIDMatcher.group();
-			}
-		}
-
-		if (_testNoRebase()) {
-			GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
-
-			GitHubCommit commonParentGitHubCommit =
-				gitHubPullRequest.getCommonParentGitHubCommit();
-
-			return commonParentGitHubCommit.getSHA();
-		}
-
-		return null;
 	}
 
 	protected List<String> getTestOptions() throws InvalidJSONException {
@@ -164,6 +136,32 @@ public abstract class BaseTestGitHubCommentEventHandler
 		}
 
 		return true;
+	}
+
+	private String _getRebaseBranchSHA() throws InvalidJSONException {
+		for (String testOption : getTestOptions()) {
+			if (StringUtil.isNullOrEmpty(testOption)) {
+				continue;
+			}
+
+			Matcher gitHubCommitIDMatcher = _gitHubCommitIDPattern.matcher(
+				testOption);
+
+			if (gitHubCommitIDMatcher.matches()) {
+				return gitHubCommitIDMatcher.group();
+			}
+		}
+
+		if (_testNoRebase()) {
+			GitHubPullRequest gitHubPullRequest = getGitHubPullRequest();
+
+			GitHubCommit commonParentGitHubCommit =
+				gitHubPullRequest.getCommonParentGitHubCommit();
+
+			return commonParentGitHubCommit.getSHA();
+		}
+
+		return null;
 	}
 
 	private boolean _testNoRebase() throws InvalidJSONException {
