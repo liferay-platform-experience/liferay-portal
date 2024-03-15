@@ -2729,17 +2729,8 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		JavaPluginConvention javaPluginConvention = GradleUtil.getConvention(
 			project, JavaPluginConvention.class);
 
-		if (project.hasProperty("build.java.override.version")) {
-			String javaVersion = GradleUtil.getProperty(
-				project, "build.java.override.version", (String)null);
-
-			javaPluginConvention.setSourceCompatibility(javaVersion);
-			javaPluginConvention.setTargetCompatibility(javaVersion);
-		}
-		else {
-			javaPluginConvention.setSourceCompatibility(_JAVA_VERSION);
-			javaPluginConvention.setTargetCompatibility(_JAVA_VERSION);
-		}
+		javaPluginConvention.setSourceCompatibility(_JAVA_VERSION);
+		javaPluginConvention.setTargetCompatibility(_JAVA_VERSION);
 
 		File testResultsDir = project.file("test-results/unit");
 
