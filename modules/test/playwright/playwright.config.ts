@@ -18,6 +18,7 @@ import {config as commerceConfig} from './tests/commerce/config';
 import {config as dispatchWebConfig} from './tests/dispatch-web/config';
 import {config as documentLibraryWebConfig} from './tests/document-library-web/config';
 import {config as exportImportWebConfig} from './tests/export-import-web/config';
+import {config as featureFlagWebConfig} from './tests/feature-flag-web/config';
 import {config as frontendDataSetViewsWebConfig} from './tests/frontend-data-set-views-web/config';
 import {config as headlessBuilderImplConfig} from './tests/headless-builder-impl/config';
 import {config as headlessBuilderWebConfig} from './tests/headless-builder-web/config';
@@ -59,6 +60,7 @@ export default defineConfig({
 		dispatchWebConfig,
 		documentLibraryWebConfig,
 		exportImportWebConfig,
+		featureFlagWebConfig,
 		frontendDataSetViewsWebConfig,
 		headlessBuilderImplConfig,
 		headlessBuilderWebConfig,
