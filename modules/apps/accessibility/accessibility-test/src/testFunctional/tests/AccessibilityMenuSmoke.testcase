@@ -164,6 +164,7 @@ definition {
 	@priority = 4
 	test CanOverrideSettingsOrderSmoke {
 		property portal.acceptance = "true";
+		property portal.upstream = "thiago";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -237,8 +238,10 @@ definition {
 		task ("And accessibility menu is not available on virtual instance B") {
 			Navigator.openSpecificURL(url = "http://www.able.com:8080");
 
+			var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 			User.firstLoginUI(
-				password = "test",
+				password = ${defaultAdminPassword},
 				specificURL = "http://www.able.com:8080",
 				userEmailAddress = "test@liferay.com");
 

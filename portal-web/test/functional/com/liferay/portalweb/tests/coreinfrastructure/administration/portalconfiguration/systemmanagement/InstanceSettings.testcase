@@ -235,6 +235,7 @@ definition {
 	@description = "This test disable the Terms of Use via UI and assert the Terms of Use not required when a new user login."
 	@priority = 3
 	test CanChangeTheTermsOfUseNotRequired {
+		property portal.upstream = "thiago";
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property testray.main.component.name = "Users and Organizations";
 
@@ -269,9 +270,11 @@ definition {
 			locator1 = "TextInput#EMAIL_ADDRESS",
 			value1 = "userea@liferay.com");
 
+		var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 		Type.typePause(
 			locator1 = "TextInput#PASSWORD",
-			value1 = "test");
+			value1 = ${defaultAdminPassword});
 
 		User._clickSignInButton(localization = ${localization});
 
@@ -287,6 +290,8 @@ definition {
 	@description = "This test asserts that a user can change the general authentication. Like user can change the authentication way to user ID and so."
 	@priority = 4
 	test CanChangeUserGeneralAuthentication {
+		property portal.upstream = "thiago";
+
 		var userId = JSONUserSetter.setUserId(userEmailAddress = "test@liferay.com");
 
 		PortalSettings.gotoConfiguration(
@@ -341,9 +346,11 @@ definition {
 
 		Navigator.openURL();
 
+		var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 		User.firstLoginUI(
 			authenticationMethod = "By User ID",
-			password = "test",
+			password = ${defaultAdminPassword},
 			userId = ${userId});
 
 		PortalSettings.gotoConfiguration(
@@ -541,6 +548,7 @@ definition {
 	@description = "This test asserts that the use of Instance OSGi configurations does not affect other systems."
 	@priority = 3
 	test CanNotAffectOtherSystemsDueToUseOfInstanceOSGiConfigurations {
+		property portal.upstream = "thiago";
 		property custom.properties = "feature.flag.LPS-155284=true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -594,8 +602,10 @@ definition {
 		}
 
 		task ("And login to www.able.com and go to Web Content in the instance settings") {
+			var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 			User.firstLoginUI(
-				password = "test",
+				password = ${defaultAdminPassword},
 				specificURL = "http://www.able.com:8080",
 				userEmailAddress = "test@www.able.com");
 
@@ -618,6 +628,7 @@ definition {
 	@description = "This test specify the Terms of Use content by web content posted in a new site and assert the Terms of Use content updated when a new user login."
 	@priority = 3
 	test CanSpecifyTheTermsofUseWebContent {
+		property portal.upstream = "thiago";
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property testray.main.component.name = "Users and Organizations";
 
@@ -670,9 +681,11 @@ definition {
 			locator1 = "TextInput#EMAIL_ADDRESS",
 			value1 = "userea@liferay.com");
 
+		var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 		Type.typePause(
 			locator1 = "TextInput#PASSWORD",
-			value1 = "test");
+			value1 = ${defaultAdminPassword});
 
 		User._clickSignInButton(localization = ${localization});
 
@@ -774,6 +787,7 @@ definition {
 	@description = "This test asserts that Instance OSGi configurations can be used across different systems."
 	@priority = 3
 	test CanUseInstanceConfigurationAcrossDifferentSystems {
+		property portal.upstream = "thiago";
 		property custom.properties = "feature.flag.LPS-155284=true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -822,8 +836,10 @@ definition {
 		}
 
 		task ("And login to the new instance and go to Web Content in the instance settings") {
+			var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 			User.firstLoginUI(
-				password = "test",
+				password = ${defaultAdminPassword},
 				specificURL = "http://www.able.com:8080",
 				userEmailAddress = "test@www.able.com");
 
@@ -1058,6 +1074,7 @@ definition {
 
 	@priority = 4
 	test FactoryConfigurationAreInTheirProperScope {
+		property portal.upstream = "thiago";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1083,8 +1100,10 @@ definition {
 
 		PortalInstances.viewCP(virtualHost = "www.able.com");
 
+		var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 		User.firstLoginUI(
-			password = "test",
+			password = ${defaultAdminPassword},
 			specificURL = "http://www.able.com:8080",
 			userEmailAddress = "test@www.able.com");
 
@@ -1394,6 +1413,7 @@ definition {
 	@description = "This is a use case for LPS-156105. The test assert the value of mail setting for new instance is inherited from server level."
 	@priority = 2
 	test ViewInstanceMailSettingsValueIsInheritedFromServerLevel {
+		property portal.upstream = "thiago";
 		property portal.upstream = "quarantine";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1430,8 +1450,10 @@ definition {
 				virtualHost = "www.able.com",
 				webId = "www.able.com");
 
+			var defaultAdminPassword = PropsUtil.get("default.admin.password");
+
 			User.firstLoginUI(
-				password = "test",
+				password = ${defaultAdminPassword},
 				specificURL = "http://www.able.com:8080",
 				userEmailAddress = "test@www.able.com");
 
