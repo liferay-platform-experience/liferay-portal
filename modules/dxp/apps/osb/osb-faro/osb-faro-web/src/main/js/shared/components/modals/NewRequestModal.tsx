@@ -210,9 +210,7 @@ const NewRequestModal: React.FC<INewRequestModalProps> = ({
 							</p>
 
 							<Form.Group>
-								<div className='h4'>
-									{Liferay.Language.get('job-type')}
-								</div>
+								<div className="h4">{Liferay.Language.get('job-type')}</div>
 
 								<Form.GroupItem>
 									<Form.Checkbox
@@ -260,7 +258,11 @@ const NewRequestModal: React.FC<INewRequestModalProps> = ({
 							</Form.Group>
 
 							<Form.Group>
+<<<<<<< HEAD
 								<div className='h4'>
+=======
+								<div className="h4">
+>>>>>>> parent of 129241d096498 (Revert "LPD-4680 Convert h4 elements to use div.h4")
 									{Liferay.Language.get('data-subject-id')}
 								</div>
 

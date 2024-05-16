@@ -20,7 +20,7 @@ const Header: React.FC<IHeaderProps> = ({
 }) => (
 	<div className={getCN('modal-header', className, {border})}>
 		{title && (
-			<div className='h4 modal-title'>
+			<div className='modal-title'>
 				{iconSymbol && (
 					<ClayIcon
 						className='icon-root modal-title-indicator'
