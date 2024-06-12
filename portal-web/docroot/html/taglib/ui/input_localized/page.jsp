@@ -20,59 +20,6 @@ Map<String, Map<String, String>> languagesTranslationsAriaLabelsMap = new HashMa
 </c:if>
 
 <div class="input-group input-localized input-localized-<%= type %>" id="<%= namespace + id %>BoundingBox">
-	<div class="input-group-item">
-		<c:choose>
-			<c:when test='<%= type.equals("editor") %>'>
-				<liferay-ui:input-editor
-					contents="<%= mainLanguageValue %>"
-					contentsLanguageId="<%= languageId %>"
-					cssClass='<%= "language-value " + cssClass %>'
-					editorName="<%= editorName %>"
-					name="<%= inputEditorName %>"
-					onChangeMethod='<%= randomNamespace + "onChangeEditor" %>'
-					onInitMethod='<%= randomNamespace + "onInitEditor" %>'
-					placeholder="<%= placeholder %>"
-					toolbarSet="<%= toolbarSet %>"
-				/>
-
-				<aui:script>
-					function <%= namespace + randomNamespace %>onChangeEditor() {
-						var inputLocalized = Liferay.component('<%= namespace + HtmlUtil.escapeJS(fieldName) %>');
-
-						var editor = window['<%= namespace + HtmlUtil.escapeJS(inputEditorName) %>'];
-
-						inputLocalized.updateInputLanguage(editor.getHTML());
-					}
-
-					function <%= namespace + randomNamespace %>onInitEditor() {
-						Liferay.componentReady('<%= namespace + HtmlUtil.escapeJS(fieldName) %>')
-							.then(inputLocalized => {
-								var editor = window['<%= namespace + HtmlUtil.escapeJS(inputEditorName) %>'];
-								inputLocalized.updateInputPlaceholder(editor);
-							}
-						);
-					}
-				</aui:script>
-			</c:when>
-			<c:when test='<%= type.equals("input") %>'>
-				<input aria-describedby="<%= namespace + HtmlUtil.escapeAttribute(id + fieldSuffix) %>_desc" class="form-control language-value <%= cssClass %>" dir="<%= mainLanguageDir %>" <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>" name="<%= namespace + HtmlUtil.escapeAttribute(name + fieldSuffix) %>" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> type="text" value="<%= HtmlUtil.escapeAttribute(mainLanguageValue) %>" <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %> />
-			</c:when>
-			<c:when test='<%= type.equals("textarea") %>'>
-				<textarea maxlength="<%= maxLength %>" aria-labelledby='<%= namespace + id %> <%= namespace + id %>_maxCharacters' aria-describedby="<%= namespace + HtmlUtil.escapeAttribute(id + fieldSuffix) %>_desc" class="form-control language-value <%= cssClass %>" dir="<%= mainLanguageDir %>" <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>" name="<%= namespace + HtmlUtil.escapeAttribute(name + fieldSuffix) %>" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>><%= HtmlUtil.escape(mainLanguageValue) %></textarea>
-
-				<span class="sr-only" id="<%= namespace + id %>_maxCharacters">
-					<liferay-ui:message key="characters-maximum" />: <%= maxLength %>
-				</span>
-
-				<c:if test="<%= autoSize %>">
-					<aui:script use="aui-autosize-deprecated">
-						A.one('#<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>').plug(A.Plugin.Autosize);
-					</aui:script>
-				</c:if>
-			</c:when>
-		</c:choose>
-	</div>
-
 	<div class="hide-accessible sr-only" id="<%= namespace + HtmlUtil.escapeAttribute(id + fieldSuffix) %>_desc"><%= defaultLocale.getDisplayName(LocaleUtil.fromLanguageId(LanguageUtil.getLanguageId(request))) %> <liferay-ui:message key="translation" /></div>
 
 	<c:if test="<%= !availableLocales.isEmpty() && Validator.isNull(languageId) %>">
@@ -263,6 +210,59 @@ Map<String, Map<String, String>> languagesTranslationsAriaLabelsMap = new HashMa
 					</div>
 				</div>
 			</liferay-ui:icon-menu>
+		</div>
+
+		<div class="input-group-item">
+			<c:choose>
+				<c:when test='<%= type.equals("editor") %>'>
+					<liferay-ui:input-editor
+						contents="<%= mainLanguageValue %>"
+						contentsLanguageId="<%= languageId %>"
+						cssClass='<%= "language-value " + cssClass %>'
+						editorName="<%= editorName %>"
+						name="<%= inputEditorName %>"
+						onChangeMethod='<%= randomNamespace + "onChangeEditor" %>'
+						onInitMethod='<%= randomNamespace + "onInitEditor" %>'
+						placeholder="<%= placeholder %>"
+						toolbarSet="<%= toolbarSet %>"
+					/>
+
+					<aui:script>
+						function <%= namespace + randomNamespace %>onChangeEditor() {
+						var inputLocalized = Liferay.component('<%= namespace + HtmlUtil.escapeJS(fieldName) %>');
+
+						var editor = window['<%= namespace + HtmlUtil.escapeJS(inputEditorName) %>'];
+
+						inputLocalized.updateInputLanguage(editor.getHTML());
+						}
+
+						function <%= namespace + randomNamespace %>onInitEditor() {
+						Liferay.componentReady('<%= namespace + HtmlUtil.escapeJS(fieldName) %>')
+						.then(inputLocalized => {
+						var editor = window['<%= namespace + HtmlUtil.escapeJS(inputEditorName) %>'];
+						inputLocalized.updateInputPlaceholder(editor);
+						}
+						);
+						}
+					</aui:script>
+				</c:when>
+				<c:when test='<%= type.equals("input") %>'>
+					<input aria-describedby="<%= namespace + HtmlUtil.escapeAttribute(id + fieldSuffix) %>_desc" class="form-control language-value <%= cssClass %>" dir="<%= mainLanguageDir %>" <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>" name="<%= namespace + HtmlUtil.escapeAttribute(name + fieldSuffix) %>" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> type="text" value="<%= HtmlUtil.escapeAttribute(mainLanguageValue) %>" <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %> />
+				</c:when>
+				<c:when test='<%= type.equals("textarea") %>'>
+					<textarea maxlength="<%= maxLength %>" aria-labelledby='<%= namespace + id %> <%= namespace + id %>_maxCharacters' aria-describedby="<%= namespace + HtmlUtil.escapeAttribute(id + fieldSuffix) %>_desc" class="form-control language-value <%= cssClass %>" dir="<%= mainLanguageDir %>" <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>" name="<%= namespace + HtmlUtil.escapeAttribute(name + fieldSuffix) %>" <%= Validator.isNotNull(placeholder) ? "placeholder=\"" + LanguageUtil.get(resourceBundle, placeholder) + "\"" : StringPool.BLANK %> <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>><%= HtmlUtil.escape(mainLanguageValue) %></textarea>
+
+					<span class="sr-only" id="<%= namespace + id %>_maxCharacters">
+						<liferay-ui:message key="characters-maximum" />: <%= maxLength %>
+					</span>
+
+					<c:if test="<%= autoSize %>">
+						<aui:script use="aui-autosize-deprecated">
+							A.one('#<%= namespace + id + HtmlUtil.getAUICompatibleId(fieldSuffix) %>').plug(A.Plugin.Autosize);
+						</aui:script>
+					</c:if>
+				</c:when>
+			</c:choose>
 		</div>
 	</c:if>
 </div>
