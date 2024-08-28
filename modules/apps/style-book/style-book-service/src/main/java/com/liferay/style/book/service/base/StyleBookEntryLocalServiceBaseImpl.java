@@ -891,6 +891,10 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 			publishedStyleBookEntry.getDefaultStyleBookEntry());
 		draftStyleBookEntry.setFrontendTokensValues(
 			publishedStyleBookEntry.getFrontendTokensValues());
+		draftStyleBookEntry.setFrontendTokenDefinitionId(
+			publishedStyleBookEntry.getFrontendTokenDefinitionId());
+		draftStyleBookEntry.setFrontendTokenDefinitionName(
+			publishedStyleBookEntry.getFrontendTokenDefinitionName());
 		draftStyleBookEntry.setName(publishedStyleBookEntry.getName());
 		draftStyleBookEntry.setPreviewFileEntryId(
 			publishedStyleBookEntry.getPreviewFileEntryId());

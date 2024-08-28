@@ -145,6 +145,12 @@ public class StyleBookEntryPersistenceTest {
 		newStyleBookEntry.setFrontendTokensValues(
 			RandomTestUtil.randomString());
 
+		newStyleBookEntry.setFrontendTokenDefinitionId(
+			RandomTestUtil.randomString());
+
+		newStyleBookEntry.setFrontendTokenDefinitionName(
+			RandomTestUtil.randomString());
+
 		newStyleBookEntry.setName(RandomTestUtil.randomString());
 
 		newStyleBookEntry.setPreviewFileEntryId(RandomTestUtil.nextLong());
@@ -196,6 +202,12 @@ public class StyleBookEntryPersistenceTest {
 			existingStyleBookEntry.getFrontendTokensValues(),
 			newStyleBookEntry.getFrontendTokensValues());
 		Assert.assertEquals(
+			existingStyleBookEntry.getFrontendTokenDefinitionId(),
+			newStyleBookEntry.getFrontendTokenDefinitionId());
+		Assert.assertEquals(
+			existingStyleBookEntry.getFrontendTokenDefinitionName(),
+			newStyleBookEntry.getFrontendTokenDefinitionName());
+		Assert.assertEquals(
 			existingStyleBookEntry.getName(), newStyleBookEntry.getName());
 		Assert.assertEquals(
 			existingStyleBookEntry.getPreviewFileEntryId(),
@@ -230,6 +242,10 @@ public class StyleBookEntryPersistenceTest {
 			styleBookEntry.getDefaultStyleBookEntry());
 		draftStyleBookEntry.setFrontendTokensValues(
 			styleBookEntry.getFrontendTokensValues());
+		draftStyleBookEntry.setFrontendTokenDefinitionId(
+			styleBookEntry.getFrontendTokenDefinitionId());
+		draftStyleBookEntry.setFrontendTokenDefinitionName(
+			styleBookEntry.getFrontendTokenDefinitionName());
 		draftStyleBookEntry.setName(styleBookEntry.getName());
 		draftStyleBookEntry.setPreviewFileEntryId(
 			styleBookEntry.getPreviewFileEntryId());
@@ -271,6 +287,12 @@ public class StyleBookEntryPersistenceTest {
 		Assert.assertEquals(
 			styleBookEntry.getFrontendTokensValues(),
 			draftStyleBookEntry.getFrontendTokensValues());
+		Assert.assertEquals(
+			styleBookEntry.getFrontendTokenDefinitionId(),
+			draftStyleBookEntry.getFrontendTokenDefinitionId());
+		Assert.assertEquals(
+			styleBookEntry.getFrontendTokenDefinitionName(),
+			draftStyleBookEntry.getFrontendTokenDefinitionName());
 		Assert.assertEquals(
 			styleBookEntry.getName(), draftStyleBookEntry.getName());
 		Assert.assertEquals(
@@ -320,6 +342,12 @@ public class StyleBookEntryPersistenceTest {
 			RandomTestUtil.randomBoolean());
 
 		styleBookEntry2.setFrontendTokensValues(RandomTestUtil.randomString());
+
+		styleBookEntry2.setFrontendTokenDefinitionId(
+			RandomTestUtil.randomString());
+
+		styleBookEntry2.setFrontendTokenDefinitionName(
+			RandomTestUtil.randomString());
 
 		styleBookEntry2.setName(RandomTestUtil.randomString());
 
@@ -545,8 +573,10 @@ public class StyleBookEntryPersistenceTest {
 			"uuid", true, "externalReferenceCode", true, "headId", true,
 			"styleBookEntryId", true, "groupId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "defaultStyleBookEntry", true, "name", true,
-			"previewFileEntryId", true, "styleBookEntryKey", true);
+			"modifiedDate", true, "defaultStyleBookEntry", true,
+			"frontendTokenDefinitionId", true, "frontendTokenDefinitionName",
+			true, "name", true, "previewFileEntryId", true, "styleBookEntryKey",
+			true);
 	}
 
 	@Test
@@ -884,6 +914,12 @@ public class StyleBookEntryPersistenceTest {
 		styleBookEntry.setDefaultStyleBookEntry(RandomTestUtil.randomBoolean());
 
 		styleBookEntry.setFrontendTokensValues(RandomTestUtil.randomString());
+
+		styleBookEntry.setFrontendTokenDefinitionId(
+			RandomTestUtil.randomString());
+
+		styleBookEntry.setFrontendTokenDefinitionName(
+			RandomTestUtil.randomString());
 
 		styleBookEntry.setName(RandomTestUtil.randomString());
 

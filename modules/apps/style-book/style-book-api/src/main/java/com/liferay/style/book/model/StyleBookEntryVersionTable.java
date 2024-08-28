@@ -72,6 +72,14 @@ public class StyleBookEntryVersionTable
 		createColumn(
 			"frontendTokensValues", Clob.class, Types.CLOB,
 			Column.FLAG_DEFAULT);
+	public final Column<StyleBookEntryVersionTable, String>
+		frontendTokenDefinitionId = createColumn(
+			"frontendTokenDefinitionId", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<StyleBookEntryVersionTable, String>
+		frontendTokenDefinitionName = createColumn(
+			"frontendTokenDefinitionName", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<StyleBookEntryVersionTable, String> name = createColumn(
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<StyleBookEntryVersionTable, Long> previewFileEntryId =

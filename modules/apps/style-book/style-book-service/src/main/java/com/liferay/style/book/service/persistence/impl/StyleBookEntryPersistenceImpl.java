@@ -9694,6 +9694,8 @@ public class StyleBookEntryPersistenceImpl
 		ctIgnoreColumnNames.add("modifiedDate");
 		ctStrictColumnNames.add("defaultStyleBookEntry");
 		ctStrictColumnNames.add("frontendTokensValues");
+		ctStrictColumnNames.add("frontendTokenDefinitionId");
+		ctStrictColumnNames.add("frontendTokenDefinitionName");
 		ctStrictColumnNames.add("name");
 		ctStrictColumnNames.add("previewFileEntryId");
 		ctStrictColumnNames.add("styleBookEntryKey");

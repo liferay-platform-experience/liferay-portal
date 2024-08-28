@@ -25,6 +25,8 @@
 
 		<column name="defaultStyleBookEntry" type="boolean" />
 		<column name="frontendTokensValues" type="String" />
+		<column name="frontendTokenDefinitionId" type="String" />
+		<column name="frontendTokenDefinitionName" type="String" />
 		<column name="name" type="String" />
 		<column name="previewFileEntryId" type="long" />
 		<column name="styleBookEntryKey" type="String" />

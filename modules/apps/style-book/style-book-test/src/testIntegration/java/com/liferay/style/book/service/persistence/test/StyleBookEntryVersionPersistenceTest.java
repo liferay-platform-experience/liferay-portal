@@ -147,6 +147,12 @@ public class StyleBookEntryVersionPersistenceTest {
 		newStyleBookEntryVersion.setFrontendTokensValues(
 			RandomTestUtil.randomString());
 
+		newStyleBookEntryVersion.setFrontendTokenDefinitionId(
+			RandomTestUtil.randomString());
+
+		newStyleBookEntryVersion.setFrontendTokenDefinitionName(
+			RandomTestUtil.randomString());
+
 		newStyleBookEntryVersion.setName(RandomTestUtil.randomString());
 
 		newStyleBookEntryVersion.setPreviewFileEntryId(
@@ -209,6 +215,12 @@ public class StyleBookEntryVersionPersistenceTest {
 		Assert.assertEquals(
 			existingStyleBookEntryVersion.getFrontendTokensValues(),
 			newStyleBookEntryVersion.getFrontendTokensValues());
+		Assert.assertEquals(
+			existingStyleBookEntryVersion.getFrontendTokenDefinitionId(),
+			newStyleBookEntryVersion.getFrontendTokenDefinitionId());
+		Assert.assertEquals(
+			existingStyleBookEntryVersion.getFrontendTokenDefinitionName(),
+			newStyleBookEntryVersion.getFrontendTokenDefinitionName());
 		Assert.assertEquals(
 			existingStyleBookEntryVersion.getName(),
 			newStyleBookEntryVersion.getName());
@@ -394,8 +406,9 @@ public class StyleBookEntryVersionPersistenceTest {
 			true, "externalReferenceCode", true, "styleBookEntryId", true,
 			"groupId", true, "companyId", true, "userId", true, "userName",
 			true, "createDate", true, "modifiedDate", true,
-			"defaultStyleBookEntry", true, "name", true, "previewFileEntryId",
-			true, "styleBookEntryKey", true);
+			"defaultStyleBookEntry", true, "frontendTokenDefinitionId", true,
+			"frontendTokenDefinitionName", true, "name", true,
+			"previewFileEntryId", true, "styleBookEntryKey", true);
 	}
 
 	@Test
@@ -744,6 +757,12 @@ public class StyleBookEntryVersionPersistenceTest {
 			RandomTestUtil.randomBoolean());
 
 		styleBookEntryVersion.setFrontendTokensValues(
+			RandomTestUtil.randomString());
+
+		styleBookEntryVersion.setFrontendTokenDefinitionId(
+			RandomTestUtil.randomString());
+
+		styleBookEntryVersion.setFrontendTokenDefinitionName(
 			RandomTestUtil.randomString());
 
 		styleBookEntryVersion.setName(RandomTestUtil.randomString());

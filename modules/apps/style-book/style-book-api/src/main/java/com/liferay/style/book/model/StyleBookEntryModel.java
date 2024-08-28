@@ -304,6 +304,37 @@ public interface StyleBookEntryModel
 	public void setFrontendTokensValues(String frontendTokensValues);
 
 	/**
+	 * Returns the frontend token definition ID of this style book entry.
+	 *
+	 * @return the frontend token definition ID of this style book entry
+	 */
+	@AutoEscape
+	public String getFrontendTokenDefinitionId();
+
+	/**
+	 * Sets the frontend token definition ID of this style book entry.
+	 *
+	 * @param frontendTokenDefinitionId the frontend token definition ID of this style book entry
+	 */
+	public void setFrontendTokenDefinitionId(String frontendTokenDefinitionId);
+
+	/**
+	 * Returns the frontend token definition name of this style book entry.
+	 *
+	 * @return the frontend token definition name of this style book entry
+	 */
+	@AutoEscape
+	public String getFrontendTokenDefinitionName();
+
+	/**
+	 * Sets the frontend token definition name of this style book entry.
+	 *
+	 * @param frontendTokenDefinitionName the frontend token definition name of this style book entry
+	 */
+	public void setFrontendTokenDefinitionName(
+		String frontendTokenDefinitionName);
+
+	/**
 	 * Returns the name of this style book entry.
 	 *
 	 * @return the name of this style book entry

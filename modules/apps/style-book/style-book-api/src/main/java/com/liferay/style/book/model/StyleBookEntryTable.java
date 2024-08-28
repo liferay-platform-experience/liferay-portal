@@ -63,6 +63,14 @@ public class StyleBookEntryTable extends BaseTable<StyleBookEntryTable> {
 		createColumn(
 			"frontendTokensValues", Clob.class, Types.CLOB,
 			Column.FLAG_DEFAULT);
+	public final Column<StyleBookEntryTable, String> frontendTokenDefinitionId =
+		createColumn(
+			"frontendTokenDefinitionId", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<StyleBookEntryTable, String>
+		frontendTokenDefinitionName = createColumn(
+			"frontendTokenDefinitionName", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<StyleBookEntryTable, String> name = createColumn(
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<StyleBookEntryTable, Long> previewFileEntryId =

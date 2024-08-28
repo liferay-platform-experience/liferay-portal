@@ -68,7 +68,7 @@ public class StyleBookEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -98,6 +98,10 @@ public class StyleBookEntryCacheModel
 		sb.append(defaultStyleBookEntry);
 		sb.append(", frontendTokensValues=");
 		sb.append(frontendTokensValues);
+		sb.append(", frontendTokenDefinitionId=");
+		sb.append(frontendTokenDefinitionId);
+		sb.append(", frontendTokenDefinitionName=");
+		sb.append(frontendTokenDefinitionName);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", previewFileEntryId=");
@@ -167,6 +171,22 @@ public class StyleBookEntryCacheModel
 			styleBookEntryImpl.setFrontendTokensValues(frontendTokensValues);
 		}
 
+		if (frontendTokenDefinitionId == null) {
+			styleBookEntryImpl.setFrontendTokenDefinitionId("");
+		}
+		else {
+			styleBookEntryImpl.setFrontendTokenDefinitionId(
+				frontendTokenDefinitionId);
+		}
+
+		if (frontendTokenDefinitionName == null) {
+			styleBookEntryImpl.setFrontendTokenDefinitionName("");
+		}
+		else {
+			styleBookEntryImpl.setFrontendTokenDefinitionName(
+				frontendTokenDefinitionName);
+		}
+
 		if (name == null) {
 			styleBookEntryImpl.setName("");
 		}
@@ -215,6 +235,8 @@ public class StyleBookEntryCacheModel
 
 		defaultStyleBookEntry = objectInput.readBoolean();
 		frontendTokensValues = (String)objectInput.readObject();
+		frontendTokenDefinitionId = objectInput.readUTF();
+		frontendTokenDefinitionName = objectInput.readUTF();
 		name = objectInput.readUTF();
 
 		previewFileEntryId = objectInput.readLong();
@@ -272,6 +294,20 @@ public class StyleBookEntryCacheModel
 			objectOutput.writeObject(frontendTokensValues);
 		}
 
+		if (frontendTokenDefinitionId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(frontendTokenDefinitionId);
+		}
+
+		if (frontendTokenDefinitionName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(frontendTokenDefinitionName);
+		}
+
 		if (name == null) {
 			objectOutput.writeUTF("");
 		}
@@ -304,6 +340,8 @@ public class StyleBookEntryCacheModel
 	public long modifiedDate;
 	public boolean defaultStyleBookEntry;
 	public String frontendTokensValues;
+	public String frontendTokenDefinitionId;
+	public String frontendTokenDefinitionName;
 	public String name;
 	public long previewFileEntryId;
 	public String styleBookEntryKey;

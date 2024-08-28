@@ -52,6 +52,10 @@ public class StyleBookEntryVersionWrapper
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("defaultStyleBookEntry", isDefaultStyleBookEntry());
 		attributes.put("frontendTokensValues", getFrontendTokensValues());
+		attributes.put(
+			"frontendTokenDefinitionId", getFrontendTokenDefinitionId());
+		attributes.put(
+			"frontendTokenDefinitionName", getFrontendTokenDefinitionName());
 		attributes.put("name", getName());
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
 		attributes.put("styleBookEntryKey", getStyleBookEntryKey());
@@ -155,6 +159,20 @@ public class StyleBookEntryVersionWrapper
 			setFrontendTokensValues(frontendTokensValues);
 		}
 
+		String frontendTokenDefinitionId = (String)attributes.get(
+			"frontendTokenDefinitionId");
+
+		if (frontendTokenDefinitionId != null) {
+			setFrontendTokenDefinitionId(frontendTokenDefinitionId);
+		}
+
+		String frontendTokenDefinitionName = (String)attributes.get(
+			"frontendTokenDefinitionName");
+
+		if (frontendTokenDefinitionName != null) {
+			setFrontendTokenDefinitionName(frontendTokenDefinitionName);
+		}
+
 		String name = (String)attributes.get("name");
 
 		if (name != null) {
@@ -227,6 +245,26 @@ public class StyleBookEntryVersionWrapper
 	@Override
 	public String getExternalReferenceCode() {
 		return model.getExternalReferenceCode();
+	}
+
+	/**
+	 * Returns the frontend token definition ID of this style book entry version.
+	 *
+	 * @return the frontend token definition ID of this style book entry version
+	 */
+	@Override
+	public String getFrontendTokenDefinitionId() {
+		return model.getFrontendTokenDefinitionId();
+	}
+
+	/**
+	 * Returns the frontend token definition name of this style book entry version.
+	 *
+	 * @return the frontend token definition name of this style book entry version
+	 */
+	@Override
+	public String getFrontendTokenDefinitionName() {
+		return model.getFrontendTokenDefinitionName();
 	}
 
 	/**
@@ -437,6 +475,28 @@ public class StyleBookEntryVersionWrapper
 	@Override
 	public void setExternalReferenceCode(String externalReferenceCode) {
 		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
+	 * Sets the frontend token definition ID of this style book entry version.
+	 *
+	 * @param frontendTokenDefinitionId the frontend token definition ID of this style book entry version
+	 */
+	@Override
+	public void setFrontendTokenDefinitionId(String frontendTokenDefinitionId) {
+		model.setFrontendTokenDefinitionId(frontendTokenDefinitionId);
+	}
+
+	/**
+	 * Sets the frontend token definition name of this style book entry version.
+	 *
+	 * @param frontendTokenDefinitionName the frontend token definition name of this style book entry version
+	 */
+	@Override
+	public void setFrontendTokenDefinitionName(
+		String frontendTokenDefinitionName) {
+
+		model.setFrontendTokenDefinitionName(frontendTokenDefinitionName);
 	}
 
 	/**
