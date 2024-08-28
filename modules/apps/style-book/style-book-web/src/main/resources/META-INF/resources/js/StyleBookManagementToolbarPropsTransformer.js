@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {getCheckedCheckboxes, openSimpleInputModal} from 'frontend-js-web';
+import {getCheckedCheckboxes} from 'frontend-js-web';
 
 import openDeleteStyleBookModal from './openDeleteStyleBookModal';
+import openStyleBookModal from './openStyleBookModal';
 
 export default function propsTransformer({
-	additionalProps: {copyStyleBookEntryURL, exportStyleBookEntriesURL},
+	additionalProps: {addStyleBookEntryURL, copyStyleBookEntryURL, exportStyleBookEntriesURL},
 	portletNamespace,
+	styleBookEditorData: {frontendTokenDefinition, namespace},
 	...otherProps
 }) {
 	const copySelectedStyleBookEntries = () => {
@@ -74,16 +76,15 @@ export default function propsTransformer({
 			}
 		},
 		onCreateButtonClick(event, {item}) {
-			const data = item?.data;
+			const action = item?.data?.action;
 
-			openSimpleInputModal({
-				dialogTitle: data?.title,
-				formSubmitURL: data?.addStyleBookEntryURL,
-				mainFieldLabel: Liferay.Language.get('name'),
-				mainFieldName: 'name',
-				mainFieldPlaceholder: Liferay.Language.get('name'),
-				namespace: `${portletNamespace}`,
-			});
+			if (action === 'addStyleBookEntry') {
+				openStyleBookModal({
+					addStyleBookEntryURL,
+					frontendTokenDefinition,
+					namespace,
+				});
+			}
 		},
 	};
 }

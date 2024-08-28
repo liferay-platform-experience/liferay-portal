@@ -10,6 +10,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.portlet.RenderRequest;
 import javax.portlet.ResourceURL;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +43,7 @@ public class StyleBookManagementToolbarDisplayContext
 		HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
+		RenderRequest renderRequest,
 		SearchContainer<StyleBookEntry> searchContainer) {
 
 		super(
@@ -104,9 +107,18 @@ public class StyleBookManagementToolbarDisplayContext
 		).build();
 	}
 
+	//	frontendTokenDefinition from EditStyleBookEntryDisplayContext ?
+
 	@Override
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"addStyleBookEntryURL",
+			PortletURLBuilder.createActionURL(
+				liferayPortletResponse
+			).setActionName(
+				"/style_book/add_style_book_entry"
+			).buildString()
+		).put(
 			"copyStyleBookEntryURL",
 			() -> PortletURLBuilder.createActionURL(
 				liferayPortletResponse
