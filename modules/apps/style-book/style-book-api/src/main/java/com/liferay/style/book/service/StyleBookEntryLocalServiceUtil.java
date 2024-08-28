@@ -39,13 +39,15 @@ public class StyleBookEntryLocalServiceUtil {
 	public static StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long userId, long groupId,
 			boolean defaultStyleBookEntry, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
 			String name, String styleBookEntryKey,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addStyleBookEntry(
 			externalReferenceCode, userId, groupId, defaultStyleBookEntry,
-			frontendTokensValues, name, styleBookEntryKey, serviceContext);
+			frontendTokensValues, frontendTokenDefinitionId,
+			frontendTokenDefinitionName, name, styleBookEntryKey, serviceContext);
 	}
 
 	/**
@@ -481,6 +483,22 @@ public class StyleBookEntryLocalServiceUtil {
 			styleBookEntryId, frontendTokensValues);
 	}
 
+	public static StyleBookEntry updateFrontendTokenDefinitionId(
+		long styleBookEntryId, String frontendTokenDefinitionId)
+		throws PortalException {
+
+		return getService().updateFrontendTokenDefinitionId(
+			styleBookEntryId, frontendTokenDefinitionId);
+	}
+
+	public static StyleBookEntry updateFrontendTokenDefinitionName(
+		long styleBookEntryId, String frontendTokenDefinitionName)
+		throws PortalException {
+
+		return getService().updateFrontendTokenDefinitionName(
+			styleBookEntryId, frontendTokenDefinitionName);
+	}
+
 	public static StyleBookEntry updateName(long styleBookEntryId, String name)
 		throws PortalException {
 
@@ -497,21 +515,26 @@ public class StyleBookEntryLocalServiceUtil {
 
 	public static StyleBookEntry updateStyleBookEntry(
 			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
-			String frontendTokensValues, String name, String styleBookEntryKey,
+			String frontendTokensValues, String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName,String name, String styleBookEntryKey,
 			long previewFileEntryId)
 		throws PortalException {
 
 		return getService().updateStyleBookEntry(
 			userId, styleBookEntryId, defaultStylebookEntry,
-			frontendTokensValues, name, styleBookEntryKey, previewFileEntryId);
+			frontendTokensValues, frontendTokenDefinitionId, frontendTokenDefinitionName,
+			name, styleBookEntryKey, previewFileEntryId);
 	}
 
 	public static StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokensValues, String name)
+			long styleBookEntryId, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
+			String name)
 		throws PortalException {
 
 		return getService().updateStyleBookEntry(
-			styleBookEntryId, frontendTokensValues, name);
+			styleBookEntryId, frontendTokensValues, frontendTokenDefinitionId,
+			frontendTokenDefinitionName, name);
 	}
 
 	/**

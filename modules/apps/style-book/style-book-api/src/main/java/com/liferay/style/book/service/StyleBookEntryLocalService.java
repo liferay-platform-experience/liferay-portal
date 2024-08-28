@@ -68,6 +68,7 @@ public interface StyleBookEntryLocalService
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long userId, long groupId,
 			boolean defaultStyleBookEntry, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
 			String name, String styleBookEntryKey,
 			ServiceContext serviceContext)
 		throws PortalException;
@@ -402,6 +403,14 @@ public interface StyleBookEntryLocalService
 			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException;
 
+	public StyleBookEntry updateFrontendTokenDefinitionId(
+		long styleBookEntryId, String frontendTokenDefinitionId)
+		throws PortalException;
+
+	public StyleBookEntry updateFrontendTokenDefinitionName(
+		long styleBookEntryId, String frontendTokenDefinitionName)
+		throws PortalException;
+
 	public StyleBookEntry updateName(long styleBookEntryId, String name)
 		throws PortalException;
 
@@ -411,12 +420,15 @@ public interface StyleBookEntryLocalService
 
 	public StyleBookEntry updateStyleBookEntry(
 			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
-			String frontendTokensValues, String name, String styleBookEntryKey,
+			String frontendTokensValues, String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName, String name, String styleBookEntryKey,
 			long previewFileEntryId)
 		throws PortalException;
 
 	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokensValues, String name)
+			long styleBookEntryId, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
+			String name)
 		throws PortalException;
 
 	/**

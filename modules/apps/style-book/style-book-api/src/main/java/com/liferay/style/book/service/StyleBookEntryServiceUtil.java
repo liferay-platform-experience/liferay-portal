@@ -41,12 +41,14 @@ public class StyleBookEntryServiceUtil {
 
 	public static StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
-			String frontendTokensValues, String name, String styleBookEntryKey,
+			String frontendTokensValues, String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName, String name, String styleBookEntryKey,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addStyleBookEntry(
-			externalReferenceCode, groupId, frontendTokensValues, name,
+			externalReferenceCode, groupId, frontendTokensValues,
+			frontendTokenDefinitionId, frontendTokenDefinitionName, name,
 			styleBookEntryKey, serviceContext);
 	}
 
@@ -126,6 +128,22 @@ public class StyleBookEntryServiceUtil {
 			styleBookEntryId, frontendTokensValues);
 	}
 
+	public static StyleBookEntry updateFrontendTokenDefinitionId(
+		long styleBookEntryId, String frontendTokenDefinitionId)
+		throws PortalException {
+
+		return getService().updateFrontendTokenDefinitionId(
+			styleBookEntryId, frontendTokenDefinitionId);
+	}
+
+	public static StyleBookEntry updateFrontendTokenDefinitionName(
+		long styleBookEntryId, String frontendTokenDefinitionName)
+		throws PortalException {
+
+		return getService().updateFrontendTokenDefinitionName(
+			styleBookEntryId, frontendTokenDefinitionName);
+	}
+
 	public static StyleBookEntry updateName(long styleBookEntryId, String name)
 		throws PortalException {
 
@@ -141,11 +159,14 @@ public class StyleBookEntryServiceUtil {
 	}
 
 	public static StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokensValues, String name)
+			long styleBookEntryId, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
+			String name)
 		throws PortalException {
 
 		return getService().updateStyleBookEntry(
-			styleBookEntryId, frontendTokensValues, name);
+			styleBookEntryId, frontendTokensValues, frontendTokenDefinitionId,
+			frontendTokenDefinitionName, name);
 	}
 
 	public static StyleBookEntryService getService() {

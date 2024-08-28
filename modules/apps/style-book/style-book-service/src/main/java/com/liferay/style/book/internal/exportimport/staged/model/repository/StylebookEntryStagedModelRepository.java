@@ -49,8 +49,11 @@ public class StylebookEntryStagedModelRepository
 			styleBookEntry.getExternalReferenceCode(), userId,
 			styleBookEntry.getGroupId(),
 			styleBookEntry.isDefaultStyleBookEntry(),
-			styleBookEntry.getFrontendTokensValues(), styleBookEntry.getName(),
-			styleBookEntry.getStyleBookEntryKey(), serviceContext);
+			styleBookEntry.getFrontendTokensValues(),
+			styleBookEntry.getFrontendTokenDefinitionId(),
+			styleBookEntry.getFrontendTokenDefinitionName(),
+			styleBookEntry.getName(), styleBookEntry.getStyleBookEntryKey(),
+			serviceContext);
 	}
 
 	@Override
@@ -131,8 +134,10 @@ public class StylebookEntryStagedModelRepository
 			portletDataContext.getUserId(styleBookEntry.getUserUuid()),
 			styleBookEntry.getStyleBookEntryId(),
 			styleBookEntry.isDefaultStyleBookEntry(),
-			styleBookEntry.getFrontendTokensValues(), styleBookEntry.getName(),
-			styleBookEntry.getStyleBookEntryKey(),
+			styleBookEntry.getFrontendTokensValues(),
+			styleBookEntry.getFrontendTokenDefinitionId(),
+			styleBookEntry.getFrontendTokenDefinitionName(),
+			styleBookEntry.getName(), styleBookEntry.getStyleBookEntryKey(),
 			styleBookEntry.getPreviewFileEntryId());
 	}
 

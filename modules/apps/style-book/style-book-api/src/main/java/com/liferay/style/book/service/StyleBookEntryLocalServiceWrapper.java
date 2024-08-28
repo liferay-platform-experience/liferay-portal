@@ -36,13 +36,15 @@ public class StyleBookEntryLocalServiceWrapper
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long userId, long groupId,
 			boolean defaultStyleBookEntry, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
 			String name, String styleBookEntryKey,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			externalReferenceCode, userId, groupId, defaultStyleBookEntry,
-			frontendTokensValues, name, styleBookEntryKey, serviceContext);
+			frontendTokensValues, frontendTokenDefinitionName,
+			frontendTokenDefinitionId, name, styleBookEntryKey, serviceContext);
 	}
 
 	/**
@@ -549,6 +551,24 @@ public class StyleBookEntryLocalServiceWrapper
 	}
 
 	@Override
+	public StyleBookEntry updateFrontendTokenDefinitionId(
+		long styleBookEntryId, String frontendTokenDefinitionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryLocalService.updateFrontendTokenDefinitionId(
+			styleBookEntryId, frontendTokenDefinitionId);
+	}
+
+	@Override
+	public StyleBookEntry updateFrontendTokenDefinitionName(
+		long styleBookEntryId, String frontendTokenDefinitionName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryLocalService.updateFrontendTokenDefinitionName(
+			styleBookEntryId, frontendTokenDefinitionName);
+	}
+
+	@Override
 	public StyleBookEntry updateName(long styleBookEntryId, String name)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -567,22 +587,27 @@ public class StyleBookEntryLocalServiceWrapper
 	@Override
 	public StyleBookEntry updateStyleBookEntry(
 			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
-			String frontendTokensValues, String name, String styleBookEntryKey,
+			String frontendTokensValues, String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName,String name, String styleBookEntryKey,
 			long previewFileEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryLocalService.updateStyleBookEntry(
 			userId, styleBookEntryId, defaultStylebookEntry,
-			frontendTokensValues, name, styleBookEntryKey, previewFileEntryId);
+			frontendTokensValues, frontendTokenDefinitionId,
+			frontendTokenDefinitionName, name, styleBookEntryKey, previewFileEntryId);
 	}
 
 	@Override
 	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokensValues, String name)
+			long styleBookEntryId, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
+			String name)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryLocalService.updateStyleBookEntry(
-			styleBookEntryId, frontendTokensValues, name);
+			styleBookEntryId, frontendTokensValues, frontendTokenDefinitionId,
+			frontendTokenDefinitionName, name);
 	}
 
 	/**

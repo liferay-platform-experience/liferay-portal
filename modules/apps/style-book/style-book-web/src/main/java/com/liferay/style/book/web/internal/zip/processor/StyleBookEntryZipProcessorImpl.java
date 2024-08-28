@@ -105,7 +105,8 @@ public class StyleBookEntryZipProcessorImpl
 	}
 
 	private StyleBookEntry _addStyleBookEntry(
-			long groupId, String frontendTokensValues, String name,
+			long groupId, String frontendTokensValues, String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName,String name,
 			boolean overwrite, String styleBookEntryKey)
 		throws Exception {
 
@@ -120,7 +121,8 @@ public class StyleBookEntryZipProcessorImpl
 		try {
 			if (styleBookEntry == null) {
 				styleBookEntry = _styleBookEntryEntryService.addStyleBookEntry(
-					null, groupId, frontendTokensValues, name,
+					null, groupId, frontendTokensValues,
+					frontendTokenDefinitionId, frontendTokenDefinitionName, name,
 					styleBookEntryKey,
 					ServiceContextThreadLocal.getServiceContext());
 			}
@@ -128,7 +130,8 @@ public class StyleBookEntryZipProcessorImpl
 				styleBookEntry =
 					_styleBookEntryEntryService.updateStyleBookEntry(
 						styleBookEntry.getStyleBookEntryId(),
-						frontendTokensValues, name);
+						frontendTokensValues, frontendTokenDefinitionId,
+						frontendTokenDefinitionName, name);
 			}
 
 			_importResultEntries.add(
@@ -302,6 +305,10 @@ public class StyleBookEntryZipProcessorImpl
 
 		String frontendTokensValues = StringPool.BLANK;
 
+		String frontendTokenDefinitionId = StringPool.BLANK;
+
+		String frontendTokenDefinitionName = StringPool.BLANK;
+
 		String styleBookEntryContent = _getContent(zipFile, fileName);
 
 		if (Validator.isNotNull(styleBookEntryContent)) {
@@ -317,7 +324,8 @@ public class StyleBookEntryZipProcessorImpl
 		}
 
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(
-			groupId, frontendTokensValues, name, overwrite, styleBookEntryKey);
+			groupId, frontendTokensValues, frontendTokenDefinitionId,
+			frontendTokenDefinitionName, name, overwrite, styleBookEntryKey);
 
 		if (styleBookEntry == null) {
 			return;

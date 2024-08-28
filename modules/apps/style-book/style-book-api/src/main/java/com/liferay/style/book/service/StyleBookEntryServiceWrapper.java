@@ -43,12 +43,14 @@ public class StyleBookEntryServiceWrapper
 	@Override
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
-			String frontendTokensValues, String name, String styleBookEntryKey,
+			String frontendTokensValues, String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName,String name, String styleBookEntryKey,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryService.addStyleBookEntry(
-			externalReferenceCode, groupId, frontendTokensValues, name,
+			externalReferenceCode, groupId, frontendTokensValues,
+			frontendTokenDefinitionId, frontendTokenDefinitionName,name,
 			styleBookEntryKey, serviceContext);
 	}
 
@@ -138,6 +140,24 @@ public class StyleBookEntryServiceWrapper
 	}
 
 	@Override
+	public StyleBookEntry updateFrontendTokenDefinitionId(
+		long styleBookEntryId, String frontendTokenDefinitionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.updateFrontendTokenDefinitionId(
+			styleBookEntryId, frontendTokenDefinitionId);
+	}
+
+	@Override
+	public StyleBookEntry updateFrontendTokenDefinitionName(
+		long styleBookEntryId, String frontendTokenDefinitionName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.updateFrontendTokenDefinitionName(
+			styleBookEntryId, frontendTokenDefinitionName);
+	}
+
+	@Override
 	public StyleBookEntry updateName(long styleBookEntryId, String name)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -155,11 +175,14 @@ public class StyleBookEntryServiceWrapper
 
 	@Override
 	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokensValues, String name)
+			long styleBookEntryId, String frontendTokensValues,
+			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
+			String name)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryService.updateStyleBookEntry(
-			styleBookEntryId, frontendTokensValues, name);
+			styleBookEntryId, frontendTokensValues, frontendTokenDefinitionId,
+			frontendTokenDefinitionName, name);
 	}
 
 	@Override
