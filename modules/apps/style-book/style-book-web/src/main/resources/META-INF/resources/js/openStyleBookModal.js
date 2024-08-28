@@ -13,10 +13,8 @@ const DEFAULT_MODAL_CONTAINER_ID = 'styleBookModal';
 
 export default function openStyleBookModal({
 											  addStyleBookEntryURL,
-
-											  //	frontendTokenDefinition,
-
 											  namespace,
+											  tokenDefinitions,
 										   }) {
 	dispose();
 
@@ -27,11 +25,9 @@ export default function openStyleBookModal({
 	render(
 		<StyleBookModal
 			addStyleBookEntryURL={addStyleBookEntryURL}
-
-			//	frontendTokenDefinition={frontendTokenDefinition}
-
 			namespace={namespace}
 			onModalClose={dispose}
+			tokenDefinitions={tokenDefinitions}
 		/>,
 		{},
 		container

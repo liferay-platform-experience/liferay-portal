@@ -23,7 +23,7 @@ const DEFAULT_OPTION = {
 
 export default function StyleBookModal({
 										  addStyleBookEntryURL,
-										  frontendTokenDefinition = [],
+										  tokenDefinitions = [],
 										  namespace,
 										  onModalClose,
 									   }) {
@@ -115,7 +115,7 @@ export default function StyleBookModal({
 							const value = event.target.value;
 
 							const tokenDefinition =
-								value === -1 ? null : frontendTokenDefinition[value];
+								value === -1 ? null : tokenDefinitions[value];
 
 							setTokenDefinition(tokenDefinition);
 							setErrors({tokenDefinition: null});
@@ -126,7 +126,7 @@ export default function StyleBookModal({
 							value={DEFAULT_OPTION.value}
 						/>
 
-						{frontendTokenDefinition.map((tokenDefinition, index) => (
+						{tokenDefinitions.map((tokenDefinition, index) => (
 							<ClaySelect.Option
 								key={tokenDefinition.value}
 								label={tokenDefinition.label}
@@ -192,9 +192,9 @@ export default function StyleBookModal({
 }
 StyleBookModal.propTypes = {
 	addStyleBookEntryUrl: PropTypes.string.isRequired,
-	frontendTokenDefinition: PropTypes.object,
 	namespace: PropTypes.string.isRequired,
 	onModalClose: PropTypes.func,
+	tokenDefinitions: PropTypes.object,
 };
 
 const validateFields = (name, tokenDefinition) => {
