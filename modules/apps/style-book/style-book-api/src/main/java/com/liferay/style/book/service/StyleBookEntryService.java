@@ -51,7 +51,7 @@ public interface StyleBookEntryService extends BaseService {
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
 			String frontendTokensValues, String frontendTokenDefinitionId,
-			String frontendTokenDefinitionName,String name,
+			String frontendTokenDefinitionName, String name,
 			String styleBookEntryKey, ServiceContext serviceContext)
 		throws PortalException;
 
@@ -92,16 +92,16 @@ public interface StyleBookEntryService extends BaseService {
 			long styleBookEntryId, boolean defaultStyleBookEntry)
 		throws PortalException;
 
-	public StyleBookEntry updateFrontendTokensValues(
-			long styleBookEntryId, String frontendTokensValues)
-		throws PortalException;
-
 	public StyleBookEntry updateFrontendTokenDefinitionId(
-		long styleBookEntryId, String frontendTokenDefinitionId)
+			long styleBookEntryId, String frontendTokenDefinitionId)
 		throws PortalException;
 
 	public StyleBookEntry updateFrontendTokenDefinitionName(
-		long styleBookEntryId, String frontendTokenDefinitionName)
+			long styleBookEntryId, String frontendTokenDefinitionName)
+		throws PortalException;
+
+	public StyleBookEntry updateFrontendTokensValues(
+			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException;
 
 	public StyleBookEntry updateName(long styleBookEntryId, String name)
@@ -113,8 +113,8 @@ public interface StyleBookEntryService extends BaseService {
 
 	public StyleBookEntry updateStyleBookEntry(
 			long styleBookEntryId, String frontendTokensValues,
-			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
-			String name)
+			String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName, String name)
 		throws PortalException;
 
 }

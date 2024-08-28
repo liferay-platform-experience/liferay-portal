@@ -68,9 +68,9 @@ public interface StyleBookEntryLocalService
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long userId, long groupId,
 			boolean defaultStyleBookEntry, String frontendTokensValues,
-			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
-			String name, String styleBookEntryKey,
-			ServiceContext serviceContext)
+			String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName, String name,
+			String styleBookEntryKey, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -399,16 +399,16 @@ public interface StyleBookEntryLocalService
 	public StyleBookEntry updateDraft(StyleBookEntry draftStyleBookEntry)
 		throws PortalException;
 
-	public StyleBookEntry updateFrontendTokensValues(
-			long styleBookEntryId, String frontendTokensValues)
-		throws PortalException;
-
 	public StyleBookEntry updateFrontendTokenDefinitionId(
-		long styleBookEntryId, String frontendTokenDefinitionId)
+			long styleBookEntryId, String frontendTokenDefinitionId)
 		throws PortalException;
 
 	public StyleBookEntry updateFrontendTokenDefinitionName(
-		long styleBookEntryId, String frontendTokenDefinitionName)
+			long styleBookEntryId, String frontendTokenDefinitionName)
+		throws PortalException;
+
+	public StyleBookEntry updateFrontendTokensValues(
+			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException;
 
 	public StyleBookEntry updateName(long styleBookEntryId, String name)
@@ -421,14 +421,14 @@ public interface StyleBookEntryLocalService
 	public StyleBookEntry updateStyleBookEntry(
 			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
 			String frontendTokensValues, String frontendTokenDefinitionId,
-			String frontendTokenDefinitionName, String name, String styleBookEntryKey,
-			long previewFileEntryId)
+			String frontendTokenDefinitionName, String name,
+			String styleBookEntryKey, long previewFileEntryId)
 		throws PortalException;
 
 	public StyleBookEntry updateStyleBookEntry(
 			long styleBookEntryId, String frontendTokensValues,
-			String frontendTokenDefinitionId, String frontendTokenDefinitionName,
-			String name)
+			String frontendTokenDefinitionId,
+			String frontendTokenDefinitionName, String name)
 		throws PortalException;
 
 	/**
