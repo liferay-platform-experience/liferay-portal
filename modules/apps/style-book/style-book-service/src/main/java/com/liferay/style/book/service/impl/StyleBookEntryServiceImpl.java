@@ -171,38 +171,6 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 	}
 
 	@Override
-	public StyleBookEntry updateFrontendTokenDefinitionId(
-			long styleBookEntryId, String frontendTokenDefinitionId)
-		throws PortalException {
-
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), styleBookEntry.getGroupId(),
-			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
-
-		return styleBookEntryLocalService.updateFrontendTokenDefinitionId(
-			styleBookEntryId, frontendTokenDefinitionId);
-	}
-
-	@Override
-	public StyleBookEntry updateFrontendTokenDefinitionName(
-			long styleBookEntryId, String frontendTokenDefinitionName)
-		throws PortalException {
-
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), styleBookEntry.getGroupId(),
-			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
-
-		return styleBookEntryLocalService.updateFrontendTokenDefinitionName(
-			styleBookEntryId, frontendTokenDefinitionName);
-	}
-
-	@Override
 	public StyleBookEntry updateFrontendTokensValues(
 			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException {

@@ -121,22 +121,6 @@ public class StyleBookEntryServiceUtil {
 			styleBookEntryId, defaultStyleBookEntry);
 	}
 
-	public static StyleBookEntry updateFrontendTokenDefinitionId(
-			long styleBookEntryId, String frontendTokenDefinitionId)
-		throws PortalException {
-
-		return getService().updateFrontendTokenDefinitionId(
-			styleBookEntryId, frontendTokenDefinitionId);
-	}
-
-	public static StyleBookEntry updateFrontendTokenDefinitionName(
-			long styleBookEntryId, String frontendTokenDefinitionName)
-		throws PortalException {
-
-		return getService().updateFrontendTokenDefinitionName(
-			styleBookEntryId, frontendTokenDefinitionName);
-	}
-
 	public static StyleBookEntry updateFrontendTokensValues(
 			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException {

@@ -399,14 +399,6 @@ public interface StyleBookEntryLocalService
 	public StyleBookEntry updateDraft(StyleBookEntry draftStyleBookEntry)
 		throws PortalException;
 
-	public StyleBookEntry updateFrontendTokenDefinitionId(
-			long styleBookEntryId, String frontendTokenDefinitionId)
-		throws PortalException;
-
-	public StyleBookEntry updateFrontendTokenDefinitionName(
-			long styleBookEntryId, String frontendTokenDefinitionName)
-		throws PortalException;
-
 	public StyleBookEntry updateFrontendTokensValues(
 			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException;

@@ -310,55 +310,6 @@ public class StyleBookEntryLocalServiceImpl
 	}
 
 	@Override
-	public StyleBookEntry updateFrontendTokenDefinitionId(
-			long styleBookEntryId, String frontendTokenDefinitionId)
-		throws PortalException {
-
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
-
-		styleBookEntry.setModifiedDate(new Date());
-		styleBookEntry.setFrontendTokenDefinitionId(frontendTokenDefinitionId);
-
-		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
-
-		if (draftStyleBookEntry != null) {
-			draftStyleBookEntry.setModifiedDate(new Date());
-			draftStyleBookEntry.setFrontendTokenDefinitionId(
-				frontendTokenDefinitionId);
-
-			updateDraft(draftStyleBookEntry);
-		}
-
-		return styleBookEntryPersistence.update(styleBookEntry);
-	}
-
-	@Override
-	public StyleBookEntry updateFrontendTokenDefinitionName(
-			long styleBookEntryId, String frontendTokenDefinitionName)
-		throws PortalException {
-
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
-
-		styleBookEntry.setModifiedDate(new Date());
-		styleBookEntry.setFrontendTokenDefinitionName(
-			frontendTokenDefinitionName);
-
-		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
-
-		if (draftStyleBookEntry != null) {
-			draftStyleBookEntry.setModifiedDate(new Date());
-			draftStyleBookEntry.setFrontendTokenDefinitionName(
-				frontendTokenDefinitionName);
-
-			updateDraft(draftStyleBookEntry);
-		}
-
-		return styleBookEntryPersistence.update(styleBookEntry);
-	}
-
-	@Override
 	public StyleBookEntry updateFrontendTokensValues(
 			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException {
