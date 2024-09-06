@@ -31,8 +31,16 @@ public interface CETManager {
 	public CET getCET(long companyId, String externalReferenceCode);
 
 	public List<CET> getCETs(
-			long companyId, String keywords, String type, Pagination pagination,
-			Sort sort)
+			long companyId, boolean excludeInstanceScopedCETs, String keywords,
+			String type, Pagination pagination, Sort sort)
+		throws PortalException;
+
+	public List<CET> getCETs(long companyId, String type)
+		throws PortalException;
+
+	public int getCETsCount(
+			long companyId, boolean excludeInstanceCETs, String keywords,
+			String type)
 		throws PortalException;
 
 	public int getCETsCount(long companyId, String keywords, String type)

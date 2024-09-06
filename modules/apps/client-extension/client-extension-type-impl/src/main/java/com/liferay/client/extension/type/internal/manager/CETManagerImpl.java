@@ -5,10 +5,12 @@
 
 package com.liferay.client.extension.type.internal.manager;
 
+import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.exception.ClientExtensionEntryTypeException;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
 import com.liferay.client.extension.type.CET;
+import com.liferay.client.extension.type.GlobalJSCET;
 import com.liferay.client.extension.type.configuration.CETConfiguration;
 import com.liferay.client.extension.type.deployer.CETDeployer;
 import com.liferay.client.extension.type.factory.CETFactory;
@@ -100,24 +102,43 @@ public class CETManagerImpl implements CETManager {
 
 	@Override
 	public List<CET> getCETs(
-			long companyId, String keywords, String type, Pagination pagination,
-			Sort sort)
+			long companyId, boolean excludeInstanceScopedCETs, String keywords,
+			String type, Pagination pagination, Sort sort)
 		throws PortalException {
 
 		// TODO Sort
 
 		return ListUtil.subList(
-			_getCETs(companyId, keywords, type), pagination.getStartPosition(),
-			pagination.getEndPosition());
+			_getCETs(companyId, excludeInstanceScopedCETs, keywords, type),
+			pagination.getStartPosition(), pagination.getEndPosition());
+	}
+
+	@Override
+	public List<CET> getCETs(long companyId, String type)
+		throws PortalException {
+
+		return getCETs(
+			companyId, false, null, type,
+			Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
+	}
+
+	@Override
+	public int getCETsCount(
+			long companyId, boolean excludeInstanceScopedCETs, String keywords,
+			String type)
+		throws PortalException {
+
+		List<CET> cets = _getCETs(
+			companyId, excludeInstanceScopedCETs, keywords, type);
+
+		return cets.size();
 	}
 
 	@Override
 	public int getCETsCount(long companyId, String keywords, String type)
 		throws PortalException {
 
-		List<CET> cets = _getCETs(companyId, keywords, type);
-
-		return cets.size();
+		return getCETsCount(companyId, false, keywords, type);
 	}
 
 	@Deactivate
@@ -144,7 +165,9 @@ public class CETManagerImpl implements CETManager {
 		return string1.contains(string2);
 	}
 
-	private List<CET> _getCETs(long companyId, String keywords, String type)
+	private List<CET> _getCETs(
+			long companyId, boolean excludeInstanceScopedCETs, String keywords,
+			String type)
 		throws PortalException {
 
 		List<CET> cets = new ArrayList<>();
@@ -156,7 +179,9 @@ public class CETManagerImpl implements CETManager {
 			try {
 				CET cet = _cetFactory.create(clientExtensionEntry, true);
 
-				if (_isInclude(cet, keywords, type)) {
+				if (_isInclude(
+						cet, excludeInstanceScopedCETs, keywords, type)) {
+
 					cets.add(cet);
 				}
 			}
@@ -174,7 +199,7 @@ public class CETManagerImpl implements CETManager {
 		for (Map.Entry<String, CET> entry : cetsMap.entrySet()) {
 			CET cet = entry.getValue();
 
-			if (_isInclude(cet, keywords, type)) {
+			if (_isInclude(cet, excludeInstanceScopedCETs, keywords, type)) {
 				cets.add(cet);
 			}
 		}
@@ -209,9 +234,23 @@ public class CETManagerImpl implements CETManager {
 		return serviceRegistrationsMap;
 	}
 
-	private boolean _isInclude(CET cet, String keywords, String type) {
+	private boolean _isInclude(
+		CET cet, boolean excludeInstanceScopedCETs, String keywords,
+		String type) {
+
 		if (Validator.isNotNull(type) && !Objects.equals(type, cet.getType())) {
 			return false;
+		}
+
+		if (excludeInstanceScopedCETs &&
+			Objects.equals(
+				type, ClientExtensionEntryConstants.TYPE_GLOBAL_JS)) {
+
+			GlobalJSCET globalJSCET = (GlobalJSCET)cet;
+
+			if (Objects.equals(globalJSCET.getScope(), "instance")) {
+				return false;
+			}
 		}
 
 		if (Validator.isNotNull(keywords) &&
