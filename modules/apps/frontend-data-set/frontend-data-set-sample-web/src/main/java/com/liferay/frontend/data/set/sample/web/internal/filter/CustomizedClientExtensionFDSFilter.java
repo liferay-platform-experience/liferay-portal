@@ -12,11 +12,9 @@ import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseClientExtensionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSNames;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,9 +53,8 @@ public class CustomizedClientExtensionFDSFilter
 
 		try {
 			List<FDSFilterCET> fdsFilterCETs = (List)_cetManager.getCETs(
-				CompanyThreadLocal.getCompanyId(), null,
-				ClientExtensionEntryConstants.TYPE_FDS_FILTER,
-				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
+				CompanyThreadLocal.getCompanyId(),
+				ClientExtensionEntryConstants.TYPE_FDS_FILTER);
 
 			// Use the UI client extension if available
 

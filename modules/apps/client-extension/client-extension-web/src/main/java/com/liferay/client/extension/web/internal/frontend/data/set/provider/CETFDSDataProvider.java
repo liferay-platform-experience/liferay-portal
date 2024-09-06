@@ -46,7 +46,8 @@ public class CETFDSDataProvider implements FDSDataProvider<CETFDSEntry> {
 
 		return TransformUtil.transform(
 			_cetManager.getCETs(
-				themeDisplay.getCompanyId(), fdsKeywords.getKeywords(), null,
+				themeDisplay.getCompanyId(), false, fdsKeywords.getKeywords(),
+				null,
 				Pagination.of(
 					fdsPagination.getPage(), fdsPagination.getPageSize()),
 				sort),

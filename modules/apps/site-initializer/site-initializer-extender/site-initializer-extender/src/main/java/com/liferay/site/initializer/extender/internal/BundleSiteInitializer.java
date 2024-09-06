@@ -205,7 +205,6 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsEntryLocalService;
@@ -1561,8 +1560,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		throws Exception {
 
 		List<CET> cets = _cetManager.getCETs(
-			serviceContext.getCompanyId(), null, null,
-			Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
+			serviceContext.getCompanyId(), null);
 
 		for (CET cet : cets) {
 			stringUtilReplaceValues.put(

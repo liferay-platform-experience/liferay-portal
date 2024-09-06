@@ -14,7 +14,6 @@ import com.liferay.frontend.data.set.resolver.FDSAPIURLResolverRegistry;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -27,7 +26,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -86,9 +84,8 @@ public class FDSAdminDisplayContext {
 
 		return JSONUtil.toJSONArray(
 			_cetManager.getCETs(
-				themeDisplay.getCompanyId(), null,
-				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER,
-				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null),
+				themeDisplay.getCompanyId(),
+				ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER),
 			fdsCellRendererCET -> JSONUtil.put(
 				"externalReferenceCode",
 				fdsCellRendererCET.getExternalReferenceCode()
@@ -136,9 +133,8 @@ public class FDSAdminDisplayContext {
 
 		return JSONUtil.toJSONArray(
 			_cetManager.getCETs(
-				themeDisplay.getCompanyId(), null,
-				ClientExtensionEntryConstants.TYPE_FDS_FILTER,
-				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null),
+				themeDisplay.getCompanyId(),
+				ClientExtensionEntryConstants.TYPE_FDS_FILTER),
 			fdsFilterCET -> JSONUtil.put(
 				"externalReferenceCode", fdsFilterCET.getExternalReferenceCode()
 			).put(

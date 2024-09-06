@@ -14,13 +14,11 @@ import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.List;
 import java.util.Locale;
@@ -73,10 +71,8 @@ public class CustomizedTableFDSView extends BaseTableFDSView {
 
 				List<FDSCellRendererCET> fdsCellRendererCETs =
 					(List)_cetManager.getCETs(
-						CompanyThreadLocal.getCompanyId(), null,
-						ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER,
-						Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-						null);
+						CompanyThreadLocal.getCompanyId(),
+						ClientExtensionEntryConstants.TYPE_FDS_CELL_RENDERER);
 
 				// Use the UI client extension if available
 

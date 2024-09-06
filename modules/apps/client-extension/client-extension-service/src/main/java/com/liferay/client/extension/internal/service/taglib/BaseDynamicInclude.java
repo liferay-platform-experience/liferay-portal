@@ -13,7 +13,6 @@ import com.liferay.client.extension.type.GlobalJSCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -28,7 +27,6 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -103,9 +101,8 @@ public abstract class BaseDynamicInclude implements DynamicInclude {
 
 		try {
 			List<CET> cets = cetManager.getCETs(
-				themeDisplay.getCompanyId(), null,
-				ClientExtensionEntryConstants.TYPE_GLOBAL_JS,
-				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null);
+				themeDisplay.getCompanyId(),
+				ClientExtensionEntryConstants.TYPE_GLOBAL_JS);
 
 			for (CET cet : cets) {
 				GlobalJSCET globalJSCET = (GlobalJSCET)cet;
