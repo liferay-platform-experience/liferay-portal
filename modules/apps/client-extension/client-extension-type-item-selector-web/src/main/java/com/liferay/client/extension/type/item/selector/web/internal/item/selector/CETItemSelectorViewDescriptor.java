@@ -11,11 +11,13 @@ import com.liferay.client.extension.type.item.selector.criterion.CETItemSelector
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -67,8 +69,9 @@ public class CETItemSelectorViewDescriptor
 
 		searchContainer.setResultsAndTotal(
 			_cetManager.getCETs(
-				themeDisplay.getCompanyId(),
-				_cetItemSelectorCriterion.getType()));
+				themeDisplay.getCompanyId(), true, null,
+				_cetItemSelectorCriterion.getType(),
+				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS), null));
 
 		return searchContainer;
 	}
