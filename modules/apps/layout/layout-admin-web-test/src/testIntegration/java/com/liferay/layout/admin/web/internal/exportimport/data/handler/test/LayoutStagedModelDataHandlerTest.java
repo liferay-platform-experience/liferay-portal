@@ -361,8 +361,8 @@ public class LayoutStagedModelDataHandlerTest
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-				false, StringPool.BLANK, RandomTestUtil.randomString(),
-				StringPool.BLANK,
+				false, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				RandomTestUtil.randomString(), StringPool.BLANK,
 				ServiceContextTestUtil.getServiceContext(
 					stagingGroup.getGroupId()));
 

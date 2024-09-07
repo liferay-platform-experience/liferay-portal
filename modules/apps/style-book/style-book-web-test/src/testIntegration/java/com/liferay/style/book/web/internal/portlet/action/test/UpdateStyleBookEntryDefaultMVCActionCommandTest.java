@@ -76,7 +76,7 @@ public class UpdateStyleBookEntryDefaultMVCActionCommandTest {
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, RandomTestUtil.randomString(),
 				StringPool.BLANK, _serviceContext);
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -106,7 +106,7 @@ public class UpdateStyleBookEntryDefaultMVCActionCommandTest {
 		StyleBookEntry styleBookEntry1 =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, RandomTestUtil.randomString(),
 				StringPool.BLANK, _serviceContext);
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -133,7 +133,7 @@ public class UpdateStyleBookEntryDefaultMVCActionCommandTest {
 		StyleBookEntry styleBookEntry2 =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, RandomTestUtil.randomString(),
 				StringPool.BLANK, _serviceContext);
 
 		mockLiferayPortletActionRequest = new MockLiferayPortletActionRequest();
@@ -166,7 +166,7 @@ public class UpdateStyleBookEntryDefaultMVCActionCommandTest {
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, RandomTestUtil.randomString(),
 				StringPool.BLANK, _serviceContext);
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
