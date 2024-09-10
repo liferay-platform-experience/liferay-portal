@@ -1,0 +1,7 @@
+dependencies {
+	testIntegrationImplementation project(":apps:client-extension:client-extension-api")
+	testIntegrationImplementation project(":apps:client-extension:client-extension-type-api")
+	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
+	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
