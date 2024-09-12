@@ -28,6 +28,8 @@
 		<column name="name" type="String" />
 		<column name="previewFileEntryId" type="long" />
 		<column name="styleBookEntryKey" type="String" />
+		<column name="themeId" type="String" />
+		<column name="themeName" type="String" />
 
 		<!-- Order -->
 
