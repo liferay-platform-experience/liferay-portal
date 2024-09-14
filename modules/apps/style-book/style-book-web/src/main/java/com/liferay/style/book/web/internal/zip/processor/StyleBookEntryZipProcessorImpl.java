@@ -123,7 +123,8 @@ public class StyleBookEntryZipProcessorImpl
 				styleBookEntry = _styleBookEntryEntryService.addStyleBookEntry(
 					null, groupId, frontendTokensValues, name,
 					styleBookEntryKey,
-					ServiceContextThreadLocal.getServiceContext(), themeId, themeName);
+					ServiceContextThreadLocal.getServiceContext(), themeId,
+					themeName);
 			}
 			else {
 				styleBookEntry =
