@@ -68,7 +68,7 @@ public class StyleBookEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(35);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -104,6 +104,10 @@ public class StyleBookEntryCacheModel
 		sb.append(previewFileEntryId);
 		sb.append(", styleBookEntryKey=");
 		sb.append(styleBookEntryKey);
+		sb.append(", themeId=");
+		sb.append(themeId);
+		sb.append(", themeName=");
+		sb.append(themeName);
 		sb.append("}");
 
 		return sb.toString();
@@ -183,6 +187,20 @@ public class StyleBookEntryCacheModel
 			styleBookEntryImpl.setStyleBookEntryKey(styleBookEntryKey);
 		}
 
+		if (themeId == null) {
+			styleBookEntryImpl.setThemeId("");
+		}
+		else {
+			styleBookEntryImpl.setThemeId(themeId);
+		}
+
+		if (themeName == null) {
+			styleBookEntryImpl.setThemeName("");
+		}
+		else {
+			styleBookEntryImpl.setThemeName(themeName);
+		}
+
 		styleBookEntryImpl.resetOriginalValues();
 
 		return styleBookEntryImpl;
@@ -219,6 +237,8 @@ public class StyleBookEntryCacheModel
 
 		previewFileEntryId = objectInput.readLong();
 		styleBookEntryKey = objectInput.readUTF();
+		themeId = objectInput.readUTF();
+		themeName = objectInput.readUTF();
 	}
 
 	@Override
@@ -287,6 +307,20 @@ public class StyleBookEntryCacheModel
 		else {
 			objectOutput.writeUTF(styleBookEntryKey);
 		}
+
+		if (themeId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(themeId);
+		}
+
+		if (themeName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(themeName);
+		}
 	}
 
 	public long mvccVersion;
@@ -307,5 +341,7 @@ public class StyleBookEntryCacheModel
 	public String name;
 	public long previewFileEntryId;
 	public String styleBookEntryKey;
+	public String themeId;
+	public String themeName;
 
 }

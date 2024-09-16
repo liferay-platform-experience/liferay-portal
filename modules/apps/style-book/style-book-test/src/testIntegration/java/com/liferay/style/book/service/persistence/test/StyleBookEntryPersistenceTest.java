@@ -151,6 +151,10 @@ public class StyleBookEntryPersistenceTest {
 
 		newStyleBookEntry.setStyleBookEntryKey(RandomTestUtil.randomString());
 
+		newStyleBookEntry.setThemeId(RandomTestUtil.randomString());
+
+		newStyleBookEntry.setThemeName(RandomTestUtil.randomString());
+
 		_styleBookEntries.add(_persistence.update(newStyleBookEntry));
 
 		StyleBookEntry existingStyleBookEntry = _persistence.findByPrimaryKey(
@@ -203,6 +207,12 @@ public class StyleBookEntryPersistenceTest {
 		Assert.assertEquals(
 			existingStyleBookEntry.getStyleBookEntryKey(),
 			newStyleBookEntry.getStyleBookEntryKey());
+		Assert.assertEquals(
+			existingStyleBookEntry.getThemeId(),
+			newStyleBookEntry.getThemeId());
+		Assert.assertEquals(
+			existingStyleBookEntry.getThemeName(),
+			newStyleBookEntry.getThemeName());
 	}
 
 	@Test
@@ -235,6 +245,8 @@ public class StyleBookEntryPersistenceTest {
 			styleBookEntry.getPreviewFileEntryId());
 		draftStyleBookEntry.setStyleBookEntryKey(
 			styleBookEntry.getStyleBookEntryKey());
+		draftStyleBookEntry.setThemeId(styleBookEntry.getThemeId());
+		draftStyleBookEntry.setThemeName(styleBookEntry.getThemeName());
 
 		_styleBookEntries.add(_persistence.update(draftStyleBookEntry));
 
@@ -279,6 +291,10 @@ public class StyleBookEntryPersistenceTest {
 		Assert.assertEquals(
 			styleBookEntry.getStyleBookEntryKey(),
 			draftStyleBookEntry.getStyleBookEntryKey());
+		Assert.assertEquals(
+			styleBookEntry.getThemeId(), draftStyleBookEntry.getThemeId());
+		Assert.assertEquals(
+			styleBookEntry.getThemeName(), draftStyleBookEntry.getThemeName());
 	}
 
 	@Test(
@@ -326,6 +342,10 @@ public class StyleBookEntryPersistenceTest {
 		styleBookEntry2.setPreviewFileEntryId(RandomTestUtil.nextLong());
 
 		styleBookEntry2.setStyleBookEntryKey(RandomTestUtil.randomString());
+
+		styleBookEntry2.setThemeId(RandomTestUtil.randomString());
+
+		styleBookEntry2.setThemeName(RandomTestUtil.randomString());
 
 		_styleBookEntries.add(_persistence.update(styleBookEntry2));
 	}
@@ -546,7 +566,8 @@ public class StyleBookEntryPersistenceTest {
 			"styleBookEntryId", true, "groupId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "defaultStyleBookEntry", true, "name", true,
-			"previewFileEntryId", true, "styleBookEntryKey", true);
+			"previewFileEntryId", true, "styleBookEntryKey", true, "themeId",
+			true, "themeName", true);
 	}
 
 	@Test
@@ -890,6 +911,10 @@ public class StyleBookEntryPersistenceTest {
 		styleBookEntry.setPreviewFileEntryId(RandomTestUtil.nextLong());
 
 		styleBookEntry.setStyleBookEntryKey(RandomTestUtil.randomString());
+
+		styleBookEntry.setThemeId(RandomTestUtil.randomString());
+
+		styleBookEntry.setThemeName(RandomTestUtil.randomString());
 
 		_styleBookEntries.add(_persistence.update(styleBookEntry));
 

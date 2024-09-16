@@ -55,6 +55,8 @@ public class StyleBookEntryVersionWrapper
 		attributes.put("name", getName());
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
 		attributes.put("styleBookEntryKey", getStyleBookEntryKey());
+		attributes.put("themeId", getThemeId());
+		attributes.put("themeName", getThemeName());
 
 		return attributes;
 	}
@@ -171,6 +173,18 @@ public class StyleBookEntryVersionWrapper
 
 		if (styleBookEntryKey != null) {
 			setStyleBookEntryKey(styleBookEntryKey);
+		}
+
+		String themeId = (String)attributes.get("themeId");
+
+		if (themeId != null) {
+			setThemeId(themeId);
+		}
+
+		String themeName = (String)attributes.get("themeName");
+
+		if (themeName != null) {
+			setThemeName(themeName);
 		}
 	}
 
@@ -327,6 +341,26 @@ public class StyleBookEntryVersionWrapper
 	@Override
 	public long getStyleBookEntryVersionId() {
 		return model.getStyleBookEntryVersionId();
+	}
+
+	/**
+	 * Returns the theme ID of this style book entry version.
+	 *
+	 * @return the theme ID of this style book entry version
+	 */
+	@Override
+	public String getThemeId() {
+		return model.getThemeId();
+	}
+
+	/**
+	 * Returns the theme name of this style book entry version.
+	 *
+	 * @return the theme name of this style book entry version
+	 */
+	@Override
+	public String getThemeName() {
+		return model.getThemeName();
 	}
 
 	/**
@@ -537,6 +571,26 @@ public class StyleBookEntryVersionWrapper
 	@Override
 	public void setStyleBookEntryVersionId(long styleBookEntryVersionId) {
 		model.setStyleBookEntryVersionId(styleBookEntryVersionId);
+	}
+
+	/**
+	 * Sets the theme ID of this style book entry version.
+	 *
+	 * @param themeId the theme ID of this style book entry version
+	 */
+	@Override
+	public void setThemeId(String themeId) {
+		model.setThemeId(themeId);
+	}
+
+	/**
+	 * Sets the theme name of this style book entry version.
+	 *
+	 * @param themeName the theme name of this style book entry version
+	 */
+	@Override
+	public void setThemeName(String themeName) {
+		model.setThemeName(themeName);
 	}
 
 	/**
