@@ -411,3 +411,21 @@ test('LPD-33048 Last login visibility', async ({usersAndOrganizationsPage}) => {
 		usersAndOrganizationsPage.tableOrderLastLoginDateItem
 	).toBeVisible();
 });
+
+test('LPD-35562 Enter reserved screen name', async({addUserPage}) => {
+	await addUserPage.goToAddUser();
+
+	await addUserPage.addUser();
+
+	await addUserPage.goToAddUser();
+
+	await addUserPage.addUser({screenName: 'user_a_sn'});
+
+	await addUserPage.addUserSaveButton.click();
+
+	await expect(
+		addUserPage.addUserAlert.filter({
+			hasText: 'The screen name you requested is already taken.'
+		})
+	).toBeVisible();
+});

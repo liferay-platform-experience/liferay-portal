@@ -9,6 +9,7 @@ import {SiteSettingsPage} from '../pages/configuration-admin-web/SiteSettingsPag
 import {SiteConfigurationDetailsPage} from '../pages/site-admin-web/SiteConfigurationDetailsPage';
 import {ExportUserDataPage} from '../pages/user-associated-data-web/ExportUserDataPage';
 import {PersonalDataErasurePage} from '../pages/user-associated-data-web/PersonalDataErasurePage';
+import {AddUserPage} from '../pages/users-admin-web/AddUserPage';
 import {AssignUsersPage} from '../pages/users-admin-web/AssignUsersPage';
 import {EditOrganizationPage} from '../pages/users-admin-web/EditOrganizationPage';
 import {EditUserPage} from '../pages/users-admin-web/EditUserPage';
@@ -19,6 +20,7 @@ import {UserPersonalSitePage} from '../pages/users-admin-web/UserPersonalSitePag
 import {UsersAndOrganizationsPage} from '../pages/users-admin-web/UsersAndOrganizationsPage';
 
 const usersAndOrganizationsPagesTest = test.extend<{
+	addUserPage: AddUserPage;
 	assignUsersPage: AssignUsersPage;
 	editOrganizationPage: EditOrganizationPage;
 	editUserPage: EditUserPage;
@@ -32,6 +34,9 @@ const usersAndOrganizationsPagesTest = test.extend<{
 	userPersonalSitePage: UserPersonalSitePage;
 	usersAndOrganizationsPage: UsersAndOrganizationsPage;
 }>({
+	addUserPage: async ({page}, use) => {
+		await use(new AddUserPage(page));
+	},
 	assignUsersPage: async ({page}, use) => {
 		await use(new AssignUsersPage(page));
 	},
