@@ -173,7 +173,7 @@ const CreationMenu = ({
 						<LinkOrButton
 							aria-label={getPlusIconLabel()}
 							className="nav-btn"
-							data-qa-id="creationMenuNewButton"
+							dataQaId="creationMenuNewButton"
 							symbol="plus"
 							title={getPlusIconLabel()}
 							wideViewportTitleVisible={false}
@@ -241,7 +241,7 @@ const CreationMenu = ({
 						aria-label={getPlusIconLabel()}
 						button={true}
 						className="nav-btn"
-						data-qa-id="creationMenuNewButton"
+						dataQaId="creationMenuNewButton"
 						displayType="primary"
 						href={firstItemRef.current.href}
 						onClick={(event) => {

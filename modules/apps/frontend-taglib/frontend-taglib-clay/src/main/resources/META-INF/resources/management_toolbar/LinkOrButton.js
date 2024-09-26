@@ -15,6 +15,7 @@ const LinkOrButton = React.forwardRef(
 			ariaLabel,
 			children,
 			className,
+			dataQaId,
 			disabled,
 			href,
 			symbol,
@@ -39,6 +40,7 @@ const LinkOrButton = React.forwardRef(
 						'nav-btn-monospaced': responsive,
 						'pl-4 pr-4': wide && !symbol,
 					})}
+					data-qa-id={dataQaId}
 					disabled={disabled}
 					href={href}
 					{...otherProps}
@@ -53,6 +55,7 @@ const LinkOrButton = React.forwardRef(
 						className={classNames(className, 'd-md-flex d-none', {
 							'pl-4 pr-4': wide,
 						})}
+						data-qa-id={`${dataQaId}Responsive`}
 						disabled={disabled}
 						href={href}
 						{...otherProps}
