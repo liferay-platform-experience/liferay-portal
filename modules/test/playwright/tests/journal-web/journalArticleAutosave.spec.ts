@@ -594,7 +594,7 @@ autoSaveTest(
 			journalEditArticlePage.changesSavedIndicator
 		).toBeVisible();
 
-		await page.getByRole('link', {name: 'Basic Information'}).click();
+		await page.getByRole('button', {name: 'Basic Information'}).click();
 
 		await expect(page.getByText('1.0')).toBeVisible();
 
@@ -625,7 +625,7 @@ autoSaveTest(
 			).toBeVisible();
 		}).toPass();
 
-		await page.getByRole('link', {name: 'Basic Information'}).click();
+		await page.getByRole('button', {name: 'Basic Information'}).click();
 
 		await expect(page.getByText('1.1')).toBeVisible();
 
