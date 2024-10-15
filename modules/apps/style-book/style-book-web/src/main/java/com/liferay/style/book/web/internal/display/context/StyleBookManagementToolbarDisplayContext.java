@@ -10,6 +10,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.frontend.token.definition.FrontendTokenDefinition;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -30,6 +32,8 @@ import java.util.Map;
 import javax.portlet.ResourceURL;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -104,8 +108,6 @@ public class StyleBookManagementToolbarDisplayContext
 		).build();
 	}
 
-	//	frontendTokenDefinition from EditStyleBookEntryDisplayContext ?
-
 	@Override
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
@@ -134,6 +136,16 @@ public class StyleBookManagementToolbarDisplayContext
 					"/style_book/export_style_book_entries");
 
 				return exportStyleBookEntriesURL.toString();
+			}
+		).put(
+			"frontendTokenDefinitions",
+			() -> {
+				List<FrontendTokenDefinition> frontendTokenDefinitions =
+					_frontendTokenDefinitionRegistry.
+						getFrontendTokenDefinitions(
+							_themeDisplay.getCompanyId());
+
+				return frontendTokenDefinitions;
 			}
 		).build();
 	}
@@ -201,6 +213,9 @@ public class StyleBookManagementToolbarDisplayContext
 	protected String[] getOrderByKeys() {
 		return new String[] {"name", "create-date"};
 	}
+
+	@Reference
+	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
 
 	private final ThemeDisplay _themeDisplay;
 

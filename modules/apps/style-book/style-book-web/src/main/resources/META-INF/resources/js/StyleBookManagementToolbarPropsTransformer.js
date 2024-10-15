@@ -9,7 +9,7 @@ import openDeleteStyleBookModal from './openDeleteStyleBookModal';
 import openStyleBookModal from './openStyleBookModal';
 
 export default function propsTransformer({
-	additionalProps: {addStyleBookEntryURL, copyStyleBookEntryURL, exportStyleBookEntriesURL, tokenDefinitions},
+	additionalProps: {addStyleBookEntryURL, copyStyleBookEntryURL, exportStyleBookEntriesURL, frontendTokenDefinitions},
 	portletNamespace,
 	...otherProps
 }) {
@@ -80,8 +80,8 @@ export default function propsTransformer({
 			if (action === 'addStyleBookEntry') {
 				openStyleBookModal({
 					addStyleBookEntryURL,
+					frontendTokenDefinitions,
 					namespace: `${portletNamespace}`,
-					tokenDefinitions,
 				});
 			}
 		},

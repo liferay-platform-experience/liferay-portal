@@ -23,7 +23,7 @@ const DEFAULT_OPTION = {
 
 export default function StyleBookModal({
 										  addStyleBookEntryURL,
-										  tokenDefinitions = [],
+										  frontendTokenDefinitions  = [],
 										  namespace,
 										  onModalClose,
 									   }) {
@@ -37,14 +37,14 @@ export default function StyleBookModal({
 	);
 
 	const [name, setName] = useState('');
-	const [tokenDefinition, setTokenDefinition] = useState(null);
+	const [frontendTokenDefinition] = useState(null);
 
 	const formRef = useRef(null);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		const errors = validateFields(name, tokenDefinition);
+		const errors = validateFields(name, frontendTokenDefinition);
 
 		if (Object.keys(errors).length) {
 			setErrors(errors);
@@ -55,7 +55,7 @@ export default function StyleBookModal({
 		setLoading(true);
 
 		const body = Liferay.Util.ns(namespace, {
-			infoItemClassName: tokenDefinition.value
+			infoItemClassName: frontendTokenDefinition.value
 		});
 
 		fetch(addStyleBookEntryURL, {
@@ -84,7 +84,7 @@ export default function StyleBookModal({
 	};
 
 	const nameId = `${namespace}name`;
-	const tokenDefinitionId = `${namespace}tokenDefinition`;
+	const frontendTokenDefinitionId = `${namespace}tokenDefinition`;
 
 	return (
 		<ClayModal observer={observer} size="md">
@@ -105,19 +105,19 @@ export default function StyleBookModal({
 
 				<StyleBookField
 					errors={errors}
-					id={tokenDefinitionId}
+					id={frontendTokenDefinitionId}
 					label={Liferay.Language.get('based-on-token-definition')}
 					name="itemType"
 				>
 					<ClaySelect
-						id={tokenDefinitionId}
+						id={frontendTokenDefinitionId}
 						onChange={(event) => {
 							const value = event.target.value;
 
 							const tokenDefinition =
-								value === -1 ? null : tokenDefinitions[value];
+								value === -1 ? null : frontendTokenDefinitions[value];
 
-							setTokenDefinition(tokenDefinition);
+							frontendTokenDefinitions(tokenDefinition);
 							setErrors({tokenDefinition: null});
 						}}
 					>
@@ -126,7 +126,7 @@ export default function StyleBookModal({
 							value={DEFAULT_OPTION.value}
 						/>
 
-						{tokenDefinitions.map((tokenDefinition, index) => (
+						{frontendTokenDefinitions.map((tokenDefinition, index) => (
 							<ClaySelect.Option
 								key={tokenDefinition.value}
 								label={tokenDefinition.label}
@@ -192,12 +192,12 @@ export default function StyleBookModal({
 }
 StyleBookModal.propTypes = {
 	addStyleBookEntryUrl: PropTypes.string.isRequired,
+	frontendTokenDefinitions: PropTypes.object,
 	namespace: PropTypes.string.isRequired,
 	onModalClose: PropTypes.func,
-	tokenDefinitions: PropTypes.object,
 };
 
-const validateFields = (name, tokenDefinition) => {
+const validateFields = (name, frontendTokenDefinition) => {
 	const errors = {};
 
 	const errorMessage = Liferay.Language.get('this-field-is-required');
@@ -206,8 +206,8 @@ const validateFields = (name, tokenDefinition) => {
 		errors.name = errorMessage;
 	}
 
-	if (!tokenDefinition) {
-		errors.tokenDefinition = errorMessage;
+	if (!frontendTokenDefinition) {
+		errors.frontendTokenDefinitions = errorMessage;
 	}
 
 	return errors;
