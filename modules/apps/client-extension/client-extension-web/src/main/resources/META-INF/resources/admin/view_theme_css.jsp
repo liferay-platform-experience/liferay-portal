@@ -19,7 +19,7 @@ for (Method method : methods) {
 	String type = viewClientExtensionEntryDisplayContext.getType();
 	Object value = viewClientExtensionEntryDisplayContext.getValue(method);
 
-	if (!FeatureFlagManagerUtil.isEnabled("LPD-34650") && type.equals(ClientExtensionEntryConstants.TYPE_THEME_CSS) && name.equals("scope")) {
+	if (!FeatureFlagManagerUtil.isEnabled("LPD-34650") && name.equals("scope")) {
 		continue;
 	}
 %>
