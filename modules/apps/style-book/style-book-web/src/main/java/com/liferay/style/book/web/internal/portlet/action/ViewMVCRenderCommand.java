@@ -5,6 +5,8 @@
 
 package com.liferay.style.book.web.internal.portlet.action;
 
+import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 
@@ -12,6 +14,7 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -29,7 +32,18 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 	public String render(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
+		renderRequest.setAttribute(CETManager.class.getName(), _cetManager);
+		renderRequest.setAttribute(
+			FrontendTokenDefinitionRegistry.class.getName(),
+			_frontendTokenDefinitionRegistry);
+
 		return "/view.jsp";
 	}
+
+	@Reference
+	private CETManager _cetManager;
+
+	@Reference
+	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
 
 }

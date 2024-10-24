@@ -1,3 +1,5 @@
+<%@ page import="com.liferay.client.extension.type.manager.CETManager" %>
+
 <%--
 /**
  * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
@@ -9,10 +11,13 @@
 
 <%
 StyleBookDisplayContext styleBookDisplayContext = new StyleBookDisplayContext(request, liferayPortletRequest, liferayPortletResponse);
+
+CETManager cetManager = (CETManager)request.getAttribute(CETManager.class.getName());
+FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry = (FrontendTokenDefinitionRegistry)request.getAttribute(FrontendTokenDefinitionRegistry.class.getName());
 %>
 
 <clay:management-toolbar
-	managementToolbarDisplayContext="<%= new StyleBookManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, styleBookDisplayContext.getStyleBookEntriesSearchContainer()) %>"
+	managementToolbarDisplayContext="<%= new StyleBookManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, cetManager, frontendTokenDefinitionRegistry, styleBookDisplayContext.getStyleBookEntriesSearchContainer()) %>"
 	propsTransformer="{StyleBookManagementToolbarPropsTransformer} from style-book-web"
 />
 

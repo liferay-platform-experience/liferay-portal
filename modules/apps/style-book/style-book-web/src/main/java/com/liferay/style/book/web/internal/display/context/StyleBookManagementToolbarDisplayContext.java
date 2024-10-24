@@ -5,17 +5,23 @@
 
 package com.liferay.style.book.web.internal.display.context;
 
+import com.liferay.client.extension.type.CET;
+import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.frontend.token.definition.FrontendTokenDefinition;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -23,6 +29,7 @@ import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.web.internal.security.permissions.resource.StyleBookPermission;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +47,16 @@ public class StyleBookManagementToolbarDisplayContext
 	public StyleBookManagementToolbarDisplayContext(
 		HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse,
+		LiferayPortletResponse liferayPortletResponse, CETManager cetManager,
+		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		SearchContainer<StyleBookEntry> searchContainer) {
 
 		super(
 			httpServletRequest, liferayPortletRequest, liferayPortletResponse,
 			searchContainer);
+
+		_cetManager = cetManager;
+		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -136,11 +147,45 @@ public class StyleBookManagementToolbarDisplayContext
 		).put(
 			"frontendTokenDefinitions",
 			() -> {
-				StyleBookDisplayContext styleBookDisplayContext =
-					new StyleBookDisplayContext(
-						request, liferayPortletRequest, liferayPortletResponse);
+				long companyId = _themeDisplay.getCompanyId();
 
-				return styleBookDisplayContext.getFrontendTokenDefinitions();
+				List<FrontendTokenDefinition> frontendTokenDefinitions =
+					_frontendTokenDefinitionRegistry.
+						getFrontendTokenDefinitions(companyId);
+
+				List<Object> frontendTokenDefinitionProviders =
+					new ArrayList<>();
+
+				for (FrontendTokenDefinition frontendTokenDefinition :
+						frontendTokenDefinitions) {
+
+					String themeId = frontendTokenDefinition.getThemeId();
+
+					Theme theme = ThemeLocalServiceUtil.fetchTheme(
+						companyId, themeId);
+
+					String name = themeId;
+
+					if (theme != null) {
+						name = theme.getName();
+					}
+					else {
+						CET cet = _cetManager.getCET(companyId, themeId);
+
+						if (cet != null) {
+							name = cet.getName();
+						}
+					}
+
+					frontendTokenDefinitionProviders.add(
+						HashMapBuilder.<String, Object>put(
+							"name", name
+						).put(
+							"themeId", themeId
+						).build());
+				}
+
+				return frontendTokenDefinitionProviders;
 			}
 		).build();
 	}
@@ -209,6 +254,9 @@ public class StyleBookManagementToolbarDisplayContext
 		return new String[] {"name", "create-date"};
 	}
 
+	private final CETManager _cetManager;
+	private final FrontendTokenDefinitionRegistry
+		_frontendTokenDefinitionRegistry;
 	private final ThemeDisplay _themeDisplay;
 
 }
