@@ -17,6 +17,11 @@ public class FeatureFlagConstants {
 
 	public static final String FEATURE_FLAG = "feature.flag";
 
+	public static final String PREFERENCE_KEY =
+		"deprecation.feature.flag.processed";
+
+	public static final String PREFERENCE_NAMESPACE = FEATURE_FLAG;
+
 	public static String getKey(String... parts) {
 		if (ArrayUtil.isEmpty(parts)) {
 			return FEATURE_FLAG;
