@@ -504,6 +504,11 @@ public class PortalUpgradeProcessRegistryImpl
 				}
 
 			});
+
+		upgradeVersionTreeMap.put(
+			new Version(31, 11, 1),
+			UpgradeModulesFactory.create(
+				new String[] {"com.liferay.feature.flag.web"}, null));
 	}
 
 }
