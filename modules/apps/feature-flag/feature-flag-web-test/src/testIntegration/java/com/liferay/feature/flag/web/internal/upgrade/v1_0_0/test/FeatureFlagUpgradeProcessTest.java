@@ -53,7 +53,7 @@ public class FeatureFlagUpgradeProcessTest {
 
 		portalPreferences.setValue(
 			FeatureFlagConstants.PREFERENCE_NAMESPACE,
-			FeatureFlagConstants.PREFERENCE_KEY, "false");
+			FeatureFlagConstants.PREFERENCE_DEPRECATION_PROCESSED_KEY, "false");
 
 		_portalPreferencesLocalService.updatePreferences(
 			company.getCompanyId(), PortletKeys.PREFS_OWNER_TYPE_COMPANY,
@@ -79,7 +79,8 @@ public class FeatureFlagUpgradeProcessTest {
 			GetterUtil.getBoolean(
 				portalPreferences.getValue(
 					FeatureFlagConstants.PREFERENCE_NAMESPACE,
-					FeatureFlagConstants.PREFERENCE_KEY)));
+					FeatureFlagConstants.
+						PREFERENCE_DEPRECATION_PROCESSED_KEY)));
 	}
 
 	private PortalPreferences _getPortalPreferences(long companyId) {

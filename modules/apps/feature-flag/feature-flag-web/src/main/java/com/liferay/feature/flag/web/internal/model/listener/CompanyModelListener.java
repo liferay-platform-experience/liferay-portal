@@ -60,7 +60,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 		boolean processed = GetterUtil.getBoolean(
 			portalPreferences.getValue(
 				FeatureFlagConstants.PREFERENCE_NAMESPACE,
-				FeatureFlagConstants.PREFERENCE_KEY));
+				FeatureFlagConstants.PREFERENCE_DEPRECATION_PROCESSED_KEY));
 
 		if (processed) {
 			return;
@@ -80,7 +80,7 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 
 		portalPreferences.setValue(
 			FeatureFlagConstants.PREFERENCE_NAMESPACE,
-			FeatureFlagConstants.PREFERENCE_KEY, "true");
+			FeatureFlagConstants.PREFERENCE_DEPRECATION_PROCESSED_KEY, "true");
 
 		_portalPreferencesLocalService.updatePreferences(
 			companyId, PortletKeys.PREFS_OWNER_TYPE_COMPANY, portalPreferences);

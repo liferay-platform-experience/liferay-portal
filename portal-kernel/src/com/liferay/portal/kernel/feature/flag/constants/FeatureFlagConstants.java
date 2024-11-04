@@ -17,8 +17,8 @@ public class FeatureFlagConstants {
 
 	public static final String FEATURE_FLAG = "feature.flag";
 
-	public static final String PREFERENCE_KEY =
-		"deprecation.feature.flag.processed";
+	public static final String PREFERENCE_DEPRECATION_PROCESSED_KEY =
+		"deprecation.feature.flags.processed";
 
 	public static final String PREFERENCE_NAMESPACE = FEATURE_FLAG;
 

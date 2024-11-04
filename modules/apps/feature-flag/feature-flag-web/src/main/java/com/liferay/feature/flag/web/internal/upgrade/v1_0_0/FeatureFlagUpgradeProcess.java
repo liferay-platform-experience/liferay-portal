@@ -40,7 +40,8 @@ public class FeatureFlagUpgradeProcess extends UpgradeProcess {
 
 				portalPreferences.setValue(
 					FeatureFlagConstants.PREFERENCE_NAMESPACE,
-					FeatureFlagConstants.PREFERENCE_KEY, "true");
+					FeatureFlagConstants.PREFERENCE_DEPRECATION_PROCESSED_KEY,
+					"true");
 
 				_portalPreferencesLocalService.updatePreferences(
 					companyId, PortletKeys.PREFS_OWNER_TYPE_COMPANY,
