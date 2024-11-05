@@ -23,7 +23,7 @@ public class ImportStyleBookDisplayContext {
 		_renderRequest = renderRequest;
 	}
 
-	public List<String> getStyleBookEntryImporterEntries(
+	public List<String> getStyleBookEntryImporterEntryNames(
 		StyleBookEntryImporterEntry.Status status) {
 
 		List<StyleBookEntryImporterEntry> styleBookEntryImporterEntries =
