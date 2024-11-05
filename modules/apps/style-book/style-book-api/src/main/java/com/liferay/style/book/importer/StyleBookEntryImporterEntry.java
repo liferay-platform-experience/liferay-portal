@@ -10,9 +10,9 @@ import com.liferay.style.book.model.StyleBookEntry;
 /**
  * @author Anderson Luiz
  */
-public class StyleBookEntryImporterImportResultEntry {
+public class StyleBookEntryImporterEntry {
 
-	public StyleBookEntryImporterImportResultEntry(
+	public StyleBookEntryImporterEntry(
 		String name, Status status, String errorMessage) {
 
 		_name = name;
@@ -21,7 +21,7 @@ public class StyleBookEntryImporterImportResultEntry {
 		_status = Status.INVALID;
 	}
 
-	public StyleBookEntryImporterImportResultEntry(
+	public StyleBookEntryImporterEntry(
 		String name, Status status, StyleBookEntry styleBookEntry) {
 
 		_name = name;
