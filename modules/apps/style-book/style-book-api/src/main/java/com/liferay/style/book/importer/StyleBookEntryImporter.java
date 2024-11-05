@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface StyleBookEntryImporter {
 
-	public List<StyleBookEntryImporterImportResultEntry> importStyleBookEntries(
+	public List<StyleBookEntryImporterEntry> importStyleBookEntries(
 			long userId, long groupId, File file, boolean overwrite)
 		throws Exception;
 

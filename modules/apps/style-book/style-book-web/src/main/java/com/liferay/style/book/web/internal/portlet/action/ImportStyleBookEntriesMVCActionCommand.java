@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.importer.StyleBookEntryImporter;
-import com.liferay.style.book.importer.StyleBookEntryImporterImportResultEntry;
+import com.liferay.style.book.importer.StyleBookEntryImporterEntry;
 import com.liferay.style.book.model.StyleBookEntry;
 
 import java.io.File;
@@ -82,18 +82,15 @@ public class ImportStyleBookEntriesMVCActionCommand
 			actionRequest, "overwrite", true);
 
 		try {
-			List<StyleBookEntryImporterImportResultEntry>
-				styleBookEntryImporterImportResultEntries =
-					_importStyleBookEntries(
-						themeDisplay.getUserId(),
-						themeDisplay.getScopeGroupId(), file, overwrite);
+			List<StyleBookEntryImporterEntry> styleBookEntryImporterEntries =
+				_importStyleBookEntries(
+					themeDisplay.getUserId(), themeDisplay.getScopeGroupId(),
+					file, overwrite);
 
-			if (ListUtil.isNotEmpty(
-					styleBookEntryImporterImportResultEntries)) {
-
+			if (ListUtil.isNotEmpty(styleBookEntryImporterEntries)) {
 				SessionMessages.add(
-					actionRequest, "styleBookEntryImporterImportResultEntries",
-					styleBookEntryImporterImportResultEntries);
+					actionRequest, "styleBookEntryImporterEntries",
+					styleBookEntryImporterEntries);
 			}
 
 			SessionMessages.add(actionRequest, "success");
@@ -114,16 +111,14 @@ public class ImportStyleBookEntriesMVCActionCommand
 				}
 			}
 
-			for (StyleBookEntryImporterImportResultEntry
-					styleBookEntryImporterImportResultEntry :
-						styleBookEntryImporterImportResultEntries) {
+			for (StyleBookEntryImporterEntry styleBookEntryImporterEntry :
+					styleBookEntryImporterEntries) {
 
 				StyleBookEntry styleBookEntry =
-					styleBookEntryImporterImportResultEntry.getStyleBookEntry();
+					styleBookEntryImporterEntry.getStyleBookEntry();
 
-				if ((styleBookEntryImporterImportResultEntry.getStatus() !=
-						StyleBookEntryImporterImportResultEntry.Status.
-							INVALID) &&
+				if ((styleBookEntryImporterEntry.getStatus() !=
+						StyleBookEntryImporterEntry.Status.INVALID) &&
 					(styleBookEntry != null) &&
 					!_isValidFrontendTokenDefinition(
 						frontendTokenNames, styleBookEntry)) {
@@ -143,9 +138,8 @@ public class ImportStyleBookEntriesMVCActionCommand
 		sendRedirect(actionRequest, actionResponse);
 	}
 
-	private List<StyleBookEntryImporterImportResultEntry>
-			_importStyleBookEntries(
-				long userId, long groupId, File file, boolean overwrite)
+	private List<StyleBookEntryImporterEntry> _importStyleBookEntries(
+			long userId, long groupId, File file, boolean overwrite)
 		throws Exception {
 
 		return _styleBookEntryImporter.importStyleBookEntries(

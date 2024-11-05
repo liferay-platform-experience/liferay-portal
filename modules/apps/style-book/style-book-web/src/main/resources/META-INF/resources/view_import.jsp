@@ -24,14 +24,14 @@ ImportStyleBookDisplayContext importStyleBookDisplayContext = new ImportStyleBoo
 	<liferay-frontend:edit-form-body>
 
 		<%
-		List<String> invalidStyleBookEntryImporterImportResultEntries = importStyleBookDisplayContext.getStyleBookEntryImporterImportResultEntries(StyleBookEntryImporterImportResultEntry.Status.INVALID);
+		List<String> invalidStyleBookEntryImporterEntries = importStyleBookDisplayContext.getStyleBookEntryImporterEntries(StyleBookEntryImporterEntry.Status.INVALID);
 		%>
 
-		<c:if test="<%= ListUtil.isNotEmpty(invalidStyleBookEntryImporterImportResultEntries) %>">
+		<c:if test="<%= ListUtil.isNotEmpty(invalidStyleBookEntryImporterEntries) %>">
 			<clay:alert
 				dismissible="<%= true %>"
 				displayType="warning"
-				message='<%= LanguageUtil.format(request, "the-following-style-books-could-not-be-imported-x", "<strong>" + StringUtil.merge(invalidStyleBookEntryImporterImportResultEntries, StringPool.COMMA_AND_SPACE) + "</strong>", false) %>'
+				message='<%= LanguageUtil.format(request, "the-following-style-books-could-not-be-imported-x", "<strong>" + StringUtil.merge(invalidStyleBookEntryImporterEntries, StringPool.COMMA_AND_SPACE) + "</strong>", false) %>'
 			/>
 		</c:if>
 

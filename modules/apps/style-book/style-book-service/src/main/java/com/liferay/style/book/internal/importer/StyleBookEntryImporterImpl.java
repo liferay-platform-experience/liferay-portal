@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
 import com.liferay.style.book.importer.StyleBookEntryImporter;
-import com.liferay.style.book.importer.StyleBookEntryImporterImportResultEntry;
+import com.liferay.style.book.importer.StyleBookEntryImporterEntry;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.service.StyleBookEntryService;
@@ -50,11 +50,11 @@ import org.osgi.service.component.annotations.Reference;
 public class StyleBookEntryImporterImpl implements StyleBookEntryImporter {
 
 	@Override
-	public List<StyleBookEntryImporterImportResultEntry> importStyleBookEntries(
+	public List<StyleBookEntryImporterEntry> importStyleBookEntries(
 			long userId, long groupId, File file, boolean overwrite)
 		throws Exception {
 
-		_importResultEntries = new ArrayList<>();
+		_styleBookEntryImporterEntries = new ArrayList<>();
 
 		try (ZipFile zipFile = new ZipFile(file)) {
 			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
@@ -77,7 +77,7 @@ public class StyleBookEntryImporterImpl implements StyleBookEntryImporter {
 			}
 		}
 
-		return _importResultEntries;
+		return _styleBookEntryImporterEntries;
 	}
 
 	private StyleBookEntry _addStyleBookEntry(
@@ -107,19 +107,17 @@ public class StyleBookEntryImporterImpl implements StyleBookEntryImporter {
 						frontendTokensValues, name);
 			}
 
-			_importResultEntries.add(
-				new StyleBookEntryImporterImportResultEntry(
-					name,
-					StyleBookEntryImporterImportResultEntry.Status.IMPORTED,
+			_styleBookEntryImporterEntries.add(
+				new StyleBookEntryImporterEntry(
+					name, StyleBookEntryImporterEntry.Status.IMPORTED,
 					styleBookEntry));
 
 			return styleBookEntry;
 		}
 		catch (PortalException portalException) {
-			_importResultEntries.add(
-				new StyleBookEntryImporterImportResultEntry(
-					name,
-					StyleBookEntryImporterImportResultEntry.Status.INVALID,
+			_styleBookEntryImporterEntries.add(
+				new StyleBookEntryImporterEntry(
+					name, StyleBookEntryImporterEntry.Status.INVALID,
 					portalException.getMessage()));
 		}
 
@@ -342,8 +340,6 @@ public class StyleBookEntryImporterImpl implements StyleBookEntryImporter {
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
-	private List<StyleBookEntryImporterImportResultEntry> _importResultEntries;
-
 	@Reference
 	private JSONFactory _jsonFactory;
 
@@ -352,5 +348,7 @@ public class StyleBookEntryImporterImpl implements StyleBookEntryImporter {
 
 	@Reference
 	private StyleBookEntryService _styleBookEntryEntryService;
+
+	private List<StyleBookEntryImporterEntry> _styleBookEntryImporterEntries;
 
 }
