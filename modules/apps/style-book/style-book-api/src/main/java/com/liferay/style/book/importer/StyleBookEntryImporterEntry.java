@@ -13,20 +13,19 @@ import com.liferay.style.book.model.StyleBookEntry;
 public class StyleBookEntryImporterEntry {
 
 	public StyleBookEntryImporterEntry(
-		String name, Status status, String errorMessage) {
-
-		_name = name;
-		_errorMessage = errorMessage;
-
-		_status = Status.INVALID;
-	}
-
-	public StyleBookEntryImporterEntry(
 		String name, Status status, StyleBookEntry styleBookEntry) {
 
 		_name = name;
 		_status = status;
 		_styleBookEntry = styleBookEntry;
+	}
+
+	public StyleBookEntryImporterEntry(
+		String errorMessage, String name, Status status) {
+
+		_errorMessage = errorMessage;
+		_name = name;
+		_status = status;
 	}
 
 	public String getErrorMessage() {

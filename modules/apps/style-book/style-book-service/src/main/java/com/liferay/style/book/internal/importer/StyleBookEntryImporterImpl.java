@@ -117,8 +117,8 @@ public class StyleBookEntryImporterImpl implements StyleBookEntryImporter {
 		catch (PortalException portalException) {
 			_styleBookEntryImporterEntries.add(
 				new StyleBookEntryImporterEntry(
-					name, StyleBookEntryImporterEntry.Status.INVALID,
-					portalException.getMessage()));
+					portalException.getMessage(), name,
+					StyleBookEntryImporterEntry.Status.INVALID));
 		}
 
 		return null;
