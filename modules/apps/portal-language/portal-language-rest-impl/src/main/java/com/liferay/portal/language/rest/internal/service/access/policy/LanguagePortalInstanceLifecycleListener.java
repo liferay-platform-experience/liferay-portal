@@ -45,7 +45,7 @@ public class LanguagePortalInstanceLifecycleListener
 	}
 
 	private void _addSAPEntries(long companyId) throws PortalException {
-		for (String[] sapEntryObjectArray : _SAP_ENTRY_OBJECT_ARRAYS) {
+		for (String[] sapEntryObjectArray : _SAP_ENTRY_ARRAYS) {
 			String name = sapEntryObjectArray[0];
 
 			SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
@@ -68,7 +68,7 @@ public class LanguagePortalInstanceLifecycleListener
 		}
 	}
 
-	private static final String[][] _SAP_ENTRY_OBJECT_ARRAYS = {
+	private static final String[][] _SAP_ENTRY_ARRAYS = {
 		{
 			"LANGUAGE_EXPORT",
 			"com.liferay.portal.language.rest.internal.resource.v1_0." +
