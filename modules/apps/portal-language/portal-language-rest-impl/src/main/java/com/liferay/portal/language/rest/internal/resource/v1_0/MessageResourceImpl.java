@@ -131,6 +131,24 @@ public class MessageResourceImpl extends BaseMessageResourceImpl {
 	}
 
 	@Override
+	public Page<Message> postMessagesExportPage(
+			String languageId, String[] keys)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-27222")) {
+			throw new UnsupportedOperationException();
+		}
+
+		List<Message> messages = new ArrayList<>();
+
+		for (String key : keys) {
+			messages.add(getMessage(key, languageId));
+		}
+
+		return Page.of(messages);
+	}
+
+	@Override
 	public Message putMessage(Message message) throws PortalException {
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-27222")) {
 			throw new UnsupportedOperationException();
