@@ -19,6 +19,7 @@ import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
+import com.liferay.portal.vulcan.pagination.Page;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,6 +64,10 @@ public interface MessageResource {
 	public Message putMessage(Message message) throws Exception;
 
 	public Response putMessageBatch(String callbackURL, Object object)
+		throws Exception;
+
+	public Page<Message> postMessagesExportPage(
+			String languageId, String[] strings)
 		throws Exception;
 
 	public void postMessageImport(
