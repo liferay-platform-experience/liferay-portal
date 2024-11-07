@@ -56,8 +56,10 @@ public class LanguagePortalInstanceLifecycleListener
 			}
 
 			String allowedServiceSignatures = sapEntryObjectArray[1];
+			String languageKey = sapEntryObjectArray[2];
 			Map<Locale, String> map = ResourceBundleUtil.getLocalizationMap(
-				ResourceBundleLoaderUtil.getPortalResourceBundleLoader(), name);
+				ResourceBundleLoaderUtil.getPortalResourceBundleLoader(),
+				languageKey);
 
 			_sapEntryLocalService.addSAPEntry(
 				_userLocalService.getGuestUserId(companyId),
@@ -68,9 +70,10 @@ public class LanguagePortalInstanceLifecycleListener
 
 	private static final String[][] _SAP_ENTRY_OBJECT_ARRAYS = {
 		{
-			"LANGUAGE_MESSAGE_EXPORT",
+			"LANGUAGE_EXPORT",
 			"com.liferay.portal.language.rest.internal.resource.v1_0." +
-				"MessageResourceImpl#postMessagesExportPage"
+				"MessageResourceImpl#postMessagesExportPage",
+			"service-access-policy-entry-default-language-export"
 		}
 	};
 
