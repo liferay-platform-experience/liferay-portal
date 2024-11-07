@@ -56,7 +56,9 @@ public class LanguagePortalInstanceLifecycleListener
 			}
 
 			String allowedServiceSignatures = sapEntryObjectArray[1];
+
 			String languageKey = sapEntryObjectArray[2];
+
 			Map<Locale, String> map = ResourceBundleUtil.getLocalizationMap(
 				ResourceBundleLoaderUtil.getPortalResourceBundleLoader(),
 				languageKey);
