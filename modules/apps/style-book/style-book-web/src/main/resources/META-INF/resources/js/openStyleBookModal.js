@@ -12,10 +12,10 @@ import StyleBookModal from './StyleBookModal';
 const DEFAULT_MODAL_CONTAINER_ID = 'styleBookModal';
 
 export default function openStyleBookModal({
-												addStyleBookEntryURL,
-												frontendTokenDefinitions,
-												namespace,
-										   }) {
+	addStyleBookEntryURL,
+	frontendTokenDefinitions,
+	namespace,
+}) {
 	dispose();
 
 	const container = document.createElement('div');

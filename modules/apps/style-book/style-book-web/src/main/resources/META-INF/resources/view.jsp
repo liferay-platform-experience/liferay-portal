@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-	StyleBookDisplayContext styleBookDisplayContext = (StyleBookDisplayContext)request.getAttribute(StyleBookDisplayContext.class.getName());
+StyleBookDisplayContext styleBookDisplayContext = (StyleBookDisplayContext)request.getAttribute(StyleBookDisplayContext.class.getName());
 %>
 
 <clay:management-toolbar

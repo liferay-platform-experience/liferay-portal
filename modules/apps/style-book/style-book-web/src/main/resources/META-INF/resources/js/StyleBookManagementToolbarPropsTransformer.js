@@ -9,10 +9,15 @@ import openDeleteStyleBookModal from './openDeleteStyleBookModal';
 import openStyleBookModal from './openStyleBookModal';
 
 export default function propsTransformer({
-											additionalProps: {addStyleBookEntryURL, copyStyleBookEntryURL, exportStyleBookEntriesURL, frontendTokenDefinitions},
-											portletNamespace,
-											...otherProps
-										 }) {
+	additionalProps: {
+		addStyleBookEntryURL,
+		copyStyleBookEntryURL,
+		exportStyleBookEntriesURL,
+		frontendTokenDefinitions,
+	},
+	portletNamespace,
+	...otherProps
+}) {
 	const copySelectedStyleBookEntries = () => {
 		const form = document.getElementById(`${portletNamespace}fm`);
 

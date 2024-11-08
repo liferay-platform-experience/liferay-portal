@@ -5,10 +5,7 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import ClayForm, {
-	ClayInput,
-	ClaySelect
-} from '@clayui/form';
+import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import {fetch, navigate, objectToFormData} from 'frontend-js-web';
@@ -21,11 +18,11 @@ const DEFAULT_OPTION = {
 };
 
 export default function StyleBookModal({
-											addStyleBookEntryURL,
-											frontendTokenDefinitions  = [],
-											namespace,
-											onModalClose,
-									   }) {
+	addStyleBookEntryURL,
+	frontendTokenDefinitions = [],
+	namespace,
+	onModalClose,
+}) {
 	const {observer, onClose} = useModal({onClose: () => onModalClose()});
 
 	const [loading, setLoading] = useState(false);
@@ -36,7 +33,8 @@ export default function StyleBookModal({
 	);
 
 	const [name, setName] = useState('');
-	const [frontendTokenDefinition, setFrontendTokenDefinition] = useState(null);
+	const [frontendTokenDefinition, setFrontendTokenDefinition] =
+		useState(null);
 
 	const formRef = useRef(null);
 
@@ -56,7 +54,6 @@ export default function StyleBookModal({
 		const body = Liferay.Util.ns(namespace, {
 			name,
 			themeId: frontendTokenDefinition.themeId,
-
 		});
 
 		fetch(addStyleBookEntryURL, {
@@ -65,7 +62,6 @@ export default function StyleBookModal({
 		})
 			.then((response) => response.json())
 			.then((responseContent) => {
-
 				if (responseContent.error) {
 					setLoading(false);
 					setErrors(responseContent.error);
@@ -117,7 +113,9 @@ export default function StyleBookModal({
 							const value = event.target.value;
 
 							const tokenDefinition =
-								value === -1 ? null : frontendTokenDefinitions[value];
+								value === -1
+									? null
+									: frontendTokenDefinitions[value];
 
 							setFrontendTokenDefinition(tokenDefinition);
 						}}
@@ -127,13 +125,15 @@ export default function StyleBookModal({
 							value={DEFAULT_OPTION.value}
 						/>
 
-						{frontendTokenDefinitions.map((tokenDefinition, index) => (
-							<ClaySelect.Option
-								key={tokenDefinition.themeId}
-								label={tokenDefinition.name}
-								value={index}
-							/>
-						))}
+						{frontendTokenDefinitions.map(
+							(tokenDefinition, index) => (
+								<ClaySelect.Option
+									key={tokenDefinition.themeId}
+									label={tokenDefinition.name}
+									value={index}
+								/>
+							)
+						)}
 					</ClaySelect>
 
 					<p className="text-secondary">

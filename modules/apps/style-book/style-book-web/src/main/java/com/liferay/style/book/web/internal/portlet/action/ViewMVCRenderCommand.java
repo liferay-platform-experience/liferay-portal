@@ -56,11 +56,11 @@ public class ViewMVCRenderCommand implements MVCRenderCommand {
 
 		StyleBookManagementToolbarDisplayContext
 			styleBookManagementToolbarDisplayContext =
-			new StyleBookManagementToolbarDisplayContext(
-				_cetManager, httpServletRequest, liferayPortletRequest,
-				liferayPortletResponse, _frontendTokenDefinitionRegistry,
-				styleBookDisplayContext.
-					getStyleBookEntriesSearchContainer());
+				new StyleBookManagementToolbarDisplayContext(
+					_cetManager, httpServletRequest, liferayPortletRequest,
+					liferayPortletResponse, _frontendTokenDefinitionRegistry,
+					styleBookDisplayContext.
+						getStyleBookEntriesSearchContainer());
 
 		renderRequest.setAttribute(
 			StyleBookManagementToolbarDisplayContext.class.getName(),

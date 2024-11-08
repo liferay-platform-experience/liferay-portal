@@ -65,9 +65,9 @@ public class StyleBookManagementToolbarDisplayContext
 	@Override
 	public List<DropdownItem> getActionDropdownItems() {
 		if (!StyleBookPermission.contains(
-			_themeDisplay.getPermissionChecker(),
-			_themeDisplay.getScopeGroupId(),
-			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroupId(),
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
 
 			return Collections.emptyList();
 		}
@@ -153,8 +153,8 @@ public class StyleBookManagementToolbarDisplayContext
 					new ArrayList<>();
 
 				for (FrontendTokenDefinition frontendTokenDefinition :
-					_frontendTokenDefinitionRegistry.
-						getFrontendTokenDefinitions(companyId)) {
+						_frontendTokenDefinitionRegistry.
+							getFrontendTokenDefinitions(companyId)) {
 
 					String themeId = frontendTokenDefinition.getThemeId();
 
@@ -236,9 +236,9 @@ public class StyleBookManagementToolbarDisplayContext
 	@Override
 	public Boolean isShowCreationMenu() {
 		if (StyleBookPermission.contains(
-			_themeDisplay.getPermissionChecker(),
-			_themeDisplay.getScopeGroupId(),
-			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroupId(),
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
 
 			return true;
 		}

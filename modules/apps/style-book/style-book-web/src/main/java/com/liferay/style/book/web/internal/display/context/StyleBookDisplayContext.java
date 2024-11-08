@@ -87,7 +87,7 @@ public class StyleBookDisplayContext {
 	}
 
 	public SearchContainer<StyleBookEntry>
-	getStyleBookEntriesSearchContainer() {
+		getStyleBookEntriesSearchContainer() {
 
 		if (_styleBookEntriesSearchContainer != null) {
 			return _styleBookEntriesSearchContainer;
@@ -147,9 +147,9 @@ public class StyleBookDisplayContext {
 		}
 
 		if (StyleBookPermission.contains(
-			themeDisplay.getPermissionChecker(),
-			themeDisplay.getScopeGroupId(),
-			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroupId(),
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
 
 			styleBookEntriesSearchContainer.setRowChecker(
 				new EmptyOnClickRowChecker(_liferayPortletResponse));
@@ -194,7 +194,7 @@ public class StyleBookDisplayContext {
 	}
 
 	private OrderByComparator<StyleBookEntry>
-	_getStyleBookEntryOrderByComparator() {
+		_getStyleBookEntryOrderByComparator() {
 
 		boolean orderByAsc = false;
 
