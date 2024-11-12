@@ -5,6 +5,8 @@
 
 package com.liferay.portal.language.rest.internal.service.access.policy;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -45,39 +47,29 @@ public class LanguagePortalInstanceLifecycleListener
 	}
 
 	private void _addSAPEntries(long companyId) throws PortalException {
-		for (String[] sapEntryArray : _SAP_ENTRY_ARRAYS) {
-			String name = sapEntryArray[0];
+		String name = "LANGUAGE_MESSAGE";
 
-			SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
-				companyId, name);
+		SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
+			companyId, name);
 
-			if (sapEntry != null) {
-				continue;
-			}
-
-			String allowedServiceSignatures = sapEntryArray[1];
-
-			String languageKey = sapEntryArray[2];
-
-			Map<Locale, String> map = ResourceBundleUtil.getLocalizationMap(
-				ResourceBundleLoaderUtil.getPortalResourceBundleLoader(),
-				languageKey);
-
-			_sapEntryLocalService.addSAPEntry(
-				_userLocalService.getGuestUserId(companyId),
-				allowedServiceSignatures, false, true, name, map,
-				new ServiceContext());
+		if (sapEntry != null) {
+			return;
 		}
+
+		Map<Locale, String> map = ResourceBundleUtil.getLocalizationMap(
+			ResourceBundleLoaderUtil.getPortalResourceBundleLoader(),
+			"service-access-policy-entry-default-language-message");
+
+		_sapEntryLocalService.addSAPEntry(
+			_userLocalService.getGuestUserId(companyId), _SAP_ENTRY_SIGNATURES,
+			false, true, name, map, new ServiceContext());
 	}
 
-	private static final String[][] _SAP_ENTRY_ARRAYS = {
-		{
-			"LANGUAGE_EXPORT",
-			"com.liferay.portal.language.rest.internal.resource.v1_0." +
-				"MessageResourceImpl#postMessagesExportPage",
-			"service-access-policy-entry-default-language-export"
-		}
-	};
+	private static final String _SAP_ENTRY_SIGNATURES = StringBundler.concat(
+		"com.liferay.portal.language.rest.internal.resource.v1_0.",
+		"MessageResourceImpl#getMessages", StringPool.NEW_LINE,
+		"com.liferay.portal.language.rest.internal.resource.v1_0.",
+		"MessageResourceImpl#postMessagesExportPage");
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LanguagePortalInstanceLifecycleListener.class);
