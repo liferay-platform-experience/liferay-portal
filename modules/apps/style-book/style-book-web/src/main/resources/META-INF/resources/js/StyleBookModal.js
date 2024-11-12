@@ -29,7 +29,7 @@ export default function StyleBookModal({
 
 	const [errors, setErrors] = useReducer(
 		(value, nextValue) => ({...value, ...nextValue}),
-		{name: null, tokenDefinition: null}
+		{frontendTokenDefinition: null, name: null}
 	);
 
 	const [name, setName] = useState('');
@@ -102,10 +102,11 @@ export default function StyleBookModal({
 				)}
 
 				<FieldBase
-					errors={errors}
+					errorMessage={errors.frontendTokenDefinition}
 					id={frontendTokenDefinitionId}
 					label={Liferay.Language.get('create-style-book-for')}
-					name="itemType"
+					name="frontendTokenDefinition"
+					required={true}
 				>
 					<ClaySelect
 						id={frontendTokenDefinitionId}
@@ -145,10 +146,11 @@ export default function StyleBookModal({
 
 				<ClayForm onSubmit={handleSubmit} ref={formRef}>
 					<FieldBase
-						errors={errors}
+						errorMessage={errors.name}
 						id={nameId}
 						label={Liferay.Language.get('name')}
 						name="name"
+						required={true}
 					>
 						<ClayInput
 							id={nameId}
@@ -208,7 +210,7 @@ const validateFields = (name, frontendTokenDefinition) => {
 	}
 
 	if (!frontendTokenDefinition) {
-		errors.frontendTokenDefinitions = errorMessage;
+		errors.frontendTokenDefinition = errorMessage;
 	}
 
 	return errors;
