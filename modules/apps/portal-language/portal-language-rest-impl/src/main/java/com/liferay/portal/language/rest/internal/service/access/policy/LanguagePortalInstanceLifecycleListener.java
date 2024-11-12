@@ -45,8 +45,8 @@ public class LanguagePortalInstanceLifecycleListener
 	}
 
 	private void _addSAPEntries(long companyId) throws PortalException {
-		for (String[] sapEntryObjectArray : _SAP_ENTRY_ARRAYS) {
-			String name = sapEntryObjectArray[0];
+		for (String[] sapEntryArray : _SAP_ENTRY_ARRAYS) {
+			String name = sapEntryArray[0];
 
 			SAPEntry sapEntry = _sapEntryLocalService.fetchSAPEntry(
 				companyId, name);
@@ -55,9 +55,9 @@ public class LanguagePortalInstanceLifecycleListener
 				continue;
 			}
 
-			String allowedServiceSignatures = sapEntryObjectArray[1];
+			String allowedServiceSignatures = sapEntryArray[1];
 
-			String languageKey = sapEntryObjectArray[2];
+			String languageKey = sapEntryArray[2];
 
 			Map<Locale, String> map = ResourceBundleUtil.getLocalizationMap(
 				ResourceBundleLoaderUtil.getPortalResourceBundleLoader(),
