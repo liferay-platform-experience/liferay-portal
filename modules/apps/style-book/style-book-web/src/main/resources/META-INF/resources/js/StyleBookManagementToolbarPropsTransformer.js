@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {getCheckedCheckboxes} from 'frontend-js-web';
+import {getCheckedCheckboxes, openSimpleInputModal} from 'frontend-js-web';
 
 import openDeleteStyleBookModal from './openDeleteStyleBookModal';
 import openStyleBookModal from './openStyleBookModal';
@@ -80,12 +80,25 @@ export default function propsTransformer({
 			}
 		},
 		onCreateButtonClick(event, {item}) {
-			const action = item?.data?.action;
+			if (Liferay?.FeatureFlags?.['LPD-30204']) {
+				const action = item?.data?.action;
 
-			if (action === 'addStyleBookEntry') {
-				openStyleBookModal({
-					addStyleBookEntryURL,
-					frontendTokenDefinitions,
+				if (action === 'addStyleBookEntry') {
+					openStyleBookModal({
+						addStyleBookEntryURL,
+						frontendTokenDefinitions,
+						namespace: `${portletNamespace}`,
+					});
+				}
+			} else {
+				const data = item?.data;
+
+				openSimpleInputModal({
+					dialogTitle: data?.title,
+					formSubmitURL: data?.addStyleBookEntryURL,
+					mainFieldLabel: Liferay.Language.get('name'),
+					mainFieldName: 'name',
+					mainFieldPlaceholder: Liferay.Language.get('name'),
 					namespace: `${portletNamespace}`,
 				});
 			}
