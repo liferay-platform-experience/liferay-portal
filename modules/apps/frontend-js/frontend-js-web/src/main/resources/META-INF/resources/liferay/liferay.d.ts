@@ -55,8 +55,6 @@ declare module Liferay {
 		export const direction: LocalizedValue<Direction>;
 
 		export function get(key: string): string;
-
-		export function put(items: {[name:string]: string});
 	}
 
 	namespace Loader {

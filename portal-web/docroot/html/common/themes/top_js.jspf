@@ -152,11 +152,6 @@
 					}
 
 					return value;
-				},
-				put: function(items) {
-					for (let key in items) {
-						Liferay.Language._cache[key] = items[key];
-					}
 				}
 			};
 		})();
