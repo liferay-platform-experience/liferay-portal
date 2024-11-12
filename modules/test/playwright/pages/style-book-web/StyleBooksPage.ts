@@ -29,6 +29,10 @@ export class StyleBooksPage {
 	async create(styleBookName: string) {
 		await this.page.getByRole('button', {exact: true, name: 'Add'}).click();
 
+		if (Liferay?.FeatureFlags?.['LPS-184404']) {
+			await this.page.getByRole('option').selectOption({index: 0});
+		}
+
 		await this.page.getByPlaceholder('Name').fill(styleBookName);
 
 		await this.page.getByRole('button', {name: 'Save'}).click();
