@@ -90,7 +90,8 @@ export default function propsTransformer({
 						namespace: `${portletNamespace}`,
 					});
 				}
-			} else {
+			}
+			else {
 				const data = item?.data;
 
 				openSimpleInputModal({
