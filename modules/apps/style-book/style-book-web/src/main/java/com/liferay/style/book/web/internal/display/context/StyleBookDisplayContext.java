@@ -5,6 +5,8 @@
 
 package com.liferay.style.book.web.internal.display.context;
 
+import com.liferay.frontend.token.definition.FrontendTokenDefinition;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -42,9 +44,22 @@ public class StyleBookDisplayContext {
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
+		_frontendTokenDefinitionRegistry =
+			(FrontendTokenDefinitionRegistry)httpServletRequest.getAttribute(
+				FrontendTokenDefinitionRegistry.class.getName());
+
 		_httpServletRequest = httpServletRequest;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+	}
+
+	public List<FrontendTokenDefinition> getFrontendTokenDefinitions() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return _frontendTokenDefinitionRegistry.getFrontendTokenDefinitions(
+			themeDisplay.getCompanyId());
 	}
 
 	public PortletURL getPortletURL() {
@@ -229,6 +244,8 @@ public class StyleBookDisplayContext {
 		return false;
 	}
 
+	private final FrontendTokenDefinitionRegistry
+		_frontendTokenDefinitionRegistry;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
 	private final LiferayPortletRequest _liferayPortletRequest;
