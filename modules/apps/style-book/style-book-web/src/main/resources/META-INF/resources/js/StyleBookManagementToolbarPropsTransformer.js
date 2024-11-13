@@ -6,9 +6,15 @@
 import {getCheckedCheckboxes, openSimpleInputModal} from 'frontend-js-web';
 
 import openDeleteStyleBookModal from './openDeleteStyleBookModal';
+import openStyleBookModal from './openStyleBookModal';
 
 export default function propsTransformer({
-	additionalProps: {copyStyleBookEntryURL, exportStyleBookEntriesURL},
+	additionalProps: {
+		addStyleBookEntryURL,
+		copyStyleBookEntryURL,
+		exportStyleBookEntriesURL,
+		frontendTokenDefinitions,
+	},
 	portletNamespace,
 	...otherProps
 }) {
@@ -74,16 +80,29 @@ export default function propsTransformer({
 			}
 		},
 		onCreateButtonClick(event, {item}) {
-			const data = item?.data;
+			if (Liferay?.FeatureFlags?.['LPD-30204']) {
+				const action = item?.data?.action;
 
-			openSimpleInputModal({
-				dialogTitle: data?.title,
-				formSubmitURL: data?.addStyleBookEntryURL,
-				mainFieldLabel: Liferay.Language.get('name'),
-				mainFieldName: 'name',
-				mainFieldPlaceholder: Liferay.Language.get('name'),
-				namespace: `${portletNamespace}`,
-			});
+				if (action === 'addStyleBookEntry') {
+					openStyleBookModal({
+						addStyleBookEntryURL,
+						frontendTokenDefinitions,
+						namespace: `${portletNamespace}`,
+					});
+				}
+			}
+			else {
+				const data = item?.data;
+
+				openSimpleInputModal({
+					dialogTitle: data?.title,
+					formSubmitURL: data?.addStyleBookEntryURL,
+					mainFieldLabel: Liferay.Language.get('name'),
+					mainFieldName: 'name',
+					mainFieldPlaceholder: Liferay.Language.get('name'),
+					namespace: `${portletNamespace}`,
+				});
+			}
 		},
 	};
 }
