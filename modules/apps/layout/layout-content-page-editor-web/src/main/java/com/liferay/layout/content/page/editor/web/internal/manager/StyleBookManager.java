@@ -34,7 +34,6 @@ public class StyleBookManager {
 				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				StyleBookEntryNameComparator.getInstance(true));
 
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-30204")) {
 			FrontendTokenDefinition frontendTokenDefinition =
 				_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
 					companyId, layoutId, themeId);
@@ -48,9 +47,6 @@ public class StyleBookManager {
 				styleBookEntry -> Objects.equals(
 					styleBookEntry.getThemeId(),
 					frontendTokenDefinition.getThemeId()));
-		}
-
-		return styleBookEntries;
 	}
 
 	@Reference
