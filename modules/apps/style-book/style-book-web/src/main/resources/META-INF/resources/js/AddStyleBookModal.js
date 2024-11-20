@@ -6,32 +6,12 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
+import ClayIcon from "@clayui/icon";
 import ClayModal, {useModal} from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import {fetch, navigate, objectToFormData} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useReducer, useRef, useState} from 'react';
-
-const DEFAULT_OPTION = {
-	label: `- ${Liferay.Language.get('not-selected')} -`,
-	value: '-1',
-};
-
-const validateFields = (name, frontendTokenDefinition) => {
-	const errors = {};
-
-	const errorMessage = Liferay.Language.get('this-field-is-required');
-
-	if (!name.trim().length) {
-		errors.name = errorMessage;
-	}
-
-	if (!frontendTokenDefinition) {
-		errors.frontendTokenDefinition = errorMessage;
-	}
-
-	return errors;
-};
+import React, {useRef, useState} from 'react';
 
 export default function AddStyleBookModal({
 	addStyleBookEntryURL,
@@ -43,24 +23,27 @@ export default function AddStyleBookModal({
 
 	const [loading, setLoading] = useState(false);
 
-	const [errors, setErrors] = useReducer(
-		(value, nextValue) => ({...value, ...nextValue}),
-		{frontendTokenDefinition: null, name: null}
-	);
+	const [errorMessage, setErrorMessage] = useState();
 
 	const [name, setName] = useState('');
-	const [frontendTokenDefinition, setFrontendTokenDefinition] =
-		useState(null);
+	const [themeId, setThemeId] =
+		useState(frontendTokenDefinitionProviders[0]);
 
 	const formRef = useRef(null);
+
+	const handleFormError = (responseContent) => {
+		setErrorMessage(responseContent.error || '');
+	};
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		const errors = validateFields(name, frontendTokenDefinition);
+		const error = name.trim().length
+			? ''
+			: Liferay.Language.get('this-field-is-required');
 
-		if (Object.keys(errors).length) {
-			setErrors(errors);
+		if (error) {
+			setErrorMessage(error);
 
 			return;
 		}
@@ -69,7 +52,7 @@ export default function AddStyleBookModal({
 
 		const body = Liferay.Util.ns(namespace, {
 			name,
-			themeId: frontendTokenDefinition.themeId,
+			themeId: themeId.themeId,
 		});
 
 		fetch(addStyleBookEntryURL, {
@@ -80,7 +63,7 @@ export default function AddStyleBookModal({
 			.then((responseContent) => {
 				if (responseContent.error) {
 					setLoading(false);
-					setErrors(responseContent.error);
+					setErrorMessage(responseContent.error);
 				}
 				else if (responseContent.redirectURL) {
 					navigate(responseContent.redirectURL, {
@@ -88,17 +71,13 @@ export default function AddStyleBookModal({
 					});
 				}
 			})
-			.catch(() =>
-				setErrors({
-					other: Liferay.Language.get(
-						'an-unexpected-error-occurred-while-creating-the-style-book'
-					),
-				})
+			.catch((response) =>
+				handleFormError(response)
 			);
 	};
 
 	const nameId = `${namespace}name`;
-	const frontendTokenDefinitionId = `${namespace}tokenDefinition`;
+	const themeIdId = `${namespace}tokenDefinition`;
 
 	return (
 		<ClayModal observer={observer} size="md">
@@ -107,46 +86,33 @@ export default function AddStyleBookModal({
 			</ClayModal.Header>
 
 			<ClayModal.Body>
-				{errors.other && (
+
+				{errorMessage && (
 					<ClayAlert
 						displayType="danger"
 						onClose={() => {}}
 						title={Liferay.Language.get('error')}
 					>
-						{errors.other}
+						{errorMessage}
 					</ClayAlert>
 				)}
 
 				<FieldBase
-					errorMessage={errors.frontendTokenDefinition}
 					helpMessage={Liferay.Language.get(
 						'the-style-book-will-be-created-based-on-the-selected-token-definition'
 					)}
-					id={frontendTokenDefinitionId}
+					id={themeIdId}
 					label={Liferay.Language.get('create-style-book-for')}
-					name="frontendTokenDefinition"
-					required={true}
+					name="themeId"
 				>
 					<ClaySelect
-						id={frontendTokenDefinitionId}
+						id={themeIdId}
 						onChange={(event) => {
 							const value = event.target.value;
 
-							const tokenDefinition =
-								value === -1
-									? null
-									: frontendTokenDefinitionProviders[value];
-
-							setErrors({frontendTokenDefinition: null});
-
-							setFrontendTokenDefinition(tokenDefinition);
+							setThemeId(frontendTokenDefinitionProviders[value]);
 						}}
 					>
-						<ClaySelect.Option
-							label={DEFAULT_OPTION.label}
-							value={DEFAULT_OPTION.value}
-						/>
-
 						{frontendTokenDefinitionProviders.map(
 							(frontendTokenDefinitionProvider, index) => (
 								<ClaySelect.Option
@@ -160,23 +126,38 @@ export default function AddStyleBookModal({
 				</FieldBase>
 
 				<ClayForm onSubmit={handleSubmit} ref={formRef}>
-					<FieldBase
-						errorMessage={errors.name}
-						id={nameId}
-						label={Liferay.Language.get('name')}
-						name="name"
-						required={true}
+					<div
+						className={`form-group ${
+							errorMessage ? 'has-error' : ''
+						}`}
 					>
+						<label
+							className="control-label"
+							htmlFor={`${namespace}${nameId}`}
+						>
+							{Liferay.Language.get('name')}
+
+							<span className="reference-mark">
+								<ClayIcon symbol="asterisk"/>
+							</span>
+						</label>
+
 						<ClayInput
 							id={nameId}
 							onChange={(event) => {
 								setName(event.target.value);
 
-								setErrors({name: null});
+								setErrorMessage(
+									event.target.value
+										? ''
+										: Liferay.Language.get(
+											'this-field-is-required'
+										)
+								);
 							}}
 							value={name}
 						/>
-					</FieldBase>
+					</div>
 				</ClayForm>
 			</ClayModal.Body>
 
@@ -192,7 +173,8 @@ export default function AddStyleBookModal({
 							onClick={handleSubmit}
 						>
 							{loading && (
-								<span className="inline-item inline-item-before">
+								<span
+									className="inline-item inline-item-before">
 									<span
 										aria-hidden="true"
 										className="loading-animation"
