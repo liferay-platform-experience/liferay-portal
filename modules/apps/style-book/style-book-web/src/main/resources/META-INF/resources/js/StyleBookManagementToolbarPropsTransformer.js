@@ -5,15 +5,15 @@
 
 import {getCheckedCheckboxes, openSimpleInputModal} from 'frontend-js-web';
 
+import openAddStyleBookModal from './openAddStyleBookModal';
 import openDeleteStyleBookModal from './openDeleteStyleBookModal';
-import openStyleBookModal from './openStyleBookModal';
 
 export default function propsTransformer({
 	additionalProps: {
 		addStyleBookEntryURL,
 		copyStyleBookEntryURL,
 		exportStyleBookEntriesURL,
-		frontendTokenDefinitions,
+		frontendTokenDefinitionProviders,
 	},
 	portletNamespace,
 	...otherProps
@@ -81,15 +81,11 @@ export default function propsTransformer({
 		},
 		onCreateButtonClick(event, {item}) {
 			if (Liferay?.FeatureFlags?.['LPD-30204']) {
-				const action = item?.data?.action;
-
-				if (action === 'addStyleBookEntry') {
-					openStyleBookModal({
-						addStyleBookEntryURL,
-						frontendTokenDefinitions,
-						namespace: `${portletNamespace}`,
-					});
-				}
+				openAddStyleBookModal({
+					addStyleBookEntryURL,
+					frontendTokenDefinitionProviders,
+					namespace: portletNamespace,
+				});
 			}
 			else {
 				const data = item?.data;

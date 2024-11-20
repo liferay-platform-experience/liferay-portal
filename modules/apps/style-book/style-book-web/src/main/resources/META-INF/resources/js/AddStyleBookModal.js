@@ -17,9 +17,25 @@ const DEFAULT_OPTION = {
 	value: '-1',
 };
 
-export default function StyleBookModal({
+const validateFields = (name, frontendTokenDefinition) => {
+	const errors = {};
+
+	const errorMessage = Liferay.Language.get('this-field-is-required');
+
+	if (!name.trim().length) {
+		errors.name = errorMessage;
+	}
+
+	if (!frontendTokenDefinition) {
+		errors.frontendTokenDefinition = errorMessage;
+	}
+
+	return errors;
+};
+
+export default function AddStyleBookModal({
 	addStyleBookEntryURL,
-	frontendTokenDefinitions = [],
+	frontendTokenDefinitionProviders = [],
 	namespace,
 	onModalClose,
 }) {
@@ -119,7 +135,7 @@ export default function StyleBookModal({
 							const tokenDefinition =
 								value === -1
 									? null
-									: frontendTokenDefinitions[value];
+									: frontendTokenDefinitionProviders[value];
 
 							setErrors({frontendTokenDefinition: null});
 
@@ -131,11 +147,11 @@ export default function StyleBookModal({
 							value={DEFAULT_OPTION.value}
 						/>
 
-						{frontendTokenDefinitions.map(
-							(tokenDefinition, index) => (
+						{frontendTokenDefinitionProviders.map(
+							(frontendTokenDefinitionProvider, index) => (
 								<ClaySelect.Option
-									key={tokenDefinition.themeId}
-									label={tokenDefinition.name}
+									key={frontendTokenDefinitionProvider.themeId}
+									label={frontendTokenDefinitionProvider.name}
 									value={index}
 								/>
 							)
@@ -192,25 +208,9 @@ export default function StyleBookModal({
 		</ClayModal>
 	);
 }
-StyleBookModal.propTypes = {
+AddStyleBookModal.propTypes = {
 	addStyleBookEntryUrl: PropTypes.string.isRequired,
-	frontendTokenDefinitions: PropTypes.object,
+	frontendTokenDefinitionProviders: PropTypes.object,
 	namespace: PropTypes.string.isRequired,
 	onModalClose: PropTypes.func,
-};
-
-const validateFields = (name, frontendTokenDefinition) => {
-	const errors = {};
-
-	const errorMessage = Liferay.Language.get('this-field-is-required');
-
-	if (!name) {
-		errors.name = errorMessage;
-	}
-
-	if (!frontendTokenDefinition) {
-		errors.frontendTokenDefinition = errorMessage;
-	}
-
-	return errors;
 };

@@ -145,7 +145,7 @@ public class StyleBookManagementToolbarDisplayContext
 				return exportStyleBookEntriesURL.toString();
 			}
 		).put(
-			"frontendTokenDefinitions",
+			"frontendTokenDefinitionProviders",
 			() -> {
 				long companyId = _themeDisplay.getCompanyId();
 

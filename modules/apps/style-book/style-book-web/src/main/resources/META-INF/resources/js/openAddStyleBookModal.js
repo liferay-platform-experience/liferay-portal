@@ -7,13 +7,13 @@ import {render} from '@liferay/frontend-js-react-web';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import StyleBookModal from './StyleBookModal';
+import AddStyleBookModal from './AddStyleBookModal';
 
 const DEFAULT_MODAL_CONTAINER_ID = 'styleBookModal';
 
-export default function openStyleBookModal({
+export default function openAddStyleBookModal({
 	addStyleBookEntryURL,
-	frontendTokenDefinitions,
+	frontendTokenDefinitionProviders,
 	namespace,
 }) {
 	dispose();
@@ -25,9 +25,9 @@ export default function openStyleBookModal({
 	document.body.appendChild(container);
 
 	render(
-		<StyleBookModal
+		<AddStyleBookModal
 			addStyleBookEntryURL={addStyleBookEntryURL}
-			frontendTokenDefinitions={frontendTokenDefinitions}
+			frontendTokenDefinitionProviders={frontendTokenDefinitionProviders}
 			namespace={namespace}
 			onModalClose={dispose}
 		/>,
