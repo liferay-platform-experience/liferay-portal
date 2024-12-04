@@ -6,36 +6,46 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
-import ClayIcon from "@clayui/icon";
-import ClayModal, {useModal} from '@clayui/modal';
+import ClayIcon from '@clayui/icon';
+import ClayModal from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import {fetch, navigate, objectToFormData} from 'frontend-js-web';
-import PropTypes from 'prop-types';
 import React, {useRef, useState} from 'react';
 
-export default function AddStyleBookModal({
+type frontendTokenDefinitionProvider = {
+	name: string;
+	themeId: string;
+};
+
+interface AddStyleBookModalProps {
+	addStyleBookEntryURL: string;
+	closeModal: () => void;
+	frontendTokenDefinitionProviders?: Array<frontendTokenDefinitionProvider>;
+	namespace: string;
+}
+
+const AddStyleBookModalContent = ({
 	addStyleBookEntryURL,
+	closeModal,
 	frontendTokenDefinitionProviders = [],
 	namespace,
-	onModalClose,
-}) {
-	const {observer, onClose} = useModal({onClose: () => onModalClose()});
+}: AddStyleBookModalProps) =>{
 
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState<boolean>(false);
 
-	const [errorMessage, setErrorMessage] = useState();
+	const [errorMessage, setErrorMessage] = useState<string>();
 
-	const [name, setName] = useState('');
+	const [name, setName] = useState<string>('');
 	const [themeId, setThemeId] =
 		useState(frontendTokenDefinitionProviders[0]);
 
 	const formRef = useRef(null);
 
-	const handleFormError = (responseContent) => {
+	const handleFormError = (responseContent: any) => {
 		setErrorMessage(responseContent.error || '');
 	};
 
-	const handleSubmit = (event) => {
+	const handleSubmit = (event: any) => {
 		event.preventDefault();
 
 		const error = name.trim().length
@@ -67,7 +77,7 @@ export default function AddStyleBookModal({
 				}
 				else if (responseContent.redirectURL) {
 					navigate(responseContent.redirectURL, {
-						beforeScreenFlip: onClose,
+						beforeScreenFlip: closeModal,
 					});
 				}
 			})
@@ -80,7 +90,7 @@ export default function AddStyleBookModal({
 	const themeIdId = `${namespace}tokenDefinition`;
 
 	return (
-		<ClayModal observer={observer} size="md">
+		<>
 			<ClayModal.Header>
 				{Liferay.Language.get('add-style-book')}
 			</ClayModal.Header>
@@ -98,12 +108,12 @@ export default function AddStyleBookModal({
 				)}
 
 				<FieldBase
+					className="themeId"
 					helpMessage={Liferay.Language.get(
 						'the-style-book-will-be-created-based-on-the-selected-token-definition'
 					)}
 					id={themeIdId}
 					label={Liferay.Language.get('create-style-book-for')}
-					name="themeId"
 				>
 					<ClaySelect
 						id={themeIdId}
@@ -164,7 +174,7 @@ export default function AddStyleBookModal({
 			<ClayModal.Footer
 				last={
 					<ClayButton.Group spaced>
-						<ClayButton displayType="secondary" onClick={onClose}>
+						<ClayButton displayType="secondary" onClick={closeModal}>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
 
@@ -187,12 +197,8 @@ export default function AddStyleBookModal({
 					</ClayButton.Group>
 				}
 			/>
-		</ClayModal>
+		</>
 	);
 }
-AddStyleBookModal.propTypes = {
-	addStyleBookEntryUrl: PropTypes.string.isRequired,
-	frontendTokenDefinitionProviders: PropTypes.object,
-	namespace: PropTypes.string.isRequired,
-	onModalClose: PropTypes.func,
-};
+
+export default AddStyleBookModalContent;
