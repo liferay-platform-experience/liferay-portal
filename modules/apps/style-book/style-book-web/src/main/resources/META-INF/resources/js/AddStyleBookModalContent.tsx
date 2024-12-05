@@ -13,7 +13,7 @@ import {FieldBase} from 'frontend-js-components-web';
 import {fetch, navigate, objectToFormData} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 
-type frontendTokenDefinitionProvider = {
+type FrontendTokenDefinitionProvider = {
 	name: string;
 	themeId: string;
 };
@@ -21,7 +21,7 @@ type frontendTokenDefinitionProvider = {
 interface AddStyleBookModalProps {
 	addStyleBookEntryURL: string;
 	closeModal: () => void;
-	frontendTokenDefinitionProviders?: Array<frontendTokenDefinitionProvider>;
+	frontendTokenDefinitionProviders?: Array<FrontendTokenDefinitionProvider>;
 	namespace: string;
 }
 
@@ -30,16 +30,13 @@ const AddStyleBookModalContent = ({
 	closeModal,
 	frontendTokenDefinitionProviders = [],
 	namespace,
-}: AddStyleBookModalProps) =>{
+}: AddStyleBookModalProps) => {
 
-	const [active, setActive] = useState<boolean>(false);
-	const [loading, setLoading] = useState<boolean>(false);
-
-	const [errorMessage, setErrorMessage] = useState<string>();
-
+	const [loading, setLoading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState<string>('');
 	const [name, setName] = useState<string>('');
 	const [themeId, setThemeId] =
-		useState<any>(frontendTokenDefinitionProviders[0]);
+		useState<any>(frontendTokenDefinitionProviders[0].themeId);
 
 	const formRef = useRef(null);
 
@@ -96,13 +93,11 @@ const AddStyleBookModalContent = ({
 			<ClayModal.Header>
 				{Liferay.Language.get('add-style-book')}
 			</ClayModal.Header>
-
 			<ClayModal.Body>
 
 				{errorMessage && (
 					<ClayAlert
 						displayType="danger"
-						onClose={() => {}}
 						title={Liferay.Language.get('error')}
 					>
 						{errorMessage}
@@ -118,15 +113,7 @@ const AddStyleBookModalContent = ({
 					label={Liferay.Language.get('create-style-book-for')}
 				>
 					<Picker
-						active={active}
-						aria-labelledby="picker-label"
 						id={themeIdId}
-						onActiveChange={setActive}
-						onChange={(event: any) => {
-							const value = event.target.value;
-
-							setThemeId(frontendTokenDefinitionProviders[value]);
-						}}
 						onSelectionChange={setThemeId}
 						selectedKey={themeId.themeId}
 					>
