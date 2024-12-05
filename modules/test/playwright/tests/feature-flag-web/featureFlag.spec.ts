@@ -126,3 +126,15 @@ test('LPS-167698 - Assert that a feature flag with dependencies cannot be enable
 
 	await expect(dependentFeatureFlagToggle).toBeDisabled();
 });
+
+export const testSystemFeatureFlags = mergeTests(
+	featureFlagPagesTest,
+	featureFlagsTest({
+		'LPD-10959': {enabled: true, system: true},
+	}),
+	loginTest()
+);
+
+testSystemFeatureFlags('test-system-ffs', async ({page}) => {
+	await page.waitForTimeout(3000);
+});
