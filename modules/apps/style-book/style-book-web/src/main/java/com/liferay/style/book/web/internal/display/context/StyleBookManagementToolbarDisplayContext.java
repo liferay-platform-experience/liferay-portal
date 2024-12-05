@@ -164,13 +164,16 @@ public class StyleBookManagementToolbarDisplayContext
 						companyId, themeId);
 
 					if (theme != null) {
-						name = theme.getName();
+						name = LanguageUtil.format(
+							httpServletRequest, "x-theme", theme.getName());
 					}
 					else {
 						CET cet = _cetManager.getCET(companyId, themeId);
 
 						if (cet != null) {
-							name = cet.getName();
+							name = LanguageUtil.format(
+								httpServletRequest,
+								"x-theme-css-client-extension", cet.getName());
 						}
 					}
 

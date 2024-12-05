@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import {Option, Picker} from '@clayui/core';
 import ClayForm, {ClayInput} from '@clayui/form';
@@ -11,7 +10,7 @@ import ClayIcon from '@clayui/icon';
 import ClayModal from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import {fetch, navigate, objectToFormData} from 'frontend-js-web';
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 
 type FrontendTokenDefinitionProvider = {
 	name: string;
@@ -32,19 +31,17 @@ const AddStyleBookModalContent = ({
 	namespace,
 }: AddStyleBookModalProps) => {
 
-	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string>('');
+	const [loading, setLoading] = useState(false);
 	const [name, setName] = useState<string>('');
 	const [themeId, setThemeId] =
-		useState<any>(frontendTokenDefinitionProviders[0].themeId);
-
-	const formRef = useRef(null);
+		useState<React.Key>(frontendTokenDefinitionProviders[0].themeId);
 
 	const handleFormError = (responseContent: any) => {
 		setErrorMessage(responseContent.error || '');
 	};
 
-	const handleSubmit = (event: any) => {
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		const error = name.trim().length
@@ -61,7 +58,7 @@ const AddStyleBookModalContent = ({
 
 		const body = Liferay.Util.ns(namespace, {
 			name,
-			themeId: themeId.themeId,
+			themeId,
 		});
 
 		fetch(addStyleBookEntryURL, {
@@ -85,6 +82,7 @@ const AddStyleBookModalContent = ({
 			);
 	};
 
+	const formId = `${namespace}saveButton`;
 	const nameId = `${namespace}name`;
 	const themeIdId = `${namespace}tokenDefinition`;
 
@@ -94,47 +92,40 @@ const AddStyleBookModalContent = ({
 				{Liferay.Language.get('add-style-book')}
 			</ClayModal.Header>
 			<ClayModal.Body>
-
-				{errorMessage && (
-					<ClayAlert
-						displayType="danger"
-						title={Liferay.Language.get('error')}
-					>
-						{errorMessage}
-					</ClayAlert>
-				)}
-
-				<FieldBase
-					className="themeId"
-					helpMessage={Liferay.Language.get(
-						'the-style-book-will-be-created-based-on-the-selected-token-definition'
-					)}
-					id={themeIdId}
-					label={Liferay.Language.get('create-style-book-for')}
-				>
-					<Picker
-						id={themeIdId}
-						onSelectionChange={setThemeId}
-						selectedKey={themeId.themeId}
-					>
-						{frontendTokenDefinitionProviders.map(
-							(frontendTokenDefinitionProvider) => (
-								<Option
-									key={frontendTokenDefinitionProvider.themeId}
-									textValue={frontendTokenDefinitionProvider.name}
-								>
-									{frontendTokenDefinitionProvider.name}
-								</Option>
-							)
+				<ClayForm id={formId} onSubmit={handleSubmit}>
+					<FieldBase
+						className="themeId"
+						helpMessage={Liferay.Language.get(
+							'the-style-book-will-be-created-based-on-the-selected-token-definition'
 						)}
-					</Picker>
-				</FieldBase>
+						id={themeIdId}
+						label={Liferay.Language.get('create-style-book-for')}
+					>
+						<Picker
+							defaultSelectedKey={themeId}
+							id={themeIdId}
+							items={frontendTokenDefinitionProviders}
+							onSelectionChange={setThemeId}
+							selectedKey={themeId}
+						>
+							{(item) => (
+								<Option
+									key={item.themeId}
+									textValue={item.name}
+								>
+									{item.name}
+								</Option>
+							)}
+						</Picker>
+					</FieldBase>
 
-				<ClayForm onSubmit={handleSubmit} ref={formRef}>
-					<div
-						className={`form-group ${
+					<FieldBase
+						className={`${
 							errorMessage ? 'has-error' : ''
 						}`}
+						errorMessage={errorMessage}
+						id={nameId}
+						required
 					>
 						<label
 							className="control-label"
@@ -148,7 +139,6 @@ const AddStyleBookModalContent = ({
 						</label>
 
 						<ClayInput
-							id={nameId}
 							onChange={(event) => {
 								setName(event.target.value);
 
@@ -162,7 +152,7 @@ const AddStyleBookModalContent = ({
 							}}
 							value={name}
 						/>
-					</div>
+					</FieldBase>
 				</ClayForm>
 			</ClayModal.Body>
 
@@ -175,7 +165,8 @@ const AddStyleBookModalContent = ({
 
 						<ClayButton
 							displayType="primary"
-							onClick={handleSubmit}
+							form={formId}
+							type="submit"
 						>
 							{loading && (
 								<span
