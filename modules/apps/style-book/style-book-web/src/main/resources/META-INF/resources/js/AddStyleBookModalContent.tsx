@@ -5,7 +5,8 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
+import {Option, Picker} from '@clayui/core';
+import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
@@ -31,13 +32,14 @@ const AddStyleBookModalContent = ({
 	namespace,
 }: AddStyleBookModalProps) =>{
 
+	const [active, setActive] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const [errorMessage, setErrorMessage] = useState<string>();
 
 	const [name, setName] = useState<string>('');
 	const [themeId, setThemeId] =
-		useState(frontendTokenDefinitionProviders[0]);
+		useState<any>(frontendTokenDefinitionProviders[0]);
 
 	const formRef = useRef(null);
 
@@ -115,24 +117,30 @@ const AddStyleBookModalContent = ({
 					id={themeIdId}
 					label={Liferay.Language.get('create-style-book-for')}
 				>
-					<ClaySelect
+					<Picker
+						active={active}
+						aria-labelledby="picker-label"
 						id={themeIdId}
-						onChange={(event) => {
+						onActiveChange={setActive}
+						onChange={(event: any) => {
 							const value = event.target.value;
 
 							setThemeId(frontendTokenDefinitionProviders[value]);
 						}}
+						onSelectionChange={setThemeId}
+						selectedKey={themeId.themeId}
 					>
 						{frontendTokenDefinitionProviders.map(
-							(frontendTokenDefinitionProvider, index) => (
-								<ClaySelect.Option
+							(frontendTokenDefinitionProvider) => (
+								<Option
 									key={frontendTokenDefinitionProvider.themeId}
-									label={frontendTokenDefinitionProvider.name}
-									value={index}
-								/>
+									textValue={frontendTokenDefinitionProvider.name}
+								>
+									{frontendTokenDefinitionProvider.name}
+								</Option>
 							)
 						)}
-					</ClaySelect>
+					</Picker>
 				</FieldBase>
 
 				<ClayForm onSubmit={handleSubmit} ref={formRef}>
