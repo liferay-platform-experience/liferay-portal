@@ -6,7 +6,6 @@
 import ClayButton from '@clayui/button';
 import {Option, Picker} from '@clayui/core';
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import ClayModal from '@clayui/modal';
 import {FieldBase} from 'frontend-js-components-web';
 import {fetch, navigate, objectToFormData} from 'frontend-js-web';
@@ -41,16 +40,16 @@ const AddStyleBookModalContent = ({
 		setErrorMessage(responseContent.error || '');
 	};
 
+	const validateName = (name: string) => {
+		setErrorMessage(!name.trim() ? Liferay.Language.get('this-field-is-required') : '');
+	}
+
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const error = name.trim().length
-			? ''
-			: Liferay.Language.get('this-field-is-required');
+		validateName(name);
 
-		if (error) {
-			setErrorMessage(error);
-
+		if (errorMessage) {
 			return;
 		}
 
@@ -120,35 +119,19 @@ const AddStyleBookModalContent = ({
 					</FieldBase>
 
 					<FieldBase
-						className={`${
+						className={`control-label ${
 							errorMessage ? 'has-error' : ''
 						}`}
 						errorMessage={errorMessage}
 						id={nameId}
+						label={Liferay.Language.get('name')}
 						required
 					>
-						<label
-							className="control-label"
-							htmlFor={`${namespace}${nameId}`}
-						>
-							{Liferay.Language.get('name')}
-
-							<span className="reference-mark">
-								<ClayIcon symbol="asterisk"/>
-							</span>
-						</label>
-
 						<ClayInput
 							onChange={(event) => {
 								setName(event.target.value);
 
-								setErrorMessage(
-									event.target.value
-										? ''
-										: Liferay.Language.get(
-											'this-field-is-required'
-										)
-								);
+								validateName(event.target.value);
 							}}
 							value={name}
 						/>
@@ -164,6 +147,7 @@ const AddStyleBookModalContent = ({
 						</ClayButton>
 
 						<ClayButton
+							disabled={Boolean(errorMessage)}
 							displayType="primary"
 							form={formId}
 							type="submit"
