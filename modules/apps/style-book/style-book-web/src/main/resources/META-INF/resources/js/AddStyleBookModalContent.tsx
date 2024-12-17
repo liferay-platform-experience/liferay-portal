@@ -23,6 +23,10 @@ interface AddStyleBookModalProps {
 	namespace: string;
 }
 
+const isNameValid = (name: string) => {
+	return !!name.trim();
+};
+
 const AddStyleBookModalContent = ({
 	addStyleBookEntryURL,
 	closeModal,
@@ -38,16 +42,16 @@ const AddStyleBookModalContent = ({
 
 	const validateName = (name: string) => {
 		setErrorMessage(
-			!name.trim() ? Liferay.Language.get('this-field-is-required') : ''
+			!isNameValid(name)
+				? Liferay.Language.get('this-field-is-required')
+				: ''
 		);
 	};
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		validateName(name);
-
-		if (errorMessage) {
+		if (!isNameValid(name)) {
 			return;
 		}
 
@@ -63,13 +67,13 @@ const AddStyleBookModalContent = ({
 			method: 'POST',
 		})
 			.then((response) => response.json())
-			.then((responseContent) => {
-				if (responseContent.error) {
+			.then((content) => {
+				if (content.error) {
 					setLoading(false);
-					setErrorMessage(responseContent.error);
+					setErrorMessage(content.error);
 				}
-				else if (responseContent.redirectURL) {
-					navigate(responseContent.redirectURL, {
+				else if (content.redirectURL) {
+					navigate(content.redirectURL, {
 						beforeScreenFlip: closeModal,
 					});
 				}
