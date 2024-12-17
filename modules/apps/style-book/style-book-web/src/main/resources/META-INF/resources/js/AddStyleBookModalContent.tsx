@@ -150,7 +150,7 @@ const AddStyleBookModalContent = ({
 						</ClayButton>
 
 						<ClayButton
-							disabled={Boolean(errorMessage)}
+							disabled={!isNameValid(name)}
 							displayType="primary"
 							form={formId}
 							type="submit"
