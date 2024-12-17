@@ -146,7 +146,7 @@ public class StyleBookManagementToolbarDisplayContext
 			}
 		).put(
 			"frontendTokenDefinitionProviders",
-			() -> getFrontendTokenDefinitionProviders()
+			this::_getFrontendTokenDefinitionProviders
 		).build();
 	}
 
@@ -187,7 +187,34 @@ public class StyleBookManagementToolbarDisplayContext
 		).build();
 	}
 
-	public List<Map<String, Object>> getFrontendTokenDefinitionProviders() {
+	@Override
+	public Boolean isDisabled() {
+		if (getItemsTotal() > 1) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public Boolean isShowCreationMenu() {
+		if (StyleBookPermission.contains(
+				_themeDisplay.getPermissionChecker(),
+				_themeDisplay.getScopeGroupId(),
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	protected String[] getOrderByKeys() {
+		return new String[] {"name", "create-date"};
+	}
+
+	private List<Map<String, Object>> _getFrontendTokenDefinitionProviders() {
 		List<Map<String, Object>> frontendTokenDefinitionProviders =
 			new ArrayList<>();
 
@@ -226,33 +253,6 @@ public class StyleBookManagementToolbarDisplayContext
 		}
 
 		return frontendTokenDefinitionProviders;
-	}
-
-	@Override
-	public Boolean isDisabled() {
-		if (getItemsTotal() > 1) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
-	public Boolean isShowCreationMenu() {
-		if (StyleBookPermission.contains(
-				_themeDisplay.getPermissionChecker(),
-				_themeDisplay.getScopeGroupId(),
-				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	protected String[] getOrderByKeys() {
-		return new String[] {"name", "create-date"};
 	}
 
 	private final CETManager _cetManager;
