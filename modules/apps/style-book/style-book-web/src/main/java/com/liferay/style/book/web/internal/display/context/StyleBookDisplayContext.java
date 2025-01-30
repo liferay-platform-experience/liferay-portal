@@ -8,9 +8,12 @@ package com.liferay.style.book.web.internal.display.context;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
+import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -116,7 +119,7 @@ public class StyleBookDisplayContext {
 				end -= 1;
 				styleBookEntries.add(
 					_getStyleFromThemeStyleBookEntry(
-						themeDisplay.getScopeGroupId()));
+						themeDisplay.getScopeGroup()));
 			}
 			else {
 				start -= 1;
@@ -201,18 +204,24 @@ public class StyleBookDisplayContext {
 		return orderByComparator;
 	}
 
-	private StyleBookEntry _getStyleFromThemeStyleBookEntry(long groupId) {
+	private StyleBookEntry _getStyleFromThemeStyleBookEntry(Group group) {
 		StyleBookEntry styleFromThemeStyleBookEntry =
 			StyleBookEntryLocalServiceUtil.create();
 
 		styleFromThemeStyleBookEntry.setHeadId(-1);
 		styleFromThemeStyleBookEntry.setStyleBookEntryId(0);
-		styleFromThemeStyleBookEntry.setGroupId(groupId);
+		styleFromThemeStyleBookEntry.setGroupId(group.getGroupId());
 		styleFromThemeStyleBookEntry.setName(
 			LanguageUtil.get(_httpServletRequest, "styles-from-theme"));
 
+		LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
+			group.getGroupId(), group.isLayoutSetPrototype());
+
+		styleFromThemeStyleBookEntry.setThemeId(layoutSet.getThemeId());
+
 		StyleBookEntry defaultStyleBookEntry =
-			StyleBookEntryLocalServiceUtil.fetchDefaultStyleBookEntry(groupId);
+			StyleBookEntryLocalServiceUtil.fetchDefaultStyleBookEntry(
+				group.getGroupId());
 
 		if (defaultStyleBookEntry == null) {
 			styleFromThemeStyleBookEntry.setDefaultStyleBookEntry(true);
