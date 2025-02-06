@@ -27,28 +27,31 @@ public class StyleBookUtil {
 		Theme theme = ThemeLocalServiceUtil.fetchTheme(companyId, themeId);
 
 		if (theme != null) {
-			name = LanguageUtil.format(
+			return LanguageUtil.format(
 				httpServletRequest, "x-theme", theme.getName());
 		}
-		else {
+
+		if (cetManager.isCETAvailable(companyId, themeId)) {
 			CET cet = cetManager.getCET(companyId, themeId);
 
-			if (cet != null) {
-				name = LanguageUtil.format(
-					httpServletRequest, "x-theme-css-client-extension",
-					cet.getName());
-			}
+			return LanguageUtil.format(
+				httpServletRequest, "x-theme-css-client-extension",
+				cet.getName());
 		}
 
 		return name;
 	}
 
-	public static boolean isThemeInactive(CET cet, Theme theme) {
-		if ((cet == null) && (theme == null)) {
-			return true;
+	public static boolean isThemeInactive(
+		CETManager cetManager, long companyId, String themeId) {
+
+		if (cetManager.isCETAvailable(companyId, themeId) ||
+			(ThemeLocalServiceUtil.fetchTheme(companyId, themeId) != null)) {
+
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 }

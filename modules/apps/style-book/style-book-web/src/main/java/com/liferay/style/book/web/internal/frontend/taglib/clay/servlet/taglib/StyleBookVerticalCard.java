@@ -5,7 +5,6 @@
 
 package com.liferay.style.book.web.internal.frontend.taglib.clay.servlet.taglib;
 
-import com.liferay.client.extension.type.CET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.taglib.clay.servlet.taglib.BaseBaseClayCard;
 import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
@@ -15,9 +14,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.service.ThemeLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -122,13 +119,10 @@ public class StyleBookVerticalCard
 		StyleBookEntry draftStyleBookEntry =
 			StyleBookEntryLocalServiceUtil.fetchDraft(_styleBookEntry);
 
-		CET cet = _cetManager.getCET(
-			_styleBookEntry.getCompanyId(), _styleBookEntry.getThemeId());
+		if (StyleBookUtil.isThemeInactive(
+				_cetManager, _styleBookEntry.getCompanyId(),
+				_styleBookEntry.getThemeId())) {
 
-		Theme theme = ThemeLocalServiceUtil.fetchTheme(
-			_styleBookEntry.getCompanyId(), _styleBookEntry.getThemeId());
-
-		if (StyleBookUtil.isThemeInactive(cet, theme)) {
 			return LabelItemListBuilder.add(
 				labelItem -> {
 					labelItem.setStatus(WorkflowConstants.STATUS_INACTIVE);

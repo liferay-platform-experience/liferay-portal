@@ -130,6 +130,30 @@ public class CETManagerImpl implements CETManager {
 		return cets.size();
 	}
 
+	@Override
+	public boolean isCETAvailable(
+		long companyId, String externalReferenceCode) {
+
+		ClientExtensionEntry clientExtensionEntry =
+			_clientExtensionEntryLocalService.
+				fetchClientExtensionEntryByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if (clientExtensionEntry != null) {
+			return true;
+		}
+
+		Map<String, CET> cetsMap = _getCETsMap(companyId);
+
+		CET cet = cetsMap.get(externalReferenceCode);
+
+		if (cet != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	@Deactivate
 	protected void deactivate() {
 		for (Map.Entry<Long, Map<String, CET>> entry1 : _cetsMaps.entrySet()) {

@@ -38,4 +38,6 @@ public interface CETManager {
 	public int getCETsCount(long companyId, String keywords, String type)
 		throws PortalException;
 
+	public boolean isCETAvailable(long companyId, String externalReferenceCode);
+
 }
