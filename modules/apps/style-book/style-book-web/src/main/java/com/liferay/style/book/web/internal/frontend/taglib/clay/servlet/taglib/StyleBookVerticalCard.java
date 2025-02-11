@@ -67,7 +67,8 @@ public class StyleBookVerticalCard
 		StyleBookEntryActionDropdownItemsProvider
 			styleBookEntryActionDropdownItemsProvider =
 				new StyleBookEntryActionDropdownItemsProvider(
-					_styleBookEntry, _renderRequest, _renderResponse);
+					_styleBookEntry, _renderRequest, _renderResponse,
+					_cetManager);
 
 		return styleBookEntryActionDropdownItemsProvider.
 			getActionDropdownItems();
@@ -90,7 +91,10 @@ public class StyleBookVerticalCard
 				_themeDisplay.getPermissionChecker(),
 				_themeDisplay.getScopeGroupId(),
 				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES) ||
-			(_styleBookEntry.getStyleBookEntryId() <= 0)) {
+			(_styleBookEntry.getStyleBookEntryId() <= 0) ||
+			StyleBookUtil.isThemeInactive(
+				_cetManager, _styleBookEntry.getCompanyId(),
+				_styleBookEntry.getThemeId())) {
 
 			return null;
 		}
