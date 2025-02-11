@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
+import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import com.liferay.style.book.util.comparator.StyleBookEntryNameComparator;
 
 import java.util.ArrayList;
@@ -97,8 +98,7 @@ public class StyleBookEntryItemSelectorViewDescriptor
 			LanguageUtil.get(_httpServletRequest, "styles-from-theme"));
 
 		StyleBookEntry defaultStyleBookEntry =
-			StyleBookEntryLocalServiceUtil.fetchDefaultStyleBookEntry(
-				_themeDisplay.getScopeGroupId());
+			DefaultStyleBookEntryUtil.getDefaultStyleBookEntry(_getSelLayout());
 
 		if (defaultStyleBookEntry == null) {
 			styleFromThemeStyleBookEntry.setDefaultStyleBookEntry(true);
