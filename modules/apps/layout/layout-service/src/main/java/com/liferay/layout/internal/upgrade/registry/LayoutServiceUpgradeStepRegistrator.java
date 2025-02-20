@@ -21,18 +21,16 @@ import com.liferay.layout.internal.upgrade.v1_3_1.LayoutLocalizationUpgradeProce
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutBranchLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.LayoutSetBranchLocalService;
-import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
+import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
-import com.liferay.release.feature.flag.ReleaseFeatureFlagManager;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -103,12 +101,7 @@ public class LayoutServiceUpgradeStepRegistrator
 			new com.liferay.layout.internal.upgrade.v1_4_3.
 				LayoutClassedModelUsageUpgradeProcess(_classNameLocalService));
 
-		registry.register(
-			"1.4.3", "1.4.4",
-			new com.liferay.layout.internal.upgrade.v1_4_4.
-				LayoutPrivateLayoutsUpgradeProcess(
-					_companyLocalService, _portalPreferencesLocalService,
-					_releaseFeatureFlagManager));
+		registry.register("1.4.3", "1.4.4", new DummyUpgradeStep());
 
 		registry.register(
 			"1.4.4", "1.5.0",
@@ -128,9 +121,6 @@ public class LayoutServiceUpgradeStepRegistrator
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private CTCollectionLocalService _ctCollectionLocalService;
@@ -168,11 +158,5 @@ public class LayoutServiceUpgradeStepRegistrator
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private PortalPreferencesLocalService _portalPreferencesLocalService;
-
-	@Reference
-	private ReleaseFeatureFlagManager _releaseFeatureFlagManager;
 
 }
