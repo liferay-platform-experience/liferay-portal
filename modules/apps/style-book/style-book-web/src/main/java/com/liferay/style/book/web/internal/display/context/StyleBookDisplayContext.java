@@ -22,6 +22,7 @@ import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
+import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import com.liferay.style.book.util.comparator.StyleBookEntryCreateDateComparator;
 import com.liferay.style.book.util.comparator.StyleBookEntryNameComparator;
 import com.liferay.style.book.web.internal.security.permissions.resource.StyleBookPermission;
@@ -218,8 +219,13 @@ public class StyleBookDisplayContext {
 
 		styleFromThemeStyleBookEntry.setThemeId(layoutSet.getThemeId());
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
 		StyleBookEntry defaultStyleBookEntry =
-			StyleBookEntryLocalServiceUtil.fetchDefaultStyleBookEntry(groupId);
+			DefaultStyleBookEntryUtil.getDefaultStyleBookEntry(
+				themeDisplay.getLayout());
 
 		if (defaultStyleBookEntry == null) {
 			styleFromThemeStyleBookEntry.setDefaultStyleBookEntry(true);
