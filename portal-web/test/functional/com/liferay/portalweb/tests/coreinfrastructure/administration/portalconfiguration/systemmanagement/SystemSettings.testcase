@@ -221,7 +221,7 @@ definition {
 		}
 
 		task ("When change groupKey to new instance site and copy it to the configs folder") {
-			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.account.internal.configuration.AccountEntryGroupConfiguration.scoped_*.config");
+			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.account.internal.configuration.AccountEntryGroupConfiguration.scoped*.config");
 			var exportFileDirectory = selenium.getOutputDirName();
 
 			OSGiConfig.editOSGiConfigFileFromTempFolder(
@@ -313,7 +313,7 @@ definition {
 		}
 
 		task ("When change groupKey to new instance site and copy it to the configs folder") {
-			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.account.internal.configuration.AccountEntryGroupConfiguration.scoped_*.config");
+			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.account.internal.configuration.AccountEntryGroupConfiguration.scoped*.config");
 			var exportFileDirectory = selenium.getOutputDirName();
 
 			OSGiConfig.editOSGiConfigFileFromTempFolder(
