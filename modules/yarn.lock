@@ -5404,6 +5404,11 @@ cacheable-request@^2.1.1:
     normalize-url "2.0.1"
     responselike "1.0.2"
 
+calendar-web@null:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/calendar-web/-/calendar-web-5.0.0.tgz#3eedf8934f9573e11042526021906bce9602e77e"
+  integrity sha512-/Xp6pNlauQa9jYaKTiUBhTiDxorqKe0XB3Wd8+VNeuENu6oOeKL0HkgrqOVIvJ6Y7tP30hVouBwZ4skKkY/OgQ==
+
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz"
