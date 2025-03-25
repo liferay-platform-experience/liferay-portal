@@ -87,8 +87,6 @@ module.exports = {
 		'@liferay/frontend-data-set-web': [],
 		'@liferay/frontend-editor-ckeditor-sample-web': [],
 		'@liferay/frontend-icons-web': [],
-		'@liferay/frontend-js-a11y-sample-web': [],
-		'@liferay/frontend-js-a11y-web': [],
 		'@liferay/frontend-js-bootstrap-support-web': [],
 		'@liferay/frontend-js-codemirror-web': [
 			'codemirror/addon/fold/foldgutter.css',
