@@ -44,9 +44,11 @@ test(
 		await test.step('Check pagination button is selected and contains option role', async () => {
 			await page.getByLabel('Items per Page').click();
 
-			await page.getByRole('option', {
-				name: '5  Entries per Page',
-			}).click();
+			await page
+				.getByRole('option', {
+					name: '5  Entries per Page',
+				})
+				.click();
 
 			const pagination = page.getByLabel('Items per Page');
 

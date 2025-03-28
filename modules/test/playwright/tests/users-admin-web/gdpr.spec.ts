@@ -1866,7 +1866,14 @@ testAdmin(
 				await exportUserDataPage.verifyPaginationResult(1, 5, 6);
 				await gotoPage(page, 2);
 
-				await checkVisibility([false, false, false, false, false, true]);
+				await checkVisibility([
+					false,
+					false,
+					false,
+					false,
+					false,
+					true,
+				]);
 				await exportUserDataPage.verifyPaginationResult(6, 6, 6);
 				await gotoPage(page, 1);
 			}

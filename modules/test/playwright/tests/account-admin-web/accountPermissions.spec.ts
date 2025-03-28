@@ -703,7 +703,7 @@ test(
 		).toBeVisible();
 
 		for (let i = 1; i < 7; i++) {
-			if (i <= 5 ) {
+			if (i <= 5) {
 				await expect(
 					accountManagementWidgetPage.accountCell(`Account ${i}`)
 				).toBeVisible();
