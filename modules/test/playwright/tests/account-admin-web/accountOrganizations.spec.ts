@@ -325,7 +325,7 @@ test('LPD-47225 Can paginate organizations during assignment', async ({
 
 	const organizations = [];
 
-	for (let i = 1; i <= 5; i++) {
+	for (let i = 1; i <= 6; i++) {
 		organizations.push(
 			await apiHelpers.headlessAdminUser.postOrganization({
 				name: `A Organization ${i}`,
@@ -340,10 +340,10 @@ test('LPD-47225 Can paginate organizations during assignment', async ({
 	await accountsPage.organizationsTab.click();
 	await accountOrganizationsPage.organizationsTable.newButton.click();
 
-	await setItemsPerPage(accountOrganizationSelectorPage.frame, 4);
+	await setItemsPerPage(accountOrganizationSelectorPage.frame, 5);
 
 	for (const [index, organization] of organizations.entries()) {
-		if (index < 4) {
+		if (index < 5) {
 			await expect(
 				accountOrganizationSelectorPage.organizationsTable.cell(
 					organization.name
@@ -362,7 +362,7 @@ test('LPD-47225 Can paginate organizations during assignment', async ({
 	await nextPage(accountOrganizationSelectorPage.frame);
 
 	for (const [index, organization] of organizations.entries()) {
-		if (index < 4) {
+		if (index < 5) {
 			await expect(
 				accountOrganizationSelectorPage.organizationsTable.cell(
 					organization.name

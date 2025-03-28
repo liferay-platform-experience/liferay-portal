@@ -1737,6 +1737,7 @@ testAdmin(
 
 		const checkVisibility = async (visibilityFlags: boolean[]) => {
 			const statuses = [
+				exportUserDataPage.announcementsStatus,
 				exportUserDataPage.blogsStatus,
 				exportUserDataPage.documentsAndMediaStatus,
 				exportUserDataPage.messageBoardsStatus,
@@ -1785,6 +1786,11 @@ testAdmin(
 		});
 
 		apiHelpers.data.push({id: site.id, type: 'site'});
+
+		const announcement =
+			await apiHelpers.jsonWebServicesAnnouncementsEntryApiHelper.addEntry();
+
+		apiHelpers.data.push({id: announcement.entryId, type: 'announcement'});
 
 		await apiHelpers.headlessDelivery.postBlog(site.id);
 
@@ -1836,6 +1842,7 @@ testAdmin(
 		await usersAndOrganizationsPage.exportPersonalDataItem.click();
 		await exportUserDataPage.addExportProcessesButton.click();
 
+		await exportUserDataPage.announcementsCheckbox.check();
 		await exportUserDataPage.blogsCheckbox.check();
 		await exportUserDataPage.documentsAndMediaCheckbox.check();
 		await exportUserDataPage.messageBoardsCheckbox.check();
@@ -1846,26 +1853,26 @@ testAdmin(
 
 		await waitForAlert(page);
 
-		await checkVisibility([true, true, true, true, true]);
+		await checkVisibility([true, true, true, true, true, true]);
 
 		await exportUserDataPage.orderByButton.click();
 		await exportUserDataPage.nameMenuItem.click();
 
-		for (const itemsPerPage of [4, 8, 20, 40, 60]) {
+		for (const itemsPerPage of [5, 10, 20, 40, 60]) {
 			await setItemsPerPage(page, itemsPerPage);
 
-			if (itemsPerPage === 4) {
-				await checkVisibility([true, true, true, true, false]);
-				await exportUserDataPage.verifyPaginationResult(1, 4, 5);
+			if (itemsPerPage === 5) {
+				await checkVisibility([true, true, true, true, true, false]);
+				await exportUserDataPage.verifyPaginationResult(1, 5, 6);
 				await gotoPage(page, 2);
 
-				await checkVisibility([false, false, false, false, true]);
-				await exportUserDataPage.verifyPaginationResult(5, 5, 5);
+				await checkVisibility([false, false, false, false, false, true]);
+				await exportUserDataPage.verifyPaginationResult(6, 6, 6);
 				await gotoPage(page, 1);
 			}
 			else {
-				await checkVisibility([true, true, true, true, true]);
-				await exportUserDataPage.verifyPaginationResult(1, 5, 5);
+				await checkVisibility([true, true, true, true, true, true]);
+				await exportUserDataPage.verifyPaginationResult(1, 6, 6);
 			}
 		}
 	}

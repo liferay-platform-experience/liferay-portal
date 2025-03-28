@@ -53,7 +53,7 @@ test(
 	async ({apiHelpers, page, selectSiteInitializerPage, sitesPage}) => {
 		const layoutSetPrototypes = [];
 
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 6; i++) {
 			const layoutSetPrototype: LayoutSetPrototype =
 				await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
 					{
@@ -70,10 +70,10 @@ test(
 
 		await page.getByLabel('Items per Page').click();
 
-		await page.getByRole('option', {name: '4  Entries per Page'}).click();
+		await page.getByRole('option', {name: '5  Entries per Page'}).click();
 
 		await expect(
-			page.getByText('Showing 1 to 4 of 5 entries.')
+			page.getByText('Showing 1 to 5 of 6 entries.')
 		).toBeVisible();
 
 		await expect(

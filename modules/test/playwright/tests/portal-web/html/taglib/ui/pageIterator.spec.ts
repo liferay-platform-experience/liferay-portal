@@ -44,18 +44,16 @@ test(
 		await test.step('Check pagination button is selected and contains option role', async () => {
 			await page.getByLabel('Items per Page').click();
 
-			const paginationFourSelection = page.getByRole('option', {
-				name: '4  Entries per Page',
-			});
-
-			await paginationFourSelection.click();
+			await page.getByRole('option', {
+				name: '5  Entries per Page',
+			}).click();
 
 			const pagination = page.getByLabel('Items per Page');
 
 			await pagination.waitFor({state: 'visible'});
 
 			const paginationLinkSelected = page.locator(
-				'a[aria-selected="true"][role="option"][id="4"]'
+				'a[aria-selected="true"][role="option"][id="5"]'
 			);
 
 			await expect(paginationLinkSelected).toBeHidden();

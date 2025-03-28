@@ -132,6 +132,9 @@ test('LPD-46415 Can paginate the addresses of an account', async ({
 		{
 			name: `5_${getRandomString()}`,
 		},
+		{
+			name: `6_${getRandomString()}`,
+		},
 	];
 
 	await accountsPage.goto();
@@ -145,10 +148,10 @@ test('LPD-46415 Can paginate the addresses of an account', async ({
 		await editAccountAddressPage.addAddress(address);
 	}
 
-	await setItemsPerPage(page, 4);
+	await setItemsPerPage(page, 5);
 
 	for (const [index, address] of addresses.entries()) {
-		if (index < 4) {
+		if (index < 5) {
 			await expect(
 				accountAddressesPage.addressesTable.valueLink(address.name)
 			).toBeVisible();
@@ -163,7 +166,7 @@ test('LPD-46415 Can paginate the addresses of an account', async ({
 	await nextPage(page);
 
 	for (const [index, address] of addresses.entries()) {
-		if (index < 4) {
+		if (index < 5) {
 			await expect(
 				accountAddressesPage.addressesTable.valueLink(address.name)
 			).toHaveCount(0);

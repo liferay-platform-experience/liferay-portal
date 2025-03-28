@@ -109,17 +109,17 @@ test.describe('Use two Search Results widgets in the same page', () => {
 		await test.step('Check if the pagination delta of a Search Results widget persists when changing that of another widget', async () => {
 			await page.reload();
 
-			await searchPage.selectPaginationItemsPerPage(4);
+			await searchPage.selectPaginationItemsPerPage(5);
 
 			await expect(
 				searchPage.searchResultsPaginationItemsPerPageToggle.nth(1)
 			).toHaveText('20 Entries');
 
-			await searchPage.selectPaginationItemsPerPage(8, 1);
+			await searchPage.selectPaginationItemsPerPage(10, 1);
 
 			await expect(
 				searchPage.searchResultsPaginationItemsPerPageToggle.nth(0)
-			).toHaveText('4 Entries');
+			).toHaveText('5 Entries');
 		});
 
 		await test.step('Remove the federatedSearchKey of one Search Results and Search Options widget', async () => {
@@ -155,7 +155,7 @@ test.describe('Use two Search Results widgets in the same page', () => {
 				searchPage.searchResultsPaginationItemsPerPageToggle.nth(1)
 			).toHaveText('20 Entries');
 
-			await searchPage.selectPaginationItemsPerPage(4, 1);
+			await searchPage.selectPaginationItemsPerPage(5, 1);
 
 			await expect(
 				searchPage.searchResultsPaginationItemsPerPageToggle.nth(0)

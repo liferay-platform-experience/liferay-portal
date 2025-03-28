@@ -65,7 +65,7 @@ test('LPD-41857 Can delete regions in bulk', async ({
 }) => {
 	await countriesManagementPage.goto();
 
-	const regions: string[] = ['AAAA', 'BBBB', 'CCCC', 'DDDD', 'EEEE'];
+	const regions: string[] = ['AAAA', 'BBBB', 'CCCC', 'DDDD', 'EEEE', 'FFFF'];
 
 	const country =
 		await apiHelpers.headlessAdminAddress.getCountryByName('antarctica');
@@ -85,7 +85,7 @@ test('LPD-41857 Can delete regions in bulk', async ({
 	await (await countriesManagementPage.regionsLink).click();
 
 	await countriesManagementPage.selectPaginationItemsPerPage({
-		itemsPerPage: '4  Entries per Page',
+		itemsPerPage: '5  Entries per Page',
 		page,
 	});
 
@@ -94,7 +94,7 @@ test('LPD-41857 Can delete regions in bulk', async ({
 
 		await (await countriesManagementPage.regionsCheckbox(region)).check();
 
-		if (i === 3) {
+		if (i === 4) {
 			await countriesManagementPage.paginationLink('Page  2').click();
 			await waitForLoading(page);
 		}

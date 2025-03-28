@@ -696,14 +696,14 @@ test(
 
 		await page.waitForLoadState('domcontentloaded');
 
-		await setItemsPerPage(page, '4');
+		await setItemsPerPage(page, '5');
 
 		await expect(
-			page.getByText('Showing 1 to 4 of 6 entries.', {exact: true})
+			page.getByText('Showing 1 to 5 of 6 entries.', {exact: true})
 		).toBeVisible();
 
 		for (let i = 1; i < 7; i++) {
-			if (i < 5) {
+			if (i <= 5 ) {
 				await expect(
 					accountManagementWidgetPage.accountCell(`Account ${i}`)
 				).toBeVisible();
@@ -718,11 +718,11 @@ test(
 		await nextPage(page);
 
 		await expect(
-			page.getByText('Showing 5 to 6 of 6 entries.')
+			page.getByText('Showing 6 to 6 of 6 entries.')
 		).toBeVisible();
 
 		for (let i = 1; i < 7; i++) {
-			if (i < 5) {
+			if (i <= 5) {
 				await expect(
 					accountManagementWidgetPage.accountCell(`Account ${i}`)
 				).not.toBeVisible();
@@ -734,7 +734,7 @@ test(
 			}
 		}
 
-		await setItemsPerPage(page, '8');
+		await setItemsPerPage(page, '10');
 
 		await expect(
 			page.getByText('Showing 1 to 6 of 6 entries.')

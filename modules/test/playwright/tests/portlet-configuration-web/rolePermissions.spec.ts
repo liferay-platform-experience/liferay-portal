@@ -33,7 +33,7 @@ test('LPD-25265 search results should stay when form submitted', async ({
 		portletConfigurationPermissionsPage.siteMemberRoleCell
 	).toBeVisible();
 
-	await portletConfigurationPermissionsPage.changePagination(20, 4);
+	await portletConfigurationPermissionsPage.changePagination(20, 5);
 
 	await expect(
 		portletConfigurationPermissionsPage.ownerRoleCell

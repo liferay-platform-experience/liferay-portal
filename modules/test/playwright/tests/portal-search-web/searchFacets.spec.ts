@@ -185,7 +185,7 @@ test.describe('Clear and retain facet selections', () => {
 		searchPage,
 	}) => {
 		await test.step('Change pagination items per page and page number', async () => {
-			await searchPage.selectPaginationItemsPerPage(4);
+			await searchPage.selectPaginationItemsPerPage(5);
 
 			await searchPage.selectPaginationPageNumber(2);
 		});
@@ -201,7 +201,7 @@ test.describe('Clear and retain facet selections', () => {
 		await test.step('Verify that page number is reset but items per page is not', async () => {
 			await expect(
 				searchPage.searchResultsPaginationItemsPerPageToggle
-			).toHaveText(/4 Entries/);
+			).toHaveText(/5 Entries/);
 
 			await expect(
 				searchPage.searchResultsPaginationBar.getByText('1').first()
@@ -209,7 +209,7 @@ test.describe('Clear and retain facet selections', () => {
 
 			await expect(
 				searchPage.searchResultsPaginationDescription
-			).toHaveText(/Showing 1 to 4 of \d+ entries./);
+			).toHaveText(/Showing 1 to 5 of \d+ entries./);
 		});
 	});
 

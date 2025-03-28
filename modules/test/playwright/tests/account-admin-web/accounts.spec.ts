@@ -926,7 +926,7 @@ test('LPS-101893 Account list should be paginated', async ({
 	apiHelpers,
 	page,
 }) => {
-	for (let i = 1; i < 6; i++) {
+	for (let i = 1; i < 7; i++) {
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			name: `Account ${i}`,
 			type: 'business',
@@ -937,10 +937,10 @@ test('LPS-101893 Account list should be paginated', async ({
 
 	await accountsPage.goto();
 
-	await setItemsPerPage(page, 4);
+	await setItemsPerPage(page, 5);
 
-	for (let i = 1; i < 6; i++) {
-		if (i < 5) {
+	for (let i = 1; i < 7; i++) {
+		if (i < 6) {
 			await expect(
 				accountsPage.accountsTable.cell(`Account ${i}`)
 			).toBeVisible();
@@ -954,8 +954,8 @@ test('LPS-101893 Account list should be paginated', async ({
 
 	await nextPage(page);
 
-	for (let i = 1; i < 6; i++) {
-		if (i < 5) {
+	for (let i = 1; i < 7; i++) {
+		if (i < 6) {
 			await expect(
 				accountsPage.accountsTable.cell(`Account ${i}`)
 			).toHaveCount(0);

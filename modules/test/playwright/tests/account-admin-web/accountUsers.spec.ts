@@ -351,7 +351,7 @@ test(
 
 		const users = [];
 
-		for (let i = 1; i <= 5; i++) {
+		for (let i = 1; i <= 6; i++) {
 			users.push(
 				await apiHelpers.headlessAdminUser.postUserAccount({
 					familyName: `A User ${i}`,
@@ -367,10 +367,10 @@ test(
 		await accountUsersPage.usersTable.newButton.click();
 		await accountUsersPage.assignUserMenuItem.click();
 
-		await setItemsPerPage(accountUserSelectorPage.frame, 4);
+		await setItemsPerPage(accountUserSelectorPage.frame, 5);
 
 		for (const [index, user] of users.entries()) {
-			if (index < 4) {
+			if (index < 5) {
 				await expect(
 					accountUserSelectorPage.usersTable.cell(user.name)
 				).toBeVisible();
@@ -385,7 +385,7 @@ test(
 		await nextPage(accountUserSelectorPage.frame);
 
 		for (const [index, user] of users.entries()) {
-			if (index < 4) {
+			if (index < 5) {
 				await expect(
 					accountUserSelectorPage.usersTable.cell(user.name)
 				).toHaveCount(0);
@@ -1778,7 +1778,7 @@ test(
 
 		const users: Array<TUserAccount> = [];
 
-		for (let i = 1; i < 6; i++) {
+		for (let i = 1; i <= 6; i++) {
 			const user = await apiHelpers.headlessAdminUser.postUserAccount({
 				familyName: `${i} ${getRandomString()}`,
 			});
@@ -1793,10 +1793,10 @@ test(
 
 		await accountUsersPage.goto();
 
-		await setItemsPerPage(page, 4);
+		await setItemsPerPage(page, 5);
 
 		for (const [index, user] of users.entries()) {
-			if (index < 4) {
+			if (index < 5) {
 				await expect(
 					accountUsersPage.usersTable.cell(user.emailAddress)
 				).toBeVisible();
@@ -1811,7 +1811,7 @@ test(
 		await nextPage(page);
 
 		for (const [index, user] of users.entries()) {
-			if (index < 4) {
+			if (index < 5) {
 				await expect(
 					accountUsersPage.usersTable.cell(user.emailAddress)
 				).toHaveCount(0);

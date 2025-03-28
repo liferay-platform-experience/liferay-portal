@@ -306,9 +306,9 @@ test(
 		await expect(rolesPage.rolesTable.searchInput).toBeEditable();
 
 		await expect(async () => {
-			await setItemsPerPage(page, 4);
+			await setItemsPerPage(page, 5);
 
-			await expect(page.getByText('Showing 1 to 4')).toBeVisible();
+			await expect(page.getByText('Showing 1 to 5')).toBeVisible();
 		}).toPass();
 
 		await expect(async () => {

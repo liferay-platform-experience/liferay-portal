@@ -64,8 +64,8 @@ test('view workload distribution for all assignees', async ({
 	metricsPage,
 	page,
 }) => {
-	const NEW_PAGE_SIZE = 4;
-	const NUMBER_OF_USERS_AND_TASKS = 5;
+	const NEW_PAGE_SIZE = 5;
+	const NUMBER_OF_USERS_AND_TASKS = 6;
 	const WORKFLOW_DEFINITION_NAME = 'Single Approver';
 
 	const blogPosts = [];
