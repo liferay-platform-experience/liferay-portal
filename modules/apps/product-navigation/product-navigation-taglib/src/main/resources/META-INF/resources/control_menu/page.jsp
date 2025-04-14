@@ -20,6 +20,7 @@ ProductNavigationControlMenuTagDisplayContext productNavigationControlMenuTagDis
 		<div class="control-menu control-menu-level-1 control-menu-level-1-<%= applicationsMenuApp ? "light" : "dark" %> d-print-none" data-qa-id="controlMenu" id="<portlet:namespace />ControlMenu">
 			<clay:container-fluid
 				fullWidth="<%= true %>"
+				cssClass="container-fluid-max-xxxl"
 			>
 				<div class="control-menu-level-1-nav control-menu-nav" data-namespace="<portlet:namespace />" data-qa-id="header" id="<portlet:namespace />controlMenu">
 
