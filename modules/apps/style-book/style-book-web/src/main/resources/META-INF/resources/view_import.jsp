@@ -47,7 +47,7 @@ ImportStyleBookDisplayContext importStyleBookDisplayContext = new ImportStyleBoo
 		<liferay-ui:error exception="<%= StyleBookEntryFileException.class %>" message="the-selected-file-is-not-a-valid-zip-file" />
 		<liferay-ui:error exception="<%= StyleBookEntryThemeIdException.MustNotBeNull.class %>" message="the-property-theme-id-is-missing-from-the-file-style-books-json-you-must-specify-the-theme-or-theme-css-client-extension-that-provides-the-style-books-frontend-token-definition" />
 
-		<c:if test='<%= SessionMessages.contains(renderRequest, "styleBookFrontendTokensValuesNotValidated") %>'>
+		<c:if test='<%= SessionMessages.contains(renderRequest, "styleBookFrontendTokensValuesNotValidated") && !FeatureFlagManagerUtil.isEnabled("LPD-30204") %>'>
 			<aui:script>
 				Liferay.Util.openToast({
 					message:
