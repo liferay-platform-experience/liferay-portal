@@ -102,7 +102,7 @@ definition {
 
 			AssertTextEquals(
 				locator1 = "PagesAdmin#STYLE_BOOK_NAME",
-				value1 = "Styles from Theme");
+				value1 = "Styles from Classic Theme");
 
 			Click(
 				ariaLabel = "Change Style Book",
@@ -178,11 +178,11 @@ definition {
 				ariaLabel = "Change Style Book",
 				locator1 = "Button#ANY_WITH_ARIA_LABEL");
 
-			StyleBooks.selectStyleBook(styleBookName = "Styles from Theme");
+			StyleBooks.selectStyleBook(styleBookName = "Styles from Classic Theme");
 
 			AssertTextEquals(
 				locator1 = "PagesAdmin#STYLE_BOOK_NAME",
-				value1 = "Styles from Theme");
+				value1 = "Styles from Classic Theme");
 
 			Button.clickSave();
 
@@ -295,7 +295,7 @@ definition {
 			Navigator.gotoNavTab(navTab = "Style Book");
 
 			AssertElementPresent(
-				key_card = "Styles from Theme",
+				key_card = "Styles from Classic Theme",
 				locator1 = "Card#CARD_SELECTED");
 
 			StyleBooks.selectStyleBookViaPageDesignOptions(styleBookName = "Test Style Book Name");
@@ -354,7 +354,7 @@ definition {
 				key_card = "Test Style Book Name",
 				locator1 = "Card#CARD_SELECTED");
 
-			StyleBooks.selectStyleBookViaPageDesignOptions(styleBookName = "Styles from Theme");
+			StyleBooks.selectStyleBookViaPageDesignOptions(styleBookName = "Styles from Classic Theme");
 
 			AssertCssValue(
 				fragmentName = "button",
@@ -471,7 +471,7 @@ definition {
 
 			AssertTextEquals(
 				locator1 = "PagesAdmin#STYLE_BOOK_NAME",
-				value1 = "Styles from Theme");
+				value1 = "Styles from Classic Theme");
 
 			Click(
 				ariaLabel = "Change Style Book",
@@ -520,11 +520,11 @@ definition {
 				ariaLabel = "Change Style Book",
 				locator1 = "Button#ANY_WITH_ARIA_LABEL");
 
-			StyleBooks.selectStyleBook(styleBookName = "Styles from Theme");
+			StyleBooks.selectStyleBook(styleBookName = "Styles from Classic Theme");
 
 			AssertTextEquals(
 				locator1 = "PagesAdmin#STYLE_BOOK_NAME",
-				value1 = "Styles from Theme");
+				value1 = "Styles from Classic Theme");
 
 			Button.clickSave();
 
@@ -714,7 +714,7 @@ definition {
 			Navigator.gotoNavTab(navTab = "Style Book");
 
 			AssertElementPresent(
-				key_card = "Styles from Theme",
+				key_card = "Styles from Classic Theme",
 				locator1 = "Card#CARD_SELECTED");
 
 			StyleBooks.selectStyleBookViaPageDesignOptions(styleBookName = "Test Style Book Name");
