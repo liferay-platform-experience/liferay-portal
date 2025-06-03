@@ -343,17 +343,17 @@ public abstract class BaseSectionDisplayContext {
 
 		if (Objects.equals(
 				objectDefinition.getObjectFolderExternalReferenceCode(),
-				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES)) {
-
-			return ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES;
-		}
-
-		if (Objects.equals(
-				objectDefinition.getObjectFolderExternalReferenceCode(),
 				ObjectFolderConstants.
 					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES)) {
 
 			return ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS;
+		}
+
+		if (Objects.equals(
+				objectDefinition.getObjectFolderExternalReferenceCode(),
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES)) {
+
+			return ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES;
 		}
 
 		return null;
