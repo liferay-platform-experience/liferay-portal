@@ -52,6 +52,12 @@ public abstract class BaseCookiesPreferenceHandlingConfigurationScreen
 	}
 
 	@Override
+	public String getPID() {
+		return "com.liferay.cookies.configuration." +
+			"CookiesPreferenceHandlingConfiguration";
+	}
+
+	@Override
 	public boolean isVisible() {
 		return true;
 	}

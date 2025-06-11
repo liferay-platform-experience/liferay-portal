@@ -5,44 +5,27 @@
 
 package com.liferay.cookies.internal.configuration.provider;
 
-import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
 import com.liferay.cookies.configuration.banner.CookiesBannerConfiguration;
 import com.liferay.cookies.configuration.consent.CookiesConsentConfiguration;
 import com.liferay.cookies.internal.configuration.admin.service.CookiesPreferenceHandlingManagedServiceFactory;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.WebKeys;
-
-import jakarta.portlet.PortletRequest;
-
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.io.IOException;
 
 import java.util.Dictionary;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ManagedServiceFactory;
@@ -55,49 +38,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = CookiesConfigurationProvider.class)
 public class CookiesConfigurationProviderImpl
 	implements CookiesConfigurationProvider {
-
-	@Override
-	public String getCompanyConfigurationURL(
-			HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
-			_portal.getUser(httpServletRequest));
-
-		if (!permissionChecker.isCompanyAdmin()) {
-			return null;
-		}
-
-		String factoryPid =
-			CookiesPreferenceHandlingConfiguration.class.getName();
-
-		String pid = factoryPid;
-
-		Configuration configuration =
-			_getCookiesPreferenceHandlingCompanyConfiguration(
-				_portal.getCompanyId(httpServletRequest));
-
-		if (configuration != null) {
-			pid = configuration.getPid();
-		}
-
-		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
-				httpServletRequest,
-				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-				PortletRequest.RENDER_PHASE)
-		).setMVCRenderCommandName(
-			"/configuration_admin/edit_configuration"
-		).setRedirect(
-			ParamUtil.getString(
-				httpServletRequest, "backURL",
-				_portal.getCurrentCompleteURL(httpServletRequest))
-		).setParameter(
-			"factoryPid", factoryPid
-		).setParameter(
-			"pid", pid
-		).buildString();
-	}
 
 	@Override
 	public CookiesBannerConfiguration getCookiesBannerConfiguration(
@@ -124,78 +64,6 @@ public class CookiesConfigurationProviderImpl
 
 		return _getCookiesConfiguration(
 			CookiesPreferenceHandlingConfiguration.class, themeDisplay);
-	}
-
-	@Override
-	public String getGroupConfigurationURL(
-			HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
-			_portal.getUser(httpServletRequest));
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		if (!permissionChecker.isGroupAdmin(themeDisplay.getScopeGroupId())) {
-			return null;
-		}
-
-		String factoryPid =
-			CookiesPreferenceHandlingConfiguration.class.getName();
-
-		String pid = factoryPid;
-
-		Configuration configuration =
-			_getCookiesPreferenceHandlingGroupConfiguration(
-				themeDisplay.getScopeGroupId());
-
-		if (configuration != null) {
-			pid = configuration.getPid();
-		}
-
-		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
-				httpServletRequest, ConfigurationAdminPortletKeys.SITE_SETTINGS,
-				PortletRequest.RENDER_PHASE)
-		).setMVCRenderCommandName(
-			"/configuration_admin/edit_configuration"
-		).setRedirect(
-			ParamUtil.getString(
-				httpServletRequest, "backURL",
-				_portal.getCurrentCompleteURL(httpServletRequest))
-		).setParameter(
-			"factoryPid", factoryPid
-		).setParameter(
-			"pid", pid
-		).buildString();
-	}
-
-	@Override
-	public String getSystemConfigurationURL(
-			HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
-			_portal.getUser(httpServletRequest));
-
-		if (!permissionChecker.isOmniadmin()) {
-			return null;
-		}
-
-		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
-				httpServletRequest,
-				ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
-				PortletRequest.RENDER_PHASE)
-		).setMVCRenderCommandName(
-			"/configuration_admin/edit_configuration"
-		).setRedirect(
-			_portal.getCurrentCompleteURL(httpServletRequest)
-		).setParameter(
-			"factoryPid", CookiesPreferenceHandlingConfiguration.class.getName()
-		).buildString();
 	}
 
 	@Override
@@ -324,54 +192,6 @@ public class CookiesConfigurationProviderImpl
 			clazz, themeDisplay.getCompanyId());
 	}
 
-	private Configuration _getCookiesPreferenceHandlingCompanyConfiguration(
-			long companyId)
-		throws ConfigurationException {
-
-		try {
-			String filterString = StringBundler.concat(
-				"(&(", ConfigurationAdmin.SERVICE_FACTORYPID, StringPool.EQUAL,
-				CookiesPreferenceHandlingConfiguration.class.getName(),
-				".scoped)(companyId=", companyId, "))");
-
-			Configuration[] configuration =
-				_configurationAdmin.listConfigurations(filterString);
-
-			if (configuration != null) {
-				return configuration[0];
-			}
-
-			return null;
-		}
-		catch (InvalidSyntaxException | IOException exception) {
-			throw new ConfigurationException(exception);
-		}
-	}
-
-	private Configuration _getCookiesPreferenceHandlingGroupConfiguration(
-			long groupId)
-		throws ConfigurationException {
-
-		try {
-			String filterString = StringBundler.concat(
-				"(&(", ConfigurationAdmin.SERVICE_FACTORYPID, StringPool.EQUAL,
-				CookiesPreferenceHandlingConfiguration.class.getName(),
-				".scoped)(groupId=", groupId, "))");
-
-			Configuration[] configuration =
-				_configurationAdmin.listConfigurations(filterString);
-
-			if (configuration != null) {
-				return configuration[0];
-			}
-
-			return null;
-		}
-		catch (InvalidSyntaxException | IOException exception) {
-			throw new ConfigurationException(exception);
-		}
-	}
-
 	private <T> T _getScopeConfigurationAttribute(
 		ExtendedObjectClassDefinition.Scope scope, long scopePK,
 		Function<Long, T> companyFunction, Function<Long, T> groupFunction,
@@ -497,11 +317,5 @@ public class CookiesConfigurationProviderImpl
 		target = "(component.name=com.liferay.cookies.internal.configuration.admin.service.CookiesPreferenceHandlingManagedServiceFactory)"
 	)
 	private ManagedServiceFactory _managedServiceFactory;
-
-	@Reference
-	private PermissionCheckerFactory _permissionCheckerFactory;
-
-	@Reference
-	private Portal _portal;
 
 }

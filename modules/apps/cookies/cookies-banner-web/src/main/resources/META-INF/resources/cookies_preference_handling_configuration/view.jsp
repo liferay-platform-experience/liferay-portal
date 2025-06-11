@@ -27,7 +27,7 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 		<c:if test="<%= cookiesPreferenceHandlingConfigurationDisplayContext.isCookiesPreferenceHandlingConfigurationDefined() %>">
 
 			<%
-			CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider cookiesPreferenceHandlingConfigurationActionDropdownItemsProvider = new CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider(cookiesPreferenceHandlingConfigurationDisplayContext, request);
+			CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider cookiesPreferenceHandlingConfigurationActionDropdownItemsProvider = new CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider(request);
 			%>
 
 			<div class="float-right">

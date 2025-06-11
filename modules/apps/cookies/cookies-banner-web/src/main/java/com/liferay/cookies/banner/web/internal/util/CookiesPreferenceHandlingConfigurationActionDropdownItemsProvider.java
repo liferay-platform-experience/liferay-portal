@@ -5,7 +5,7 @@
 
 package com.liferay.cookies.banner.web.internal.util;
 
-import com.liferay.cookies.banner.web.internal.display.context.CookiesPreferenceHandlingConfigurationDisplayContext;
+import com.liferay.configuration.admin.constants.ConfigurationScreenConstants;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -20,12 +20,8 @@ import java.util.List;
 public class CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider {
 
 	public CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider(
-		CookiesPreferenceHandlingConfigurationDisplayContext
-			cookiesPreferenceHandlingConfigurationDisplayContext,
 		HttpServletRequest httpServletRequest) {
 
-		_cookiesPreferenceHandlingConfigurationDisplayContext =
-			cookiesPreferenceHandlingConfigurationDisplayContext;
 		_httpServletRequest = httpServletRequest;
 	}
 
@@ -35,8 +31,9 @@ public class CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider {
 				DropdownItemListBuilder.add(
 					dropdownItem -> {
 						dropdownItem.setHref(
-							_cookiesPreferenceHandlingConfigurationDisplayContext.
-								getDeleteConfigurationActionURL());
+							_httpServletRequest.getAttribute(
+								ConfigurationScreenConstants.
+									DELETE_CONFIGURATION_URL));
 						dropdownItem.setLabel(
 							LanguageUtil.get(
 								_httpServletRequest, "reset-default-values"));
@@ -44,8 +41,9 @@ public class CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider {
 				).add(
 					dropdownItem -> {
 						dropdownItem.setHref(
-							_cookiesPreferenceHandlingConfigurationDisplayContext.
-								getExportConfigurationActionURL());
+							_httpServletRequest.getAttribute(
+								ConfigurationScreenConstants.
+									EXPORT_CONFIGURATION_URL));
 						dropdownItem.setLabel(
 							LanguageUtil.get(_httpServletRequest, "export"));
 					}
@@ -53,8 +51,6 @@ public class CookiesPreferenceHandlingConfigurationActionDropdownItemsProvider {
 		).build();
 	}
 
-	private final CookiesPreferenceHandlingConfigurationDisplayContext
-		_cookiesPreferenceHandlingConfigurationDisplayContext;
 	private final HttpServletRequest _httpServletRequest;
 
 }
