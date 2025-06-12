@@ -46,6 +46,12 @@ public class SegmentsCompanyConfigurationScreen implements ConfigurationScreen {
 	}
 
 	@Override
+	public String getPID() {
+		return "com.liferay.segments.configuration." +
+			"SegmentsCompanyConfiguration";
+	}
+
+	@Override
 	public String getScope() {
 		return "company";
 	}

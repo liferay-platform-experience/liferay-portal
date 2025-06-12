@@ -5,10 +5,10 @@
 
 package com.liferay.segments.web.internal.util;
 
+import com.liferay.configuration.admin.constants.ConfigurationScreenConstants;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.segments.web.internal.display.context.SegmentsCompanyConfigurationDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -20,13 +20,9 @@ import java.util.List;
 public class SegmentsCompanyConfigurationActionDropdownItemsProvider {
 
 	public SegmentsCompanyConfigurationActionDropdownItemsProvider(
-		HttpServletRequest httpServletRequest,
-		SegmentsCompanyConfigurationDisplayContext
-			segmentsCompanyConfigurationDisplayContext) {
+		HttpServletRequest httpServletRequest) {
 
 		_httpServletRequest = httpServletRequest;
-		_segmentsCompanyConfigurationDisplayContext =
-			segmentsCompanyConfigurationDisplayContext;
 	}
 
 	public List<DropdownItem> getActionDropdownItems() {
@@ -35,8 +31,9 @@ public class SegmentsCompanyConfigurationActionDropdownItemsProvider {
 				DropdownItemListBuilder.add(
 					dropdownItem -> {
 						dropdownItem.setHref(
-							_segmentsCompanyConfigurationDisplayContext.
-								getDeleteConfigurationActionURL());
+							_httpServletRequest.getAttribute(
+								ConfigurationScreenConstants.
+									DELETE_CONFIGURATION_URL));
 						dropdownItem.setLabel(
 							LanguageUtil.get(
 								_httpServletRequest, "reset-default-values"));
@@ -44,8 +41,9 @@ public class SegmentsCompanyConfigurationActionDropdownItemsProvider {
 				).add(
 					dropdownItem -> {
 						dropdownItem.setHref(
-							_segmentsCompanyConfigurationDisplayContext.
-								getExportConfigurationActionURL());
+							_httpServletRequest.getAttribute(
+								ConfigurationScreenConstants.
+									EXPORT_CONFIGURATION_URL));
 						dropdownItem.setLabel(
 							LanguageUtil.get(_httpServletRequest, "export"));
 					}
@@ -54,7 +52,5 @@ public class SegmentsCompanyConfigurationActionDropdownItemsProvider {
 	}
 
 	private final HttpServletRequest _httpServletRequest;
-	private final SegmentsCompanyConfigurationDisplayContext
-		_segmentsCompanyConfigurationDisplayContext;
 
 }

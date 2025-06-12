@@ -33,7 +33,7 @@ SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayCo
 		<c:if test="<%= segmentsCompanyConfigurationDisplayContext.isSegmentsCompanyConfigurationDefined() %>">
 
 				<%
-				SegmentsCompanyConfigurationActionDropdownItemsProvider segmentsCompanyConfigurationActionDropdownItemsProvider = new SegmentsCompanyConfigurationActionDropdownItemsProvider(request, segmentsCompanyConfigurationDisplayContext);
+				SegmentsCompanyConfigurationActionDropdownItemsProvider segmentsCompanyConfigurationActionDropdownItemsProvider = new SegmentsCompanyConfigurationActionDropdownItemsProvider(request);
 				%>
 
 				<div class="float-right">
