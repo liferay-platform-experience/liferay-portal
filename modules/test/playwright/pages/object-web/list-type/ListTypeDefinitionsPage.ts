@@ -105,7 +105,9 @@ export class ListTypeDefinitionsPage {
 
 		await this.page
 			.frameLocator('iframe')
-			.getByRole('option', {name: `${locationCode} language: Untranslated`})
+			.getByRole('option', {
+				name: `${locationCode} language: Untranslated`,
+			})
 			.click();
 
 		await this.sidebarNameInput.click();
@@ -131,7 +133,9 @@ export class ListTypeDefinitionsPage {
 		await this.picklistItemTranslationButton.click();
 
 		await this.page
-			.getByRole('option', {name: `${locationCode} language: Untranslated`})
+			.getByRole('option', {
+				name: `${locationCode} language: Untranslated`,
+			})
 			.click();
 
 		await this.modalNameInput.click();

@@ -629,7 +629,9 @@ test.describe('Manage object definitions through Model Builder', () => {
 
 			await modelBuilderRightSidebarPage.objectDefinitionPluralLabelLocalizationButton.click();
 
-			await page.getByRole('option', {name: 'en_US language: Default'}).click();
+			await page
+				.getByRole('option', {name: 'en_US language: Default'})
+				.click();
 
 			await expect(
 				modelBuilderRightSidebarPage.objectDefinitionPluralLabel

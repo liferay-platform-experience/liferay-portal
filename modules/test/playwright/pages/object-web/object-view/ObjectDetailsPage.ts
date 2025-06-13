@@ -39,12 +39,16 @@ export class ObjectDetailsPage {
 
 		await clickAndExpectToBeVisible({
 			target: this.page.getByRole('option', {name: 'en_US'}),
-			trigger: this.page.locator('[aria-label="Open Localizations"]').first(),
+			trigger: this.page
+				.locator('[aria-label="Open Localizations"]')
+				.first(),
 		});
 
 		await clickAndExpectToBeHidden({
 			target: this.page.getByRole('option', {name: 'en_US'}),
-			trigger: this.page.locator('[aria-label="Open Localizations"]').first(),
+			trigger: this.page
+				.locator('[aria-label="Open Localizations"]')
+				.first(),
 		});
 	}
 
