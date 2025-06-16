@@ -23,6 +23,10 @@ public interface ConfigurationScreen {
 
 	public String getName(Locale locale);
 
+	public default String getPID() {
+		return null;
+	}
+
 	public String getScope();
 
 	public default boolean isDeprecated() {

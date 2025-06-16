@@ -48,6 +48,15 @@ public abstract class ConfigurationScreenWrapper
 	}
 
 	@Override
+	public String getPID() {
+		ConfigurationScreen configurationScreen =
+			_configurationScreenDCLSingleton.getSingleton(
+				this::getConfigurationScreen);
+
+		return configurationScreen.getPID();
+	}
+
+	@Override
 	public String getScope() {
 		ConfigurationScreen configurationScreen =
 			_configurationScreenDCLSingleton.getSingleton(
