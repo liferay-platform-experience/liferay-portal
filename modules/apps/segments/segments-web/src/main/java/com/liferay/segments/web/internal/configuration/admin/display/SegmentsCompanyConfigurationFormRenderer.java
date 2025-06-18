@@ -1,13 +1,14 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.segments.web.internal.configuration.admin.display;
 
-import com.liferay.configuration.admin.display.ConfigurationScreen;
-import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.util.Portal;
+import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.segments.configuration.SegmentsCompanyConfiguration;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 import com.liferay.segments.web.internal.display.context.SegmentsCompanyConfigurationDisplayContext;
 
@@ -18,36 +19,34 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Cristina González
- * @author Stefan Tanasie
+ * @author Thiago Buarque
  */
-@Component(service = ConfigurationScreen.class)
-public class SegmentsCompanyConfigurationScreen implements ConfigurationScreen {
+@Component(service = ConfigurationFormRenderer.class)
+public class SegmentsCompanyConfigurationFormRenderer
+	implements ConfigurationFormRenderer {
 
 	@Override
-	public String getCategoryKey() {
-		return "segments";
+	public String getPid() {
+		return SegmentsCompanyConfiguration.class.getName();
 	}
 
 	@Override
-	public String getKey() {
-		return "segments-service";
-	}
+	public Map<String, Object> getRequestParameters(
+		HttpServletRequest httpServletRequest) {
 
-	@Override
-	public String getName(Locale locale) {
-		return _language.get(locale, "segments-service-configuration-name");
-	}
-
-	@Override
-	public String getScope() {
-		return "company";
+		return HashMapBuilder.<String, Object>put(
+			"roleSegmentationEnabled",
+			ParamUtil.getBoolean(httpServletRequest, "roleSegmentationEnabled")
+		).put(
+			"segmentationEnabled",
+			ParamUtil.getBoolean(httpServletRequest, "segmentationEnabled")
+		).build();
 	}
 
 	@Override
@@ -64,8 +63,7 @@ public class SegmentsCompanyConfigurationScreen implements ConfigurationScreen {
 			httpServletRequest.setAttribute(
 				SegmentsCompanyConfigurationDisplayContext.class.getName(),
 				new SegmentsCompanyConfigurationDisplayContext(
-					httpServletRequest, _portal,
-					_segmentsConfigurationProvider));
+					httpServletRequest, _segmentsConfigurationProvider));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
@@ -74,12 +72,6 @@ public class SegmentsCompanyConfigurationScreen implements ConfigurationScreen {
 				"Unable to render /segments_configuration.jsp", exception);
 		}
 	}
-
-	@Reference
-	private Language _language;
-
-	@Reference
-	private Portal _portal;
 
 	@Reference
 	private SegmentsConfigurationProvider _segmentsConfigurationProvider;

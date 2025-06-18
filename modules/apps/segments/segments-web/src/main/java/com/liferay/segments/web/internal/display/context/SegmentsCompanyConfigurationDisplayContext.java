@@ -5,23 +5,13 @@
 
 package com.liferay.segments.web.internal.display.context;
 
-import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
-
-import jakarta.portlet.PortletResponse;
-import jakarta.portlet.ResourceURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -31,51 +21,11 @@ import jakarta.servlet.http.HttpServletRequest;
 public class SegmentsCompanyConfigurationDisplayContext {
 
 	public SegmentsCompanyConfigurationDisplayContext(
-		HttpServletRequest httpServletRequest, Portal portal,
+		HttpServletRequest httpServletRequest,
 		SegmentsConfigurationProvider segmentsConfigurationProvider) {
 
 		_httpServletRequest = httpServletRequest;
-		_portal = portal;
 		_segmentsConfigurationProvider = segmentsConfigurationProvider;
-	}
-
-	public String getBindConfigurationActionURL() {
-		return PortletURLBuilder.createActionURL(
-			_portal.getLiferayPortletResponse(
-				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAKARTA_PORTLET_RESPONSE)),
-			ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
-		).setActionName(
-			"/instance_settings/bind_segments_company_configuration"
-		).buildString();
-	}
-
-	public String getDeleteConfigurationActionURL() {
-		return PortletURLBuilder.createActionURL(
-			_portal.getLiferayPortletResponse(
-				(PortletResponse)_httpServletRequest.getAttribute(
-					JavaConstants.JAKARTA_PORTLET_RESPONSE)),
-			ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
-		).setActionName(
-			"/instance_settings/delete_segments_company_configuration"
-		).buildString();
-	}
-
-	public String getExportConfigurationActionURL() throws PortalException {
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(_httpServletRequest);
-
-		ResourceURL resourceURL =
-			(ResourceURL)requestBackedPortletURLFactory.createResourceURL(
-				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS);
-
-		resourceURL.setParameters(
-			HttpComponentsUtil.getParameterMap(
-				_segmentsConfigurationProvider.getConfigurationURL(
-					_httpServletRequest)));
-		resourceURL.setResourceID("/configuration_admin/export_configuration");
-
-		return resourceURL.toString();
 	}
 
 	public String getSegmentsCompanyConfigurationURL() {
@@ -131,7 +81,6 @@ public class SegmentsCompanyConfigurationDisplayContext {
 		SegmentsCompanyConfigurationDisplayContext.class);
 
 	private final HttpServletRequest _httpServletRequest;
-	private final Portal _portal;
 	private final SegmentsConfigurationProvider _segmentsConfigurationProvider;
 
 }
