@@ -45,12 +45,6 @@ public class ControlPanelLayoutTypeAccessPolicyTest {
 		Group group = Mockito.mock(Group.class);
 
 		Mockito.when(
-			group.isDepot()
-		).thenReturn(
-			false
-		);
-
-		Mockito.when(
 			group.isSite()
 		).thenReturn(
 			false
@@ -58,6 +52,12 @@ public class ControlPanelLayoutTypeAccessPolicyTest {
 
 		Mockito.when(
 			group.isControlPanel()
+		).thenReturn(
+			false
+		);
+
+		Mockito.when(
+			group.isDepot()
 		).thenReturn(
 			false
 		);
