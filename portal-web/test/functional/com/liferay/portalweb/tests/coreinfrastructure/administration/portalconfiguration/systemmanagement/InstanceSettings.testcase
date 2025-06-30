@@ -807,6 +807,8 @@ definition {
 				osgiConfigFileName = ${exportConfigFileName});
 		}
 
+		Pause(value1 = 5000);
+
 		task ("And login to the new instance and go to Web Content in the instance settings") {
 			User.firstLoginUI(
 				password = PropsUtil.get("default.admin.password"),
