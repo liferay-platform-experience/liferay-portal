@@ -12,6 +12,7 @@ import React, {
 	useReducer,
 } from 'react';
 
+import {ObjectDefinitions} from '../types/ObjectDefinition';
 import {
 	ReferencedStructure,
 	RepeatableGroup,
@@ -29,11 +30,11 @@ import findAvailableFieldName from '../utils/findAvailableFieldName';
 import findChild from '../utils/findChild';
 import {getChildrenUuids} from '../utils/getChildrenUuids';
 import getRandomId from '../utils/getRandomId';
-import getRandomName from '../utils/getRandomName';
 import getUuid from '../utils/getUuid';
 import insertGroup from '../utils/insertGroup';
 import normalizeName from '../utils/normalizeName';
 import openDeletionModal from '../utils/openDeletionModal';
+import refreshReferencedStructures from '../utils/refreshReferencedStructures';
 import {
 	ValidationError,
 	validateField,
@@ -84,7 +85,7 @@ const INITIAL_STATE: State = {
 type AddFieldAction = {field: Field; type: 'add-field'};
 
 type AddReferencedStructuresAction = {
-	ercs: string[];
+	referencedStructures: ReferencedStructure[];
 	type: 'add-referenced-structures';
 };
 
@@ -112,6 +113,11 @@ type DeleteChildAction = {type: 'delete-child'; uuid: Uuid};
 type DeleteSelectionAction = {type: 'delete-selection'};
 
 type PublishStructureAction = {id?: number; type: 'publish-structure'};
+
+type RefreshReferencedStructuresAction = {
+	objectDefinitions: ObjectDefinitions;
+	type: 'refresh-referenced-structures';
+};
 
 type SetErrorAction = {error: string | null; type: 'set-error'};
 
@@ -163,6 +169,7 @@ export type Action =
 	| DeleteChildAction
 	| DeleteSelectionAction
 	| PublishStructureAction
+	| RefreshReferencedStructuresAction
 	| SetErrorAction
 	| SetSelection
 	| UpdateFieldAction
@@ -194,7 +201,7 @@ function reducer(state: State, action: Action): State {
 			};
 		}
 		case 'add-referenced-structures': {
-			const {ercs} = action;
+			const {referencedStructures} = action;
 
 			const {structure} = state;
 
@@ -202,22 +209,14 @@ function reducer(state: State, action: Action): State {
 
 			let selection: State['selection'] = [];
 
-			for (const [i, erc] of ercs.entries()) {
-				const uuid = getUuid();
-				const name = getRandomName();
-
-				const referencedStructure: ReferencedStructure = {
-					erc,
-					name,
-					parent: structure.uuid,
-					type: 'referenced-structure',
-					uuid,
-				};
-
+			for (const [
+				i,
+				referencedStructure,
+			] of referencedStructures.entries()) {
 				nextChildren.set(referencedStructure.uuid, referencedStructure);
 
 				if (i === 0) {
-					selection = [uuid];
+					selection = [referencedStructure.uuid];
 				}
 			}
 
@@ -251,14 +250,18 @@ function reducer(state: State, action: Action): State {
 				(uuid) => findChild(structure, uuid)!
 			);
 
+			const uuid = getUuid();
+
 			const nextChildren = insertGroup({
 				groupChildren: children,
 				groupParent: children[0].parent,
+				groupUuid: uuid,
 				root: structure,
 			});
 
 			return {
 				...state,
+				selection: [uuid],
 				structure: {...structure, children: nextChildren},
 			};
 		}
@@ -382,6 +385,23 @@ function reducer(state: State, action: Action): State {
 				structure: nextStructure,
 				unsavedChanges: false,
 			};
+		}
+		case 'refresh-referenced-structures': {
+			const {structure} = state;
+
+			const {objectDefinitions} = action;
+
+			const nextChildren = refreshReferencedStructures({
+				objectDefinitions,
+				root: structure,
+			});
+
+			const nextStructure = {
+				...structure,
+				children: nextChildren,
+			};
+
+			return {...state, structure: nextStructure};
 		}
 		case 'set-error':
 			return {

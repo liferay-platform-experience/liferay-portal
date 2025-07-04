@@ -191,13 +191,17 @@ portletDisplay.setURLBack(backURL);
 				return false;
 			}
 
-			const localDate = date.replace(/Z$/, '');
+			const inputDateTime = new Date(date.replace(/Z$/, ''));
 
-			const currentDateTime = new Date();
+			const languageId = Liferay.ThemeDisplay.getBCP47LanguageId();
 
-			const dateTime = new Date(localDate);
+			const timeZone = Liferay.ThemeDisplay.getTimeZone();
 
-			return currentDateTime >= dateTime;
+			const timeZoneDateTime = new Date(
+				new Date().toLocaleString(languageId, {timeZone})
+			);
+
+			return timeZoneDateTime >= inputDateTime;
 		}
 
 		Liferay.provide(window, '<portlet:namespace />submitObjectEntry', () => {
@@ -207,14 +211,18 @@ portletDisplay.setURLBack(backURL);
 
 			const current = DDMFormInstance.reactComponentRef.current;
 
-			const loadingElement = document.createElement('span');
+			let loadingElement = form.querySelector('.loading-animation');
 
-			loadingElement.className =
-				'loading-animation loading-animation-secondary loading-animation-sm';
+			if (!loadingElement) {
+				loadingElement = document.createElement('span');
 
-			loadingElement.ariaHidden = 'true';
+				loadingElement.className =
+					'loading-animation loading-animation-secondary loading-animation-sm';
 
-			form.insertAdjacentElement('afterbegin', loadingElement);
+				loadingElement.ariaHidden = 'true';
+
+				form.insertAdjacentElement('afterbegin', loadingElement);
+			}
 
 			current.validate().then((result) => {
 				if (result) {

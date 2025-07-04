@@ -19,9 +19,11 @@ export default function SpaceAbstractHeader({
 }: SpaceAbstractHeaderProps) {
 	return (
 		<div className="align-items-center d-flex justify-content-between">
-			<h2 className="m-0">{title}</h2>
+			<h2 className="font-weight-semi-bold m-0 text-4">{title}</h2>
 
-			<ClayLink href={url}>{label}</ClayLink>
+			<ClayLink className="text-3 text-weight-semi-bold" href={url}>
+				{label}
+			</ClayLink>
 		</div>
 	);
 }
