@@ -499,7 +499,7 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 				return null;
 			}
 
-			content = _moveBOMChar(content, resourceURL);
+			content = _stripBOM(content, resourceURL);
 
 			FileUtil.write(cacheDataFile, content);
 
@@ -532,7 +532,7 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 										finalContent);
 								}
 
-								minifiedContent = _moveBOMChar(
+								minifiedContent = _stripBOM(
 									minifiedContent, resourceURL);
 
 								File tempFile = FileUtil.createTempFile();
@@ -695,21 +695,6 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		}
 	}
 
-	private String _moveBOMChar(String content, URL resourceURL)
-		throws IOException {
-
-		if (content.startsWith(_BOM_CHAR)) {
-			return StringBundler.concat(
-				_BOM_CHAR, StringPool.NEW_LINE, _CSS_COMMENT_BEGIN,
-				URLUtil.getLastModifiedTime(resourceURL), _CSS_COMMENT_END,
-				StringPool.NEW_LINE, content.substring(1));
-		}
-
-		return StringBundler.concat(
-			_CSS_COMMENT_BEGIN, URLUtil.getLastModifiedTime(resourceURL),
-			_CSS_COMMENT_END, StringPool.NEW_LINE, content);
-	}
-
 	private String _readResource(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String resourcePath)
@@ -730,6 +715,20 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 		URLConnection urlConnection = url.openConnection();
 
 		return StringUtil.read(urlConnection.getInputStream());
+	}
+
+	private String _stripBOM(String content, URL resourceURL)
+		throws IOException {
+
+		if (content.startsWith(_BOM_CHAR)) {
+			return StringBundler.concat(
+				_CSS_COMMENT_BEGIN, URLUtil.getLastModifiedTime(resourceURL),
+				_CSS_COMMENT_END, StringPool.NEW_LINE, content.substring(1));
+		}
+
+		return StringBundler.concat(
+			_CSS_COMMENT_BEGIN, URLUtil.getLastModifiedTime(resourceURL),
+			_CSS_COMMENT_END, StringPool.NEW_LINE, content);
 	}
 
 	private static final String _BASE_URL = "@base_url@";
