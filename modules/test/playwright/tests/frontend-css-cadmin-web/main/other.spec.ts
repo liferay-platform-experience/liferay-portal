@@ -13,7 +13,7 @@ test(
 	'CSS files do not have BOM characters inside',
 	{tag: '@LPD-61387'},
 	async ({page}) => {
-		let response = await page.goto(
+		const response = await page.goto(
 			'o/frontend-css-cadmin-web/clay_admin.css?minifierType=css'
 		);
 
