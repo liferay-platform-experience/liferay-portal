@@ -413,10 +413,6 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 
 				String line = unsyncBufferedReader.readLine();
 
-				if (line.startsWith(_BOM_CHAR)) {
-					line = unsyncBufferedReader.readLine();
-				}
-
 				if ((line != null) && line.startsWith(_CSS_COMMENT_BEGIN) &&
 					line.endsWith(_CSS_COMMENT_END)) {
 
