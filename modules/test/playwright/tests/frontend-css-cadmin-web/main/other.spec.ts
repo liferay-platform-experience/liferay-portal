@@ -21,10 +21,15 @@ test(
 
 		const buffer = await response.body();
 
-		expect(
-			buffer.readUInt8(0) === 0xef &&
-				buffer.readUint8(1) === 0xbb &&
-				buffer.readUint8(2) === 0xbf
-		).toBe(true);
+		let bomFound = false;
+
+		for (let i = 0; !bomFound && i < buffer.length - 2; i++) {
+			bomFound =
+				buffer.readUInt8(i) === 0xef &&
+				buffer.readUint8(i + 1) === 0xbb &&
+				buffer.readUint8(i + 2) === 0xbf;
+		}
+
+		expect(bomFound).toBe(false);
 	}
 );
