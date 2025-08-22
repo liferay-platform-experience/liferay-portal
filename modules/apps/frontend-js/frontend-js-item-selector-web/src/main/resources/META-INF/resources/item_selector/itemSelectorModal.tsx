@@ -16,6 +16,11 @@ import React, {useState} from 'react';
 export interface IItemSelectorModalProps<T> {
 
 	/**
+	 * URL for item creation used to open a new modal.
+	 */
+	createItemURL: string;
+
+	/**
 	 * Configuration properties of the Frontend Data Set used to display data.
 	 */
 	fdsProps: IFrontendDataSetProps;
@@ -52,6 +57,7 @@ export interface IItemSelectorModalProps<T> {
 }
 
 function ItemSelectorModal<T extends Record<string, any>>({
+	createItemURL,
 	fdsProps,
 	itemNameLocator,
 	observer,
@@ -80,6 +86,20 @@ function ItemSelectorModal<T extends Record<string, any>>({
 			<ClayModal.Body className="p-0">
 				<FrontendDataSet
 					{...fdsProps}
+					creationMenu={{
+						primaryItems: [
+							{
+								href: createItemURL,
+								label: Liferay.Language.get('add-new-item'),
+							},
+						],
+					}}
+					emptyState={{
+						description: Liferay.Language.get(
+							'fortunately-it-is-very-easy-to-add-new-ones'
+						),
+						title: Liferay.Language.get('no-items-were-found'),
+					}}
 					onSelect={({
 						selectedItems,
 					}: {
