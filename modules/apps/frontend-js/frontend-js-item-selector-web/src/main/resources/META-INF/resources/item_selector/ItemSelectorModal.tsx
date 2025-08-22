@@ -7,6 +7,7 @@ import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
 import {InternalDispatch} from '@clayui/shared';
 import {
+	ACTION_ITEM_TARGETS,
 	FrontendDataSet,
 	IFrontendDataSetProps,
 } from '@liferay/frontend-data-set-web';
@@ -33,6 +34,11 @@ export interface IItemSelectorModalProps<T> {
 	 * The URL that will be fetched to return the items.
 	 */
 	apiURL: string;
+
+	/**
+	 * URL for item creation used to open a new modal.
+	 */
+	createItemURL?: string;
 
 	/**
 	 * Configuration properties of the Frontend Data Set used to display data.
@@ -88,6 +94,7 @@ export interface IItemSelectorModalProps<T> {
 
 function ItemSelectorModal<T extends Record<string, any>>({
 	apiURL,
+	createItemURL,
 	fdsProps,
 	itemTypeLabel,
 	items: externalItems,
@@ -110,6 +117,23 @@ function ItemSelectorModal<T extends Record<string, any>>({
 		}
 	}, [externalItems, open]);
 
+	const creationMenu = {
+		primaryItems: [
+			{
+				href: createItemURL,
+				label: Liferay.Language.get('add-new-item'),
+				target: ACTION_ITEM_TARGETS.BLANK,
+			},
+		],
+	};
+
+	const emptyState = {
+		description: Liferay.Language.get(
+			'fortunately-it-is-very-easy-to-add-new-ones'
+		),
+		title: Liferay.Language.get('no-items-were-found'),
+	};
+
 	const getSelectedItemLabel = function (selectedItem: T) {
 		return getObjectValueFromPath({
 			object: selectedItem,
@@ -129,6 +153,8 @@ function ItemSelectorModal<T extends Record<string, any>>({
 				<FrontendDataSet
 					{...fdsProps}
 					apiURL={apiURL}
+					creationMenu={createItemURL ? creationMenu : undefined}
+					emptyState={createItemURL ? emptyState : undefined}
 					onSelectedItemsChange={setSelectedItems}
 					selectedItems={selectedItems}
 					selectedItemsKey={locator.id}

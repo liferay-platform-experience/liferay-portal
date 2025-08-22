@@ -6,19 +6,14 @@
 import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
+import {LinkOrButton} from '@clayui/shared';
 import classNames from 'classnames';
 import React, {useContext, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
+import {ACTION_ITEM_TARGETS} from '../../utils/actionItems/constants';
 import {triggerAction} from '../../utils/actionItems/triggerAction';
 import {ICreationActionItem} from '../../utils/types';
-
-const EMPTY_STATE_BUTTON_PROPS = {
-	'aria-label': undefined,
-	'className': undefined,
-	'displayType': 'secondary',
-	'title': undefined,
-};
 
 const DropDown = ({
 	inEmptyState,
@@ -39,17 +34,15 @@ const DropDown = ({
 			onActiveChange={setActive}
 			trigger={
 				<ClayButton
-					aria-label={Liferay.Language.get('new')}
-					className="nav-btn nav-btn-monospaced"
+					className={!inEmptyState ? 'nav-btn' : undefined}
 					data-testid="fdsCreationActionButton"
-					title={Liferay.Language.get('new')}
-					{...(inEmptyState && EMPTY_STATE_BUTTON_PROPS)}
+					displayType={inEmptyState ? 'secondary' : undefined}
 				>
-					{inEmptyState ? (
-						Liferay.Language.get('new')
-					) : (
-						<ClayIcon symbol="plus" />
-					)}
+					{Liferay.Language.get('new')}
+
+					<span className="d-inline-flex inline-item-after">
+						<ClayIcon symbol="caret-bottom" />
+					</span>
 				</ClayButton>
 			}
 		>
@@ -96,7 +89,15 @@ function CreationMenu({
 
 	const {loadData} = frontendDataSetContext;
 
-	return primaryItems?.length > 0 ? (
+	if (primaryItems?.length === 0) {
+		return null;
+	}
+
+	const firstItem = primaryItems[0];
+
+	const opensInNewTab = firstItem.target === ACTION_ITEM_TARGETS.BLANK;
+
+	return (
 		<ul
 			className={classNames('navbar-nav', {
 				'd-inline-flex': inEmptyState,
@@ -109,36 +110,54 @@ function CreationMenu({
 						primaryItems={primaryItems}
 					/>
 				) : (
-					<ClayButton
-						aria-label={primaryItems[0].label}
-						className="nav-btn nav-btn-monospaced"
+					<LinkOrButton
+						className={
+							inEmptyState
+								? 'btn btn-secondary'
+								: 'btn btn-primary nav-btn'
+						}
 						data-testid="fdsCreationActionButton"
 						data-tooltip-align="top"
+						href={opensInNewTab ? firstItem.href : undefined}
 						onClick={() => {
-							const item = primaryItems[0];
+							if (opensInNewTab) {
+								return;
+							}
 
-							item.onClick?.({
+							firstItem.onClick?.({
 								loadData,
 							});
 
-							if (item.href || item.target) {
-								triggerAction(item, frontendDataSetContext);
+							if (firstItem.href || firstItem.target) {
+								triggerAction(
+									firstItem,
+									frontendDataSetContext
+								);
 							}
 						}}
-						title={primaryItems[0].label}
-						{...(inEmptyState && EMPTY_STATE_BUTTON_PROPS)}
+						target={opensInNewTab ? '_blank' : undefined}
+						title={!inEmptyState ? firstItem.label : undefined}
 					>
-						{inEmptyState ? (
-							primaryItems[0].label
-						) : (
-							<ClayIcon symbol="plus" />
+						{inEmptyState
+							? firstItem.label
+							: Liferay.Language.get('new')}
+
+						{opensInNewTab && (
+							<span
+								className={classNames(
+									'inline-item-after',
+									inEmptyState
+										? 'inline-item'
+										: 'd-inline-flex'
+								)}
+							>
+								<ClayIcon symbol="shortcut" />
+							</span>
 						)}
-					</ClayButton>
+					</LinkOrButton>
 				)}
 			</li>
 		</ul>
-	) : (
-		<></>
 	);
 }
 
