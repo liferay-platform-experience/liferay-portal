@@ -338,6 +338,7 @@ export default function ItemSelectorSamples() {
 			<SampleContainer label="Item Selector Modal">
 				<ItemSelectorModal<Document>
 					{...{
+						createItemURL: Liferay.ThemeDisplay.getPortalURL(),
 						fdsProps: {
 							...FDS_DEFAULT_PROPS,
 							apiURL: documentsItemSelectorConfig.apiURL,
@@ -385,6 +386,7 @@ export default function ItemSelectorSamples() {
 
 				<ItemSelectorModal<User>
 					{...{
+						createItemURL: Liferay.ThemeDisplay.getPortalURL(),
 						fdsProps: {
 							...FDS_DEFAULT_PROPS,
 							apiURL: userAccountsItemSelectorConfig.apiURL,
