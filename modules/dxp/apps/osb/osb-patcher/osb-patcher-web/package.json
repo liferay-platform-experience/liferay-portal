@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"@clayui/form": "3.142.0",
-		"@clayui/link": "3.142.0",
-		"@clayui/popover": "3.142.0",
+		"@clayui/form": "3.143.2",
+		"@clayui/link": "3.143.2",
+		"@clayui/popover": "3.143.2",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"
