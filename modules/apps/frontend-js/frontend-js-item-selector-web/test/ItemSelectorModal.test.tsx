@@ -61,10 +61,12 @@ const mockedLoadClientExtensions = loadClientExtensions as jest.Mock;
 const mockedSub = sub as jest.Mock;
 
 const ItemSelectorModalWrapper = ({
+	createItemURL,
 	defaultOpen,
 	onItemsChange,
 	selectedItems,
 }: {
+	createItemURL?: string;
 	defaultOpen: boolean;
 	onItemsChange: (items: TestItem[]) => void;
 	selectedItems: TestItem[];
@@ -77,6 +79,7 @@ const ItemSelectorModalWrapper = ({
 
 			<ItemSelectorModal<TestItem>
 				{...{
+					createItemURL,
 					fdsProps: {
 						apiURL: `${location.origin}/o/headless-delivery/v1.0/test-api-url`,
 						id: `itemSelectorModal-test-0001`,
