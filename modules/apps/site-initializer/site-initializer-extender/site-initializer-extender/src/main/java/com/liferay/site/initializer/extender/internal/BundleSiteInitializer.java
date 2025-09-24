@@ -4012,6 +4012,16 @@ public class BundleSiteInitializer implements SiteInitializer {
 				).buildString();
 			}
 
+			String displayIcon = menuItemJSONObject.getString("displayIcon");
+
+			if (Validator.isNotNull(displayIcon)) {
+				typeSettings = UnicodePropertiesBuilder.load(
+					typeSettings
+				).put(
+					"displayIcon", displayIcon
+				).buildString();
+			}
+
 			SiteNavigationMenuItem siteNavigationMenuItem =
 				_siteNavigationMenuItemLocalService.
 					addOrUpdateSiteNavigationMenuItem(
