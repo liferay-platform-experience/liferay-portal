@@ -14,7 +14,7 @@ interface ObjectManagementToolbarProps {
 	isRootDescendantNode: boolean;
 	isRootNode: boolean;
 	label: string;
-	loading: boolean;
+	loading?: boolean;
 	objectDefinitionExternalReferenceCode: string;
 	objectDefinitionId: number;
 	onSubmit: (draft: boolean) => void;
