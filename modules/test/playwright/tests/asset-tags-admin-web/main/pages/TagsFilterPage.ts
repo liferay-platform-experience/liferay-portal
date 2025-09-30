@@ -41,6 +41,6 @@ export class TagsFilterPage {
 			'Success:You have successfully updated the setup.'
 		);
 
-		await this.page.getByLabel('close', {exact: true}).click();
+		await this.page.getByLabel('Close', {exact: true}).click();
 	}
 }

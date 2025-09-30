@@ -25,7 +25,7 @@ export class SegmentsPage {
 	constructor(page: Page) {
 		this.page = page;
 
-		this.closeButton = page.getByLabel('close', {exact: true});
+		this.closeButton = page.getByLabel('Close', {exact: true});
 		this.criterionLabel = page.locator('span.criterion-string');
 		this.deleteButton = page.getByRole('menuitem', {name: 'Delete'});
 		this.editButton = page.getByRole('menuitem', {name: 'Edit'});
