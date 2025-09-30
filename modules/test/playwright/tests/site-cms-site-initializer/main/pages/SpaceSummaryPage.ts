@@ -23,7 +23,7 @@ export class SpaceSummaryPage {
 	constructor(page: Page) {
 		this.page = page;
 
-		this.closeButton = this.page.getByLabel('close', {exact: true});
+		this.closeButton = this.page.getByLabel('Close', {exact: true});
 
 		this.userGroupsTab = page.getByRole('tab', {name: 'User Groups'});
 
