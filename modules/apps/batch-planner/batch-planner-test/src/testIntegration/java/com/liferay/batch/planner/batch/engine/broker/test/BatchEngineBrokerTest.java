@@ -1172,7 +1172,9 @@ public class BatchEngineBrokerTest {
 					csvRecordString = _htmlBreakPattern.matcher(
 						csvRecordString
 					).replaceAll(
-						StringBundler.concat("$1", _NEWLINE, _NEWLINE, "$3")
+						StringBundler.concat(
+							"$1", System.lineSeparator(),
+							System.lineSeparator(), "$3")
 					);
 				}
 
@@ -1603,8 +1605,6 @@ public class BatchEngineBrokerTest {
 	private static final String _DELIMITER_VALUE = StringPool.COMMA;
 
 	private static final String _ENCLOSING_CHARACTER_VALUE = StringPool.QUOTE;
-
-	private static final String _NEWLINE = System.lineSeparator();
 
 	private static final String _OBJECT_DEFINITION_1_ERC =
 		"TEST-OBJECT-DEFINITION-1";
