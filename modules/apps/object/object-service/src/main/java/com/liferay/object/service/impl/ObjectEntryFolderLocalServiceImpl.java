@@ -917,32 +917,34 @@ public class ObjectEntryFolderLocalServiceImpl
 		String uniqueName = _getUniqueName(
 			objectEntryFolder.getName(), parentObjectEntryFolder);
 
-		if (!StringUtil.equals(objectEntryFolder.getName(), uniqueName)) {
-			if (replace) {
-				ObjectEntryFolder duplicateObjectEntryFolder =
-					objectEntryFolderPersistence.fetchByG_C_P_N(
-						parentObjectEntryFolder.getGroupId(),
-						parentObjectEntryFolder.getCompanyId(),
-						parentObjectEntryFolder.getObjectEntryFolderId(),
-						objectEntryFolder.getName());
+		if (StringUtil.equals(objectEntryFolder.getName(), uniqueName)) {
+			return;
+		}
 
-				if (duplicateObjectEntryFolder != null) {
-					duplicateObjectEntryFolder.setName(
-						duplicateObjectEntryFolder.getName() + "(replace)");
+		if (replace) {
+			ObjectEntryFolder duplicateObjectEntryFolder =
+				objectEntryFolderPersistence.fetchByG_C_P_N(
+					parentObjectEntryFolder.getGroupId(),
+					parentObjectEntryFolder.getCompanyId(),
+					parentObjectEntryFolder.getObjectEntryFolderId(),
+					objectEntryFolder.getName());
 
-					duplicateObjectEntryFolder =
-						objectEntryFolderLocalService.updateObjectEntryFolder(
-							duplicateObjectEntryFolder);
+			if (duplicateObjectEntryFolder != null) {
+				duplicateObjectEntryFolder.setName(
+					duplicateObjectEntryFolder.getName() + "(replace)");
 
-					objectEntryFolderLocalService.deleteObjectEntryFolder(
+				duplicateObjectEntryFolder =
+					objectEntryFolderLocalService.updateObjectEntryFolder(
 						duplicateObjectEntryFolder);
 
-					return;
-				}
-			}
+				objectEntryFolderLocalService.deleteObjectEntryFolder(
+					duplicateObjectEntryFolder);
 
-			objectEntryFolder.setName(uniqueName);
+				return;
+			}
 		}
+
+		objectEntryFolder.setName(uniqueName);
 	}
 
 	private void _updateWorkflowDefinitionLinks(

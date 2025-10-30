@@ -10861,7 +10861,6 @@ public class DefaultObjectEntryManagerImplTest
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(objectEntry2.getId()));
-
 		Assert.assertEquals(
 			String.valueOf(
 				destinationObjectEntryFolder.getObjectEntryFolderId()),
@@ -11379,7 +11378,6 @@ public class DefaultObjectEntryManagerImplTest
 		Assert.assertEquals(
 			objectEntry1.getPropertyValue("textObjectFieldName") + " (Copy)",
 			objectEntry2.getPropertyValue("textObjectFieldName"));
-
 		Assert.assertEquals(
 			String.valueOf(
 				destinationObjectEntryFolder.getObjectEntryFolderId()),
@@ -11452,7 +11450,6 @@ public class DefaultObjectEntryManagerImplTest
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(objectEntry1.getId()));
-
 		Assert.assertEquals(
 			String.valueOf(
 				destinationObjectEntryFolder.getObjectEntryFolderId()),
