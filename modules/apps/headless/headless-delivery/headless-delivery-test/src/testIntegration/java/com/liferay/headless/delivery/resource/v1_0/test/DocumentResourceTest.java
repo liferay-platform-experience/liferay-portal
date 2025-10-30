@@ -779,7 +779,6 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 		Assert.assertEquals(
 			(Long)dlFolder.getFolderId(),
 			updatedDocument.getDocumentFolderId());
-
 		Assert.assertEquals(
 			randomDocument.getTitle(), updatedDocument.getTitle());
 	}
