@@ -82,7 +82,6 @@ public class EditAssetVocabularyHeaderProductNavigationControlMenuEntryTest {
 				_getMockHttpServletRequest(
 					_addAssetVocabulary(
 						AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL))));
-
 		Assert.assertFalse(
 			_productNavigationControlMenuEntry.isShow(
 				_getMockHttpServletRequest(
