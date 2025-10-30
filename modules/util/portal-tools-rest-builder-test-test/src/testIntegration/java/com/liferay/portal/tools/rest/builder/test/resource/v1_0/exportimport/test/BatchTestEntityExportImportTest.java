@@ -112,10 +112,10 @@ public class BatchTestEntityExportImportTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Group testGroup = GroupTestUtil.addGroup();
-
 		_companyGroup = _stagingGroupHelper.fetchCompanyGroup(
 			TestPropsValues.getCompanyId());
+
+		Group testGroup = GroupTestUtil.addGroup();
 
 		Company testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
@@ -135,7 +135,15 @@ public class BatchTestEntityExportImportTest {
 			"nestedFields",
 			"customFields.attributeType,nestedField,relatedCompanyTestEntity"
 		).build();
-
+		_companyTestEntityResource = CompanyTestEntityResource.builder(
+		).authentication(
+			testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 		_sharedInternalModelBatchTestEntityResource =
 			SharedInternalModelBatchTestEntityResource.builder(
 			).authentication(
@@ -146,38 +154,29 @@ public class BatchTestEntityExportImportTest {
 			).locale(
 				LocaleUtil.getDefault()
 			).build();
-
-		_companyTestEntityResource = CompanyTestEntityResource.builder(
-		).authentication(
-			testCompanyAdminUser.getEmailAddress(),
-			PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(), 8080, "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		Page<BatchTestEntity> batchTestEntities1Page =
+		Page<BatchTestEntity> batchTestEntitiesPage =
 			_batchTestEntityResource.getBatchTestEntitiesPage();
 
 		for (BatchTestEntity batchTestEntity :
-				batchTestEntities1Page.getItems()) {
+				batchTestEntitiesPage.getItems()) {
 
 			_batchTestEntityResource.
 				deleteBatchTestEntityByExternalReferenceCode(
 					batchTestEntity.getExternalReferenceCode());
 		}
 
-		Page<SharedInternalModelBatchTestEntity> batchTestEntities2Page =
-			_sharedInternalModelBatchTestEntityResource.
-				getSharedInternalModelBatchTestEntitiesPage();
+		Page<SharedInternalModelBatchTestEntity>
+			sharedInternalModelBatchTestEntiesPage =
+				_sharedInternalModelBatchTestEntityResource.
+					getSharedInternalModelBatchTestEntitiesPage();
 
 		for (SharedInternalModelBatchTestEntity
 				sharedInternalModelBatchTestEntity :
-					batchTestEntities2Page.getItems()) {
+					sharedInternalModelBatchTestEntiesPage.getItems()) {
 
 			_sharedInternalModelBatchTestEntityResource.
 				deleteSharedInternalModelBatchTestEntityByExternalReferenceCode(
@@ -632,14 +631,14 @@ public class BatchTestEntityExportImportTest {
 		Page<BatchTestEntity> batchTestEntitiesPage =
 			_batchTestEntityResource.getBatchTestEntitiesPage();
 
-		long batchTestEntityTotalCount = batchTestEntitiesPage.getTotalCount();
+		long batchTestEntitiesCount = batchTestEntitiesPage.getTotalCount();
 
 		Page<SharedInternalModelBatchTestEntity>
 			sharedInternalModelBatchTestEntitiesPage =
 				_sharedInternalModelBatchTestEntityResource.
 					getSharedInternalModelBatchTestEntitiesPage();
 
-		long sharedInternalModelBatchTestEntitiesPageTotalCount =
+		long sharedInternalModelBatchTestEntitiesCount =
 			sharedInternalModelBatchTestEntitiesPage.getTotalCount();
 
 		BatchTestEntity[] batchTestEntities1 = {
@@ -691,7 +690,7 @@ public class BatchTestEntityExportImportTest {
 			_batchTestEntityResource.getBatchTestEntitiesPage();
 
 		Assert.assertEquals(
-			batchTestEntityTotalCount + 2,
+			batchTestEntitiesCount + 2,
 			batchTestEntitiesPage.getTotalCount());
 
 		sharedInternalModelBatchTestEntitiesPage =
@@ -699,7 +698,7 @@ public class BatchTestEntityExportImportTest {
 				getSharedInternalModelBatchTestEntitiesPage();
 
 		Assert.assertEquals(
-			sharedInternalModelBatchTestEntitiesPageTotalCount + 2,
+			sharedInternalModelBatchTestEntitiesCount + 2,
 			sharedInternalModelBatchTestEntitiesPage.getTotalCount());
 
 		_systemEventLocalService.addSystemEvent(
@@ -708,7 +707,6 @@ public class BatchTestEntityExportImportTest {
 			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
 			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
 			StringPool.BLANK);
-
 		_systemEventLocalService.addSystemEvent(
 			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
 			sharedInternalModelBatchTestEntities[0].getExternalReferenceCode(),
@@ -737,7 +735,7 @@ public class BatchTestEntityExportImportTest {
 			_batchTestEntityResource.getBatchTestEntitiesPage();
 
 		Assert.assertEquals(
-			batchTestEntityTotalCount + 1,
+			batchTestEntitiesCount + 1,
 			batchTestEntitiesPage.getTotalCount());
 
 		_assertEquals(
@@ -750,7 +748,7 @@ public class BatchTestEntityExportImportTest {
 				getSharedInternalModelBatchTestEntitiesPage();
 
 		Assert.assertEquals(
-			sharedInternalModelBatchTestEntitiesPageTotalCount + 1,
+			sharedInternalModelBatchTestEntitiesCount + 1,
 			sharedInternalModelBatchTestEntitiesPage.getTotalCount());
 
 		Assert.assertEquals(

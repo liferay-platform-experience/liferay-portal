@@ -431,15 +431,14 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					continue;
 				}
 
-				BatchEngineExportTask batchEngineExportTask =
-					result.getBatchEngineExportTask();
+				ManifestSummary manifestSummary =
+					portletDataContext.getManifestSummary();
 
 				ExportImportVulcanBatchEngineTaskItemDelegate.
 					ExportImportDescriptor exportImportDescriptor =
 						registration.getExportImportDescriptor();
-
-				ManifestSummary manifestSummary =
-					portletDataContext.getManifestSummary();
+				BatchEngineExportTask batchEngineExportTask =
+					result.getBatchEngineExportTask();
 
 				manifestSummary.addModelAdditionCount(
 					new StagedModelType(

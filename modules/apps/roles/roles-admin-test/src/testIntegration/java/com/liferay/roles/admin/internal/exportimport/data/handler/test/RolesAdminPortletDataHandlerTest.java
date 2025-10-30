@@ -184,11 +184,11 @@ public class RolesAdminPortletDataHandlerTest
 
 		Set<String> classNames = new HashSet<>();
 
+		classNames.add(Role.class.getName());
 		classNames.add(StagedModelType.REFERRER_CLASS_NAME_ALL);
 		classNames.add(
 			"com.liferay.headless.admin.user.internal.resource.v1_0." +
 				"RoleResourceImpl");
-		classNames.add(Role.class.getName());
 
 		for (RoleTypeContributor roleTypeContributor :
 				_roleTypeContributorProvider.getRoleTypeContributors()) {

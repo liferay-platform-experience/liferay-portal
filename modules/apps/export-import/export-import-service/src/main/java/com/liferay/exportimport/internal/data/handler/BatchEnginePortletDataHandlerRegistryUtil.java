@@ -16,7 +16,7 @@ public class BatchEnginePortletDataHandlerRegistryUtil {
 	public static BatchEnginePortletDataHandler getByClassName(
 		String className) {
 
-		String portletId = _findPortletIdByClassName(className);
+		String portletId = _getPortletId(className);
 
 		if (portletId == null) {
 			return null;
@@ -32,7 +32,7 @@ public class BatchEnginePortletDataHandlerRegistryUtil {
 	}
 
 	public static boolean hasByClassName(String className) {
-		if (_findPortletIdByClassName(className) != null) {
+		if (_getPortletId(className) != null) {
 			return true;
 		}
 
@@ -40,16 +40,18 @@ public class BatchEnginePortletDataHandlerRegistryUtil {
 	}
 
 	protected static void put(
-		String portletId, BatchEnginePortletDataHandler handler) {
+		String portletId,
+		BatchEnginePortletDataHandler batchEnginePortletDataHandler) {
 
-		_batchEnginePortletDataHandlers.put(portletId, handler);
+		_batchEnginePortletDataHandlers.put(
+			portletId, batchEnginePortletDataHandler);
 	}
 
 	protected static void remove(String portletId) {
 		_batchEnginePortletDataHandlers.remove(portletId);
 	}
 
-	private static String _findPortletIdByClassName(String className) {
+	private static String _getPortletId(String className) {
 		for (Map.Entry<String, BatchEnginePortletDataHandler> entry :
 				_batchEnginePortletDataHandlers.entrySet()) {
 
