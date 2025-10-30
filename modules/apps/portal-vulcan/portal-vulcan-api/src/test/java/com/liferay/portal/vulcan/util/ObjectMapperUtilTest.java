@@ -27,23 +27,22 @@ public class ObjectMapperUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testReadValueWithHugeBase64String() {
-		byte[] data = new byte[21_000_000];
-
+	public void testReadValueWithLargeBase64String() {
 		Random random = new Random();
 
-		random.nextBytes(data);
+		byte[] bytes = new byte[21_000_000];
 
-		String base64 = Base64.encode(data);
+		random.nextBytes(bytes);
+
+		String string = Base64.encode(bytes);
 
 		TestClass testClass = ObjectMapperUtil.readValue(
 			TestClass.class,
 			HashMapBuilder.<String, Object>put(
-				"string", base64
+				"string", string
 			).build());
 
-		Assert.assertNotNull(testClass);
-		Assert.assertEquals(base64, testClass.string);
+		Assert.assertEquals(string, testClass.string);
 	}
 
 	public static class TestClass {
