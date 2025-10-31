@@ -963,13 +963,13 @@ public class DBUpgradeClient {
 		"db2", "mariadb", "mysql", "oracle", "postgresql", "sqlserver"
 	};
 
-	private static final String _GOGO_SHELL_PREFIX = "g! ";
-
-	private static final String _JAVA_HOME = System.getenv("JAVA_HOME");
-
 	private static final String[] _DATABASE_TYPES_PORTAL = {
 		"mariadb", "mysql", "postgresql"
 	};
+
+	private static final String _GOGO_SHELL_PREFIX = "g! ";
+
+	private static final String _JAVA_HOME = System.getenv("JAVA_HOME");
 
 	private static final Pattern _gogoShellAddressPattern = Pattern.compile(
 		"^([^\\:]+):([0-9]{1,5})$");
