@@ -282,7 +282,7 @@ public class OIDCUserInfoProcessor {
 					null,
 				false, serviceContext);
 
-			_saveOpenIdConnectUser(issuer, subject, user);
+			_addOpenIdConnectUser(issuer, subject, user);
 
 			ExpandoColumn expandoColumn = _getOrAddExpandoColumn(
 				User.class.getName(), companyId);
@@ -335,7 +335,7 @@ public class OIDCUserInfoProcessor {
 				userGroupIds),
 			serviceContext);
 
-		_saveOpenIdConnectUser(issuer, subject, user);
+		_addOpenIdConnectUser(issuer, subject, user);
 
 		return user;
 	}
@@ -816,7 +816,7 @@ public class OIDCUserInfoProcessor {
 		return false;
 	}
 
-	private void _saveOpenIdConnectUser(
+	private void _addOpenIdConnectUser(
 			String issuer, String subject, User user)
 		throws Exception {
 
