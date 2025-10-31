@@ -196,9 +196,9 @@ public class DBUpgradeClientTest {
 			_dbUpgradeClient, "_verifyPortalUpgradeDatabaseProperties",
 			new Class<?>[0]);
 
-		String consoleOutput = _consoleByteArrayOutputStream.toString();
+		String consoleString = _consoleByteArrayOutputStream.toString();
 
-		Assert.assertTrue(consoleOutput.contains("mariadb mysql postgresql"));
+		Assert.assertTrue(consoleString.contains("mariadb mysql postgresql"));
 
 		String errorOutput = _errorByteArrayOutputStream.toString();
 
@@ -249,9 +249,9 @@ public class DBUpgradeClientTest {
 			_dbUpgradeClient, "_verifyPortalUpgradeDatabaseProperties",
 			new Class<?>[0]);
 
-		String consoleOutput = _consoleByteArrayOutputStream.toString();
+		String consoleString = _consoleByteArrayOutputStream.toString();
 
-		Assert.assertTrue(consoleOutput.contains("mariadb mysql postgresql"));
+		Assert.assertTrue(consoleString.contains("mariadb mysql postgresql"));
 
 		Properties properties = ReflectionTestUtil.getFieldValue(
 			_dbUpgradeClient, "_portalUpgradeDatabaseProperties");
@@ -305,10 +305,10 @@ public class DBUpgradeClientTest {
 				_dbUpgradeClient, "_verifyPortalUpgradeDatabaseProperties",
 				new Class<?>[0]);
 
-			String consoleOutput = _consoleByteArrayOutputStream.toString();
+			String consoleString = _consoleByteArrayOutputStream.toString();
 
 			Assert.assertTrue(
-				consoleOutput.contains(
+				consoleString.contains(
 					"db2 mariadb mysql oracle postgresql sqlserver"));
 
 			Properties properties = ReflectionTestUtil.getFieldValue(
