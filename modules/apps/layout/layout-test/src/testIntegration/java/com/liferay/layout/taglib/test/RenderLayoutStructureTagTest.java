@@ -2539,13 +2539,11 @@ public class RenderLayoutStructureTagTest {
 		MockObject mockObject = new MockObject(RandomTestUtil.randomLong());
 
 		InfoField<TextInfoFieldType> infoField1 = _getInfoField(false);
-
 		String infoField1Value = RandomTestUtil.randomString();
 
 		mockObject.addInfoField(infoField1, infoField1Value);
 
 		InfoField<TextInfoFieldType> infoField2 = _getInfoField(false);
-
 		String infoField2Value = RandomTestUtil.randomString();
 
 		mockObject.addInfoField(infoField2, infoField2Value);
