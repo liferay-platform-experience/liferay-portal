@@ -146,11 +146,13 @@ public class ObjectDLFileEntryModelResourcePermissionConfiguratorTest {
 			).build(),
 			serviceContext);
 
-		_themeDisplay.setCompany(_company);
-
 		_originalName = PrincipalThreadLocal.getName();
 		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+		_role = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.GUEST);
+
+		_themeDisplay.setCompany(_company);
 
 		_user = UserLocalServiceUtil.getGuestUser(_company.getCompanyId());
 
@@ -182,9 +184,6 @@ public class ObjectDLFileEntryModelResourcePermissionConfiguratorTest {
 		serviceContext.setRequest(mockHttpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-		_role = _roleLocalService.getRole(
-			_company.getCompanyId(), RoleConstants.GUEST);
 	}
 
 	@After
