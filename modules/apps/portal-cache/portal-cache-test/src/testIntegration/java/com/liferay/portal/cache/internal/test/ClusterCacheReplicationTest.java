@@ -111,8 +111,7 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePuts", false);
+					_setFieldValue(portalCache, "_replicatePuts", false);
 
 					return portalCache.get(testKey);
 				}));
@@ -126,8 +125,7 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePuts", false);
+					_setFieldValue(portalCache, "_replicatePuts", false);
 
 					portalCache.registerPortalCacheListener(
 						new TestPortalCacheListener());
@@ -401,8 +399,7 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePutsViaCopy", true);
+					_setFieldValue(portalCache, "_replicatePutsViaCopy", true);
 
 					return portalCache.get(testKey);
 				}));
@@ -416,8 +413,7 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePutsViaCopy", true);
+					_setFieldValue(portalCache, "_replicatePutsViaCopy", true);
 
 					portalCache.registerPortalCacheListener(
 						new TestPortalCacheListener());
@@ -440,7 +436,7 @@ public class ClusterCacheReplicationTest {
 					return portalCache.get(testKey);
 				}));
 
-		// Assert node 2 has the same value because "replicatePutsViaCopy" is
+		// Assert node 2 has the same value because "_replicatePutsViaCopy" is
 		// set to true
 
 		Assert.assertEquals(
@@ -506,8 +502,7 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePutsViaCopy", false);
+					_setFieldValue(portalCache, "_replicatePutsViaCopy", false);
 
 					return portalCache.get(testKey);
 				}));
@@ -521,8 +516,7 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePutsViaCopy", false);
+					_setFieldValue(portalCache, "_replicatePutsViaCopy", false);
 
 					portalCache.registerPortalCacheListener(
 						new TestPortalCacheListener());
@@ -610,9 +604,8 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePutsViaCopy", true);
-					_setReplicateProperties(
+					_setFieldValue(portalCache, "_replicatePutsViaCopy", true);
+					_setFieldValue(
 						portalCache, "_replicateUpdatesViaCopy", true);
 
 					return portalCache.get(testKey);
@@ -627,9 +620,8 @@ public class ClusterCacheReplicationTest {
 						PortalCacheHelperUtil.getPortalCache(
 							PortalCacheManagerNames.MULTI_VM, testCacheName);
 
-					_setReplicateProperties(
-						portalCache, "_replicatePutsViaCopy", true);
-					_setReplicateProperties(
+					_setFieldValue(portalCache, "_replicatePutsViaCopy", true);
+					_setFieldValue(
 						portalCache, "_replicateUpdatesViaCopy", true);
 
 					portalCache.registerPortalCacheListener(
@@ -653,7 +645,7 @@ public class ClusterCacheReplicationTest {
 					return portalCache.get(testKey);
 				}));
 
-		// Assert node 2 has the same value because "replicatePutsViaCopy" is
+		// Assert node 2 has the same value because "_replicatePutsViaCopy" is
 		// set to true
 
 		Assert.assertEquals(
@@ -827,17 +819,14 @@ public class ClusterCacheReplicationTest {
 			}
 		}
 
-		throw new IllegalStateException(
-			"Unable to locate PortalCacheListener with class name : " +
-				className);
+		throw new IllegalStateException(className + " does not exist");
 	}
 
-	private static void _setReplicateProperties(
-		PortalCache<?, ?> portalCache, String fieldName,
-		boolean fieldValue) {
+	private static void _setFieldValue(
+		PortalCache<?, ?> portalCache, String fieldName, boolean fieldValue) {
 
 		ReflectionTestUtil.setFieldValue(
-			ReflectionTestUtil.getFieldValue(
+			(Object)ReflectionTestUtil.getFieldValue(
 				_getPortalCacheListener(
 					_CLASS_NAME_EHCACHE_PORTAL_CACHE_REPLICATOR, portalCache),
 				"_portalCacheReplicator"),
