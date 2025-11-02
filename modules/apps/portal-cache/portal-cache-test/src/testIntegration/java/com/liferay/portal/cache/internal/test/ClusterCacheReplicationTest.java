@@ -612,7 +612,6 @@ public class ClusterCacheReplicationTest {
 
 					_setReplicateProperties(
 						portalCache, "_replicatePutsViaCopy", true);
-
 					_setReplicateProperties(
 						portalCache, "_replicateUpdatesViaCopy", true);
 
@@ -630,7 +629,6 @@ public class ClusterCacheReplicationTest {
 
 					_setReplicateProperties(
 						portalCache, "_replicatePutsViaCopy", true);
-
 					_setReplicateProperties(
 						portalCache, "_replicateUpdatesViaCopy", true);
 
