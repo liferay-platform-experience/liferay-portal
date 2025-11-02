@@ -1616,13 +1616,13 @@ public class ObjectFieldLocalServiceTest {
 				persistedFileEntryId, "}"),
 			() -> _dlAppLocalService.getFileEntry(persistedFileEntryId));
 		Assert.assertNull(
-			_resourceActionLocalService.fetchResourceAction(
-				objectDefinition.getClassName(), attachmentDownloadActionKey));
-		Assert.assertNull(
 			_ploEntryLocalService.fetchPLOEntry(
 				objectDefinition.getCompanyId(),
 				"action." + attachmentDownloadActionKey,
 				attachmentObjectField.getDefaultLanguageId()));
+		Assert.assertNull(
+			_resourceActionLocalService.fetchResourceAction(
+				objectDefinition.getClassName(), attachmentDownloadActionKey));
 
 		// Delete object field business type auto increment
 
