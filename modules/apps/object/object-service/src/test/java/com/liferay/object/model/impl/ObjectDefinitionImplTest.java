@@ -136,8 +136,6 @@ public class ObjectDefinitionImplTest {
 			UnsafeConsumer<ObjectDefinition, Exception> unsafeConsumer)
 		throws Exception {
 
-		long objectFolderId = RandomTestUtil.randomLong();
-
 		ObjectFolder objectFolder = Mockito.mock(ObjectFolder.class);
 
 		Mockito.when(
@@ -145,6 +143,8 @@ public class ObjectDefinitionImplTest {
 		).thenReturn(
 			externalReferenceCode
 		);
+
+		long objectFolderId = RandomTestUtil.randomLong();
 
 		_objectFolderLocalServiceUtilMockedStatic.when(
 			() -> ObjectFolderLocalServiceUtil.fetchObjectFolder(objectFolderId)

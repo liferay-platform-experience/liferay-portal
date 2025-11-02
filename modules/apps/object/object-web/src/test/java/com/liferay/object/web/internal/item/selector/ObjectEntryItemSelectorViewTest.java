@@ -39,21 +39,19 @@ public class ObjectEntryItemSelectorViewTest {
 	@Test
 	@TestInfo("LPD-17564")
 	public void testGetTitle() throws Exception {
-		long companyId = RandomTestUtil.randomLong();
-		Locale locale = LocaleUtil.getDefault();
-
-		String title = RandomTestUtil.randomString();
-
-		String cmsTitle = StringUtil.appendParentheticalSuffix(title, "CMS");
-
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);
+
+		long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			objectDefinition.getCompanyId()
 		).thenReturn(
 			companyId
 		);
+
+		Locale locale = LocaleUtil.getDefault();
+		String title = RandomTestUtil.randomString();
 
 		Mockito.when(
 			objectDefinition.getPluralLabel(locale)
@@ -75,7 +73,9 @@ public class ObjectEntryItemSelectorViewTest {
 			true
 		);
 
-		_assertGetTitle(cmsTitle, locale, objectDefinition);
+		_assertGetTitle(
+			StringUtil.appendParentheticalSuffix(title, "CMS"), locale,
+			objectDefinition);
 	}
 
 	private void _assertGetTitle(
