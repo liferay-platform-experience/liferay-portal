@@ -70,31 +70,27 @@ public class FragmentCollectionFilterCategoryDisplayContextTest {
 
 		_testGetAssetCategoryTreeNodeTitle(
 			"Category", categoryTreeNodeId, title);
+		_testGetAssetCategoryTreeNodeTitle(
+			"Category", RandomTestUtil.randomLong(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
+		_testGetAssetCategoryTreeNodeTitle(
+			"Category", RandomTestUtil.randomLong(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
+			0);
 
 		_setUpAssetVocabularyServiceUtil(title, categoryTreeNodeId);
 
 		_testGetAssetCategoryTreeNodeTitle(
 			"Vocabulary", categoryTreeNodeId, title);
-
-		_testGetAssetCategoryTreeNodeTitle(
-			"Category", RandomTestUtil.randomLong(),
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
-			0);
-
-		_testGetAssetCategoryTreeNodeTitle(
-			"Category", RandomTestUtil.randomLong(),
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
-
-		_testGetAssetCategoryTreeNodeTitle(
-			"Vocabulary", RandomTestUtil.randomLong(),
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
-			0);
-
 		_testGetAssetCategoryTreeNodeTitle(
 			"Vocabulary", RandomTestUtil.randomLong(),
 			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
+		_testGetAssetCategoryTreeNodeTitle(
+			"Vocabulary", RandomTestUtil.randomLong(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
+			0);
 	}
 
 	@Test
