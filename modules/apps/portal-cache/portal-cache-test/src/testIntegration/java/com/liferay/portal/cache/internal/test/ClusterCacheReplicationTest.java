@@ -715,8 +715,8 @@ public class ClusterCacheReplicationTest {
 			throws InterruptedException {
 
 			TestPortalCacheListener testPortalCacheListener =
-				(TestPortalCacheListener)_getListenerByName(
-					portalCache, TestPortalCacheListener.class.getName());
+				(TestPortalCacheListener)_getPortalCacheListener(
+					TestPortalCacheListener.class.getName(), portalCache);
 
 			CountDownLatch countDownLatch = function.apply(
 				testPortalCacheListener);
@@ -806,8 +806,8 @@ public class ClusterCacheReplicationTest {
 
 	}
 
-	private static PortalCacheListener<?, ?> _getListenerByName(
-		PortalCache<?, ?> portalCache, String listenerClassName) {
+	private static PortalCacheListener<?, ?> _getPortalCacheListener(
+		String className, PortalCache<?, ?> portalCache) {
 
 		portalCache = ReflectionTestUtil.getFieldValue(
 			portalCache, "_portalCache");
@@ -824,22 +824,22 @@ public class ClusterCacheReplicationTest {
 
 			Class<?> clazz = portalCacheListener.getClass();
 
-			if (Objects.equals(clazz.getName(), listenerClassName)) {
+			if (Objects.equals(clazz.getName(), className)) {
 				return portalCacheListener;
 			}
 		}
 
 		throw new IllegalStateException(
 			"Unable to locate PortalCacheListener with class name : " +
-				listenerClassName);
+				className);
 	}
 
 	private static void _setReplicateProperties(
 		PortalCache<?, ?> portalCache, String replicateProperty,
 		boolean value) {
 
-		PortalCacheListener<?, ?> portalCacheListener = _getListenerByName(
-			portalCache, _CLASS_NAME_EHCACHE_PORTAL_CACHE_REPLICATOR);
+		PortalCacheListener<?, ?> portalCacheListener = _getPortalCacheListener(
+			_CLASS_NAME_EHCACHE_PORTAL_CACHE_REPLICATOR, portalCache);
 
 		Object portalCacheReplicator = ReflectionTestUtil.getFieldValue(
 			portalCacheListener, "_portalCacheReplicator");
