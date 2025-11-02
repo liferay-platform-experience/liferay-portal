@@ -161,14 +161,14 @@ public class ObjectEntryFolderModelListener
 			0, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (Role role : roles) {
-			String[] actions = JSONUtil.toStringArray(
+			String[] actionIds = JSONUtil.toStringArray(
 				objectEntryFoldersJSONObject.getJSONArray(role.getName()));
 
 			if (objectEntryFolder.getParentObjectEntryFolderId() ==
 					ObjectEntryFolderConstants.
 						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT) {
 
-				actions = ArrayUtil.remove(actions, ActionKeys.DELETE);
+				actionIds = ArrayUtil.remove(actionIds, ActionKeys.DELETE);
 			}
 
 			_resourcePermissionLocalService.setResourcePermissions(
@@ -177,7 +177,7 @@ public class ObjectEntryFolderModelListener
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(objectEntryFolder.getObjectEntryFolderId()),
 				role.getRoleId(),
-				ArrayUtil.filter(actions, resourceActions::contains));
+				ArrayUtil.filter(actionIds, resourceActions::contains));
 		}
 	}
 
