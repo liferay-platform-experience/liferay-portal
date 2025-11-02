@@ -146,14 +146,12 @@ public class ObjectEntryFolderModelListenerTest {
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
 
 		_assertDefaultPermissions(rootJSONObject, rootObjectEntryFolder);
-
 		_assertResourcePermissions(rootJSONObject, rootObjectEntryFolder, null);
 
 		ObjectEntryFolder childObjectEntryFolder = _addObjectEntryFolder(
 			rootObjectEntryFolder.getObjectEntryFolderId());
 
 		_assertDefaultPermissions(rootJSONObject, childObjectEntryFolder);
-
 		_assertResourcePermissions(
 			rootJSONObject, childObjectEntryFolder, null);
 
@@ -193,7 +191,6 @@ public class ObjectEntryFolderModelListenerTest {
 			rootObjectEntryFolder.getObjectEntryFolderId());
 
 		_assertDefaultPermissions(rootJSONObject, childObjectEntryFolder);
-
 		_assertResourcePermissions(
 			rootJSONObject, childObjectEntryFolder, randomActionId);
 	}
