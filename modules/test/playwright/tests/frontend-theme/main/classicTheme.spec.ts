@@ -37,7 +37,7 @@ const goToPortletOptions = async ({page}: {page: Page}) => {
 
 test(
 	'Verify custom look and feel Settings can be applied to page.',
-	{tag: '@LRQA-67229'},
+	{tag: '@LPD-70289'},
 	async ({
 		apiHelpers,
 		page,
@@ -47,7 +47,7 @@ test(
 		widgetPagePage,
 	}) => {
 		const layout =
-			await test.step('Given classic theme page and Clay Sample portlet', async () => {
+			await test.step('Given a page with classic theme applied and Clay Sample portlet added', async () => {
 				const layout = await apiHelpers.jsonWebServicesLayout.addLayout(
 					{
 						groupId: site.id,
@@ -97,7 +97,7 @@ test(
 			await pageConfigurationPage.save();
 		});
 
-		await test.step('Assert Custom Css is present', async () => {
+		await test.step('Assert that the Custom CSS is present', async () => {
 			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
 			await expect(page.locator('body')).toHaveCSS(
