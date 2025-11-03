@@ -114,7 +114,10 @@ export class WidgetPagePage {
 		}).toPass();
 	}
 
-	async assertPortletOptionsAvailable(portletName: string, actions: string[]) {
+	async assertPortletOptionsAvailable(
+		portletName: string,
+		actions: string[]
+	) {
 		await this.page
 			.locator('.portlet-topper', {hasText: portletName})
 			.getByLabel('Options')
