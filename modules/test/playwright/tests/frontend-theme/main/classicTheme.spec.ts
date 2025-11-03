@@ -25,6 +25,7 @@ export const test = mergeTests(
 
 const PAGE_NAME = 'Classic Theme Page';
 const PORTLET_NAME = 'Clay Sample';
+const CUSTOM_BG_COLOR = 'rgb(66, 244, 197)'
 
 const goToPortletOptions = async ({page}: {page: Page}) => {
 	await page
@@ -90,7 +91,7 @@ test(
 
 			await page
 				.getByRole('textbox', {exact: true, name: 'CSS'})
-				.fill(`body, #wrapper{background-color: #42f4c5;}`);
+				.fill(`body, #wrapper{background-color: ${CUSTOM_BG_COLOR};}`);
 
 			await pageConfigurationPage.save();
 		});
@@ -100,12 +101,12 @@ test(
 
 			await expect(page.locator('body')).toHaveCSS(
 				'background-color',
-				'rgb(66, 244, 197)'
+				CUSTOM_BG_COLOR
 			);
 
 			await expect(page.locator('#wrapper')).toHaveCSS(
 				'background-color',
-				'rgb(66, 244, 197)'
+				CUSTOM_BG_COLOR
 			);
 		});
 
