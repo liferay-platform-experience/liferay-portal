@@ -11,6 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
+import getRandomString from '../../../utils/getRandomString';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
 
 export const test = mergeTests(
@@ -23,7 +24,7 @@ export const test = mergeTests(
 	pageViewModePagesTest
 );
 
-const PAGE_NAME = 'Classic Theme Page';
+const PAGE_NAME = getRandomString();
 const PORTLET_NAME = 'Clay Sample';
 const CUSTOM_BACKGROUND_COLOR = 'rgb(66, 244, 197)'
 
