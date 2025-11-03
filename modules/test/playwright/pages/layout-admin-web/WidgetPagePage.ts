@@ -114,6 +114,24 @@ export class WidgetPagePage {
 		}).toPass();
 	}
 
+	async assertPortletOptionsAvailable(portletName: string, actions: string[]) {
+		await this.page
+			.locator('.portlet-topper', {hasText: portletName})
+			.getByLabel('Options')
+			.click();
+
+		for (const action of actions) {
+			await expect(
+				this.page.getByRole('menuitem', {exact: true, name: action})
+			).toBeVisible();
+		}
+
+		await this.page
+			.locator('.portlet-topper', {hasText: portletName})
+			.getByLabel('Options')
+			.click();
+	}
+
 	async clickOnAction(portletName: string, action: string) {
 		await this.page
 			.locator('.portlet-topper', {hasText: portletName})
