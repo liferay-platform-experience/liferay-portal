@@ -68,7 +68,7 @@ test(
 		await test.step('Given access the page design', async () => {
 			await pagesAdminPage.goto(site.friendlyUrlPath);
 
-			await pageConfigurationPage.goToSection(PAGE_NAME, 'Design');
+			await pagesAdminPage.goToDesignTabConfiguration(PAGE_NAME);
 		});
 
 		await test.step('When CSS is edited', async () => {
