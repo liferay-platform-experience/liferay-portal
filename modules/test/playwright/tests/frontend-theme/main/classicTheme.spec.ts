@@ -71,7 +71,7 @@ test(
 			await pagesAdminPage.goToDesignTabConfiguration(PAGE_NAME);
 		});
 
-		await test.step('When CSS is edited', async () => {
+		await test.step('When Look and Feel/CSS is edited', async () => {
 			await page.getByText('Define a custom theme for this page').click();
 
 			await page
