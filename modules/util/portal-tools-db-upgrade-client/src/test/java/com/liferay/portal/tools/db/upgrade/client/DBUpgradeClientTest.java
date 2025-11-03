@@ -210,7 +210,7 @@ public class DBUpgradeClientTest {
 				_dbUpgradeClient, "_verifyAppServerProperties",
 				new Class<?>[0]);
 
-			Assert.fail("Expected IOException to be thrown");
+			Assert.fail();
 		}
 		catch (Exception exception) {
 			Assert.assertEquals(
@@ -239,7 +239,6 @@ public class DBUpgradeClientTest {
 		AppServer appServer = ReflectionTestUtil.getFieldValue(
 			_dbUpgradeClient, "_appServer");
 
-		Assert.assertNotNull(appServer);
 		Assert.assertEquals(_tomcatDir, appServer.getDir());
 		Assert.assertEquals("bin", appServer.getExtraLibDirNames());
 		Assert.assertEquals("lib", appServer.getGlobalLibDirName());
@@ -490,7 +489,7 @@ public class DBUpgradeClientTest {
 				_dbUpgradeClient, "_verifyPortalUpgradeExtProperties",
 				new Class<?>[0]);
 
-			Assert.fail("Expected IOException to be thrown");
+			Assert.fail();
 		}
 		catch (Exception exception) {
 			Assert.assertEquals(

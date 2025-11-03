@@ -864,12 +864,13 @@ public class DBUpgradeClient {
 			String propertiesFileName, String propertyName)
 		throws IOException {
 
-		if ((dirName == null) ||
-			dirName.trim(
-			).isEmpty()) {
+		if (dirName != null) {
+			dirName = dirName.trim();
+		}
 
+		if ((dirName == null) || dirName.isEmpty()) {
 			System.err.println(
-				"Property '" + propertyName + "' is not set in " +
+				"Property \"" + propertyName + "\" is not set in " +
 					propertiesFileName + ".");
 
 			return false;
@@ -914,8 +915,9 @@ public class DBUpgradeClient {
 
 			if (testDir == null) {
 				System.err.println(
-					"Property '" + propertyName + "' in " + propertiesFileName +
-						" contains an invalid path: " + dirName);
+					"Property \"" + propertyName + "\" in " +
+						propertiesFileName + " contains an invalid path: " +
+							dirName);
 
 				hasErrors = true;
 			}
