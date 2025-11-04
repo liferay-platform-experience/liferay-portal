@@ -899,7 +899,7 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		if (fragmentEntry == null) {
 			throw new UnsupportedOperationException(
-				"Unable to propagate fragment entry link ID " +
+				"Unable to propagate fragment entry link " +
 					fragmentEntryLinkId);
 		}
 
