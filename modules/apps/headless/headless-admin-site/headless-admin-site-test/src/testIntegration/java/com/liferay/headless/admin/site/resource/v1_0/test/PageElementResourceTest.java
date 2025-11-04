@@ -1838,10 +1838,10 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			URLFormContainerSubmissionResult urlFormContainerSubmissionResult =
 				new URLFormContainerSubmissionResult();
 
-			urlFormContainerSubmissionResult.setUrl(
-				this::_getRandomFragmentInlineValue);
 			urlFormContainerSubmissionResult.setType(
 				SuccessFormContainerSubmissionResult.Type.URL);
+			urlFormContainerSubmissionResult.setUrl(
+				this::_getRandomFragmentInlineValue);
 
 			return urlFormContainerSubmissionResult;
 		}
