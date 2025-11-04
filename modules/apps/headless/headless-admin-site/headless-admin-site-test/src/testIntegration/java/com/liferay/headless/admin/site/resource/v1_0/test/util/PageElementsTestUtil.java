@@ -48,7 +48,6 @@ public class PageElementsTestUtil {
 			{
 				setConfiguration(fragmentEntry::getConfiguration);
 				setCss(fragmentEntry::getCss);
-
 				setCssClasses(
 					() -> new String[] {RandomTestUtil.randomString()});
 				setCustomCSS(RandomTestUtil::randomString);
