@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
@@ -18,6 +19,9 @@ export const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
 	pageEditorPagesTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
 	loginTest(),
 	pagesPagesTest,
 	pagesAdminPagesTest,
@@ -26,34 +30,28 @@ export const test = mergeTests(
 
 const CUSTOM_BACKGROUND_COLOR = 'rgb(66, 244, 197)';
 const PAGE_NAME = getRandomString();
-const PORTLET_NAME = 'Clay Sample';
+const MENU_DISPLAY_NAME = 'Menu Display';
 
 test('Verify custom look and feel settings can be applied to page.', async ({
 	apiHelpers,
 	page,
 	pageConfigurationPage,
+	pageEditorPage,
 	pagesAdminPage,
 	site,
 	widgetPagePage,
 }) => {
 	const layout =
-		await test.step('Given a page with classic theme applied and Clay Sample portlet added', async () => {
-			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-				groupId: site.id,
-				options: {
-					type: 'portlet',
-				},
+		await test.step('Given a page with classic theme applied.', async () => {
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				siteId: site.id,
 				title: PAGE_NAME,
 			});
-
-			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-			await widgetPagePage.addPortlet(PORTLET_NAME);
 
 			return layout;
 		});
 
-	await test.step('When look and feel settings and CSS is edited', async () => {
+	await test.step('When look and feel settings and CSS is edited.', async () => {
 		await pagesAdminPage.goto(site.friendlyUrlPath);
 
 		await pagesAdminPage.goToDesignTabConfiguration(PAGE_NAME);
@@ -81,10 +79,22 @@ test('Verify custom look and feel settings can be applied to page.', async ({
 			);
 
 		await pageConfigurationPage.save();
+
+		await expect(
+			page.getByText(
+				'These design configurations are now saved in a draft'
+			)
+		).toBeVisible();
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.publishPage();
 	});
 
-	await test.step('Assert that the custom CSS is present', async () => {
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+	await test.step('Assert that the custom CSS is present.', async () => {
+		await page.goto(
+			`/web${site.friendlyUrlPath}${layout.friendlyUrlPath || layout.friendlyURL}`
+		);
 
 		await expect(page.locator('body')).toHaveCSS(
 			'background-color',
@@ -97,33 +107,38 @@ test('Verify custom look and feel settings can be applied to page.', async ({
 		);
 	});
 
-	await test.step('Then assert Clay Sample portet can be minimized/maximized', async () => {
-		await widgetPagePage.assertPortletOptionsAvailable(PORTLET_NAME, [
+	await test.step('Assert that the header search bar is not present.', async () => {
+		await expect(
+			page.locator('.portlet-topper', {hasText: 'Search Bar'})
+		).toBeHidden();
+	});
+
+	await test.step('Assert that the menu display can be minimized/maximized.', async () => {
+		await widgetPagePage.assertPortletOptionsVisible(MENU_DISPLAY_NAME, [
 			'Maximize',
 			'Minimize',
 		]);
 
-		await widgetPagePage.clickOnAction(PORTLET_NAME, 'Minimize');
+		await widgetPagePage.clickOnAction(MENU_DISPLAY_NAME, 'Minimize');
 
 		await expect(
-			page.locator('div.portlet-header').getByText(PORTLET_NAME)
+			page.locator('.portlet-topper', {hasText: MENU_DISPLAY_NAME})
 		).toBeVisible();
 
 		await expect(
 			page
-				.locator('#main-content')
-				.locator('section', {hasText: PORTLET_NAME})
+				.locator('.portlet-content', {hasText: PAGE_NAME})
 				.locator('.portlet-body')
 		).toBeHidden();
 	});
 
-	await test.step('Then restore Clay Sample', async () => {
-		await widgetPagePage.clickOnAction(PORTLET_NAME, 'Restore');
+	await test.step('Then restore menu display.', async () => {
+		await widgetPagePage.clickOnAction(MENU_DISPLAY_NAME, 'Restore');
 
 		await expect(
-			page.getByText(
-				'Embedded alerts are thought to be used inside context as forms'
-			)
+			page
+				.locator('.portlet-content', {hasText: PAGE_NAME})
+				.locator('.portlet-body')
 		).toBeVisible();
 	});
 });
