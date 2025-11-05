@@ -5,7 +5,7 @@
 	navClass = "light-nav"
 /]
 
-[#assign uiAvatarURL = "" /]
+[#assign uiAvatarsURL = "" /]
 
 [#if themeDisplay.isSignedIn()]
 	[#assign userName = user.getFullName() /]
@@ -27,9 +27,9 @@
 
 		[#assign initials = initials?upper_case /]
 
-		[#assign uiAvatarURL = "https://ui-avatars.com/api/" + initials + "/128/0B5FFF/FFFFFF/2/0.33/true/true/true" /]
+		[#assign uiAvatarsURL = "https://ui-avatars.com/api/" + initials + "/128/0B5FFF/FFFFFF/2/0.33/true/true/true" /]
 	[#else]
-		[#assign uiAvatarURL = "https://ui-avatars.com/api/??/128/0B5FFF/FFFFFF/2/0.33/true/true/true" /]
+		[#assign uiAvatarsURL = "https://ui-avatars.com/api/??/128/0B5FFF/FFFFFF/2/0.33/true/true/true" /]
 	[/#if]
 [/#if]
 
@@ -122,7 +122,7 @@
 					<div class="account-info align-items-center d-flex ${themeDisplay.isSignedIn()?then('py-1 pl-2', '')}" data-toggle="liferay-dropdown" id="account-menu-id">
 						[#if themeDisplay.isSignedIn()]
 						<div class="user-avatar">
-							<img class="h-100 mx-100" src="${uiAvatarURL}" />
+							<img class="h-100 mx-100" src="${uiAvatarsURL}" />
 						</div>
 						[#else]
 						<div class="py-2 signed-out-account">
@@ -223,7 +223,7 @@
 					<div class="account mobile position-relative">
 						<div class="account-info align-items-center d-flex px-2">
 							<div class="user-avatar">
-								<img class="h-100 mx-100" src="${uiAvatarURL}" />
+								<img class="h-100 mx-100" src="${uiAvatarsURL}" />
 							</div>
 
 							<span class="pl-1">[@clay["icon"] symbol="caret-bottom-l"/]</span>
@@ -278,7 +278,7 @@
 				<div class="account position-relative primary">
 					<div class="account-info align-items-center d-flex px-2 py-3">
 						<div class="user-avatar">
-							<img class="h-100 mx-100" src="${uiAvatarURL}" />
+							<img class="h-100 mx-100" src="${uiAvatarsURL}" />
 						</div>
 
 						<span class="pl-1">[@clay["icon"] symbol="caret-bottom-l"/]</span>
