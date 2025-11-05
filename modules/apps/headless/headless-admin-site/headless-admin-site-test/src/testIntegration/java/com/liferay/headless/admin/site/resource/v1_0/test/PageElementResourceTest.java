@@ -1145,6 +1145,25 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			});
 	}
 
+	private GridViewport _getGridViewport(
+		GridViewport.Id id, Integer modulesPerRow) {
+
+		GridViewport gridViewport = new GridViewport();
+
+		gridViewport.setCustomCSS(RandomTestUtil.randomString());
+
+		GridViewportDefinition gridViewportDefinition =
+			new GridViewportDefinition();
+
+		gridViewportDefinition.setModulesPerRow(modulesPerRow);
+
+		gridViewport.setGridViewportDefinition(() -> gridViewportDefinition);
+
+		gridViewport.setId(id);
+
+		return gridViewport;
+	}
+
 	private GridViewport[] _getGridViewports() {
 		return new GridViewport[] {
 			new GridViewport() {
@@ -1197,21 +1216,9 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	private GridViewport[] _getGridViewportsDefaultValues() {
 		return new GridViewport[] {
-			new GridViewport() {
-				{
-					setCustomCSS(RandomTestUtil.randomString());
-					setGridViewportDefinition(
-						() -> new GridViewportDefinition() {
-							{
-								setModulesPerRow(1);
-								setVerticalAlignment(
-									GridViewportDefinition.VerticalAlignment.
-										TOP);
-							}
-						});
-					setId(Id.LANDSCAPE_MOBILE);
-				}
-			}
+			_getGridViewport(GridViewport.Id.LANDSCAPE_MOBILE, 1),
+			_getGridViewport(GridViewport.Id.PORTRAIT_MOBILE, null),
+			_getGridViewport(GridViewport.Id.TABLET, null)
 		};
 	}
 
@@ -2000,7 +2007,9 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		PageElement collectionDisplayPageElement =
 			_testPutSitePageSpecificationPageExperiencePageElement(
 				_getCollectionDisplayPageElement(
-					null, null, null, true, true, null, true,
+					_getCollectionDisplayListStyle(
+						null, null, ListStyle.ListStyleType.GRID, null),
+					null, null, true, true, null, true,
 					RandomTestUtil.randomString(), RandomTestUtil.randomInt(),
 					RandomTestUtil.randomInt(), RandomTestUtil.randomInt(),
 					CollectionDisplayPageElementDefinition.PaginationType.
