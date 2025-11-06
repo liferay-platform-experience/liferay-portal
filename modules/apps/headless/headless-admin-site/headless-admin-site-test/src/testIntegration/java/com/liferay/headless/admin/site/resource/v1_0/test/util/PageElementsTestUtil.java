@@ -359,13 +359,11 @@ public class PageElementsTestUtil {
 
 		pageElements.add(
 			_getCollectionDisplayPageElement(position++, scopeGroupId));
-
 		pageElements.add(
 			_getPageElement(
 				getPageElementDefinition(
 					PageElementDefinition.Type.CONTAINER, scopeGroupId),
 				StringPool.BLANK, position++));
-
 		pageElements.add(_getGridPageElement(position++));
 
 		pageElements.add(
