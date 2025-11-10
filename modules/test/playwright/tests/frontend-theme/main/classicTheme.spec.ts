@@ -56,7 +56,7 @@ test('Verify custom look and feel settings can be applied to page.', async ({
 
 		await pagesAdminPage.goToDesignTabConfiguration(PAGE_NAME);
 
-		await page.getByText('Define a custom theme for this page').click();
+		await pagesAdminPage.defineCustomThemeRadio.click();
 
 		await page
 			.getByRole('checkbox', {
