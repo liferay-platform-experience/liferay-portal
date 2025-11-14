@@ -138,7 +138,7 @@ announcementsPortletInstanceConfiguration = ParameterMapUtil.setParameterMap(Ann
 
 								if (announcementsDisplayContext.isScopeOrganizationSelected(organization)) {
 									rightList.add(keyValuePair);
-								} 
+								}
 								else {
 									leftList.add(keyValuePair);
 								}

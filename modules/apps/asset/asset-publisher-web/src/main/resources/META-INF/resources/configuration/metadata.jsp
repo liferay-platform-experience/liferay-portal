@@ -10,7 +10,6 @@
 <aui:input name="preferences--metadataFields--" type="hidden" />
 
 <%
-
 List<KeyValuePair> leftList = new ArrayList<>();
 
 String[] allMetadataFields = {"author", "categories", "create-date", "expiration-date", "modified-date", "priority", "publish-date", "tags", "view-count"};
