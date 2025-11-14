@@ -61,9 +61,6 @@
 		<aui:input name='<%= "settings--" + PropsKeys.LOCALES + "--" %>' type="hidden" value="<%= StringUtil.merge(availableLanguageIds) %>" />
 
 		<%
-
-		// Left list
-
 		List<KeyValuePair> leftList = new ArrayList<>();
 
 		for (String propsValuesLanguageId : SetUtil.fromArray(PropsValues.LOCALES)) {
@@ -77,8 +74,6 @@
 		}
 
 		leftList = ListUtil.sort(leftList, new KeyValuePairComparator(false, true));
-
-		// Right list
 
 		List<KeyValuePair> rightList = new ArrayList<>();
 
@@ -97,7 +92,7 @@
 			leftTitle="available"
 			rightBoxName="currentLanguageIds"
 			rightList="<%= rightList %>"
-			rightTitle="current"
+			rightTitle="in-use"
 		/>
 	</aui:fieldset>
 </aui:fieldset>

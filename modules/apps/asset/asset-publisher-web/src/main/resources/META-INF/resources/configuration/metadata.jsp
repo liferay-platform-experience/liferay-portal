@@ -11,36 +11,31 @@
 
 <%
 
-// Left list
-
 List<KeyValuePair> leftList = new ArrayList<>();
 
-String[] metadataFields = assetPublisherDisplayContext.getMetadataFields();
-
-for (String metadataField : metadataFields) {
-	leftList.add(new KeyValuePair(metadataField, LanguageUtil.get(request, metadataField)));
-}
-
-// Right list
-
-List<KeyValuePair> rightList = new ArrayList<>();
-
 String[] allMetadataFields = {"author", "categories", "create-date", "expiration-date", "modified-date", "priority", "publish-date", "tags", "view-count"};
+String[] metadataFields = assetPublisherDisplayContext.getMetadataFields();
 
 for (String metadataField : allMetadataFields) {
 	if (!ArrayUtil.contains(metadataFields, metadataField)) {
-		rightList.add(new KeyValuePair(metadataField, LanguageUtil.get(request, metadataField)));
+		leftList.add(new KeyValuePair(metadataField, LanguageUtil.get(request, metadataField)));
 	}
 }
 
-rightList = ListUtil.sort(rightList, new KeyValuePairComparator(false, true));
+leftList = ListUtil.sort(leftList, new KeyValuePairComparator(false, true));
+
+List<KeyValuePair> rightList = new ArrayList<>();
+
+for (String metadataField : metadataFields) {
+	rightList.add(new KeyValuePair(metadataField, LanguageUtil.get(request, metadataField)));
+}
 %>
 
 <liferay-ui:input-move-boxes
-	leftBoxName="currentMetadataFields"
+	leftBoxName="availableMetadataFields"
 	leftList="<%= leftList %>"
-	leftTitle="current"
-	rightBoxName="availableMetadataFields"
+	leftTitle="available"
+	rightBoxName="currentMetadataFields"
 	rightList="<%= rightList %>"
-	rightTitle="available"
+	rightTitle="in-use"
 />
