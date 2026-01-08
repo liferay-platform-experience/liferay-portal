@@ -1,14 +1,14 @@
 {
 	"dependencies": {
-		"@clayui/autocomplete": "3.156.0",
+		"@clayui/autocomplete": "3.156.6",
 		"@clayui/button": "3.156.0",
-		"@clayui/color-picker": "3.156.0",
-		"@clayui/drop-down": "3.156.0",
+		"@clayui/color-picker": "3.156.6",
+		"@clayui/drop-down": "3.156.6",
 		"@clayui/form": "3.156.0",
 		"@clayui/icon": "3.144.1",
 		"@clayui/link": "3.144.1",
 		"@clayui/modal": "3.156.0",
-		"@clayui/multi-select": "3.156.0",
+		"@clayui/multi-select": "3.156.6",
 		"@clayui/sticker": "3.147.0",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-js-react-web": "*",
