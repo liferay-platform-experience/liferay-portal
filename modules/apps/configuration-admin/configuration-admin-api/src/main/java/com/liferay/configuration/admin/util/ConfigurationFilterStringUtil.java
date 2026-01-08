@@ -8,6 +8,8 @@ package com.liferay.configuration.admin.util;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -48,26 +50,55 @@ public class ConfigurationFilterStringUtil {
 	}
 
 	public static String getGroupScopedFilterString(
-		Serializable groupId, String siteExternalReferenceCode) {
+		Serializable companyId, Serializable groupId,
+		String siteExternalReferenceCode) {
+
+		if (companyId == null) {
+			if (CompanyThreadLocal.getCompanyId() == CompanyConstants.SYSTEM) {
+				throw new IllegalStateException(
+					"A valid company is expected when building a group " +
+						"scoped configuration filter string");
+			}
+
+			companyId = CompanyThreadLocal.getCompanyId();
+		}
 
 		return StringBundler.concat(
 			"(&(|(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
 			StringPool.EQUAL, _toString(groupId),
 			")(siteExternalReferenceCode=",
-			GetterUtil.get(siteExternalReferenceCode, "*"), "))(!(",
+			GetterUtil.get(siteExternalReferenceCode, "*"), "))(",
+			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+			StringPool.EQUAL, companyId, ")(!(",
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey(),
 			"=*)))");
 	}
 
 	public static String getGroupScopedFilterString(
-		Serializable groupId, String pid, String siteExternalReferenceCode) {
+		Serializable companyId, Serializable groupId, String pid,
+		String siteExternalReferenceCode) {
 
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
 			_getScopedFilterString(pid),
-			getGroupScopedFilterString(groupId, siteExternalReferenceCode),
+			getGroupScopedFilterString(
+				companyId, groupId, siteExternalReferenceCode),
 			StringPool.CLOSE_PARENTHESIS);
+	}
+
+	public static String getGroupScopedFilterString(
+		Serializable groupId, String siteExternalReferenceCode) {
+
+		return getGroupScopedFilterString(
+			null, groupId, siteExternalReferenceCode);
+	}
+
+	public static String getGroupScopedFilterString(
+		Serializable groupId, String pid, String siteExternalReferenceCode) {
+
+		return getGroupScopedFilterString(
+			null, groupId, pid, siteExternalReferenceCode);
 	}
 
 	public static String getPortletScopedFilterString(
