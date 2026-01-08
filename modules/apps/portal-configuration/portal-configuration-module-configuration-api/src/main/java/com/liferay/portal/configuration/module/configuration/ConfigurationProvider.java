@@ -23,7 +23,8 @@ public interface ConfigurationProvider {
 	public <T> void deleteCompanyConfiguration(Class<T> clazz, long companyId)
 		throws ConfigurationException;
 
-	public <T> void deleteGroupConfiguration(Class<T> clazz, long groupId)
+	public <T> void deleteGroupConfiguration(
+			Class<T> clazz, long companyId, long groupId)
 		throws ConfigurationException;
 
 	public <T> void deletePortletInstanceConfiguration(
@@ -40,7 +41,8 @@ public interface ConfigurationProvider {
 			Class<T> clazz, SettingsLocator settingsLocator)
 		throws ConfigurationException;
 
-	public <T> T getGroupConfiguration(Class<T> clazz, long groupId)
+	public <T> T getGroupConfiguration(
+			Class<T> clazz, long companyId, long groupId)
 		throws ConfigurationException;
 
 	public <T> T getPortletInstanceConfiguration(
@@ -64,11 +66,13 @@ public interface ConfigurationProvider {
 		throws ConfigurationException;
 
 	public <T> void saveGroupConfiguration(
-			Class<T> clazz, long groupId, Dictionary<String, Object> properties)
+			Class<T> clazz, long companyId, long groupId,
+			Dictionary<String, Object> properties)
 		throws ConfigurationException;
 
 	public <T> void saveGroupConfiguration(
-			long groupId, String pid, Dictionary<String, Object> properties)
+			long companyId, long groupId, String pid,
+			Dictionary<String, Object> properties)
 		throws ConfigurationException;
 
 	public <T> void savePortletInstanceConfiguration(

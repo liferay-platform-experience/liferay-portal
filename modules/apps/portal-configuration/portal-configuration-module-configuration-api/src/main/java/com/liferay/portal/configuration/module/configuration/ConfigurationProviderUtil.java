@@ -29,13 +29,14 @@ public class ConfigurationProviderUtil {
 	}
 
 	public static <T> void deleteGroupConfiguration(
-			Class<T> clazz, long groupId)
+			Class<T> clazz, long companyId, long groupId)
 		throws ConfigurationException {
 
 		ConfigurationProvider configurationProvider =
 			_configurationProviderSnapshot.get();
 
-		configurationProvider.deleteGroupConfiguration(clazz, groupId);
+		configurationProvider.deleteGroupConfiguration(
+			clazz, companyId, groupId);
 	}
 
 	public static <T> void deletePortletInstanceConfiguration(
@@ -81,13 +82,15 @@ public class ConfigurationProviderUtil {
 		return _configurationProviderSnapshot.get();
 	}
 
-	public static <T> T getGroupConfiguration(Class<T> clazz, long groupId)
+	public static <T> T getGroupConfiguration(
+			Class<T> clazz, long companyId, long groupId)
 		throws ConfigurationException {
 
 		ConfigurationProvider configurationProvider =
 			_configurationProviderSnapshot.get();
 
-		return configurationProvider.getGroupConfiguration(clazz, groupId);
+		return configurationProvider.getGroupConfiguration(
+			clazz, companyId, groupId);
 	}
 
 	public static <T> T getPortletInstanceConfiguration(
@@ -134,14 +137,15 @@ public class ConfigurationProviderUtil {
 	}
 
 	public static <T> void saveGroupConfiguration(
-			Class<T> clazz, long groupId, Dictionary<String, Object> properties)
+			Class<T> clazz, long companyId, long groupId,
+			Dictionary<String, Object> properties)
 		throws ConfigurationException {
 
 		ConfigurationProvider configurationProvider =
 			_configurationProviderSnapshot.get();
 
 		configurationProvider.saveGroupConfiguration(
-			clazz, groupId, properties);
+			clazz, companyId, groupId, properties);
 	}
 
 	public static <T> void savePortletInstanceConfiguration(

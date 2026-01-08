@@ -7,6 +7,7 @@ package com.liferay.portal.configuration.module.configuration.internal;
 
 import aQute.bnd.annotation.metatype.Meta;
 
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
@@ -49,16 +50,17 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		throws ConfigurationException {
 
 		_deleteFactoryConfiguration(
-			_getConfigurationPid(clazz),
+			companyId, _getConfigurationPid(clazz),
 			ExtendedObjectClassDefinition.Scope.COMPANY, companyId);
 	}
 
 	@Override
-	public <T> void deleteGroupConfiguration(Class<T> clazz, long groupId)
+	public <T> void deleteGroupConfiguration(
+			Class<T> clazz, long companyId, long groupId)
 		throws ConfigurationException {
 
 		_deleteFactoryConfiguration(
-			_getConfigurationPid(clazz),
+			companyId, _getConfigurationPid(clazz),
 			ExtendedObjectClassDefinition.Scope.GROUP, groupId);
 	}
 
@@ -68,7 +70,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		throws ConfigurationException {
 
 		_deleteFactoryConfiguration(
-			_getConfigurationPid(clazz),
+			null, _getConfigurationPid(clazz),
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE, portletId);
 	}
 
@@ -114,7 +116,8 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 	}
 
 	@Override
-	public <T> T getGroupConfiguration(Class<T> clazz, long groupId)
+	public <T> T getGroupConfiguration(
+			Class<T> clazz, long companyId, long groupId)
 		throws ConfigurationException {
 
 		String settingsId = _getSettingsId(clazz);
@@ -179,7 +182,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		throws ConfigurationException {
 
 		_saveFactoryConfiguration(
-			_getConfigurationPid(clazz),
+			companyId, _getConfigurationPid(clazz),
 			ExtendedObjectClassDefinition.Scope.COMPANY, companyId, properties);
 	}
 
@@ -189,27 +192,29 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		throws ConfigurationException {
 
 		_saveFactoryConfiguration(
-			pid, ExtendedObjectClassDefinition.Scope.COMPANY, companyId,
-			properties);
+			companyId, pid, ExtendedObjectClassDefinition.Scope.COMPANY,
+			companyId, properties);
 	}
 
 	@Override
 	public <T> void saveGroupConfiguration(
-			Class<T> clazz, long groupId, Dictionary<String, Object> properties)
+			Class<T> clazz, long companyId, long groupId,
+			Dictionary<String, Object> properties)
 		throws ConfigurationException {
 
 		_saveFactoryConfiguration(
-			_getConfigurationPid(clazz),
+			companyId, _getConfigurationPid(clazz),
 			ExtendedObjectClassDefinition.Scope.GROUP, groupId, properties);
 	}
 
 	@Override
 	public <T> void saveGroupConfiguration(
-			long groupId, String pid, Dictionary<String, Object> properties)
+			long companyId, long groupId, String pid,
+			Dictionary<String, Object> properties)
 		throws ConfigurationException {
 
 		_saveFactoryConfiguration(
-			pid, ExtendedObjectClassDefinition.Scope.GROUP, groupId,
+			companyId, pid, ExtendedObjectClassDefinition.Scope.GROUP, groupId,
 			properties);
 	}
 
@@ -220,7 +225,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		throws ConfigurationException {
 
 		_saveFactoryConfiguration(
-			_getConfigurationPid(clazz),
+			null, _getConfigurationPid(clazz),
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE, portletId,
 			properties);
 	}
@@ -255,15 +260,13 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 	}
 
 	private void _deleteFactoryConfiguration(
-			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
+			Long companyId, String pid,
+			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK)
 		throws ConfigurationException {
-
-		String scopedFactoryPid = factoryPid + ".scoped";
 
 		try {
 			Configuration configuration = _getFactoryConfiguration(
-				scopedFactoryPid, scope, scopePK);
+				companyId, pid, scope, scopePK);
 
 			if (configuration != null) {
 				configuration.delete();
@@ -271,8 +274,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		}
 		catch (IOException ioException) {
 			throw new ConfigurationException(
-				"Unable to delete factory configuration " + scopedFactoryPid,
-				ioException);
+				"Unable to delete factory configuration " + pid, ioException);
 		}
 	}
 
@@ -287,17 +289,15 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 	}
 
 	private Configuration _getFactoryConfiguration(
-			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
+			Long companyId, String pid,
+			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK)
 		throws ConfigurationException {
 
 		try {
-			String filterString = StringBundler.concat(
-				"(&(service.factoryPid=", factoryPid, ")(",
-				scope.getPropertyKey(), "=", scopePK, "))");
-
 			Configuration[] configurations =
-				_configurationAdmin.listConfigurations(filterString);
+				_configurationAdmin.listConfigurations(
+					ConfigurationFilterStringUtil.getScopedFilterString(
+						companyId, pid, scope, scopePK));
 
 			if (configurations != null) {
 				return configurations[0];
@@ -307,8 +307,7 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		}
 		catch (InvalidSyntaxException | IOException exception) {
 			throw new ConfigurationException(
-				"Unable to retrieve factory configuration " + factoryPid,
-				exception);
+				"Unable to retrieve factory configuration " + pid, exception);
 		}
 	}
 
@@ -346,29 +345,34 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 	}
 
 	private void _saveFactoryConfiguration(
-			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK, Dictionary<String, Object> properties)
+			Long companyId, String pid,
+			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK,
+			Dictionary<String, Object> properties)
 		throws ConfigurationException {
-
-		String scopedFactoryPid = factoryPid + ".scoped";
 
 		try {
 			Configuration configuration = _getFactoryConfiguration(
-				scopedFactoryPid, scope, scopePK);
+				companyId, pid, scope, scopePK);
 
 			if (configuration == null) {
 				configuration = _configurationAdmin.createFactoryConfiguration(
-					scopedFactoryPid, StringPool.QUESTION);
+					pid + ".scoped", StringPool.QUESTION);
 			}
 
 			properties.put(scope.getPropertyKey(), scopePK);
+
+			if (scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+				properties.put(
+					ExtendedObjectClassDefinition.Scope.COMPANY.
+						getPropertyKey(),
+					companyId);
+			}
 
 			configuration.update(properties);
 		}
 		catch (IOException ioException) {
 			throw new ConfigurationException(
-				"Unable to save factory configuration " + scopedFactoryPid,
-				ioException);
+				"Unable to save factory configuration " + pid, ioException);
 		}
 	}
 
