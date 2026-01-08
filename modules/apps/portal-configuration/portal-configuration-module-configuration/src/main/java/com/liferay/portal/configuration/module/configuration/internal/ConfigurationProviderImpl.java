@@ -13,6 +13,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.settings.TypedSettings;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
@@ -293,8 +295,20 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 
 		try {
 			String filterString = StringBundler.concat(
-				"(&(service.factoryPid=", factoryPid, ")(",
-				scope.getPropertyKey(), "=", scopePK, "))");
+				"(service.factoryPid=", factoryPid, ")(",
+				scope.getPropertyKey(), "=", scopePK, ")");
+
+			if (PropsValues.DATABASE_PARTITION_ENABLED &&
+				scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+
+				filterString += StringBundler.concat(
+					"(",
+					ExtendedObjectClassDefinition.Scope.COMPANY.
+						getPropertyKey(),
+					"=", CompanyThreadLocal.getCompanyId(), ")");
+			}
+
+			filterString = StringBundler.concat("(&", filterString, ")");
 
 			Configuration[] configurations =
 				_configurationAdmin.listConfigurations(filterString);
@@ -362,6 +376,15 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 			}
 
 			properties.put(scope.getPropertyKey(), scopePK);
+
+			if (PropsValues.DATABASE_PARTITION_ENABLED &&
+				scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+
+				properties.put(
+					ExtendedObjectClassDefinition.Scope.COMPANY.
+						getPropertyKey(),
+					CompanyThreadLocal.getCompanyId());
+			}
 
 			configuration.update(properties);
 		}

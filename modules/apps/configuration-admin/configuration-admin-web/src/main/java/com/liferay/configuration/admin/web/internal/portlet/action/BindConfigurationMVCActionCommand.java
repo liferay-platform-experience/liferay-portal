@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -170,7 +171,7 @@ public class BindConfigurationMVCActionCommand implements MVCActionCommand {
 
 		try {
 			configurationModel = _bindConfiguration(
-				configurationModel, properties,
+				themeDisplay.getCompanyId(), configurationModel, properties,
 				configurationScopeDisplayContext.getScope(),
 				configurationScopeDisplayContext.getScopePK());
 
@@ -213,7 +214,7 @@ public class BindConfigurationMVCActionCommand implements MVCActionCommand {
 	}
 
 	private ConfigurationModel _bindConfiguration(
-			ConfigurationModel configurationModel,
+			long companyId, ConfigurationModel configurationModel,
 			Dictionary<String, Object> properties,
 			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK)
 		throws ConfigurationModelListenerException, PortletException {
@@ -285,6 +286,15 @@ public class BindConfigurationMVCActionCommand implements MVCActionCommand {
 
 			if (scoped) {
 				configuredProperties.put(scope.getPropertyKey(), scopePK);
+
+				if (PropsValues.DATABASE_PARTITION_ENABLED &&
+					scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+
+					configuredProperties.put(
+						ExtendedObjectClassDefinition.Scope.COMPANY.
+							getPropertyKey(),
+						companyId);
+				}
 			}
 
 			// LPS-69521
