@@ -10,10 +10,12 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.settings.internal.util.ConfigurationPidUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.settings.LocationVariableResolver;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
@@ -56,7 +58,7 @@ public class ScopedConfigurationManagedServiceFactory
 		ExtendedObjectClassDefinition.Scope scope, Serializable scopePK) {
 
 		Map<String, Object> scopeConfigurationBeans = _configurationBeans.get(
-			new ScopeKey(scopePK, scope));
+			_getScopeKey(CompanyThreadLocal.getCompanyId(), scope, scopePK));
 
 		if (MapUtil.isEmpty(scopeConfigurationBeans)) {
 			return null;
@@ -86,16 +88,18 @@ public class ScopedConfigurationManagedServiceFactory
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey()),
 			CompanyConstants.SYSTEM);
 
-		if (companyId != CompanyConstants.SYSTEM) {
-			_updateEntries(
-				pid, companyId, ExtendedObjectClassDefinition.Scope.COMPANY,
-				properties);
-		}
-
 		long groupId = GetterUtil.getLong(
 			properties.get(
 				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey()),
 			GroupConstants.ANY_PARENT_GROUP_ID);
+
+		if ((companyId != CompanyConstants.SYSTEM) &&
+			(groupId == GroupConstants.ANY_PARENT_GROUP_ID)) {
+
+			_updateEntries(
+				pid, companyId, ExtendedObjectClassDefinition.Scope.COMPANY,
+				properties);
+		}
 
 		if (groupId != GroupConstants.ANY_PARENT_GROUP_ID) {
 			_updateEntries(
@@ -114,6 +118,21 @@ public class ScopedConfigurationManagedServiceFactory
 				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE,
 				properties);
 		}
+	}
+
+	private ScopeKey _getScopeKey(
+		long companyId, ExtendedObjectClassDefinition.Scope scope,
+		Serializable scopePK) {
+
+		ScopeKey scopeKey = new ScopeKey(scopePK, scope);
+
+		if (PropsValues.DATABASE_PARTITION_ENABLED &&
+			scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+
+			scopeKey = new ScopeKey(companyId + _SEPARATOR + scopePK, scope);
+		}
+
+		return scopeKey;
 	}
 
 	private void _removePidConfigurations(String pid) {
@@ -147,7 +166,12 @@ public class ScopedConfigurationManagedServiceFactory
 		ExtendedObjectClassDefinition.Scope scope,
 		Dictionary<String, ?> properties) {
 
-		ScopeKey scopeKey = new ScopeKey(scopePK, scope);
+		ScopeKey scopeKey = _getScopeKey(
+			GetterUtil.getLong(
+				properties.get(
+					ExtendedObjectClassDefinition.Scope.COMPANY.
+						getPropertyKey())),
+			scope, scopePK);
 
 		_pidScopeKeys.compute(
 			pid,
@@ -178,6 +202,8 @@ public class ScopedConfigurationManagedServiceFactory
 				return scopeConfigurations;
 			});
 	}
+
+	private static final String _SEPARATOR = "--";
 
 	private final Class<?> _configurationBeanClass;
 	private final Map<ScopeKey, Map<String, Object>> _configurationBeans =

@@ -8,7 +8,9 @@ package com.liferay.configuration.admin.util;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.framework.Constants;
@@ -48,11 +50,22 @@ public class ConfigurationFilterStringUtil {
 	public static String getGroupScopedFilterString(
 		String groupId, String siteExternalReferenceCode) {
 
-		return StringBundler.concat(
+		String filterString = StringBundler.concat(
 			"(&(|(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
 			StringPool.EQUAL, GetterUtil.get(groupId, "*"),
 			")(siteExternalReferenceCode=",
-			GetterUtil.get(siteExternalReferenceCode, "*"), "))(!(",
+			GetterUtil.get(siteExternalReferenceCode, "*"), "))");
+
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			filterString = StringBundler.concat(
+				filterString, StringPool.OPEN_PARENTHESIS,
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				StringPool.EQUAL, CompanyThreadLocal.getCompanyId(),
+				StringPool.CLOSE_PARENTHESIS);
+		}
+
+		return StringBundler.concat(
+			filterString, "(!(",
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey(),
 			"=*)))");
