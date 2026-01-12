@@ -81,8 +81,16 @@ function FolderTree({filterQuery, handleSelectionChange, items: initialItems}) {
 		return nodeByName(items, filterQuery);
 	}, [items, filterQuery]);
 
-	const onClick = (event, item) => {
+	const onClick = (event, item, expand) => {
 		event.preventDefault();
+
+		const isExpander = event.target.closest('.component-expander');
+
+		if (isExpander) {
+			expand.toggle(item.id);
+
+			return;
+		}
 
 		handleSelectionChange(item);
 	};
@@ -112,11 +120,13 @@ function FolderTree({filterQuery, handleSelectionChange, items: initialItems}) {
 					onItemsChange={setItems}
 					showExpanderOnHover={false}
 				>
-					{(item) => (
+					{(item, _, expand) => (
 						<ClayTreeView.Item>
 							<ClayTreeView.ItemStack
 								disabled={item.disabled}
-								onClick={(event) => onClick(event, item)}
+								onClick={(event) =>
+									onClick(event, item, expand)
+								}
 								onKeyUp={(event) => onKeyUp(event, item)}
 							>
 								<ClayIcon symbol="folder" />
