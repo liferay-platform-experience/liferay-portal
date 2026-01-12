@@ -231,91 +231,93 @@ export default function LeftSidebarTreeView({
 				(leftSidebarItem: LeftSidebarItem) => (
 					<TreeView.Item>
 						<TreeView.ItemStack>
-							<div className="lfr-objects__model-builder-left-sidebar-current-object-folder-container">
-								<div className="lfr-objects__model-builder-left-sidebar-current-object-folder-content">
-									<div>
-										<Icon
-											symbol={
-												TYPES_TO_SYMBOLS[
-													leftSidebarItem.type
-												]
-											}
-										/>
+							<Text>
+								<div className="lfr-objects__model-builder-left-sidebar-current-object-folder-container">
+									<div className="lfr-objects__model-builder-left-sidebar-current-object-folder-content">
+										<div>
+											<Icon
+												symbol={
+													TYPES_TO_SYMBOLS[
+														leftSidebarItem.type
+													]
+												}
+											/>
+										</div>
+
+										<div className="lfr-objects__model-builder-left-sidebar-current-object-folder-content-title">
+											<Text truncate weight="semi-bold">
+												{leftSidebarItem.name}
+											</Text>
+										</div>
+
+										{leftSidebarItem.objectFolderName !==
+											selectedObjectFolder.name && (
+											<ClayTooltipProvider>
+												<div className="lfr-objects__model-builder-left-sidebar-go-to-folder-button">
+													<ClayButton
+														aria-label={Liferay.Language.get(
+															'go-to-folder'
+														)}
+														data-tooltip-align="bottom"
+														displayType={null}
+														onClick={() =>
+															onClickGoToFolder(
+																leftSidebarItem.objectFolderName
+															)
+														}
+														size="sm"
+														title={Liferay.Language.get(
+															'go-to-folder'
+														)}
+													>
+														<Icon
+															className="text-5"
+															symbol="arrow-right-full"
+														/>
+													</ClayButton>
+												</div>
+											</ClayTooltipProvider>
+										)}
 									</div>
 
-									<div className="lfr-objects__model-builder-left-sidebar-current-object-folder-content-title">
-										<Text truncate weight="semi-bold">
-											{leftSidebarItem.name}
-										</Text>
-									</div>
-
-									{leftSidebarItem.objectFolderName !==
-										selectedObjectFolder.name && (
-										<ClayTooltipProvider>
-											<div className="lfr-objects__model-builder-left-sidebar-go-to-folder-button">
-												<ClayButton
-													aria-label={Liferay.Language.get(
-														'go-to-folder'
-													)}
-													data-tooltip-align="bottom"
-													displayType={null}
-													onClick={() =>
-														onClickGoToFolder(
-															leftSidebarItem.objectFolderName
-														)
-													}
-													size="sm"
-													title={Liferay.Language.get(
-														'go-to-folder'
-													)}
-												>
-													<Icon
-														className="text-5"
-														symbol="arrow-right-full"
-													/>
-												</ClayButton>
-											</div>
-										</ClayTooltipProvider>
+									{!showActions && (
+										<div className="lfr-objects__model-builder-left-sidebar-show-folders-button">
+											<ClayButtonWithIcon
+												aria-label={
+													leftSidebarItem.hiddenObjectFolderObjectDefinitionNodes
+														? Liferay.Language.get(
+																'hidden'
+															)
+														: Liferay.Language.get(
+																'show'
+															)
+												}
+												displayType="unstyled"
+												onClick={(event) => {
+													event.stopPropagation();
+													dispatch({
+														payload: {
+															hiddenObjectFolderObjectDefinitionNodes:
+																leftSidebarItem.hiddenObjectFolderObjectDefinitionNodes,
+															leftSidebarItem,
+															objectDefinitionNodes:
+																nodes,
+															objectRelationshipEdges:
+																edges,
+														},
+														type: TYPES.BULK_CHANGE_NODE_VIEW,
+													});
+												}}
+												symbol={
+													leftSidebarItem.hiddenObjectFolderObjectDefinitionNodes
+														? 'hidden'
+														: 'view'
+												}
+											/>
+										</div>
 									)}
 								</div>
-
-								{!showActions && (
-									<div className="lfr-objects__model-builder-left-sidebar-show-folders-button">
-										<ClayButtonWithIcon
-											aria-label={
-												leftSidebarItem.hiddenObjectFolderObjectDefinitionNodes
-													? Liferay.Language.get(
-															'hidden'
-														)
-													: Liferay.Language.get(
-															'show'
-														)
-											}
-											displayType="unstyled"
-											onClick={(event) => {
-												event.stopPropagation();
-												dispatch({
-													payload: {
-														hiddenObjectFolderObjectDefinitionNodes:
-															leftSidebarItem.hiddenObjectFolderObjectDefinitionNodes,
-														leftSidebarItem,
-														objectDefinitionNodes:
-															nodes,
-														objectRelationshipEdges:
-															edges,
-													},
-													type: TYPES.BULK_CHANGE_NODE_VIEW,
-												});
-											}}
-											symbol={
-												leftSidebarItem.hiddenObjectFolderObjectDefinitionNodes
-													? 'hidden'
-													: 'view'
-											}
-										/>
-									</div>
-								)}
-							</div>
+							</Text>
 						</TreeView.ItemStack>
 
 						<TreeView.Group
@@ -460,12 +462,7 @@ export default function LeftSidebarTreeView({
 									>
 										<Icon symbol={TYPES_TO_SYMBOLS[type]} />
 
-										<span
-											className="text-truncate"
-											title={label}
-										>
-											{label}
-										</span>
+										<Text truncate>{label}</Text>
 									</TreeView.Item>
 								</div>
 							)}
