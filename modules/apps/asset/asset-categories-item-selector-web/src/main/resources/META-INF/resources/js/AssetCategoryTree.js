@@ -122,10 +122,7 @@ export function AssetCategoryTree({
 			return;
 		}
 
-		selection.toggle(item.id, {
-			parentSelection: false,
-			selectionMode: event.shiftKey ? 'multiple-recursive' : null,
-		});
+		expand.toggle(item.id);
 	};
 
 	const onKeyDown = (event, item, selection) => {
