@@ -121,6 +121,25 @@ public class ConfigurationFilterStringUtil {
 			StringPool.CLOSE_PARENTHESIS);
 	}
 
+	public static String getScopedFilterString(
+		String pid, ExtendedObjectClassDefinition.Scope scope,
+		Serializable scopePK) {
+
+		if (scope.equals(ExtendedObjectClassDefinition.Scope.COMPANY)) {
+			return getCompanyScopedFilterString(scopePK, pid, null);
+		}
+		else if (scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+			return getGroupScopedFilterString(scopePK, pid, null);
+		}
+		else if (scope.equals(
+					ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE)) {
+
+			return getPortletScopedFilterString(pid, scopePK);
+		}
+
+		return getSystemScopedFilterString(pid);
+	}
+
 	public static String getSystemScopedFilterString() {
 		return StringBundler.concat(
 			"(&(|(!(",
