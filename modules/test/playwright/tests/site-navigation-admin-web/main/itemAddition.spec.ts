@@ -743,7 +743,7 @@ test(
 
 		for (let index = 0; index < 3; index++) {
 			await navigationMenusPage.categoriesModal
-				.getByRole('button')
+				.locator('.component-expander')
 				.nth(index)
 				.click();
 		}
