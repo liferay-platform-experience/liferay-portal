@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.file.install.constants.FileInstallConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.settings.definition.ConfigurationPidMapping;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import jakarta.validation.ValidationException;
 
@@ -97,6 +99,15 @@ public class ConfigurationUtil {
 
 		if (propertyKey != null) {
 			properties.put(propertyKey, classPK);
+
+			if (PropsValues.DATABASE_PARTITION_ENABLED &&
+				scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+
+				properties.put(
+					ExtendedObjectClassDefinition.Scope.COMPANY.
+						getPropertyKey(),
+					CompanyThreadLocal.getCompanyId());
+			}
 		}
 
 		configuration.update(properties);
