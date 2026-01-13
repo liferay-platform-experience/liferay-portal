@@ -5,6 +5,7 @@
 
 package com.liferay.document.library.internal.configuration;
 
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.document.library.configuration.DLSizeLimitConfigurationProvider;
 import com.liferay.document.library.internal.configuration.helper.DLSizeLimitConfigurationHelper;
 import com.liferay.petra.string.StringPool;
@@ -169,10 +170,8 @@ public class DLSizeLimitConfigurationProviderImpl
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			String.format(
-				"(&(service.factoryPid=%s)(%s=%d))",
-				DLSizeLimitConfiguration.class.getName() + ".scoped",
-				scope.getPropertyKey(), scopePK));
+			ConfigurationFilterStringUtil.getScopedFilterString(
+				DLSizeLimitConfiguration.class.getName(), scope, scopePK));
 
 		if (configurations == null) {
 			return null;

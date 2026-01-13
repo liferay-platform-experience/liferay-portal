@@ -6,6 +6,7 @@
 package com.liferay.document.library.internal.upgrade.v3_2_8.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.document.library.constants.DLFileEntryConfigurationConstants;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
@@ -539,9 +540,8 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			String.format(
-				"(&(%s=%s)(%s=%d))", ConfigurationAdmin.SERVICE_FACTORYPID,
-				className + ".scoped", scope.getPropertyKey(), scopePK));
+			ConfigurationFilterStringUtil.getScopedFilterString(
+				className, scope, scopePK));
 
 		if (configurations == null) {
 			return null;
@@ -569,7 +569,8 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			String.format("(%s=%s)", Constants.SERVICE_PID, className));
+			ConfigurationFilterStringUtil.getSystemScopedFilterString(
+				className));
 
 		if (configurations == null) {
 			return null;
