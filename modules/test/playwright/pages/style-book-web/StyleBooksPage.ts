@@ -5,9 +5,11 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
+import {zipFolder} from '../../utils/zip';
 
 export class StyleBooksPage {
 	readonly page: Page;
@@ -18,6 +20,27 @@ export class StyleBooksPage {
 		this.page = page;
 		this.searchButton = this.page.getByTitle('Search for', {exact: true});
 		this.searchInput = page.getByPlaceholder('Search for');
+	}
+
+	async assertTokenInputValue(
+		label: string,
+		value: string,
+		section?: string
+	) {
+		const parentElement = section
+			? this.page.locator('.panel').filter({hasText: section})
+			: this.page;
+
+		const input = parentElement
+			.locator('.form-group')
+			.filter({hasText: label})
+			.locator('input');
+
+		if (section && (await input.isHidden())) {
+			await this.page.getByRole('button', {name: section}).click();
+		}
+
+		await expect(input).toContainText(value);
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
@@ -79,6 +102,36 @@ export class StyleBooksPage {
 		await this.page.getByLabel('More actions').click();
 
 		await this.page.getByRole('menuitem', {name: 'Edit'}).click();
+	}
+
+	async importStyleBookFile(fileName: string, filePath: string) {
+		const fileChooserPromise = this.page.waitForEvent('filechooser');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: 'Import',
+			}),
+			trigger: this.page.getByRole('button', {name: 'Options'}),
+		});
+
+		await this.page
+			.getByRole('button', {exact: true, name: 'Select File'})
+			.click();
+
+		const fileChooser = await fileChooserPromise;
+
+		await fileChooser.setFiles(await zipFolder(filePath));
+
+		await this.page.getByText(fileName).waitFor();
+
+		await this.page.getByRole('button', {name: 'Import'}).click();
+
+		await waitForAlert(
+			this.page,
+			'Success:The files were imported correctly.'
+		);
 	}
 
 	async markAsDefault(styleBookName: string) {
