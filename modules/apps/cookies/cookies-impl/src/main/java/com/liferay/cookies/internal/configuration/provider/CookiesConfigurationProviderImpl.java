@@ -6,13 +6,12 @@
 package com.liferay.cookies.internal.configuration.provider;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
 import com.liferay.cookies.configuration.banner.CookiesBannerConfiguration;
 import com.liferay.cookies.configuration.consent.CookiesConsentConfiguration;
 import com.liferay.cookies.internal.configuration.admin.service.CookiesPreferenceHandlingManagedServiceFactory;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -374,13 +373,12 @@ public class CookiesConfigurationProviderImpl
 		throws ConfigurationException {
 
 		try {
-			String filterString = StringBundler.concat(
-				"(&(", ConfigurationAdmin.SERVICE_FACTORYPID, StringPool.EQUAL,
-				CookiesPreferenceHandlingConfiguration.class.getName(),
-				".scoped)(companyId=", companyId, "))");
-
 			Configuration[] configuration =
-				_configurationAdmin.listConfigurations(filterString);
+				_configurationAdmin.listConfigurations(
+					ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+						companyId,
+						CookiesPreferenceHandlingConfiguration.class.getName(),
+						null));
 
 			if (configuration != null) {
 				return configuration[0];
@@ -398,13 +396,12 @@ public class CookiesConfigurationProviderImpl
 		throws ConfigurationException {
 
 		try {
-			String filterString = StringBundler.concat(
-				"(&(", ConfigurationAdmin.SERVICE_FACTORYPID, StringPool.EQUAL,
-				CookiesPreferenceHandlingConfiguration.class.getName(),
-				".scoped)(groupId=", groupId, "))");
-
 			Configuration[] configuration =
-				_configurationAdmin.listConfigurations(filterString);
+				_configurationAdmin.listConfigurations(
+					ConfigurationFilterStringUtil.getGroupScopedFilterString(
+						groupId,
+						CookiesPreferenceHandlingConfiguration.class.getName(),
+						null));
 
 			if (configuration != null) {
 				return configuration[0];
@@ -453,11 +450,9 @@ public class CookiesConfigurationProviderImpl
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			String.format(
-				"(&(service.factoryPid=%s)(%s=%d))",
-				CookiesPreferenceHandlingConfiguration.class.getName() +
-					".scoped",
-				scope.getPropertyKey(), scopePK));
+			ConfigurationFilterStringUtil.getScopedFilterString(
+				CookiesPreferenceHandlingConfiguration.class.getName(), scope,
+				scopePK));
 
 		if (configurations == null) {
 			return null;
