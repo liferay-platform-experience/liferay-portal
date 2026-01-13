@@ -7,12 +7,11 @@ package com.liferay.layout.locked.layouts.web.internal.configuration.admin.displ
 
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.layout.configuration.LockedLayoutsGroupConfiguration;
 import com.liferay.layout.locked.layouts.web.internal.display.context.LockedLayoutsConfigurationDisplayContext;
 import com.liferay.layout.locked.layouts.web.internal.display.context.LockedLayoutsSiteSettingsConfigurationDisplayContext;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -128,14 +127,13 @@ public class LockedLayoutsSiteSettingsConfigurationScreenWrapper
 			throws ConfigurationException {
 
 			try {
-				String filterString = StringBundler.concat(
-					"(&(", ConfigurationAdmin.SERVICE_FACTORYPID,
-					StringPool.EQUAL,
-					LockedLayoutsGroupConfiguration.class.getName(), ".scoped",
-					")(groupId=", groupId, "))");
-
 				Configuration[] configuration =
-					_configurationAdmin.listConfigurations(filterString);
+					_configurationAdmin.listConfigurations(
+						ConfigurationFilterStringUtil.
+							getGroupScopedFilterString(
+								groupId,
+								LockedLayoutsGroupConfiguration.class.getName(),
+								null));
 
 				return ArrayUtil.isNotEmpty(configuration);
 			}
