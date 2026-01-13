@@ -5,7 +5,7 @@
 
 package com.liferay.site.internal.configuration.manager;
 
-import com.liferay.petra.string.StringBundler;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
@@ -35,12 +35,9 @@ public class MenuAccessConfigurationManagerImpl
 
 	@Override
 	public void deleteRoleAccessToControlMenu(Role role) throws Exception {
-		String filterString = StringBundler.concat(
-			"(service.factoryPid=", MenuAccessConfiguration.class.getName(),
-			".scoped)");
-
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			filterString);
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				null, MenuAccessConfiguration.class.getName(), null));
 
 		if (configurations == null) {
 			return;
