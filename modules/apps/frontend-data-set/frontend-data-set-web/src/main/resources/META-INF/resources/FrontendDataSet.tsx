@@ -360,11 +360,9 @@ const FrontendDataSetContent = ({
 						? fieldName.replaceAll('.', ',')
 						: fieldName;
 
-						if (visibleFieldNames[fieldName] !== undefined) {
-						{
-							updatedVisibleFieldNames[updatedFieldName] =
-								visibleFieldNames[fieldName];
-						}
+					if (visibleFieldNames[fieldName] !== undefined) {
+						updatedVisibleFieldNames[updatedFieldName] =
+							visibleFieldNames[fieldName];
 					}
 					else {
 						updatedVisibleFieldNames[updatedFieldName] = true;
