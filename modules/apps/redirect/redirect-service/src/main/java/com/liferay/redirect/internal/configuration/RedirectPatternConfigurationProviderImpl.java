@@ -5,6 +5,7 @@
 
 package com.liferay.redirect.internal.configuration;
 
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
@@ -44,11 +45,8 @@ public class RedirectPatternConfigurationProviderImpl
 		Configuration configuration = null;
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			String.format(
-				"(&(service.factoryPid=%s)(%s=%d))",
-				RedirectPatternConfiguration.class.getName() + ".scoped",
-				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-				groupId));
+			ConfigurationFilterStringUtil.getGroupScopedFilterString(
+				groupId, RedirectPatternConfiguration.class.getName(), null));
 
 		if (configurations != null) {
 			configuration = configurations[0];
