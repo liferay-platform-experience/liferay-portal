@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.Serializable;
+
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -22,12 +24,12 @@ import org.osgi.service.cm.ConfigurationAdmin;
 public class ConfigurationFilterStringUtil {
 
 	public static String getCompanyScopedFilterString(
-		String companyId, String virtualInstanceId) {
+		Serializable companyId, String virtualInstanceId) {
 
 		return StringBundler.concat(
 			"(&(|(",
 			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			StringPool.EQUAL, GetterUtil.get(companyId, "*"),
+			StringPool.EQUAL, _toString(companyId),
 			")(dxp.lxc.liferay.com.virtualInstanceId=",
 			GetterUtil.get(virtualInstanceId, "*"), "))(!(",
 			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
@@ -38,7 +40,7 @@ public class ConfigurationFilterStringUtil {
 	}
 
 	public static String getCompanyScopedFilterString(
-		String companyId, String pid, String virtualInstanceId) {
+		Serializable companyId, String pid, String virtualInstanceId) {
 
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
@@ -48,11 +50,11 @@ public class ConfigurationFilterStringUtil {
 	}
 
 	public static String getGroupScopedFilterString(
-		String groupId, String siteExternalReferenceCode) {
+		Serializable groupId, String siteExternalReferenceCode) {
 
 		String filterString = StringBundler.concat(
 			"(&(|(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			StringPool.EQUAL, GetterUtil.get(groupId, "*"),
+			StringPool.EQUAL, _toString(groupId),
 			")(siteExternalReferenceCode=",
 			GetterUtil.get(siteExternalReferenceCode, "*"), "))");
 
@@ -72,7 +74,7 @@ public class ConfigurationFilterStringUtil {
 	}
 
 	public static String getGroupScopedFilterString(
-		String groupId, String pid, String siteExternalReferenceCode) {
+		Serializable groupId, String pid, String siteExternalReferenceCode) {
 
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
@@ -82,21 +84,21 @@ public class ConfigurationFilterStringUtil {
 	}
 
 	public static String getPortletScopedFilterString(
-		String groupId, String portletInstanceId,
+		Serializable groupId, Serializable portletInstanceId,
 		String siteExternalReferenceCode) {
 
 		return StringBundler.concat(
 			"(&(|(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			StringPool.EQUAL, GetterUtil.get(groupId, "*"),
+			StringPool.EQUAL, _toString(groupId),
 			")(siteExternalReferenceCode=",
 			GetterUtil.get(siteExternalReferenceCode, "*"), "))(",
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
 				getPropertyKey(),
-			"=", GetterUtil.get(portletInstanceId, "*"), "))");
+			"=", _toString(portletInstanceId), "))");
 	}
 
 	public static String getPortletScopedFilterString(
-		String groupId, String pid, String portletInstanceId,
+		Serializable groupId, String pid, Serializable portletInstanceId,
 		String siteExternalReferenceCode) {
 
 		return StringBundler.concat(
@@ -173,6 +175,14 @@ public class ConfigurationFilterStringUtil {
 		}
 
 		return filterString;
+	}
+
+	private static String _toString(Serializable value) {
+		if (value == null) {
+			return StringPool.STAR;
+		}
+
+		return String.valueOf(value);
 	}
 
 }
