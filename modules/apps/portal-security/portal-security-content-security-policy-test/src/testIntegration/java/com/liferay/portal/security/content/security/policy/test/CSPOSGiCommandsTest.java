@@ -6,8 +6,8 @@
 package com.liferay.portal.security.content.security.policy.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.osgi.util.osgi.commands.OSGiCommands;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
@@ -121,27 +121,18 @@ public class CSPOSGiCommandsTest {
 	}
 
 	private void _testResetContentSecurityPolicyConfiguration(
-			long id, Dictionary<String, Object> properties,
+			long scopePK, Dictionary<String, Object> properties,
 			ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
 		_createConfiguration(properties, scope);
 
-		_resetConfiguration(id, scope);
+		_resetConfiguration(scopePK, scope);
 
-		String filterString = null;
-
-		if (scope.equals(ExtendedObjectClassDefinition.Scope.SYSTEM)) {
-			filterString = StringBundler.concat(
-				"(&(service.pid=", _CLASS_NAME, "))");
-		}
-		else {
-			filterString = StringBundler.concat(
-				"(&(service.factoryPid=", _CLASS_NAME, ".scoped)(",
-				scope.getPropertyKey(), "=", id, "))");
-		}
-
-		Assert.assertNull(_configurationAdmin.listConfigurations(filterString));
+		Assert.assertNull(
+			_configurationAdmin.listConfigurations(
+				ConfigurationFilterStringUtil.getScopedFilterString(
+					_CLASS_NAME, scope, scopePK)));
 	}
 
 	private static final String _CLASS_NAME =
