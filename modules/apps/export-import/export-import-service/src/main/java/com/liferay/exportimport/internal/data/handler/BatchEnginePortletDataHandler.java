@@ -251,6 +251,7 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 			setDataLevel(DataLevel.SITE);
 		}
 
+		setPublishToLiveByDefault(true);
 		_updateDeletionSystemEventStagedModelTypes();
 		_updateExportPortletDataHandlerControls();
 	}
