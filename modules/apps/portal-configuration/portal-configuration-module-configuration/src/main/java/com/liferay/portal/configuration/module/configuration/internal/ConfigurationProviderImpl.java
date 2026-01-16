@@ -7,6 +7,7 @@ package com.liferay.portal.configuration.module.configuration.internal;
 
 import aQute.bnd.annotation.metatype.Meta;
 
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
@@ -293,22 +294,10 @@ public class ConfigurationProviderImpl implements ConfigurationProvider {
 		throws ConfigurationException {
 
 		try {
-			String filterString = StringBundler.concat(
-				"(service.factoryPid=", factoryPid, ")(",
-				scope.getPropertyKey(), "=", scopePK, ")");
-
-			if (scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
-				filterString += StringBundler.concat(
-					"(",
-					ExtendedObjectClassDefinition.Scope.COMPANY.
-						getPropertyKey(),
-					"=", CompanyThreadLocal.getCompanyId(), ")");
-			}
-
-			filterString = StringBundler.concat("(&", filterString, ")");
-
 			Configuration[] configurations =
-				_configurationAdmin.listConfigurations(filterString);
+				_configurationAdmin.listConfigurations(
+					ConfigurationFilterStringUtil.getScopedFilterString(
+						factoryPid, scope, scopePK));
 
 			if (configurations != null) {
 				return configurations[0];
