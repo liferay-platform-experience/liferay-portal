@@ -13,9 +13,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -184,6 +186,52 @@ public class ConfigurationProviderTest {
 
 	@Test
 	public void testSaveGroupConfiguration() throws Exception {
+		_testSaveGroupConfiguration();
+		_testSaveGroupConfigurationWhenDatabasePartitionIsEnabled();
+	}
+
+	private void _testSaveGroupConfigurationWhenDatabasePartitionIsEnabled()
+		throws Exception {
+
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
+			return;
+		}
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+		_configurationProvider.saveGroupConfiguration(
+			TestConfiguration.class, groupId, properties);
+
+		ExtendedObjectClassDefinition.Scope scope =
+			ExtendedObjectClassDefinition.Scope.GROUP;
+
+		Configuration configuration = _getFactoryConfiguration(
+			_PID, scope, groupId);
+
+		properties.put(
+			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+			CompanyThreadLocal.getCompanyId());
+
+		_assertFactoryPropertyValues(
+			properties, configuration.getProperties(), scope.getPropertyKey(),
+			groupId);
+
+		properties.put(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		_configurationProvider.saveGroupConfiguration(
+			groupId, _PID, properties);
+
+		configuration = _getFactoryConfiguration(_PID, scope, groupId);
+
+		_assertFactoryPropertyValues(
+			properties, configuration.getProperties(), scope.getPropertyKey(),
+			groupId);
+	}
+
+	private void _testSaveGroupConfiguration() throws Exception {
 		_properties.put("key1", "groupValue1");
 		_properties.put("key2", "groupValue2");
 
