@@ -9,6 +9,7 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
@@ -182,6 +183,70 @@ public class ConfigurationProviderTest {
 
 	@Test
 	public void testSaveGroupConfiguration() throws Exception {
+		_testSaveGroupConfiguration();
+		_testSaveGroupConfigurationWithMultipleCompanies();
+	}
+
+	private void _testSaveGroupConfigurationWithMultipleCompanies()
+		throws Exception {
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+		long companyId1 = RandomTestUtil.randomLong();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId1)) {
+
+			_configurationProvider.saveGroupConfiguration(
+				TestConfiguration.class, groupId, properties);
+		}
+
+		long companyId2 = RandomTestUtil.randomLong();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId2)) {
+
+			_configurationProvider.saveGroupConfiguration(
+				TestConfiguration.class, groupId, properties);
+		}
+
+		ExtendedObjectClassDefinition.Scope scope =
+			ExtendedObjectClassDefinition.Scope.GROUP;
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId1)) {
+
+			Configuration configuration = _getFactoryConfiguration(
+				_PID, scope, groupId);
+
+			properties.put(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				companyId1);
+
+			_assertFactoryPropertyValues(
+				properties, configuration.getProperties(),
+				scope.getPropertyKey(), groupId);
+		}
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId2)) {
+
+			Configuration configuration = _getFactoryConfiguration(
+				_PID, scope, groupId);
+
+			properties.put(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				companyId2);
+
+			_assertFactoryPropertyValues(
+				properties, configuration.getProperties(),
+				scope.getPropertyKey(), groupId);
+		}
+	}
+
+	private void _testSaveGroupConfiguration() throws Exception {
 		_properties.put("key1", "groupValue1");
 		_properties.put("key2", "groupValue2");
 
