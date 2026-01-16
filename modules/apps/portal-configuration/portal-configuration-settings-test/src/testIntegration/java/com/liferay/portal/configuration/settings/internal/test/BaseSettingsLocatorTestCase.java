@@ -14,6 +14,7 @@ import com.liferay.portal.configuration.settings.internal.samples.TestConfigurat
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsLocator;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -144,6 +146,18 @@ public abstract class BaseSettingsLocatorTestCase {
 			factoryPid + ".scoped",
 			HashMapDictionaryBuilder.<String, Object>put(
 				scope.getPropertyKey(), scopePK
+			).put(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+				() -> {
+					if (!PropsValues.DATABASE_PARTITION_ENABLED ||
+						!scope.equals(
+							ExtendedObjectClassDefinition.Scope.GROUP)) {
+
+						return null;
+					}
+
+					return CompanyThreadLocal.getCompanyId();
+				}
 			).put(
 				key, value
 			).put(
