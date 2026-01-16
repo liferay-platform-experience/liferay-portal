@@ -13,12 +13,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -80,7 +77,8 @@ public class ConfigurationProviderTest {
 		ExtendedObjectClassDefinition.Scope scope =
 			ExtendedObjectClassDefinition.Scope.COMPANY;
 
-		_createFactoryConfiguration(_PID, scope, companyId);
+		_configurationProvider.saveCompanyConfiguration(
+			companyId, _PID, _properties);
 
 		Assert.assertEquals(
 			1, _getFactoryConfigurationsCount(_PID, scope, companyId));
@@ -100,8 +98,10 @@ public class ConfigurationProviderTest {
 		long groupId1 = RandomTestUtil.randomLong();
 		long groupId2 = RandomTestUtil.randomLong();
 
-		_createFactoryConfiguration(_PID, scope, groupId1);
-		_createFactoryConfiguration(_PID, scope, groupId2);
+		_configurationProvider.saveGroupConfiguration(
+			groupId1, _PID, _properties);
+		_configurationProvider.saveGroupConfiguration(
+			groupId2, _PID, _properties);
 
 		Assert.assertEquals(
 			2, _getFactoryConfigurationsCount(_PID, scope, null));
@@ -126,7 +126,8 @@ public class ConfigurationProviderTest {
 		ExtendedObjectClassDefinition.Scope scope =
 			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE;
 
-		_createFactoryConfiguration(_PID, scope, portletInstanceId);
+		_configurationProvider.savePortletInstanceConfiguration(
+			TestConfiguration.class, portletInstanceId, _properties);
 
 		Assert.assertEquals(
 			1, _getFactoryConfigurationsCount(_PID, scope, portletInstanceId));
@@ -140,7 +141,8 @@ public class ConfigurationProviderTest {
 
 	@Test
 	public void testDeleteSystemConfiguration() throws Exception {
-		_createConfiguration(_PID);
+		_configurationProvider.saveSystemConfiguration(
+			TestConfiguration.class, _properties);
 
 		Assert.assertEquals(1, _getConfigurationsCount(_PID));
 
@@ -346,36 +348,6 @@ public class ConfigurationProviderTest {
 		}
 
 		return null;
-	}
-
-	private void _createFactoryConfiguration(
-			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
-		throws Exception {
-
-		_properties.put(scope.getPropertyKey(), scopePK);
-
-		if (PropsValues.DATABASE_PARTITION_ENABLED &&
-			scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
-
-			_properties.put(
-				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-				CompanyThreadLocal.getCompanyId());
-		}
-
-		Configuration configuration =
-			_configurationAdmin.createFactoryConfiguration(
-				factoryPid + ".scoped", StringPool.QUESTION);
-
-		ConfigurationTestUtil.saveConfiguration(configuration, _properties);
-	}
-
-	private void _createConfiguration(String pid) throws Exception {
-		_properties.put("key1", "value1");
-		_properties.put("key2", "value2");
-
-		ConfigurationTestUtil.saveConfiguration(
-			_getConfiguration(pid), _properties);
 	}
 
 	private final Map<String, Configuration> _configurations = new HashMap<>();
