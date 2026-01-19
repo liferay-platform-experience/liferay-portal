@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page, expect} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import fillAndClickOutside from '../../utils/fillAndClickOutside';
 import {PORTLET_URLS} from '../../utils/portletUrls';
@@ -13,11 +13,15 @@ export class StyleBooksPage {
 	readonly page: Page;
 	readonly searchButton: Locator;
 	readonly searchInput: Locator;
+	readonly framePreview: FrameLocator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.searchButton = this.page.getByTitle('Search for', {exact: true});
 		this.searchInput = page.getByPlaceholder('Search for');
+		this.framePreview = page.frameLocator(
+			'iframe.style-book-editor__page-preview-frame'
+		);
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
