@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.configuration.module.configuration.samples.TestConfiguration;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -401,17 +402,6 @@ public class ConfigurationProviderTest {
 	private final Map<String, Configuration> _configurations = new HashMap<>();
 	private Dictionary<String, Object> _properties;
 
-	private static final String _PID = "test.pid";
-
-	@Meta.OCD(id = "test.pid")
-	private interface TestConfiguration {
-
-		@Meta.AD
-		public String key1();
-
-		@Meta.AD
-		public String key2();
-
-	}
+	private static final String _PID = TestConfiguration.class.getName();
 
 }
