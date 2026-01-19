@@ -5,8 +5,6 @@
 
 package com.liferay.portal.configuration.module.configuration.test;
 
-import aQute.bnd.annotation.metatype.Meta;
-
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
 import com.liferay.petra.string.StringBundler;
@@ -52,12 +50,6 @@ public class ConfigurationProviderTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
-
-	@Inject
-	private static ConfigurationAdmin _configurationAdmin;
-
-	@Inject
-	private static ConfigurationProvider _configurationProvider;
 
 	@Before
 	public void setUp() throws Exception {
@@ -191,45 +183,125 @@ public class ConfigurationProviderTest {
 		_testSaveGroupConfigurationWhenDatabasePartitionIsEnabled();
 	}
 
-	private void _testSaveGroupConfigurationWhenDatabasePartitionIsEnabled()
-		throws Exception {
+	@Test
+	public void testSavePortletInstanceConfiguration() throws Exception {
+		_properties.put("key1", "portletInstanceValue1");
+		_properties.put("key2", "portletInstanceValue2");
 
-		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
-			return;
-		}
+		String portletInstanceId = RandomTestUtil.randomString();
 
-		long groupId = RandomTestUtil.randomLong();
-
-		Dictionary<String, Object> properties = new HashMapDictionary<>();
-
-		_configurationProvider.saveGroupConfiguration(
-			TestConfiguration.class, groupId, properties);
+		_configurationProvider.savePortletInstanceConfiguration(
+			TestConfiguration.class, portletInstanceId, _properties);
 
 		ExtendedObjectClassDefinition.Scope scope =
-			ExtendedObjectClassDefinition.Scope.GROUP;
+			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE;
 
 		Configuration configuration = _getFactoryConfiguration(
-			_PID, scope, groupId);
-
-		properties.put(
-			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			CompanyThreadLocal.getCompanyId());
+			_PID, scope, portletInstanceId);
 
 		_assertFactoryPropertyValues(
-			properties, configuration.getProperties(), scope.getPropertyKey(),
-			groupId);
+			_properties, configuration.getProperties(), scope.getPropertyKey(),
+			portletInstanceId);
+	}
 
-		properties.put(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+	@Test
+	public void testSaveSystemConfiguration() throws Exception {
+		_properties.put("key1", "systemValue1");
+		_properties.put("key2", "systemValue2");
 
-		_configurationProvider.saveGroupConfiguration(
-			groupId, _PID, properties);
+		_configurationProvider.saveSystemConfiguration(
+			TestConfiguration.class, _properties);
 
-		configuration = _getFactoryConfiguration(_PID, scope, groupId);
+		Configuration configuration = _getConfiguration(_PID);
 
-		_assertFactoryPropertyValues(
-			properties, configuration.getProperties(), scope.getPropertyKey(),
-			groupId);
+		_assertPropertyValues(_properties, configuration.getProperties());
+	}
+
+	private void _assertFactoryPropertyValues(
+		Dictionary<String, Object> properties,
+		Dictionary<String, Object> configurationProperties, String expectedKey,
+		Object expectedValue) {
+
+		Assert.assertEquals(
+			expectedValue, configurationProperties.get(expectedKey));
+
+		_assertPropertyValues(properties, configurationProperties);
+	}
+
+	private void _assertPropertyValues(
+		Dictionary<String, Object> properties,
+		Dictionary<String, Object> configurationProperties) {
+
+		Assert.assertNotNull(configurationProperties);
+
+		for (Enumeration<String> enumeration = properties.keys();
+			 enumeration.hasMoreElements();) {
+
+			String key = enumeration.nextElement();
+
+			Assert.assertEquals(
+				properties.get(key), configurationProperties.get(key));
+		}
+	}
+
+	private Configuration _getConfiguration(String pid) throws Exception {
+		Configuration configuration = _configurationAdmin.getConfiguration(
+			pid, StringPool.QUESTION);
+
+		if (configuration != null) {
+			_configurations.put(configuration.getPid(), configuration);
+		}
+
+		return configuration;
+	}
+
+	private int _getConfigurationsCount(String pid) throws Exception {
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			StringBundler.concat(
+				StringPool.OPEN_PARENTHESIS, Constants.SERVICE_PID,
+				StringPool.EQUAL, pid, StringPool.CLOSE_PARENTHESIS));
+
+		if (configurations == null) {
+			return 0;
+		}
+
+		return configurations.length;
+	}
+
+	private Configuration _getFactoryConfiguration(
+			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
+			Serializable scopePK)
+		throws Exception {
+
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			ConfigurationFilterStringUtil.getScopedFilterString(
+				factoryPid, scope, scopePK));
+
+		if (configurations != null) {
+			Configuration configuration = configurations[0];
+
+			_configurations.put(configuration.getPid(), configuration);
+
+			return configuration;
+		}
+
+		return null;
+	}
+
+	private int _getFactoryConfigurationsCount(
+			String pid, ExtendedObjectClassDefinition.Scope scope,
+			Serializable scopePK)
+		throws Exception {
+
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			ConfigurationFilterStringUtil.getScopedFilterString(
+				pid, scope, scopePK));
+
+		if (configurations == null) {
+			return 0;
+		}
+
+		return configurations.length;
 	}
 
 	private void _testSaveGroupConfiguration() throws Exception {
@@ -278,130 +350,56 @@ public class ConfigurationProviderTest {
 			scope.getPropertyKey(), groupId2);
 	}
 
-	@Test
-	public void testSavePortletInstanceConfiguration() throws Exception {
-		_properties.put("key1", "portletInstanceValue1");
-		_properties.put("key2", "portletInstanceValue2");
+	private void _testSaveGroupConfigurationWhenDatabasePartitionIsEnabled()
+		throws Exception {
 
-		String portletInstanceId = RandomTestUtil.randomString();
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
+			return;
+		}
 
-		_configurationProvider.savePortletInstanceConfiguration(
-			TestConfiguration.class, portletInstanceId, _properties);
+		long groupId = RandomTestUtil.randomLong();
+
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+		_configurationProvider.saveGroupConfiguration(
+			TestConfiguration.class, groupId, properties);
 
 		ExtendedObjectClassDefinition.Scope scope =
-			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE;
+			ExtendedObjectClassDefinition.Scope.GROUP;
 
 		Configuration configuration = _getFactoryConfiguration(
-			_PID, scope, portletInstanceId);
+			_PID, scope, groupId);
+
+		properties.put(
+			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
+			CompanyThreadLocal.getCompanyId());
 
 		_assertFactoryPropertyValues(
-			_properties, configuration.getProperties(), scope.getPropertyKey(),
-			portletInstanceId);
+			properties, configuration.getProperties(), scope.getPropertyKey(),
+			groupId);
+
+		properties.put(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		_configurationProvider.saveGroupConfiguration(
+			groupId, _PID, properties);
+
+		configuration = _getFactoryConfiguration(_PID, scope, groupId);
+
+		_assertFactoryPropertyValues(
+			properties, configuration.getProperties(), scope.getPropertyKey(),
+			groupId);
 	}
 
-	private void _assertFactoryPropertyValues(
-		Dictionary<String, Object> properties,
-		Dictionary<String, Object> configurationProperties, String expectedKey,
-		Object expectedValue) {
+	private static final String _PID = TestConfiguration.class.getName();
 
-		Assert.assertEquals(
-			expectedValue, configurationProperties.get(expectedKey));
+	@Inject
+	private static ConfigurationAdmin _configurationAdmin;
 
-		_assertPropertyValues(properties, configurationProperties);
-	}
-
-	@Test
-	public void testSaveSystemConfiguration() throws Exception {
-		_properties.put("key1", "systemValue1");
-		_properties.put("key2", "systemValue2");
-
-		_configurationProvider.saveSystemConfiguration(
-			TestConfiguration.class, _properties);
-
-		Configuration configuration = _getConfiguration(_PID);
-
-		_assertPropertyValues(_properties, configuration.getProperties());
-	}
-
-	private int _getConfigurationsCount(String pid) throws Exception {
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			StringBundler.concat(
-				StringPool.OPEN_PARENTHESIS, Constants.SERVICE_PID,
-				StringPool.EQUAL, pid, StringPool.CLOSE_PARENTHESIS));
-
-		if (configurations == null) {
-			return 0;
-		}
-
-		return configurations.length;
-	}
-
-	private int _getFactoryConfigurationsCount(
-			String pid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
-		throws Exception {
-
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				pid, scope, scopePK));
-
-		if (configurations == null) {
-			return 0;
-		}
-
-		return configurations.length;
-	}
-
-	private void _assertPropertyValues(
-		Dictionary<String, Object> properties,
-		Dictionary<String, Object> configurationProperties) {
-
-		Assert.assertNotNull(configurationProperties);
-
-		for (Enumeration<String> enumeration = properties.keys();
-			 enumeration.hasMoreElements();) {
-
-			String key = enumeration.nextElement();
-
-			Assert.assertEquals(
-				properties.get(key), configurationProperties.get(key));
-		}
-	}
-
-	private Configuration _getConfiguration(String pid) throws Exception {
-		Configuration configuration = _configurationAdmin.getConfiguration(
-			pid, StringPool.QUESTION);
-
-		if (configuration != null) {
-			_configurations.put(configuration.getPid(), configuration);
-		}
-
-		return configuration;
-	}
-
-	private Configuration _getFactoryConfiguration(
-			String factoryPid, ExtendedObjectClassDefinition.Scope scope,
-			Serializable scopePK)
-		throws Exception {
-
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			ConfigurationFilterStringUtil.getScopedFilterString(
-				factoryPid, scope, scopePK));
-
-		if (configurations != null) {
-			Configuration configuration = configurations[0];
-
-			_configurations.put(configuration.getPid(), configuration);
-
-			return configuration;
-		}
-
-		return null;
-	}
+	@Inject
+	private static ConfigurationProvider _configurationProvider;
 
 	private final Map<String, Configuration> _configurations = new HashMap<>();
 	private Dictionary<String, Object> _properties;
-
-	private static final String _PID = TestConfiguration.class.getName();
 
 }
