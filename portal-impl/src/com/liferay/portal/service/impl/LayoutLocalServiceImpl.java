@@ -4043,7 +4043,14 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 					layout.getGroupId());
 
 		if (layoutPrototype == null) {
-			throw new NoSuchLayoutPrototypeException();
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to apply layout prototype for PLID " +
+						layout.getPlid(),
+					new NoSuchLayoutPrototypeException());
+			}
+
+			return;
 		}
 
 		try {
