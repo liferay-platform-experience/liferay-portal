@@ -5,6 +5,7 @@
 
 package com.liferay.configuration.admin.util;
 
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -164,13 +165,27 @@ public class ConfigurationFilterStringUtilTest {
 				"portletInstanceId", "any"
 			).build());
 		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"groupId", "any"
+			).build());
+		_test(
+			false, filterString,
+			HashMapBuilder.<String, Serializable>put(
+				"siteExternalReferenceCode", "any"
+			).build());
+		_test(
 			true, filterString,
 			HashMapBuilder.<String, Serializable>put(
+				"companyId", CompanyThreadLocal.getCompanyId()
+			).put(
 				"groupId", "any"
 			).build());
 		_test(
 			true, filterString,
 			HashMapBuilder.<String, Serializable>put(
+				"companyId", CompanyThreadLocal.getCompanyId()
+			).put(
 				"siteExternalReferenceCode", "any"
 			).build());
 
@@ -195,11 +210,15 @@ public class ConfigurationFilterStringUtilTest {
 		_test(
 			true, filterString,
 			HashMapBuilder.<String, Serializable>put(
+				"companyId", CompanyThreadLocal.getCompanyId()
+			).put(
 				"groupId", groupId
 			).build());
 		_test(
 			true, filterString,
 			HashMapBuilder.<String, Serializable>put(
+				"companyId", CompanyThreadLocal.getCompanyId()
+			).put(
 				"siteExternalReferenceCode", siteExternalReferenceCode
 			).build());
 
@@ -223,6 +242,8 @@ public class ConfigurationFilterStringUtilTest {
 				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid
 			).put(
 				Constants.SERVICE_PID, pid
+			).put(
+				"companyId", CompanyThreadLocal.getCompanyId()
 			).put(
 				"groupId", "any"
 			).build());
