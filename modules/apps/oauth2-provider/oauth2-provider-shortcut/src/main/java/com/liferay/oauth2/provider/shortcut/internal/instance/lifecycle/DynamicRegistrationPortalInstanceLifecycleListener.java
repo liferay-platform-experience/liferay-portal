@@ -12,7 +12,6 @@ import com.liferay.oauth2.provider.constants.OAuth2ProviderActionKeys;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
-import com.liferay.osgi.util.configuration.ConfigurationPersistenceUtil;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -32,9 +31,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -44,11 +41,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = PortalInstanceLifecycleListener.class)
 public class DynamicRegistrationPortalInstanceLifecycleListener
 	extends BasePortalInstanceLifecycleListener {
-
-	@Override
-	public long getLastModifiedTime() {
-		return _lastModifiedTime;
-	}
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
@@ -118,14 +110,6 @@ public class DynamicRegistrationPortalInstanceLifecycleListener
 				OAuth2ProviderActionKeys.REVOKE_TOKEN
 			});
 	}
-
-	@Activate
-	protected void activate(Map<String, Object> properties) throws Exception {
-		_lastModifiedTime = ConfigurationPersistenceUtil.update(
-			this, properties);
-	}
-
-	private long _lastModifiedTime;
 
 	@Reference
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
