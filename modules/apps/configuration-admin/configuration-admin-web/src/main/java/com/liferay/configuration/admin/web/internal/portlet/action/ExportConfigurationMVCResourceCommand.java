@@ -19,6 +19,7 @@ import com.liferay.portal.configuration.metatype.definitions.ExtendedObjectClass
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -149,6 +150,12 @@ public class ExportConfigurationMVCResourceCommand
 
 		if (!Scope.SYSTEM.equals(scope)) {
 			properties.put(scope.getPropertyKey(), scopePK);
+
+			if (scope.equals(Scope.GROUP)) {
+				properties.put(
+					Scope.COMPANY.getPropertyKey(),
+					CompanyThreadLocal.getCompanyId());
+			}
 
 			if (FeatureFlagManagerUtil.isEnabled("LPS-155284")) {
 				_configurationExportImportProcessor.prepareForExport(
