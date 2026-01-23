@@ -375,12 +375,12 @@ public class UserManagerImpl implements UserManager {
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(portalUser);
 
+		Predicate predicate = null;
+
 		ExpandoColumn expandoColumn = _expandoColumnLocalService.getColumn(
 			CompanyThreadLocal.getCompanyId(),
 			com.liferay.portal.kernel.model.User.class.getName(),
 			ExpandoTableConstants.DEFAULT_TABLE_NAME, "deletedBySCIM");
-
-		Predicate predicate = null;
 
 		if (expandoColumn != null) {
 			predicate = UserTable.INSTANCE.userId.notIn(
@@ -1219,7 +1219,7 @@ public class UserManagerImpl implements UserManager {
 			return false;
 		}
 
-		int countScimDeletionExpandoValue = _userLocalService.dslQueryCount(
+		int count = _userLocalService.dslQueryCount(
 			DSLQueryFactoryUtil.count(
 			).from(
 				ExpandoValueTable.INSTANCE
@@ -1232,7 +1232,7 @@ public class UserManagerImpl implements UserManager {
 				)
 			));
 
-		if (countScimDeletionExpandoValue > 0) {
+		if (count > 0) {
 			return true;
 		}
 
