@@ -96,12 +96,11 @@ public class WorkflowInstanceResourceTest
 		Map<String, String> context =
 			(Map<String, String>)workflowInstance.getContext();
 
-		Assert.assertEquals(context.toString(), 2, context.size());
-
 		Assert.assertEquals(
 			contextVariable1Value, context.get(contextVariable1Name));
 		Assert.assertEquals(
 			contextVariable2Value, context.get(contextVariable2name));
+		Assert.assertEquals(context.toString(), 2, context.size());
 	}
 
 	@Override
