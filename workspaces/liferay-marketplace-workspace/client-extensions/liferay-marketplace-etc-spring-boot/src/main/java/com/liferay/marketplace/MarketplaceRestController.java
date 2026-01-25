@@ -773,17 +773,17 @@ public class MarketplaceRestController extends BaseRestController {
 					"(?<=accounts/)-?\\d+(?=/images)", "-1"
 				)
 			).put(
-				"[%SUBSCRIPTION_TYPE%]",
-				productSpecificationsMap.get("license-type")
-			).put(
-				"[%SUBSCRIPTION_STARTING_DATE%]", _format(order.getCreateDate())
-			).put(
 				"[%SUBSCRIPTION_EXPIRATION_DATE%]",
 				_format(
 					MarketplaceUtil.getOrderPurchaseEndDate(
 						productSpecificationsMap.get("license-type"),
 						MarketplaceUtil.getSkuOptionValue(
 							"license-usage-type", orderItem.getOptions())))
+			).put(
+				"[%SUBSCRIPTION_STARTING_DATE%]", _format(order.getCreateDate())
+			).put(
+				"[%SUBSCRIPTION_TYPE%]",
+				productSpecificationsMap.get("license-type")
 			).put(
 				"[%TOTAL_FORMATTED%]", order.getTotalFormatted()
 			).put(
