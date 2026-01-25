@@ -243,12 +243,10 @@ public class KoroneikiService {
 				).toInstant()));
 
 		koroneikiAccount.setDescription(account.getDescription());
-
 		koroneikiAccount.setExternalLinks(
 			MarketplaceUtil.appendExternalLink(
 				koroneikiAccount.getExternalLinks(), "marketplace",
 				account.getName(), "account"));
-
 		koroneikiAccount.setName(account.getName());
 		koroneikiAccount.setPhoneNumber(customFieldsMap.get("Contact Phone"));
 
