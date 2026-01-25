@@ -78,7 +78,7 @@ public class MarketplaceUtil {
 				Objects.equals(externalLink.getEntityName(), entityName)) {
 
 				if (_log.isInfoEnabled()) {
-					_log.info("ExternalLink already exists for " + domain);
+					_log.info("External link already exists for " + domain);
 				}
 
 				return externalLinks;
