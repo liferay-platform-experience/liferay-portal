@@ -267,6 +267,10 @@ public class KoroneikiRestController extends BaseRestController {
 					new com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.
 						Product();
 
+				koroneikiProduct.setExternalLinks(
+					MarketplaceUtil.appendExternalLink(
+						koroneikiProduct.getExternalLinks(), "marketplace",
+						productName, "product"));
 				koroneikiProduct.setName(name);
 				koroneikiProduct.setProperties(
 					HashMapBuilder.put(
@@ -278,11 +282,6 @@ public class KoroneikiRestController extends BaseRestController {
 					).put(
 						"type", "marketplace-app"
 					).build());
-
-				koroneikiProduct.setExternalLinks(
-					MarketplaceUtil.appendExternalLink(
-						koroneikiProduct.getExternalLinks(), "marketplace",
-						productName, "product"));
 
 				koroneikiProduct = productResource.postProduct(
 					jwt.getClaim("username"), jwt.getClaim("sub"),
