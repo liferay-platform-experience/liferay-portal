@@ -66,13 +66,13 @@ public abstract class BaseFrontendResourceRequestHandlerTestCase {
 		);
 
 		Mockito.when(
-			hashedFilesRegistry.getResource(Mockito.eq(uri))
+			hashedFilesRegistry.getResource(Mockito.eq(unhashedURI))
 		).thenReturn(
 			url
 		);
 
 		Mockito.when(
-			hashedFilesRegistry.getResource(Mockito.eq(unhashedURI))
+			hashedFilesRegistry.getResource(Mockito.eq(uri))
 		).thenReturn(
 			url
 		);
