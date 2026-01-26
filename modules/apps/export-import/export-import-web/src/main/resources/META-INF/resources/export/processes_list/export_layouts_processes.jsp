@@ -113,7 +113,9 @@ PortletURL portletURL = exportLayoutsProcessesDisplayContext.getPortletURL();
 								}
 								%>
 
-								<clay:progressbar value="<%= percentage %>" />
+								<clay:progressbar
+									value="<%= percentage %>"
+								/>
 
 								<%
 								String stagedModelName = (String)backgroundTaskStatus.getAttribute("stagedModelName");
