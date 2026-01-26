@@ -2025,13 +2025,13 @@
 			"properties": {
 				"cssStyleSheetsMaxAge": {
 					"default": 86400,
-					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for CSS style sheets.",
+					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for mutable CSS style sheets.",
 					"title": "CSS Style Sheets Max Age Directive Value",
 					"type": "number"
 				},
 				"jsFilesMaxAge": {
 					"default": 86400,
-					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for JavaScript files.",
+					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for mutable JavaScript files.",
 					"title": "JavaScript Files Max Age Directive Value",
 					"type": "number"
 				},
@@ -2048,42 +2048,42 @@
 				"sendNoCacheForCSSStyleSheets": {
 					"default": false,
 					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for CSS style sheets.",
-					"title": "Send No Cache Directive For CSS Style Sheets",
+					"title": "Send No Cache Directive for CSS Style Sheets",
 					"type": "boolean"
 				},
 				"sendNoCacheForJSFiles": {
 					"default": false,
 					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for JavaScript files.",
-					"title": "Send No Cache Directive For JavaScript Files",
+					"title": "Send No Cache Directive for JavaScript Files",
 					"type": "boolean"
 				},
 				"sendNoCacheForLabelsModules": {
 					"default": false,
 					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for labels modules.",
-					"title": "Send No Cache Directive For Labels Modules",
+					"title": "Send No Cache Directive for Labels Modules",
 					"type": "boolean"
 				},
 				"sendNoCacheForTokenizedCSSStyleSheets": {
 					"default": false,
-					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for CSS style sheets that contain tokens (for example: \"@theme_image_path@\").",
-					"title": "Send No Cache Directive For Tokenized CSS Style Sheets",
+					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for CSS style sheets that contain tokens (e.g. \"@theme_image_path@\").",
+					"title": "Send No Cache Directive for Tokenized CSS Style Sheets",
 					"type": "boolean"
 				},
 				"sendNoCacheForTranslatedJSFiles": {
 					"default": false,
-					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for translated JavaScript files (those that contain invocations to \"Liferay.Language.get()\" and do not have an associated \"language.json\" file).",
-					"title": "Send No Cache Directive For Translated JavaScript Files",
+					"description": "If checked, a \"no-cache\" directive (instead of \"must-revalidate\") will be sent in the \"Cache-Control\" header for translated JavaScript files (those that contain invocations to \"Liferay.Language.get()\" and do not have an associated language.json file).",
+					"title": "Send No Cache Directive for Translated JavaScript Files",
 					"type": "boolean"
 				},
 				"tokenizedCSSStyleSheetsMaxAge": {
 					"default": 86400,
-					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for CSS style sheets that contain tokens (for example: \"@theme_image_path@\").",
+					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for CSS style sheets that contain tokens (e.g. \"@theme_image_path@\").",
 					"title": "Tokenized CSS Style Sheets Max Age Directive Value",
 					"type": "number"
 				},
 				"translatedJSFilesMaxAge": {
 					"default": 3600,
-					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for translated JavaScript files for translated JavaScript files (those that contain invocations to \"Liferay.Language.get()\" and do not have an associated \"language.json\" file).",
+					"description": "Set the value of the \"max-age\" directive in the \"Cache-Control\" header for translated JavaScript files for translated JavaScript files (those that contain invocations to \"Liferay.Language.get()\" and do not have an associated language.json file).",
 					"title": "Translated JavaScript Files Max Age Directive Value",
 					"type": "number"
 				}
