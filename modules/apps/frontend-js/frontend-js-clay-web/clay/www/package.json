@@ -42,7 +42,7 @@
 		"minimatch": "9.0.5"
 	},
 	"scripts": {
-		"build": "renoun next build",
+		"build": "next build",
 		"dev": "renoun next dev",
 		"lint": "next lint",
 		"postinstall": "patch-package",

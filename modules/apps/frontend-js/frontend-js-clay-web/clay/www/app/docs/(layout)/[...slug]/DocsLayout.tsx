@@ -1,7 +1,7 @@
 import {createLXCResource} from '@/lxc';
 import {notFound} from 'next/navigation';
 import Heading from '@/app/_components/Heading';
-import {APIReference} from '@/app/_components/APIReference';
+type APIReferenceComponent = typeof import('@/app/_components/APIReference').APIReference;
 import {AllCollection} from '@/data';
 import {CodeInline} from 'renoun/components';
 
@@ -14,6 +14,15 @@ type Props = {
 const lxc = createLXCResource();
 
 export async function DocsLayout({slug}: Props) {
+	let APIReference: APIReferenceComponent | null = null;
+
+	if (process.env.NODE_ENV !== 'production') {
+		const apiReferenceModule = await import(
+			'@/app/_components/APIReference'
+		);
+		APIReference = apiReferenceModule.APIReference;
+	}
+
 	const [file, fileMarkup, fileDesign] = await Promise.all([
 		AllCollection.getSource(slug),
 		slug.includes('markup')
@@ -91,7 +100,7 @@ export async function DocsLayout({slug}: Props) {
 
 				<Content />
 
-				{frontmatter.packageTypes && (
+				{frontmatter.packageTypes && APIReference && (
 					<div
 						style={{
 							display: 'flex',
