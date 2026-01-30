@@ -84,7 +84,7 @@ public class SiteConfigurationResourceImpl
 		}
 
 		return _getSiteSiteConfiguration(
-			group.getGroupId(), siteConfigurationExternalReferenceCode,
+			group, siteConfigurationExternalReferenceCode,
 			siteExternalReferenceCode);
 	}
 
@@ -103,7 +103,7 @@ public class SiteConfigurationResourceImpl
 		List<SiteConfiguration> siteConfigurations = new ArrayList<>();
 
 		_addSiteConfigurations(
-			group.getGroupId(), siteConfigurations, siteExternalReferenceCode);
+			group, siteConfigurations, siteExternalReferenceCode);
 
 		_addConfigurationScreenSiteConfigurations(
 			group.getGroupId(), siteConfigurations);
@@ -157,7 +157,7 @@ public class SiteConfigurationResourceImpl
 			() -> siteConfigurationExternalReferenceCode);
 
 		return _putSiteConfiguration(
-			groupId, siteConfiguration, siteExternalReferenceCode);
+			group, siteConfiguration, siteExternalReferenceCode);
 	}
 
 	@Activate
@@ -206,13 +206,14 @@ public class SiteConfigurationResourceImpl
 	}
 
 	private void _addSiteConfigurations(
-			long groupId, List<SiteConfiguration> siteConfigurations,
+			Group group, List<SiteConfiguration> siteConfigurations,
 			String siteExternalReferenceCode)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			ConfigurationFilterStringUtil.getGroupScopedFilterString(
-				groupId, siteExternalReferenceCode));
+				group.getCompanyId(), group.getGroupId(),
+				siteExternalReferenceCode));
 
 		if (ArrayUtil.isEmpty(configurations)) {
 			return;
@@ -277,13 +278,14 @@ public class SiteConfigurationResourceImpl
 	}
 
 	private SiteConfiguration _getSiteSiteConfiguration(
-			long groupId, String siteConfigurationExternalReferenceCode,
+			Group group, String siteConfigurationExternalReferenceCode,
 			String siteExternalReferenceCode)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			ConfigurationFilterStringUtil.getGroupScopedFilterString(
-				groupId, siteConfigurationExternalReferenceCode,
+				group.getCompanyId(), group.getGroupId(),
+				siteConfigurationExternalReferenceCode,
 				siteExternalReferenceCode));
 
 		if (ArrayUtil.isEmpty(configurations)) {
@@ -337,19 +339,20 @@ public class SiteConfigurationResourceImpl
 	}
 
 	private SiteConfiguration _putSiteConfiguration(
-			long groupId, SiteConfiguration siteConfiguration,
+			Group group, SiteConfiguration siteConfiguration,
 			String siteExternalReferenceCode)
 		throws Exception {
 
 		String filterString =
 			ConfigurationFilterStringUtil.getGroupScopedFilterString(
-				groupId, siteConfiguration.getExternalReferenceCode(),
+				group.getCompanyId(), group.getGroupId(),
+				siteConfiguration.getExternalReferenceCode(),
 				siteExternalReferenceCode);
 
 		try {
 			Configuration configuration =
 				ConfigurationUtil.addOrUpdateConfiguration(
-					groupId, _configurationAdmin,
+					group.getGroupId(), _configurationAdmin,
 					siteConfiguration.getExternalReferenceCode(), filterString,
 					siteConfiguration.getProperties(),
 					ExtendedObjectClassDefinition.Scope.GROUP,
