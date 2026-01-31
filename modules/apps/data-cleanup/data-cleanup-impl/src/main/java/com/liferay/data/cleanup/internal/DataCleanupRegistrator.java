@@ -82,6 +82,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.upgrade.data.cleanup.AnalyticsMessageDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.CompanyDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.ConfigurationDataCleanupPreupgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.ContactDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.CounterDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.DDMDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.DDMStorageLinkDataCleanupPreupgradeProcess;
@@ -89,6 +90,7 @@ import com.liferay.portal.upgrade.data.cleanup.DLFileEntryDataCleanupPreupgradeP
 import com.liferay.portal.upgrade.data.cleanup.DataCleanupPreupgradeProcessSuite;
 import com.liferay.portal.upgrade.data.cleanup.GroupDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.JournalDataCleanupPreupgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.LayoutDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.NullUnicodeContentDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.PortalPreferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.upgrade.data.cleanup.QuartzJobDetailsDataCleanupPreupgradeProcess;
@@ -540,6 +542,9 @@ public class DataCleanupRegistrator {
 			ConfigurationDataCleanupPreupgradeProcess.class,
 			"remove-configuration-orphan-data"
 		).put(
+			ContactDataCleanupPreupgradeProcess.class,
+			"remove-contact-orphan-data"
+		).put(
 			CounterDataCleanupPreupgradeProcess.class, "fix-counter-values"
 		).put(
 			DDMDataCleanupPreupgradeProcess.class, "remove-ddm-orphan-data"
@@ -554,6 +559,9 @@ public class DataCleanupRegistrator {
 		).put(
 			JournalDataCleanupPreupgradeProcess.class,
 			"remove-journal-orphan-data"
+		).put(
+			LayoutDataCleanupPreupgradeProcess.class,
+			"remove-layout-orphan-data"
 		).put(
 			NullUnicodeContentDataCleanupPreupgradeProcess.class,
 			"remove-null-unicode-content-data"

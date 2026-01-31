@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -10,15 +10,13 @@ import ClayLink from '@clayui/link';
 import React from 'react';
 
 function Footer({
+	actionButton,
 	backURL,
-	exportURL,
-	onNext,
 	onPrevious,
 }: {
+	actionButton?: React.ReactElement;
 	backURL: string;
-	exportURL?: string | undefined;
-	onNext?: () => void | undefined;
-	onPrevious?: () => void | undefined;
+	onPrevious?: () => void;
 }) {
 	return (
 		<ClayLayout.SheetFooter>
@@ -45,22 +43,11 @@ function Footer({
 							{Liferay.Language.get('cancel')}
 						</ClayLink>
 
-						{onNext && (
-							<ClayButton onClick={onNext}>
+						{actionButton ? (
+							actionButton
+						) : (
+							<ClayButton type="submit">
 								{Liferay.Language.get('continue')}
-							</ClayButton>
-						)}
-
-						{exportURL && (
-							<ClayButton onClick={() => {}}>
-								<span className="inline-item inline-item-before">
-									<ClayIcon
-										className="mr-1"
-										symbol="export"
-									/>
-
-									{Liferay.Language.get('export')}
-								</span>
 							</ClayButton>
 						)}
 					</div>

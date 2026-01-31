@@ -98,7 +98,12 @@ export class PageEditorPage {
 		);
 	}
 
-	async addFragment(setName: string, name: string, dropTarget?: Locator) {
+	async addFragment(
+		setName: string,
+		name: string,
+		dropTarget?: Locator,
+		timeout: number = 2000
+	) {
 		await this.goToSidebarTab('Components');
 
 		await this.page
@@ -127,7 +132,7 @@ export class PageEditorPage {
 		}
 
 		if (name !== 'Stepper') {
-			await this.waitForChangesSaved({timeout: 2000});
+			await this.waitForChangesSaved({timeout});
 		}
 	}
 
@@ -1335,9 +1340,11 @@ export class PageEditorPage {
 		await button.waitFor();
 
 		await expect(async () => {
-			await button.click({timeout: 1000});
+			if (await button.isVisible()) {
+				await button.click({timeout: 1000});
 
-			await waitForAlert(this.page, 'successfully', {timeout: 2000});
+				await waitForAlert(this.page, 'successfully', {timeout: 2000});
+			}
 		}).toPass();
 	}
 

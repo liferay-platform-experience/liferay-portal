@@ -96,25 +96,8 @@ PortletURL portletURL = exportLayoutsProcessesDisplayContext.getPortletURL();
 							%>
 
 							<c:if test="<%= backgroundTaskStatus != null %>">
-
-								<%
-								int percentage = 100;
-
-								long allModelAdditionCountersTotal = GetterUtil.getLong(backgroundTaskStatus.getAttribute("allModelAdditionCountersTotal"));
-								long allPortletAdditionCounter = GetterUtil.getLong(backgroundTaskStatus.getAttribute("allPortletAdditionCounter"));
-								long currentModelAdditionCountersTotal = GetterUtil.getLong(backgroundTaskStatus.getAttribute("currentModelAdditionCountersTotal"));
-								long currentPortletAdditionCounter = GetterUtil.getLong(backgroundTaskStatus.getAttribute("currentPortletAdditionCounter"));
-
-								long allProgressBarCountersTotal = allModelAdditionCountersTotal + allPortletAdditionCounter;
-								long currentProgressBarCountersTotal = currentModelAdditionCountersTotal + currentPortletAdditionCounter;
-
-								if (allProgressBarCountersTotal > 0) {
-									percentage = Math.round((float)currentProgressBarCountersTotal / allProgressBarCountersTotal * 100);
-								}
-								%>
-
 								<clay:progressbar
-									value="<%= percentage %>"
+									value='<%= GetterUtil.getInteger(backgroundTaskStatus.getAttribute("percentage")) %>'
 								/>
 
 								<%

@@ -350,14 +350,9 @@ export default function AssetsFDSPropsTransformer({
 			else if (action?.data?.id === 'import-translation') {
 				event?.preventDefault();
 
-				openCMSModal({
-					size: 'full-screen',
-					title: action.label,
-					url: replaceTokens(action.href, itemData),
-				});
-			}
-			else if (action?.data?.id === 'import-translation-multiple') {
-				ACTIONS.importTranslation(itemData, loadData);
+				const formattedHref = replaceTokens(action.href, itemData);
+
+				ACTIONS.importTranslation(itemData, formattedHref, loadData);
 			}
 			else if (action?.data?.id === 'reset-to-default-permissions') {
 				openResetAssetPermissionModal({

@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -9,8 +9,10 @@ import React, {ReactElement, useState} from 'react';
 import Footer from './Footer';
 
 interface WizardStep {
+	actionButton?: React.ReactElement;
 	children: React.ReactNode;
 	description: string;
+	onSubmit?: () => void;
 	title: string;
 }
 
@@ -33,11 +35,23 @@ export function Wizard({
 
 	const totalSteps = steps.length;
 
-	const currentStep = steps[stepNumber] as React.ReactElement<WizardStep>;
-	const {description, title} = currentStep.props;
+	const step = steps[stepNumber] as React.ReactElement<WizardStep>;
+	const {actionButton, description, onSubmit, title} = step.props;
+
+	const next = () => {
+		if (stepNumber < totalSteps - 1) {
+			setStepNumber((stepNumber) => stepNumber + 1);
+		}
+	};
+
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		onSubmit?.();
+		next();
+	};
 
 	return (
-		<>
+		<form onSubmit={handleSubmit}>
 			<ClayMultiStepNav center className="c-mx-lg-9" indicatorLabel="top">
 				{steps.map((step, index) => {
 					const {title: multiStepTitle} = step.props;
@@ -72,21 +86,14 @@ export function Wizard({
 			{steps[stepNumber]}
 
 			<Footer
+				actionButton={actionButton}
 				backURL={backURL}
-				exportURL={
-					stepNumber === totalSteps - 1 ? 'exportURL' : undefined
-				}
-				onNext={
-					stepNumber < totalSteps - 1
-						? () => setStepNumber(stepNumber + 1)
-						: undefined
-				}
 				onPrevious={
 					stepNumber > 0
 						? () => setStepNumber(stepNumber - 1)
 						: undefined
 				}
 			/>
-		</>
+		</form>
 	);
 }
