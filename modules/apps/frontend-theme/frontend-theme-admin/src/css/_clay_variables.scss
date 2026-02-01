@@ -81,46 +81,6 @@ $label-primary: map-deep-merge(
 	$label-primary
 );
 
-$label-secondary-close: () !default;
-$label-secondary-close: map-deep-merge(
-	(
-		hover: (
-			color: $dark,
-		),
-		focus: (
-			color: $dark,
-		),
-	),
-	$label-secondary-close
-);
-
-$label-secondary: () !default;
-$label-secondary: map-deep-merge(
-	(
-		background-color: $secondary-l3,
-		border-color: $secondary-l3,
-		color: $dark,
-		href: (
-			hover: (
-				background-color: $secondary-l3,
-				border-color: $secondary-l3,
-				color: $dark,
-			),
-			focus: (
-				color: $dark,
-			),
-		),
-		link: (
-			color: $dark,
-			hover: (
-				color: $dark,
-			),
-		),
-		close: $label-secondary-close,
-	),
-	$label-secondary
-);
-
 $label-success-close: () !default;
 $label-success-close: map-deep-merge(
 	(
