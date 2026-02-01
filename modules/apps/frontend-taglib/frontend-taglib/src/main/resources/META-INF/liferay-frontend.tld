@@ -740,11 +740,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>inverted</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
 			<name>key</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>

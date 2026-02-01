@@ -112,10 +112,6 @@ public class ScreenNavigationTag extends IncludeTag {
 		return _portletURL;
 	}
 
-	public boolean isInverted() {
-		return _inverted;
-	}
-
 	public void setContainerCssClass(String containerCssClass) {
 		_containerCssClass = containerCssClass;
 	}
@@ -138,10 +134,6 @@ public class ScreenNavigationTag extends IncludeTag {
 
 	public void setId(String id) {
 		_id = id;
-	}
-
-	public void setInverted(boolean inverted) {
-		_inverted = inverted;
 	}
 
 	public void setKey(String key) {
@@ -185,7 +177,6 @@ public class ScreenNavigationTag extends IncludeTag {
 		_fullContainerCssClass = StringPool.BLANK;
 		_headerContainerCssClass = StringPool.BLANK;
 		_id = null;
-		_inverted = false;
 		_key = null;
 		_menubarCssClass =
 			"menubar menubar-transparent menubar-vertical-expand-md";
@@ -245,8 +236,6 @@ public class ScreenNavigationTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-frontend:screen-navigation:containerWrapperCssClass",
 			_containerWrapperCssClass);
-		httpServletRequest.setAttribute(
-			"liferay-frontend:screen-navigation:inverted", _inverted);
 		httpServletRequest.setAttribute(
 			"liferay-frontend:screen-navigation:menubarCssClass",
 			_menubarCssClass);
@@ -377,7 +366,6 @@ public class ScreenNavigationTag extends IncludeTag {
 	private String _fullContainerCssClass = StringPool.BLANK;
 	private String _headerContainerCssClass = StringPool.BLANK;
 	private String _id;
-	private boolean _inverted;
 	private String _key;
 	private String _menubarCssClass =
 		"menubar menubar-transparent menubar-vertical-expand-md";
