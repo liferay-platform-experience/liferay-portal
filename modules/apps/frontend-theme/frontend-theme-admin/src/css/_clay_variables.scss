@@ -303,8 +303,8 @@ $navigation-bar-light: () !default;
 $navigation-bar-light: map-deep-merge(
 	$navigation-bar-light,
 	(
-		border-color: $secondary-l0,
 		border-bottom-width: 0.05rem,
+		border-color: $secondary-l0,
 	)
 );
 
@@ -312,12 +312,12 @@ $management-bar-light: () !default;
 $management-bar-light: map-deep-merge(
 	$management-bar-light,
 	(
-		border-color: $secondary-l0,
 		border-bottom-width: 0.05rem,
+		border-color: $secondary-l0,
 	)
 );
 
 .management-bar.management-bar-light {
-	border-color: $secondary-l0;
 	border-bottom-width: 0.05rem;
+	border-color: $secondary-l0;
 }
