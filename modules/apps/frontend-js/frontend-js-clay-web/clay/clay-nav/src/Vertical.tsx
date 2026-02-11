@@ -128,7 +128,11 @@ function ClayVerticalNav({
 	}
 
 	return (
-		<VerticalNav {...otherProps} triggerLabel={activeLabel ?? triggerLabel}>
+		<VerticalNav
+			{...otherProps}
+			displayType={displayType}
+			triggerLabel={activeLabel ?? triggerLabel}
+		>
 			{(item) => (
 				<VerticalNav.Item
 					active={item.active}
