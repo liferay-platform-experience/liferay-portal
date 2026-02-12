@@ -6,7 +6,9 @@
 import {SidePanel} from '@clayui/core';
 import ClayIcon from '@clayui/icon';
 import {ClayVerticalNav} from '@clayui/nav';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+
+import SideNavigationSearchInput from './SideNavigationSearchInput';
 
 interface SideNavigationItem {
 	href?: string;
@@ -14,6 +16,11 @@ interface SideNavigationItem {
 	items?: Array<SideNavigationItem>;
 	label: string;
 	leadingIcon?: string;
+}
+
+interface SideNavigationFilter {
+	expandedKeys?: Set<React.Key>;
+	items: Array<SideNavigationItem>;
 }
 
 interface Props {
@@ -26,10 +33,71 @@ interface Props {
 	visibleSessionKey: string;
 }
 
+const EMPTY_KEYS_SET = new Set<React.Key>();
+const EMPTY_FILTER = {expandedKeys: EMPTY_KEYS_SET, items: []};
+
+export function filterItemsByQuery(
+	items: Array<SideNavigationItem>,
+	query: string
+): SideNavigationFilter {
+	if (!query) {
+		return {items};
+	}
+
+	return items.reduce<Required<SideNavigationFilter>>((result, item) => {
+		if (item.items && item.items.length) {
+			const {expandedKeys, items} = filterItemsByQuery(item.items, query);
+
+			if (items.length) {
+				return {
+					expandedKeys: new Set([
+						...result.expandedKeys,
+						...(expandedKeys ?? EMPTY_KEYS_SET),
+						item.id,
+					]),
+
+					items: result.items.concat({
+						...item,
+						items,
+					}),
+				};
+			}
+		}
+		else if (item.label.toLowerCase().includes(query)) {
+			return {
+				expandedKeys: result.expandedKeys,
+				items: result.items.concat(item),
+			};
+		}
+
+		return result;
+	}, EMPTY_FILTER);
+}
+
+function useSideNavigationFilter(items: Array<SideNavigationItem>) {
+	const [query, setQuery] = useState('');
+
+	const filter = useMemo(
+		() => filterItemsByQuery(items, query),
+		[items, query]
+	);
+
+	const updateQuery = useCallback((query: string) => {
+		setQuery(query.trim().toLowerCase());
+	}, []);
+
+	return {
+		expandedKeys: filter.expandedKeys,
+		isFilterActive: !!query,
+		items: filter.items,
+		setQuery: updateQuery,
+	};
+}
+
 function SideNavigation({
-	expandedKeys: initialExpandedKeys,
+	expandedKeys: externalExpandedKeys,
 	expandedKeysSessionKey,
-	items,
+	items: externalItems,
 	label,
 	portletId,
 	visible: initialVisible,
@@ -41,21 +109,32 @@ function SideNavigation({
 		)
 	);
 
-	const [visible, setVisible] = useState(initialVisible);
-	const [expandedKeys, setExpandedKeys] = useState<Set<React.Key>>(
-		() => new Set(initialExpandedKeys)
+	const [initialExpandedKeys] = useState<Set<React.Key>>(
+		() => new Set(externalExpandedKeys)
 	);
 
+	const [userExpandedKeys, setUserExpandedKeys] =
+		useState<Set<React.Key>>(initialExpandedKeys);
+
+	const [visible, setVisible] = useState(initialVisible);
+
+	const {expandedKeys, isFilterActive, items, setQuery} =
+		useSideNavigationFilter(externalItems);
+
 	const updateExpandedKeys = useCallback(
-		async (expandedKeys: Set<React.Key>) => {
+		async (updatedExpandedKeys: Set<React.Key>) => {
+			if (isFilterActive) {
+				return;
+			}
+
 			await Liferay.Util.Session.set(
 				expandedKeysSessionKey,
-				Array.from(expandedKeys).join(',')
+				Array.from(updatedExpandedKeys).join(',')
 			);
 
-			setExpandedKeys(expandedKeys);
+			setUserExpandedKeys(updatedExpandedKeys);
 		},
-		[expandedKeysSessionKey]
+		[expandedKeysSessionKey, isFilterActive]
 	);
 
 	const updateVisible = useCallback(
@@ -107,10 +186,15 @@ function SideNavigation({
 			</SidePanel.Header>
 
 			<SidePanel.Body className="c-px-0">
+				<div className="c-px-4">
+					<SideNavigationSearchInput onChange={setQuery} />
+				</div>
+
 				<ClayVerticalNav
 					active={portletId}
+					defaultExpandedKeys={initialExpandedKeys}
 					displayType="primary"
-					expandedKeys={expandedKeys}
+					expandedKeys={expandedKeys ?? userExpandedKeys}
 					itemAriaCurrent={true}
 					items={items}
 					onExpandedChange={updateExpandedKeys}
