@@ -8,13 +8,11 @@ import {expect, mergeTests} from '@playwright/test';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {waitForPageToBeLoaded} from '../../../utils/waitForPageToBeLoaded';
 
 const test = mergeTests(systemSettingsPageTest, loginTest());
 
-test.afterEach(async ({page, systemSettingsPage}) => {
-	await page.reload();
-
-	await systemSettingsPage.goToSystemSetting('Assets', 'Asset Auto Tagging');
+test.afterEach(async ({systemSettingsPage}) => {
 	await systemSettingsPage.resetToDefaultValues();
 });
 
@@ -45,6 +43,8 @@ test(
 
 		await test.step('Assert value is persisted', async () => {
 			await page.reload();
+
+			await waitForPageToBeLoaded(page);
 
 			await expect(input).toHaveValue(value);
 		});
