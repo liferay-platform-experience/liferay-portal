@@ -77,12 +77,12 @@ public class HomeDisplayContext {
 	}
 
 	private PanelCategory _getActivePanelCategory(
-		PanelCategoryHelper panelCategoryHelper, String parentKey,
+		PanelCategoryHelper panelCategoryHelper, String panelCategoryKey,
 		String portletId, ThemeDisplay themeDisplay) {
 
 		for (PanelCategory childPanelCategory :
 				panelCategoryHelper.getChildPanelCategories(
-					parentKey, themeDisplay)) {
+					panelCategoryKey, themeDisplay)) {
 
 			if (panelCategoryHelper.containsPortlet(
 					portletId, childPanelCategory.getKey())) {
