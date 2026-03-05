@@ -58,7 +58,33 @@ export class SystemSettingsPage {
 			.first()
 			.click();
 
-		await waitForPageToBeLoaded(this.page);
+		await this.waitForPageToBeLoaded();
+	}
+
+	async waitForPageToBeLoaded() {
+		await expect(async () => {
+			await waitForPageToBeLoaded(this.page);
+
+			try {
+				const fields = await this.page.locator('.ddm-field').all();
+
+				expect(fields.length).toBeGreaterThan(0);
+
+				for (const field of fields) {
+					await expect(field).toBeVisible();
+					await expect(
+						field.locator('.loading-animation')
+					).toBeHidden({
+						timeout: 5000,
+					});
+				}
+			}
+			catch (error) {
+				await this.page.reload();
+
+				throw error;
+			}
+		}).toPass();
 	}
 
 	async assertOptionVisible(options: {

@@ -8,7 +8,6 @@ import {expect, mergeTests} from '@playwright/test';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
-import {waitForPageToBeLoaded} from '../../../utils/waitForPageToBeLoaded';
 
 const test = mergeTests(systemSettingsPageTest, loginTest());
 
@@ -44,7 +43,7 @@ test(
 		await test.step('Assert value is persisted', async () => {
 			await page.reload();
 
-			await waitForPageToBeLoaded(page);
+			await systemSettingsPage.waitForPageToBeLoaded();
 
 			await expect(input).toHaveValue(value);
 		});
