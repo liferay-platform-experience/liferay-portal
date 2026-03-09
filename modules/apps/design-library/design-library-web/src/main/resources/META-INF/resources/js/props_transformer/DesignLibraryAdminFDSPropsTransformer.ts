@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {openDesignLibraryModal} from '../common/utils/openDesignLibraryModal';
+import CreateDesignLibraryModal from '../modal/CreateDesignLibraryModal';
+
 export default function DesignLibraryAdminFDSPropsTransformer(
 	props: Record<string, unknown>
 ) {
@@ -10,6 +13,20 @@ export default function DesignLibraryAdminFDSPropsTransformer(
 		primaryItems: [
 			{
 				label: Liferay.Language.get('new-design-library'),
+				onClick: () => {
+					openDesignLibraryModal({
+						contentComponent: ({
+							closeModal,
+						}: {
+							closeModal: () => void;
+						}) =>
+							CreateDesignLibraryModal({
+								closeModal,
+								dataSetId: '',
+							}),
+						size: 'md',
+					});
+				},
 			},
 		],
 	};
