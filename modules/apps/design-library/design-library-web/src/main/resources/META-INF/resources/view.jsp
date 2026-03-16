@@ -11,8 +11,20 @@
 ViewDesignLibraryAdminDisplayContext viewDesignLibraryAdminDisplayContext = new ViewDesignLibraryAdminDisplayContext(request);
 %>
 
+<%-- <portlet:renderURL var="designLibraryURL">
+	<portlet:param name="name" value="/view" />
+	<portlet:param name="entryid" value="000" />
+</portlet:renderURL> --%>
+
+<portlet:renderURL var="designLibraryURL" />
+
 <div>
 	<frontend-data-set:headless-display
+		additionalProps='<%=
+			HashMapBuilder.<String, Object>put(
+				"redirectURL", designLibraryURL
+			).build()
+		%>'
 		apiURL="<%= viewDesignLibraryAdminDisplayContext.getAPIURL() %>"
 		emptyState="<%= viewDesignLibraryAdminDisplayContext.getEmptyState() %>"
 		formName="fm"

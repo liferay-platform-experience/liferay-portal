@@ -8,7 +8,7 @@ import ClayForm from '@clayui/form';
 import ClayModal from '@clayui/modal';
 import {useFormik} from 'formik';
 import {openToast} from 'frontend-js-components-web';
-import {sub} from 'frontend-js-web';
+import {navigate, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import {FieldText} from '../common/components/forms';
@@ -28,9 +28,11 @@ const FDS_EVENT_UPDATE_DISPLAY = 'fds-update-display';
 export default function CreateDesignLibraryModal({
 	closeModal,
 	dataSetId,
+	redirectURL,
 }: {
 	closeModal: () => void;
 	dataSetId: string;
+	redirectURL: URL;
 }) {
 	const [nameInputError, setNameInputError] = useState<string>('');
 	const [close, setClose] = useState(false);
@@ -50,13 +52,17 @@ export default function CreateDesignLibraryModal({
 			designLibraryName: '',
 		},
 		onSubmit: (values) => {
-			const url = ``;
+			const url = '/o/headless-asset-library/v1.0/asset-libraries';
 			const body = {
 				description: values.designLibraryDescription,
 				name: values.designLibraryName,
+				settings: {},
+				type: 'DesignLibrary',
 			};
 
-			ApiHelper.post(url, body).then(({error, status}) => {
+			ApiHelper.post(url, body).then((response) => {
+				const {error, status} = response;
+				console.log(response);
 				if (error) {
 					if (status === 'CONFLICT') {
 						setNameInputError(
@@ -106,6 +112,8 @@ export default function CreateDesignLibraryModal({
 					if (close) {
 						closeModal();
 					}
+					console.log(redirectURL);
+					navigate(redirectURL);
 				}
 			});
 		},

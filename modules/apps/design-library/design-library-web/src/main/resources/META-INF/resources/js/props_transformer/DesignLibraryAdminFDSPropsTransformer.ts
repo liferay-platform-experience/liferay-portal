@@ -3,12 +3,29 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {createPortletURL} from 'frontend-js-web';
+
 import {openDesignLibraryModal} from '../common/utils/openDesignLibraryModal';
 import CreateDesignLibraryModal from '../modal/CreateDesignLibraryModal';
 
-export default function DesignLibraryAdminFDSPropsTransformer(
-	props: Record<string, unknown>
-) {
+export default function DesignLibraryAdminFDSPropsTransformer({
+	additionalProps,
+	id,
+	...props
+}: {
+	additionalProps: {
+		redirectURL: string;
+	};
+	id: string;
+	props: Record<string, unknown>;
+}) {
+	const redirectURL = createPortletURL(additionalProps.redirectURL, {
+		entryId: '40028922',
+		name: '/view',
+	});
+
+	console.log({...props, additionalProps, id, redirectURL});
+
 	const creationMenu = {
 		primaryItems: [
 			{
@@ -22,7 +39,8 @@ export default function DesignLibraryAdminFDSPropsTransformer(
 						}) =>
 							CreateDesignLibraryModal({
 								closeModal,
-								dataSetId: '',
+								dataSetId: id,
+								redirectURL,
 							}),
 						size: 'md',
 					});

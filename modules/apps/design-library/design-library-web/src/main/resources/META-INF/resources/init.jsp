@@ -5,7 +5,10 @@
  */
 --%>
 
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+
 <%@ taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %>
 
 <%@ page import="com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames" %><%@
-page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryAdminDisplayContext" %>
+page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryAdminDisplayContext" %><%@
+page import="com.liferay.portal.kernel.util.HashMapBuilder" %>
