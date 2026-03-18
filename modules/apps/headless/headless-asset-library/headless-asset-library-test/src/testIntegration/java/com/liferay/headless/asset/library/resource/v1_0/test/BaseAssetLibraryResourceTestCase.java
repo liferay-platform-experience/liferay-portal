@@ -231,6 +231,7 @@ public abstract class BaseAssetLibraryResourceTestCase {
 		AssetLibrary assetLibrary = randomAssetLibrary();
 
 		assetLibrary.setAssetLibraryKey(regex);
+		assetLibrary.setCreatorUserFullName(regex);
 		assetLibrary.setDescription(regex);
 		assetLibrary.setExternalReferenceCode(regex);
 		assetLibrary.setName(regex);
@@ -242,6 +243,7 @@ public abstract class BaseAssetLibraryResourceTestCase {
 		assetLibrary = AssetLibrarySerDes.toDTO(json);
 
 		Assert.assertEquals(regex, assetLibrary.getAssetLibraryKey());
+		Assert.assertEquals(regex, assetLibrary.getCreatorUserFullName());
 		Assert.assertEquals(regex, assetLibrary.getDescription());
 		Assert.assertEquals(regex, assetLibrary.getExternalReferenceCode());
 		Assert.assertEquals(regex, assetLibrary.getName());
@@ -1264,6 +1266,16 @@ public abstract class BaseAssetLibraryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"creatorUserFullName", additionalAssertFieldName)) {
+
+				if (assetLibrary.getCreatorUserFullName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("creatorUserId", additionalAssertFieldName)) {
 				if (assetLibrary.getCreatorUserId() == null) {
 					valid = false;
@@ -1524,6 +1536,19 @@ public abstract class BaseAssetLibraryResourceTestCase {
 				if (!Objects.deepEquals(
 						assetLibrary1.getConnectedSites(),
 						assetLibrary2.getConnectedSites())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"creatorUserFullName", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						assetLibrary1.getCreatorUserFullName(),
+						assetLibrary2.getCreatorUserFullName())) {
 
 					return false;
 				}
@@ -1886,6 +1911,52 @@ public abstract class BaseAssetLibraryResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("creatorUserFullName")) {
+			Object object = assetLibrary.getCreatorUserFullName();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("creatorUserId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2197,6 +2268,8 @@ public abstract class BaseAssetLibraryResourceTestCase {
 			{
 				assetLibraryKey = String.valueOf(
 					testDepotEntry.getDepotEntryId());
+				creatorUserFullName = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				creatorUserId = RandomTestUtil.randomLong();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();

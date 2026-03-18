@@ -99,6 +99,20 @@ public class AssetLibrarySerDes {
 			sb.append("]");
 		}
 
+		if (assetLibrary.getCreatorUserFullName() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creatorUserFullName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(assetLibrary.getCreatorUserFullName()));
+
+			sb.append("\"");
+		}
+
 		if (assetLibrary.getCreatorUserId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -380,6 +394,15 @@ public class AssetLibrarySerDes {
 				String.valueOf(assetLibrary.getConnectedSites()));
 		}
 
+		if (assetLibrary.getCreatorUserFullName() == null) {
+			map.put("creatorUserFullName", null);
+		}
+		else {
+			map.put(
+				"creatorUserFullName",
+				String.valueOf(assetLibrary.getCreatorUserFullName()));
+		}
+
 		if (assetLibrary.getCreatorUserId() == null) {
 			map.put("creatorUserId", null);
 		}
@@ -552,6 +575,11 @@ public class AssetLibrarySerDes {
 			else if (Objects.equals(jsonParserFieldName, "connectedSites")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "creatorUserFullName")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "creatorUserId")) {
 				return false;
 			}
@@ -649,6 +677,14 @@ public class AssetLibrarySerDes {
 					}
 
 					assetLibrary.setConnectedSites(connectedSitesArray);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "creatorUserFullName")) {
+
+				if (jsonParserFieldValue != null) {
+					assetLibrary.setCreatorUserFullName(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "creatorUserId")) {

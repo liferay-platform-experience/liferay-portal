@@ -193,6 +193,49 @@ public class AssetLibrary implements Serializable {
 	private Supplier<ConnectedSite[]> _connectedSitesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The asset library's creator's full name."
+	)
+	public String getCreatorUserFullName() {
+		if (_creatorUserFullNameSupplier != null) {
+			creatorUserFullName = _creatorUserFullNameSupplier.get();
+
+			_creatorUserFullNameSupplier = null;
+		}
+
+		return creatorUserFullName;
+	}
+
+	public void setCreatorUserFullName(String creatorUserFullName) {
+		this.creatorUserFullName = creatorUserFullName;
+
+		_creatorUserFullNameSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCreatorUserFullName(
+		UnsafeSupplier<String, Exception> creatorUserFullNameUnsafeSupplier) {
+
+		_creatorUserFullNameSupplier = () -> {
+			try {
+				return creatorUserFullNameUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The asset library's creator's full name.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String creatorUserFullName;
+
+	@JsonIgnore
+	private Supplier<String> _creatorUserFullNameSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The asset library's creator user ID."
 	)
 	public Long getCreatorUserId() {
@@ -1069,6 +1112,22 @@ public class AssetLibrary implements Serializable {
 			}
 
 			sb.append("]");
+		}
+
+		String creatorUserFullName = getCreatorUserFullName();
+
+		if (creatorUserFullName != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creatorUserFullName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(creatorUserFullName));
+
+			sb.append("\"");
 		}
 
 		Long creatorUserId = getCreatorUserId();
