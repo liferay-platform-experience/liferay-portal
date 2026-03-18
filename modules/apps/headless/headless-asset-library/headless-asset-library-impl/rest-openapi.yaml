@@ -25,6 +25,11 @@ components:
                         $ref: "#/components/schemas/ConnectedSite"
                     readOnly: true
                     type: array
+                creatorUserFullName:
+                    description:
+                        The asset library's creator's full name.
+                    readOnly: true
+                    type: string
                 creatorUserId:
                     description:
                         The asset library's creator user ID.

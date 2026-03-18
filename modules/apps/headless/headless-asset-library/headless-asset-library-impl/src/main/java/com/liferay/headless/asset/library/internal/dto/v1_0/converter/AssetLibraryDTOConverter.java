@@ -93,6 +93,10 @@ public class AssetLibraryDTOConverter
 							depotEntryGroupRel -> _toConnectedSite(
 								depotEntryGroupRel, dtoConverterContext),
 							ConnectedSite.class)));
+				setCreatorUserFullName(
+					() -> _userLocalService.getUser(
+						group.getCreatorUserId()
+					).getFullName());
 				setCreatorUserId(group::getCreatorUserId);
 				setDateCreated(depotEntry::getCreateDate);
 				setDateModified(
