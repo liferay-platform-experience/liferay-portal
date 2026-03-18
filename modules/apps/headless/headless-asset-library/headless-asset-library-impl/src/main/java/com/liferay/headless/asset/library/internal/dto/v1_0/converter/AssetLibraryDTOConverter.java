@@ -18,6 +18,7 @@ import com.liferay.headless.asset.library.internal.resource.v1_0.BaseAssetLibrar
 import com.liferay.headless.asset.library.internal.util.AssetLibraryUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
@@ -79,6 +80,7 @@ public class AssetLibraryDTOConverter
 		throws Exception {
 
 		Group group = depotEntry.getGroup();
+		User user = _userLocalService.getUser(group.getCreatorUserId());
 
 		return new AssetLibrary() {
 			{
@@ -94,9 +96,7 @@ public class AssetLibraryDTOConverter
 								depotEntryGroupRel, dtoConverterContext),
 							ConnectedSite.class)));
 				setCreatorUserFullName(
-					() -> _userLocalService.getUser(
-						group.getCreatorUserId()
-					).getFullName());
+					() -> user == null ? null : user.getFullName());
 				setCreatorUserId(group::getCreatorUserId);
 				setDateCreated(depotEntry::getCreateDate);
 				setDateModified(
