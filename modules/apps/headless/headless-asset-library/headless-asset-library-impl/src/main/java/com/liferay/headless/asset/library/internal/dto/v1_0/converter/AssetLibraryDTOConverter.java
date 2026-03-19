@@ -80,6 +80,7 @@ public class AssetLibraryDTOConverter
 		throws Exception {
 
 		Group group = depotEntry.getGroup();
+
 		User user = _userLocalService.fetchUser(group.getCreatorUserId());
 
 		return new AssetLibrary() {
@@ -96,7 +97,7 @@ public class AssetLibraryDTOConverter
 								depotEntryGroupRel, dtoConverterContext),
 							ConnectedSite.class)));
 				setCreatorFullName(
-					() -> user == null ? null : user.getFullName());
+					() -> (user == null) ? null : user.getFullName());
 				setCreatorUserId(group::getCreatorUserId);
 				setDateCreated(depotEntry::getCreateDate);
 				setDateModified(
