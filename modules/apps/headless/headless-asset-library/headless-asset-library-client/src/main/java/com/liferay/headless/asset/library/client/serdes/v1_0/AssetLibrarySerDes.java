@@ -99,6 +99,20 @@ public class AssetLibrarySerDes {
 			sb.append("]");
 		}
 
+		if (assetLibrary.getCreatorFullName() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creatorFullName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(assetLibrary.getCreatorFullName()));
+
+			sb.append("\"");
+		}
+
 		if (assetLibrary.getCreatorUserId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -380,6 +394,15 @@ public class AssetLibrarySerDes {
 				String.valueOf(assetLibrary.getConnectedSites()));
 		}
 
+		if (assetLibrary.getCreatorFullName() == null) {
+			map.put("creatorFullName", null);
+		}
+		else {
+			map.put(
+				"creatorFullName",
+				String.valueOf(assetLibrary.getCreatorFullName()));
+		}
+
 		if (assetLibrary.getCreatorUserId() == null) {
 			map.put("creatorUserId", null);
 		}
@@ -552,6 +575,9 @@ public class AssetLibrarySerDes {
 			else if (Objects.equals(jsonParserFieldName, "connectedSites")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "creatorFullName")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "creatorUserId")) {
 				return false;
 			}
@@ -649,6 +675,12 @@ public class AssetLibrarySerDes {
 					}
 
 					assetLibrary.setConnectedSites(connectedSitesArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creatorFullName")) {
+				if (jsonParserFieldValue != null) {
+					assetLibrary.setCreatorFullName(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "creatorUserId")) {

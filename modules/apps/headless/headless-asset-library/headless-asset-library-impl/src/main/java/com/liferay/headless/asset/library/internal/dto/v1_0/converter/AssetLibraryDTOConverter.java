@@ -97,7 +97,6 @@ public class AssetLibraryDTOConverter
 							ConnectedSite.class)));
 				setCreatorFullName(
 					() -> user == null ? null : user.getFullName());
-				);
 				setCreatorUserId(group::getCreatorUserId);
 				setDateCreated(depotEntry::getCreateDate);
 				setDateModified(
