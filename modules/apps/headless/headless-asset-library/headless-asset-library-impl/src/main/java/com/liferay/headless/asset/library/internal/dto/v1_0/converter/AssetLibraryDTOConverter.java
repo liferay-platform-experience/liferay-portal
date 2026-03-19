@@ -80,7 +80,7 @@ public class AssetLibraryDTOConverter
 		throws Exception {
 
 		Group group = depotEntry.getGroup();
-		User user = _userLocalService.getUser(group.getCreatorUserId());
+		User user = _userLocalService.fetchUser(group.getCreatorUserId());
 
 		return new AssetLibrary() {
 			{
