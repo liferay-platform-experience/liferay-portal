@@ -1,0 +1,613 @@
+{
+	"frontendTokenCategories": [
+		{
+			"frontendTokenSets": [
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#007bff",
+							"editorType": "ColorPicker",
+							"label": "primary",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-primary"
+								}
+							],
+							"name": "primaryColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#006be6",
+							"editorType": "ColorPicker",
+							"label": "primary-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-primary-d1"
+								}
+							],
+							"name": "primaryColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#0056b3",
+							"editorType": "ColorPicker",
+							"label": "primary-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-primary-d2"
+								}
+							],
+							"name": "primaryColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#e6f2ff",
+							"editorType": "ColorPicker",
+							"label": "primary-light-0",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-primary-l0"
+								}
+							],
+							"name": "primaryColorL0",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#338fff",
+							"editorType": "ColorPicker",
+							"label": "primary-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-primary-l1"
+								}
+							],
+							"name": "primaryColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#66b0ff",
+							"editorType": "ColorPicker",
+							"label": "primary-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-primary-l2"
+								}
+							],
+							"name": "primaryColorL2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#b3d7ff",
+							"editorType": "ColorPicker",
+							"label": "primary-light-3",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-primary-l3"
+								}
+							],
+							"name": "primaryColorL3",
+							"type": "String"
+						}
+					],
+					"label": "primary",
+					"name": "primary"
+				},
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#6c757d",
+							"editorType": "ColorPicker",
+							"label": "secondary",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-secondary"
+								}
+							],
+							"name": "secondaryColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#5a6268",
+							"editorType": "ColorPicker",
+							"label": "secondary-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-secondary-d1"
+								}
+							],
+							"name": "secondaryColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#495057",
+							"editorType": "ColorPicker",
+							"label": "secondary-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-secondary-d2"
+								}
+							],
+							"name": "secondaryColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#e2e3e5",
+							"editorType": "ColorPicker",
+							"label": "secondary-light-0",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-secondary-l0"
+								}
+							],
+							"name": "secondaryColorL0",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#868e96",
+							"editorType": "ColorPicker",
+							"label": "secondary-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-secondary-l1"
+								}
+							],
+							"name": "secondaryColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#adb5bd",
+							"editorType": "ColorPicker",
+							"label": "secondary-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-secondary-l2"
+								}
+							],
+							"name": "secondaryColorL2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ced4da",
+							"editorType": "ColorPicker",
+							"label": "secondary-light-3",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-secondary-l3"
+								}
+							],
+							"name": "secondaryColorL3",
+							"type": "String"
+						}
+					],
+					"label": "secondary",
+					"name": "secondary"
+				},
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#28a745",
+							"editorType": "ColorPicker",
+							"label": "success",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-success"
+								}
+							],
+							"name": "successColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#208838",
+							"editorType": "ColorPicker",
+							"label": "success-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-success-d1"
+								}
+							],
+							"name": "successColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#19692c",
+							"editorType": "ColorPicker",
+							"label": "success-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-success-d2"
+								}
+							],
+							"name": "successColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#68db82",
+							"editorType": "ColorPicker",
+							"label": "success-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-success-l1"
+								}
+							],
+							"name": "successColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#97ebae",
+							"editorType": "ColorPicker",
+							"label": "success-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-success-l2"
+								}
+							],
+							"name": "successColorL2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#17a2b8",
+							"editorType": "ColorPicker",
+							"label": "info",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-info"
+								}
+							],
+							"name": "infoColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#128495",
+							"editorType": "ColorPicker",
+							"label": "info-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-info-d1"
+								}
+							],
+							"name": "infoColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#0c626e",
+							"editorType": "ColorPicker",
+							"label": "info-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-info-d2"
+								}
+							],
+							"name": "infoColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#59d6ea",
+							"editorType": "ColorPicker",
+							"label": "info-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-info-l1"
+								}
+							],
+							"name": "infoColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#8ee2f0",
+							"editorType": "ColorPicker",
+							"label": "info-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-info-l2"
+								}
+							],
+							"name": "infoColorL2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ffc107",
+							"editorType": "ColorPicker",
+							"label": "warning",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-warning"
+								}
+							],
+							"name": "warningColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#dfa700",
+							"editorType": "ColorPicker",
+							"label": "warning-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-warning-d1"
+								}
+							],
+							"name": "warningColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#b38600",
+							"editorType": "ColorPicker",
+							"label": "warning-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-warning-d2"
+								}
+							],
+							"name": "warningColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ffde7b",
+							"editorType": "ColorPicker",
+							"label": "warning-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-warning-l1"
+								}
+							],
+							"name": "warningColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ffe79c",
+							"editorType": "ColorPicker",
+							"label": "warning-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-warning-l2"
+								}
+							],
+							"name": "warningColorL2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#dc3545",
+							"editorType": "ColorPicker",
+							"label": "danger",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-danger"
+								}
+							],
+							"name": "dangerColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#c82232",
+							"editorType": "ColorPicker",
+							"label": "danger-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-danger-d1"
+								}
+							],
+							"name": "dangerColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#a71d2a",
+							"editorType": "ColorPicker",
+							"label": "danger-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-danger-d2"
+								}
+							],
+							"name": "dangerColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ed98a0",
+							"editorType": "ColorPicker",
+							"label": "danger-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-danger-l1"
+								}
+							],
+							"name": "dangerColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#f3b7bd",
+							"editorType": "ColorPicker",
+							"label": "danger-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-danger-l2"
+								}
+							],
+							"name": "dangerColorL2",
+							"type": "String"
+						}
+					],
+					"label": "status",
+					"name": "status"
+				},
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#f8f9fa",
+							"editorType": "ColorPicker",
+							"label": "light",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-light"
+								}
+							],
+							"name": "lightColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#dae0e5",
+							"editorType": "ColorPicker",
+							"label": "light-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-light-d1"
+								}
+							],
+							"name": "lightColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#c8cbcf",
+							"editorType": "ColorPicker",
+							"label": "light-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-light-d2"
+								}
+							],
+							"name": "lightColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ffffff",
+							"editorType": "ColorPicker",
+							"label": "light-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-light-l1"
+								}
+							],
+							"name": "lightColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#ffffff",
+							"editorType": "ColorPicker",
+							"label": "light-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-light-l2"
+								}
+							],
+							"name": "lightColorL2",
+							"type": "String"
+						}
+					],
+					"label": "light",
+					"name": "light"
+				},
+				{
+					"frontendTokens": [
+						{
+							"defaultValue": "#343a40",
+							"editorType": "ColorPicker",
+							"label": "dark",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-dark"
+								}
+							],
+							"name": "darkColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#23272b",
+							"editorType": "ColorPicker",
+							"label": "dark-dark-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-dark-d1"
+								}
+							],
+							"name": "darkColorD1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#1d2124",
+							"editorType": "ColorPicker",
+							"label": "dark-dark-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-dark-d2"
+								}
+							],
+							"name": "darkColorD2",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#59626b",
+							"editorType": "ColorPicker",
+							"label": "dark-light-1",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-dark-l1"
+								}
+							],
+							"name": "darkColorL1",
+							"type": "String"
+						},
+						{
+							"defaultValue": "#818a91",
+							"editorType": "ColorPicker",
+							"label": "dark-light-2",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "clay-dark-l2"
+								}
+							],
+							"name": "darkColorL2",
+							"type": "String"
+						}
+					],
+					"label": "dark",
+					"name": "dark"
+				}
+			],
+			"label": "color-system",
+			"name": "colorSystem"
+		}
+	],
+	"name": "Clay"
+}
