@@ -5,6 +5,7 @@
 
 package com.liferay.frontend.token.definition.internal;
 
+import com.liferay.frontend.token.definition.constants.FrontendTokenDefinitionConstants;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -63,6 +64,57 @@ public class FrontendTokenDefinitionRegistryImplTest {
 	@After
 	public void tearDown() {
 		_resourceBundleLoaderUtilMockedStatic.close();
+	}
+
+	@Test
+	public void testGetFrontendTokenDefinitionImplsWithGlobalBundle()
+		throws Exception {
+
+		FrontendTokenDefinitionRegistryImpl
+			frontendTokenDefinitionRegistryImpl =
+				new FrontendTokenDefinitionRegistryImpl();
+
+		frontendTokenDefinitionRegistryImpl.jsonFactory = new JSONFactoryImpl();
+		frontendTokenDefinitionRegistryImpl.portal = new PortalImpl();
+
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		Mockito.when(
+			bundle.getEntry("WEB-INF/frontend-token-definition.json")
+		).thenReturn(
+			_frontendTokenDefinitionJSONURL
+		);
+
+		Mockito.when(
+			bundle.getEntry("WEB-INF/liferay-look-and-feel.xml")
+		).thenReturn(
+			null
+		);
+
+		Mockito.when(
+			bundle.getSymbolicName()
+		).thenReturn(
+			"com.liferay.frontend.js.clay.web"
+		);
+
+		List<FrontendTokenDefinitionImpl> frontendTokenDefinitionImpls =
+			frontendTokenDefinitionRegistryImpl.getFrontendTokenDefinitionImpls(
+				bundle);
+
+		Assert.assertEquals(
+			frontendTokenDefinitionImpls.toString(), 1,
+			frontendTokenDefinitionImpls.size());
+
+		FrontendTokenDefinitionImpl globalFrontendTokenDefinitionImpl =
+			frontendTokenDefinitionImpls.get(0);
+
+		Assert.assertEquals(
+			"com.liferay.frontend.js.clay.web",
+			globalFrontendTokenDefinitionImpl.getThemeId());
+
+		Assert.assertEquals(
+			FrontendTokenDefinitionConstants.THEME_TYPE_GLOBAL,
+			globalFrontendTokenDefinitionImpl.getThemeType());
 	}
 
 	@Test

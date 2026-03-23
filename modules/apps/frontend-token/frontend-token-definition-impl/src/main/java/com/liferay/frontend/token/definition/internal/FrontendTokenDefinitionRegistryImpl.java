@@ -20,6 +20,7 @@ import com.liferay.portal.json.validator.JSONValidatorException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -242,13 +243,27 @@ public class FrontendTokenDefinitionRegistryImpl
 			List<FrontendTokenDefinitionImpl> frontendTokenDefinitionImpls =
 				new ArrayList<>();
 
-			for (Map<String, String> themeMap : getThemeMaps(bundle)) {
+			List<Map<String, String>> themeMaps = getThemeMaps(bundle);
+
+			JSONObject jsonObject = jsonFactory.createJSONObject(json);
+
+			if (themeMaps.isEmpty()) {
 				frontendTokenDefinitionImpls.add(
 					new FrontendTokenDefinitionImpl(
-						jsonFactory.createJSONObject(json), jsonFactory,
-						resourceBundleLoader, themeMap.get("id"),
-						themeMap.get("name"),
-						FrontendTokenDefinitionConstants.THEME_TYPE_BUNDLE));
+						jsonObject, jsonFactory, resourceBundleLoader,
+						bundle.getSymbolicName(),
+						jsonObject.getString("name", bundle.getSymbolicName()),
+						FrontendTokenDefinitionConstants.THEME_TYPE_GLOBAL));
+			}
+			else {
+				for (Map<String, String> themeMap : themeMaps) {
+					frontendTokenDefinitionImpls.add(
+						new FrontendTokenDefinitionImpl(
+							jsonObject, jsonFactory, resourceBundleLoader,
+							themeMap.get("id"), themeMap.get("name"),
+							FrontendTokenDefinitionConstants.
+								THEME_TYPE_BUNDLE));
+				}
 			}
 
 			return frontendTokenDefinitionImpls;
