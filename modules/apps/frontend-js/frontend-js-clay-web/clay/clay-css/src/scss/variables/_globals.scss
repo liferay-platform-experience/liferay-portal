@@ -240,77 +240,125 @@ $colors: map-merge(
 	$colors
 );
 
-$primary: var(--clay-primary, $blue) !default;
+$primary-default: $blue !default;
+$primary-d1-default: HSL(from $primary-default h s calc(l - 7.5%)) !default;
+$primary-d2-default: HSL(from $primary-default h s calc(l - 10%)) !default;
+$primary-l0-default: HSL(from $primary-default h s calc(l + 17.06%)) !default;
+$primary-l1-default: HSL(from $primary-default h s calc(l + 22.94%)) !default;
+$primary-l2-default: HSL(from $primary-default h s calc(l + 32.94%)) !default;
+$primary-l3-default: HSL(from $primary-default h s calc(l + 44.9%)) !default;
 
-$primary-d1: var(--clay-primary-d1, clay-darken($primary, 7.5)) !default;
-$primary-d2: var(--clay-primary-d2, clay-darken($primary, 10)) !default;
-$primary-l0: var(--clay-primary-l0, clay-lighten($primary, 17.06)) !default;
-$primary-l1: var(--clay-primary-l1, clay-lighten($primary, 22.94)) !default;
-$primary-l2: var(--clay-primary-l2, clay-lighten($primary, 32.94)) !default;
-$primary-l3: var(--clay-primary-l3, clay-lighten($primary, 44.9)) !default;
+$primary: var(--clay-primary, #{$primary-default}) !default;
 
-$secondary: var(--clay-secondary, $gray-600) !default;
+$primary-d1: var(--clay-primary-d1, #{$primary-d1-default}) !default;
+$primary-d2: var(--clay-primary-d2, #{$primary-d2-default}) !default;
+$primary-l0: var(--clay-primary-l0, #{$primary-l0-default}) !default;
+$primary-l1: var(--clay-primary-l1, #{$primary-l1-default}) !default;
+$primary-l2: var(--clay-primary-l2, #{$primary-l2-default}) !default;
+$primary-l3: var(--clay-primary-l3, #{$primary-l3-default}) !default;
 
-$secondary-d1: var(--clay-secondary-d1, clay-darken($secondary, 7.5)) !default;
-$secondary-d2: var(--clay-secondary-d2, clay-darken($secondary, 10)) !default;
-$secondary-l0: var(
-	--clay-secondary-l0,
-	clay-lighten($secondary, 15.29)
+$secondary-default: $gray-600 !default;
+$secondary-d1-default: HSL(from $secondary-default h s calc(l - 7.5%)) !default;
+$secondary-d2-default: HSL(from $secondary-default h s calc(l - 10%)) !default;
+$secondary-l0-default: HSL(
+	from $secondary-default h s calc(l + 15.29%)
 ) !default;
-$secondary-l1: var(
-	--clay-secondary-l1,
-	clay-lighten($secondary, 22.94)
+$secondary-l1-default: HSL(
+	from $secondary-default h s calc(l + 22.94%)
 ) !default;
-$secondary-l2: var(
-	--clay-secondary-l2,
-	clay-lighten($secondary, 32.94)
+$secondary-l2-default: HSL(
+	from $secondary-default h s calc(l + 32.94%)
 ) !default;
-$secondary-l3: var(
-	--clay-secondary-l3,
-	clay-lighten($secondary, 44.9)
+$secondary-l3-default: HSL(
+	from $secondary-default h s calc(l + 44.9%)
 ) !default;
 
-$info: var(--clay-info, $cyan) !default;
+$secondary: var(--clay-secondary, #{$secondary-default}) !default;
 
-$info-d1: var(--clay-info-d1, clay-darken($info, 7.5)) !default;
-$info-d2: var(--clay-info-d2, clay-darken($info, 10)) !default;
-$info-l1: var(--clay-info-l1, clay-lighten($info, 22.94)) !default;
-$info-l2: var(--clay-info-l2, clay-lighten($info, 32.94)) !default;
+$secondary-d1: var(--clay-secondary-d1, #{$secondary-d1-default}) !default;
+$secondary-d2: var(--clay-secondary-d2, #{$secondary-d2-default}) !default;
+$secondary-l0: var(--clay-secondary-l0, #{$secondary-l0-default}) !default;
+$secondary-l1: var(--clay-secondary-l1, #{$secondary-l1-default}) !default;
+$secondary-l2: var(--clay-secondary-l2, #{$secondary-l2-default}) !default;
+$secondary-l3: var(--clay-secondary-l3, #{$secondary-l3-default}) !default;
 
-$success: var(--clay-success, $green) !default;
+$info-default: $cyan !default;
+$info-d1-default: HSL(from $info-default h s calc(l - 7.5%)) !default;
+$info-d2-default: HSL(from $info-default h s calc(l - 10%)) !default;
+$info-l1-default: HSL(from $info-default h s calc(l + 22.94%)) !default;
+$info-l2-default: HSL(from $info-default h s calc(l + 32.94%)) !default;
 
-$success-d1: var(--clay-success-d1, clay-darken($success, 7.5)) !default;
-$success-d2: var(--clay-success-d2, clay-darken($success, 10)) !default;
-$success-l1: var(--clay-success-l1, clay-lighten($success, 22.94)) !default;
-$success-l2: var(--clay-success-l2, clay-lighten($success, 32.94)) !default;
+$info: var(--clay-info, #{$info-default}) !default;
 
-$warning: var(--clay-warning, $yellow) !default;
+$info-d1: var(--clay-info-d1, #{$info-d1-default}) !default;
+$info-d2: var(--clay-info-d2, #{$info-d2-default}) !default;
+$info-l1: var(--clay-info-l1, #{$info-l1-default}) !default;
+$info-l2: var(--clay-info-l2, #{$info-l2-default}) !default;
 
-$warning-d1: var(--clay-warning-d1, clay-darken($warning, 7.5)) !default;
-$warning-d2: var(--clay-warning-d2, clay-darken($warning, 10)) !default;
-$warning-l1: var(--clay-warning-l1, clay-lighten($warning, 22.94)) !default;
-$warning-l2: var(--clay-warning-l2, clay-lighten($warning, 32.94)) !default;
+$success-default: $green !default;
+$success-d1-default: HSL(from $success-default h s calc(l - 7.5%)) !default;
+$success-d2-default: HSL(from $success-default h s calc(l - 10%)) !default;
+$success-l1-default: HSL(from $success-default h s calc(l + 22.94%)) !default;
+$success-l2-default: HSL(from $success-default h s calc(l + 32.94%)) !default;
 
-$danger: var(--clay-danger, $red) !default;
+$success: var(--clay-success, #{$success-default}) !default;
 
-$danger-d1: var(--clay-danger-d1, clay-darken($danger, 7.5)) !default;
-$danger-d2: var(--clay-danger-d2, clay-darken($danger, 10)) !default;
-$danger-l1: var(--clay-danger-l1, clay-lighten($danger, 22.94)) !default;
-$danger-l2: var(--clay-danger-l2, clay-lighten($danger, 32.94)) !default;
+$success-d1: var(--clay-success-d1, #{$success-d1-default}) !default;
+$success-d2: var(--clay-success-d2, #{$success-d2-default}) !default;
+$success-l1: var(--clay-success-l1, #{$success-l1-default}) !default;
+$success-l2: var(--clay-success-l2, #{$success-l2-default}) !default;
 
-$light: var(--clay-light, $gray-100) !default;
+$warning-default: $yellow !default;
+$warning-d1-default: HSL(from $warning-default h s calc(l - 7.5%)) !default;
+$warning-d2-default: HSL(from $warning-default h s calc(l - 10%)) !default;
+$warning-l1-default: HSL(from $warning-default h s calc(l + 22.94%)) !default;
+$warning-l2-default: HSL(from $warning-default h s calc(l + 32.94%)) !default;
 
-$light-d1: var(--clay-light-d1, clay-darken($light, 7.5)) !default;
-$light-d2: var(--clay-light-d2, clay-darken($light, 10)) !default;
-$light-l1: var(--clay-light-l1, clay-lighten($light, 22.94)) !default;
-$light-l2: var(--clay-light-l2, clay-lighten($light, 32.94)) !default;
+$warning: var(--clay-warning, #{$warning-default}) !default;
 
-$dark: var(--clay-dark, $gray-800) !default;
+$warning-d1: var(--clay-warning-d1, #{$warning-d1-default}) !default;
+$warning-d2: var(--clay-warning-d2, #{$warning-d2-default}) !default;
+$warning-l1: var(--clay-warning-l1, #{$warning-l1-default}) !default;
+$warning-l2: var(--clay-warning-l2, #{$warning-l2-default}) !default;
 
-$dark-d1: var(--clay-dark-d1, clay-darken($dark, 7.5)) !default;
-$dark-d2: var(--clay-dark-d2, clay-darken($dark, 10)) !default;
-$dark-l1: var(--clay-dark-l1, clay-lighten($dark, 22.94)) !default;
-$dark-l2: var(--clay-dark-l2, clay-lighten($dark, 32.94)) !default;
+$danger-default: $red !default;
+$danger-d1-default: HSL(from $danger-default h s calc(l - 7.5%)) !default;
+$danger-d2-default: HSL(from $danger-default h s calc(l - 10%)) !default;
+$danger-l1-default: HSL(from $danger-default h s calc(l + 22.94%)) !default;
+$danger-l2-default: HSL(from $danger-default h s calc(l + 32.94%)) !default;
+
+$danger: var(--clay-danger, #{$danger-default}) !default;
+
+$danger-d1: var(--clay-danger-d1, #{$danger-d1-default}) !default;
+$danger-d2: var(--clay-danger-d2, #{$danger-d2-default}) !default;
+$danger-l1: var(--clay-danger-l1, #{$danger-l1-default}) !default;
+$danger-l2: var(--clay-danger-l2, #{$danger-l2-default}) !default;
+
+$light-default: $gray-100 !default;
+$light-d1-default: HSL(from $light-default h s calc(l - 7.5%)) !default;
+$light-d2-default: HSL(from $light-default h s calc(l - 10%)) !default;
+$light-l1-default: HSL(from $light-default h s calc(l + 22.94%)) !default;
+$light-l2-default: HSL(from $light-default h s calc(l + 32.94%)) !default;
+
+$light: var(--clay-light, #{$light-default}) !default;
+
+$light-d1: var(--clay-light-d1, #{$light-d1-default}) !default;
+$light-d2: var(--clay-light-d2, #{$light-d2-default}) !default;
+$light-l1: var(--clay-light-l1, #{$light-l1-default}) !default;
+$light-l2: var(--clay-light-l2, #{$light-l2-default}) !default;
+
+$dark-default: $gray-800 !default;
+$dark-d1-default: HSL(from $dark-default h s calc(l - 7.5%)) !default;
+$dark-d2-default: HSL(from $dark-default h s calc(l - 10%)) !default;
+$dark-l1-default: HSL(from $dark-default h s calc(l + 22.94%)) !default;
+$dark-l2-default: HSL(from $dark-default h s calc(l + 32.94%)) !default;
+
+$dark: var(--clay-dark, #{$dark-default}) !default;
+
+$dark-d1: var(--clay-dark-d1, #{$dark-d1-default}) !default;
+$dark-d2: var(--clay-dark-d2, #{$dark-d2-default}) !default;
+$dark-l1: var(--clay-dark-l1, #{$dark-l1-default}) !default;
+$dark-l2: var(--clay-dark-l2, #{$dark-l2-default}) !default;
 
 $theme-colors: () !default;
 $theme-colors: map-merge(
