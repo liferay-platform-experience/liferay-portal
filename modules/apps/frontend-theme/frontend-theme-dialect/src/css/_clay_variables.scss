@@ -2,6 +2,8 @@ $enable-clay-color-functions-process-fallback: false !default;
 
 @import 'dialect/classic_style_book_compat';
 
+@import 'clay/atlas-custom-properties/variables/_globals.scss';
+
 @import 'classic_clay_variables';
 
 @import 'dialect/clay_variables';
