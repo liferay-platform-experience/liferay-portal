@@ -3311,45 +3311,6 @@
 							],
 							"name": "alertPrimaryColor",
 							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-primary-close-color"
-								}
-							],
-							"name": "alertPrimaryCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-primary-lead-color"
-								}
-							],
-							"name": "alertPrimaryLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-primary-link-color"
-								}
-							],
-							"name": "alertPrimaryLinkColor",
-							"type": "String"
 						}
 					],
 					"label": "alert-primary",
@@ -3394,45 +3355,6 @@
 								}
 							],
 							"name": "alertSecondaryColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-secondary-close-color"
-								}
-							],
-							"name": "alertSecondaryCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-secondary-lead-color"
-								}
-							],
-							"name": "alertSecondaryLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-secondary-link-color"
-								}
-							],
-							"name": "alertSecondaryLinkColor",
 							"type": "String"
 						}
 					],
@@ -3479,45 +3401,6 @@
 							],
 							"name": "alertSuccessColor",
 							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-success-close-color"
-								}
-							],
-							"name": "alertSuccessCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-success-lead-color"
-								}
-							],
-							"name": "alertSuccessLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-success-link-color"
-								}
-							],
-							"name": "alertSuccessLinkColor",
-							"type": "String"
 						}
 					],
 					"label": "alert-success",
@@ -3562,45 +3445,6 @@
 								}
 							],
 							"name": "alertInfoColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-info-close-color"
-								}
-							],
-							"name": "alertInfoCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-info-lead-color"
-								}
-							],
-							"name": "alertInfoLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-info-link-color"
-								}
-							],
-							"name": "alertInfoLinkColor",
 							"type": "String"
 						}
 					],
@@ -3647,45 +3491,6 @@
 							],
 							"name": "alertWarningColor",
 							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-warning-close-color"
-								}
-							],
-							"name": "alertWarningCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-warning-lead-color"
-								}
-							],
-							"name": "alertWarningLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-warning-link-color"
-								}
-							],
-							"name": "alertWarningLinkColor",
-							"type": "String"
 						}
 					],
 					"label": "alert-warning",
@@ -3730,45 +3535,6 @@
 								}
 							],
 							"name": "alertDangerColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-danger-close-color"
-								}
-							],
-							"name": "alertDangerCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-danger-lead-color"
-								}
-							],
-							"name": "alertDangerLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-danger-link-color"
-								}
-							],
-							"name": "alertDangerLinkColor",
 							"type": "String"
 						}
 					],
@@ -3815,45 +3581,6 @@
 							],
 							"name": "alertLightColor",
 							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-light-close-color"
-								}
-							],
-							"name": "alertLightCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-light-lead-color"
-								}
-							],
-							"name": "alertLightLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-light-link-color"
-								}
-							],
-							"name": "alertLightLinkColor",
-							"type": "String"
 						}
 					],
 					"label": "alert-light",
@@ -3898,45 +3625,6 @@
 								}
 							],
 							"name": "alertDarkColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "close-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-dark-close-color"
-								}
-							],
-							"name": "alertDarkCloseColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "lead-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-dark-lead-color"
-								}
-							],
-							"name": "alertDarkLeadColor",
-							"type": "String"
-						},
-						{
-							"defaultValue": "",
-							"editorType": "ColorPicker",
-							"label": "link-color",
-							"mappings": [
-								{
-									"type": "cssVariable",
-									"value": "alert-dark-link-color"
-								}
-							],
-							"name": "alertDarkLinkColor",
 							"type": "String"
 						}
 					],
@@ -4142,6 +3830,45 @@
 							],
 							"name": "btnPrimaryHoverColor",
 							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-background-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-primary-active-background-color"
+								}
+							],
+							"name": "btnPrimaryActiveBackgroundColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-border-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-primary-active-border-color"
+								}
+							],
+							"name": "btnPrimaryActiveBorderColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-primary-active-color"
+								}
+							],
+							"name": "btnPrimaryActiveColor",
+							"type": "String"
 						}
 					],
 					"label": "button-primary",
@@ -4212,6 +3939,45 @@
 								}
 							],
 							"name": "btnOutlinePrimaryHoverColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-background-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-outline-primary-active-background-color"
+								}
+							],
+							"name": "btnOutlinePrimaryActiveBackgroundColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-border-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-outline-primary-active-border-color"
+								}
+							],
+							"name": "btnOutlinePrimaryActiveBorderColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-outline-primary-active-color"
+								}
+							],
+							"name": "btnOutlinePrimaryActiveColor",
 							"type": "String"
 						}
 					],
@@ -4297,6 +4063,45 @@
 							],
 							"name": "btnSecondaryHoverColor",
 							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-background-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-secondary-active-background-color"
+								}
+							],
+							"name": "btnSecondaryActiveBackgroundColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-border-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-secondary-active-border-color"
+								}
+							],
+							"name": "btnSecondaryActiveBorderColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "",
+							"editorType": "ColorPicker",
+							"label": "active-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-secondary-active-color"
+								}
+							],
+							"name": "btnSecondaryActiveColor",
+							"type": "String"
 						}
 					],
 					"label": "button-secondary",
@@ -4367,6 +4172,45 @@
 								}
 							],
 							"name": "btnOutlineSecondaryHoverColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "rgba(var(--gray-900), 0.03)",
+							"editorType": "ColorPicker",
+							"label": "active-background-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-outline-secondary-active-background-color"
+								}
+							],
+							"name": "btnOutlineSecondaryActiveBackgroundColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "transparent",
+							"editorType": "ColorPicker",
+							"label": "active-border-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-outline-secondary-active-border-color"
+								}
+							],
+							"name": "btnOutlineSecondaryActiveBorderColor",
+							"type": "String"
+						},
+						{
+							"defaultValue": "var(--gray-900)",
+							"editorType": "ColorPicker",
+							"label": "active-color",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "btn-outline-secondary-active-color"
+								}
+							],
+							"name": "btnOutlineSecondaryActiveColor",
 							"type": "String"
 						}
 					],
