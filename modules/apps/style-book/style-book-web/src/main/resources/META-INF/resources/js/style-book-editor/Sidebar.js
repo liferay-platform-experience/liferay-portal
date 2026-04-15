@@ -212,6 +212,7 @@ function FrontendTokenCategories({activeDefinition}) {
 				frontendTokens: tokenSet.frontendTokens.map((token) => ({
 					...token,
 					name: `${activeDefinition.id}:${token.name}`,
+					tokenDefinitionId: activeDefinition.id,
 				})),
 			})),
 		}));
