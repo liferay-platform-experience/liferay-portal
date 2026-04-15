@@ -1,0 +1,212 @@
+$btn-disabled-opacity: 1;
+
+$btn: (
+	text-decoration: none,
+
+	disabled: (
+		background-color: var(--btn-disabled-background-color, var(--gray-200))
+			!important,
+		border-color: var(--btn-disabled-border-color, transparent) !important,
+		color: var(--btn-disabled-color, var(--gray-700)) !important,
+	),
+);
+
+$btn-primary: (
+	active: (
+		enabled: false,
+	),
+
+	disabled: (
+		enabled: false,
+	),
+);
+
+$btn-secondary: () !default;
+$btn-secondary: map-deep-merge(
+	(
+		background-color: var(--btn-secondary-background-color),
+		border-color: var(--btn-secondary-border-color),
+		color: var(--btn-secondary-color),
+		font-weight: var(--font-weight-normal),
+		text-decoration: underline,
+
+		hover: (
+			background-color: var(--btn-secondary-hover-background-color),
+			border-color: var(--btn-secondary-hover-border-color),
+			color: var(--btn-secondary-hover-color),
+			text-decoration: underline,
+		),
+
+		active: (
+			enabled: false,
+		),
+
+		disabled: (
+			enabled: false,
+		),
+	),
+	$btn-secondary
+);
+
+$btn-info: (
+	active: (
+		enabled: false,
+	),
+
+	disabled: (
+		enabled: false,
+	),
+);
+
+$btn-success: (
+	active: (
+		enabled: false,
+	),
+
+	disabled: (
+		enabled: false,
+	),
+);
+
+$btn-warning: (
+	color: var(--btn-warning-color, var(--gray-900)),
+	hover: (
+		color: var(--btn-warning-color, var(--gray-900)),
+	),
+
+	active: (
+		enabled: false,
+	),
+
+	disabled: (
+		enabled: false,
+	),
+);
+
+$btn-danger: (
+	active: (
+		enabled: false,
+	),
+
+	disabled: (
+		enabled: false,
+	),
+);
+
+$btn-palette: () !default;
+$btn-palette: map-deep-merge(
+	(
+		primary: $btn-primary,
+
+		secondary: $btn-secondary,
+
+		success: $btn-success,
+
+		info: $btn-info,
+
+		warning: $btn-warning,
+
+		danger: $btn-danger,
+
+		light: 'c-unset',
+
+		dark: 'c-unset',
+
+		'.btn-translucent': 'c-unset',
+
+		'.btn-translucent.btn-primary': 'c-unset',
+
+		'.btn-translucent.btn-secondary': 'c-unset',
+
+		'.btn-translucent.btn-info, .btn-beta': 'c-unset',
+
+		'.btn-translucent.btn-success': 'c-unset',
+
+		'.btn-translucent.btn-warning': 'c-unset',
+
+		'.btn-translucent.btn-danger': 'c-unset',
+
+		'%clay-dark-btn-translucent-primary': 'c-unset',
+
+		'.clay-dark .btn-translucent.btn-primary': 'c-unset',
+
+		'.clay-dark.btn-translucent.btn-primary': 'c-unset',
+
+		'%clay-dark-btn-translucent-info': 'c-unset',
+
+		'.clay-dark .btn-translucent.btn-info, .btn-beta-dark': 'c-unset',
+
+		'.clay-dark.btn-translucent.btn-info': 'c-unset',
+
+		'%clay-dark-btn-translucent-success': 'c-unset',
+
+		'.clay-dark .btn-translucent.btn-success': 'c-unset',
+
+		'.clay-dark.btn-translucent.btn-success': 'c-unset',
+
+		'%clay-dark-btn-translucent-warning': 'c-unset',
+
+		'.clay-dark .btn-translucent.btn-warning': 'c-unset',
+
+		'.clay-dark.btn-translucent.btn-warning': 'c-unset',
+
+		'%clay-dark-btn-translucent-danger': 'c-unset',
+
+		'.clay-dark .btn-translucent.btn-danger': 'c-unset',
+
+		'.clay-dark.btn-translucent.btn-danger': 'c-unset',
+	),
+	$btn-palette
+);
+
+$btn-outline-primary: (
+	active: (
+		enabled: false,
+	),
+
+	disabled: (
+		enabled: false,
+	),
+);
+
+$btn-outline-secondary: (
+	active: (
+		enabled: false,
+	),
+
+	disabled: (
+		enabled: false,
+	),
+);
+
+$btn-outline-palette: () !default;
+$btn-outline-palette: map-deep-merge(
+	(
+		primary: $btn-outline-primary,
+
+		secondary: $btn-outline-secondary,
+
+		success: 'c-unset',
+
+		info: 'c-unset',
+
+		warning: 'c-unset',
+
+		danger: 'c-unset',
+
+		light: 'c-unset',
+
+		dark: 'c-unset',
+
+		'%clay-dark-btn-outline-primary': 'c-unset',
+
+		'.clay-dark .btn-outline-primary, .clay-dark.btn-outline-primary':
+			'c-unset',
+
+		'%clay-dark-btn-outline-secondary': 'c-unset',
+
+		'.clay-dark .btn-outline-secondary, .clay-dark.btn-outline-secondary':
+			'c-unset',
+	),
+	$btn-outline-palette
+);

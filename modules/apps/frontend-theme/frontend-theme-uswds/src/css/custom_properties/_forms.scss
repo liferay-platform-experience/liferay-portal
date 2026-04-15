@@ -1,0 +1,92 @@
+// Input Label (<label>)
+
+$input-label-color: var(--input-label-color, inherit) !default;
+$input-label-font-size: var(--input-label-font-size, 1.06rem) !default;
+$input-label-font-weight: var(
+	--input-label-font-weight,
+	var(--font-weight-normal)
+) !default;
+$input-label-margin-bottom: var(--input-label-margin-bottom, 4px) !default;
+
+$input-label-focus-color: var(
+	--input-label-focus-color,
+	var(--gray-90)
+) !default;
+
+$input-label-disabled-color: var(
+	--input-label-disabled-color,
+	var(--gray-50)
+) !default;
+
+// Label Reference Mark
+
+$input-label-reference-mark-color: var(
+	--input-label-reference-mark-color,
+	var(--warning)
+) !default;
+$input-label-reference-mark-font-size: var(
+	--input-label-reference-mark-font-size,
+	6px
+) !default;
+$input-label-reference-mark-spacer: var(
+	--input-label-reference-mark-spacer,
+	0px
+) !default;
+$input-label-reference-mark-vertical-align: var(
+	--input-label-reference-mark-vertical-align,
+	super
+) !default;
+
+// .form-text
+
+$form-text-color: var(--form-text-color, var(--gray-60)) !default;
+$form-text-font-size: var(--form-text-font-size, 14px) !default;
+$form-text-font-weight: var(
+	--form-text-font-weight,
+	var(--font-weight-semi-bold)
+) !default;
+$form-text-margin-top: var(--form-text-margin-top, 4px) !default;
+
+$form-text: () !default;
+$form-text: map-merge(
+	(
+		color: $form-text-color,
+		display: block,
+		font-size: $form-text-font-size,
+		font-weight: $form-text-font-weight,
+		margin-top: $form-text-margin-top,
+		word-wrap: break-word,
+
+		blockquote: (
+			font-style: italic,
+			font-weight: var(--font-weight-normal),
+			margin-bottom: 0px,
+			margin-top: 12px,
+			padding-left: 12px,
+			position: relative,
+
+			before: (
+				background-color: var(--gray-60),
+				bottom: 0px,
+				content: '',
+				display: block,
+				left: 0px,
+				position: absolute,
+				top: 0px,
+				width: 2px,
+			),
+		),
+	),
+	$form-text
+);
+
+$form-help-text: () !default;
+$form-help-text: map-deep-merge(
+	(
+		color: var(--form-help-text-color, inherit),
+		display: block,
+		font-size: 14px,
+		margin-top: 4px,
+	),
+	$form-help-text
+);

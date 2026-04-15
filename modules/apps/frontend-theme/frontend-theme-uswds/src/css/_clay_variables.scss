@@ -1,0 +1,146 @@
+$moz-osx-font-smoothing: auto !default;
+$webkit-font-smoothing: auto !default;
+
+@import 'custom_properties/_buttons';
+@import 'custom_properties/_dropdown';
+@import 'custom_properties/_forms';
+
+$alert-indicator-font-size: var(--alert-indicator-font-size) !default;
+
+$link-primary: () !default;
+$link-primary: map-deep-merge(
+	(
+		border-radius: c-unset,
+		color: var(--link-primary-color, var(--gray-90)),
+		display: inline-block,
+		font-weight: var(--font-weight-bold),
+		padding: 1rem 0,
+		text-decoration: underline,
+		transition: var(--link-primary-transition, box-shadow 0.15s ease-in-out),
+		hover: (
+			background-color:
+				var(--link-primary-hover-background-color, transparent),
+			color: var(--link-primary-hover-color, var(--primary-d1)),
+		),
+
+		focus: (
+			enabled: false,
+		),
+	),
+	$link-primary
+);
+
+$link-secondary: () !default;
+$link-secondary: map-deep-merge(
+	(
+		border-radius: 1px,
+		color: var(--link-secondary-color, var(--gray-90)),
+		transition: box-shadow 0.15s ease-in-out,
+
+		hover: (
+			background-color:
+				var(--link-secondary-background-color, transparent),
+			color: var(--link-secondary-hover-color, var(--primary-d1)),
+		),
+
+		focus: (
+			enabled: false,
+		),
+	),
+	$link-secondary
+);
+
+$nav-link: () !default;
+$nav-link: map-deep-merge(
+	(
+		text-decoration: none,
+	),
+	$nav-link
+);
+
+$navbar-border-radius: var(--navbar-border-radius, 0px) !default;
+$navbar-font-size: var(--navbar-font-size, 14px) !default;
+$navbar-padding-x: var(--navbar-padding-x, 1rem) !default;
+$navbar-padding-y: var(--navbar-padding-y, 0.5rem) !default;
+
+$navbar-nav-link-padding-x: var(--navbar-nav-link-padding-x, 8px) !default;
+
+$navbar-title-font-size: var(--navbar-title-font-size, 20px) !default;
+$navbar-title-font-weight: var(
+	--navbar-title-font-weight,
+	var(--font-weight-semi-bold)
+) !default;
+$navbar-title-margin-bottom: var(--navbar-title-margin-bottom, 0) !default;
+$navbar-title-text-transform: var(--navbar-title-text-transform, none) !default;
+
+$navbar-text-truncate-spacer-right: var(
+	--navbar-text-truncate-spacer-right,
+	25px
+) !default;
+$navbar-text-truncate-max-width: var(
+	--navbar-text-truncate-max-width,
+	200px
+) !default;
+
+$navbar-light-color: var(--navbar-light-color, var(--gray-60)) !default;
+
+$navbar-light-hover-color: var(
+	--navbar-light-hover-color,
+	var(--primary-d1)
+) !default;
+
+$navbar-light-active-color: var(
+	--navbar-light-active-color,
+	var(--gray-60)
+) !default;
+
+$navbar-light-brand-color: var(
+	--navbar-light-brand-color,
+	$navbar-light-color
+) !default;
+
+$navbar-light-brand-hover-color: var(
+	--navbar-light-brand-hover-color,
+	$navbar-light-hover-color
+) !default;
+
+$navigation-bar-light: () !default;
+$navigation-bar-light: map-deep-merge(
+	(
+		border-bottom-color: transparent,
+		padding: 0.4375rem 2rem,
+
+		navbar-brand: (
+			color: var(--gray-90),
+			font-size: 1.46rem,
+			text-decoration: none,
+
+			active: (
+				enabled: false,
+			),
+		),
+
+		navbar-nav: (
+			nav-link: (
+				border-radius: 0,
+				color: var(--gray-cool-60),
+				font-size: 0.93rem,
+				margin: 0,
+				overflow: visible,
+				padding-bottom: 0.75rem,
+				padding-top: 0.75rem,
+
+				hover: (
+					color: var(--primary),
+				),
+
+				focus: (),
+				active: (),
+				disabled: (),
+			),
+		),
+	),
+	$navigation-bar-light
+);
+
+@import 'clay/atlas-custom-properties/_variables';
