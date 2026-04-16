@@ -5,20 +5,13 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {closeProductMenu, openProductMenu} from '../../../utils/productMenu';
 import {waitForPageToBeLoaded} from '../../../utils/waitForPageToBeLoaded';
 
-const test = mergeTests(
-	featureFlagsTest({
-		'LPD-36105': {enabled: true},
-	}),
-	globalMenuPagesTest,
-	loginTest()
-);
+const test = mergeTests(globalMenuPagesTest, loginTest());
 
 test(
 	'The navigation item links have active state based on the current page',
