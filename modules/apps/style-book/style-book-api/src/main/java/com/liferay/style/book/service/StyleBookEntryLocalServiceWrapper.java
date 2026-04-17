@@ -622,6 +622,16 @@ public class StyleBookEntryLocalServiceWrapper
 	}
 
 	@Override
+	public StyleBookEntry updatePreviewFileEntryId(
+			long styleBookEntryId, long previewFileEntryId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryLocalService.updatePreviewFileEntryId(
+			styleBookEntryId, previewFileEntryId, serviceContext);
+	}
+
+	@Override
 	public StyleBookEntry updateStyleBookEntry(
 			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
 			String frontendTokensValues, String name, String styleBookEntryKey,
@@ -635,11 +645,35 @@ public class StyleBookEntryLocalServiceWrapper
 
 	@Override
 	public StyleBookEntry updateStyleBookEntry(
+			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
+			String frontendTokensValues, String name, String styleBookEntryKey,
+			long previewFileEntryId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryLocalService.updateStyleBookEntry(
+			userId, styleBookEntryId, defaultStylebookEntry,
+			frontendTokensValues, name, styleBookEntryKey, previewFileEntryId,
+			serviceContext);
+	}
+
+	@Override
+	public StyleBookEntry updateStyleBookEntry(
 			long styleBookEntryId, String frontendTokensValues, String name)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _styleBookEntryLocalService.updateStyleBookEntry(
 			styleBookEntryId, frontendTokensValues, name);
+	}
+
+	@Override
+	public StyleBookEntry updateStyleBookEntry(
+			long styleBookEntryId, String frontendTokensValues, String name,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryLocalService.updateStyleBookEntry(
+			styleBookEntryId, frontendTokensValues, name, serviceContext);
 	}
 
 	/**
@@ -701,4 +735,4 @@ public class StyleBookEntryLocalServiceWrapper
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:436187170
+// LIFERAY-SERVICE-BUILDER-HASH:-232734910
