@@ -423,10 +423,17 @@ public class StyleBookEntryLocalServiceImpl
 			long styleBookEntryId, long previewFileEntryId)
 		throws PortalException {
 
+		return updatePreviewFileEntryId(
+			styleBookEntryId, previewFileEntryId, new ServiceContext());
+	}
+
+	public StyleBookEntry updatePreviewFileEntryId(
+			long styleBookEntryId, long previewFileEntryId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
 		StyleBookEntry styleBookEntry =
 			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
-
-		styleBookEntry.setModifiedDate(new Date());
 
 		long previousPreviewFileEntryId =
 			styleBookEntry.getPreviewFileEntryId();
@@ -442,7 +449,8 @@ public class StyleBookEntryLocalServiceImpl
 			updateDraft(draftStyleBookEntry);
 		}
 
-		styleBookEntry = styleBookEntryPersistence.update(styleBookEntry);
+		styleBookEntry = styleBookEntryPersistence.update(
+			styleBookEntry, serviceContext);
 
 		if ((previewFileEntryId == 0) && (previousPreviewFileEntryId > 0)) {
 			_portletFileRepository.deletePortletFileEntry(
@@ -457,6 +465,19 @@ public class StyleBookEntryLocalServiceImpl
 			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
 			String frontendTokensValues, String name, String styleBookEntryKey,
 			long previewFileEntryId)
+		throws PortalException {
+
+		return updateStyleBookEntry(
+			userId, styleBookEntryId, defaultStylebookEntry,
+			frontendTokensValues, name, styleBookEntryKey, previewFileEntryId,
+			new ServiceContext());
+	}
+
+	@Override
+	public StyleBookEntry updateStyleBookEntry(
+			long userId, long styleBookEntryId, boolean defaultStylebookEntry,
+			String frontendTokensValues, String name, String styleBookEntryKey,
+			long previewFileEntryId, ServiceContext serviceContext)
 		throws PortalException {
 
 		StyleBookEntry styleBookEntry =
@@ -481,7 +502,6 @@ public class StyleBookEntryLocalServiceImpl
 		}
 
 		styleBookEntry.setUserId(userId);
-		styleBookEntry.setModifiedDate(new Date());
 		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
 		styleBookEntry.setName(name);
 		styleBookEntry.setPreviewFileEntryId(previewFileEntryId);
@@ -500,7 +520,7 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntry.setDefaultStyleBookEntry(true);
 		}
 
-		return styleBookEntryPersistence.update(styleBookEntry);
+		return styleBookEntryPersistence.update(styleBookEntry, serviceContext);
 	}
 
 	@Override
@@ -508,12 +528,20 @@ public class StyleBookEntryLocalServiceImpl
 			long styleBookEntryId, String frontendTokensValues, String name)
 		throws PortalException {
 
+		return updateStyleBookEntry(
+			styleBookEntryId, frontendTokensValues, name, new ServiceContext());
+	}
+
+	public StyleBookEntry updateStyleBookEntry(
+			long styleBookEntryId, String frontendTokensValues, String name,
+			ServiceContext serviceContext)
+		throws PortalException {
+
 		StyleBookEntry styleBookEntry =
 			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
 
 		_validate(styleBookEntry.getGroupId(), name, styleBookEntryId);
 
-		styleBookEntry.setModifiedDate(new Date());
 		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
 		styleBookEntry.setName(name);
 
@@ -527,7 +555,7 @@ public class StyleBookEntryLocalServiceImpl
 			updateDraft(draftStyleBookEntry);
 		}
 
-		return styleBookEntryPersistence.update(styleBookEntry);
+		return styleBookEntryPersistence.update(styleBookEntry, serviceContext);
 	}
 
 	private long _copyStyleBookEntryPreviewFileEntry(
