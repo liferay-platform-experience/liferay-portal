@@ -427,6 +427,7 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntryId, previewFileEntryId, new ServiceContext());
 	}
 
+	@Override
 	public StyleBookEntry updatePreviewFileEntryId(
 			long styleBookEntryId, long previewFileEntryId,
 			ServiceContext serviceContext)
@@ -438,6 +439,8 @@ public class StyleBookEntryLocalServiceImpl
 		long previousPreviewFileEntryId =
 			styleBookEntry.getPreviewFileEntryId();
 
+		styleBookEntry.setModifiedDate(
+			serviceContext.getModifiedDate(new Date()));
 		styleBookEntry.setPreviewFileEntryId(previewFileEntryId);
 
 		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
@@ -449,8 +452,7 @@ public class StyleBookEntryLocalServiceImpl
 			updateDraft(draftStyleBookEntry);
 		}
 
-		styleBookEntry = styleBookEntryPersistence.update(
-			styleBookEntry, serviceContext);
+		styleBookEntry = styleBookEntryPersistence.update(styleBookEntry);
 
 		if ((previewFileEntryId == 0) && (previousPreviewFileEntryId > 0)) {
 			_portletFileRepository.deletePortletFileEntry(
@@ -502,6 +504,8 @@ public class StyleBookEntryLocalServiceImpl
 		}
 
 		styleBookEntry.setUserId(userId);
+		styleBookEntry.setModifiedDate(
+			serviceContext.getModifiedDate(new Date()));
 		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
 		styleBookEntry.setName(name);
 		styleBookEntry.setPreviewFileEntryId(previewFileEntryId);
@@ -520,7 +524,7 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntry.setDefaultStyleBookEntry(true);
 		}
 
-		return styleBookEntryPersistence.update(styleBookEntry, serviceContext);
+		return styleBookEntryPersistence.update(styleBookEntry);
 	}
 
 	@Override
@@ -532,6 +536,7 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntryId, frontendTokensValues, name, new ServiceContext());
 	}
 
+	@Override
 	public StyleBookEntry updateStyleBookEntry(
 			long styleBookEntryId, String frontendTokensValues, String name,
 			ServiceContext serviceContext)
@@ -542,6 +547,8 @@ public class StyleBookEntryLocalServiceImpl
 
 		_validate(styleBookEntry.getGroupId(), name, styleBookEntryId);
 
+		styleBookEntry.setModifiedDate(
+			serviceContext.getModifiedDate(new Date()));
 		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
 		styleBookEntry.setName(name);
 
