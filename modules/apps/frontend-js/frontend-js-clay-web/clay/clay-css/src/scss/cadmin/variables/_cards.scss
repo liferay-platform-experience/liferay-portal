@@ -1,5 +1,7 @@
 $cadmin-card-bg: $cadmin-white !default;
-$cadmin-card-border-color: rgba($cadmin-black, 0.125) !default;
+$cadmin-card-border-color: unquote(
+	'hsl(from var(--cadmin-black) h s l / 0.125)'
+) !default;
 $cadmin-card-border-style: solid !default;
 $cadmin-card-border-width: 0px !default;
 
@@ -8,7 +10,9 @@ $cadmin-card-inner-border-radius: calc(
 	#{$cadmin-card-border-radius} - #{$cadmin-card-border-width}
 ) !default;
 
-$cadmin-card-box-shadow: 0 1px 3px -1px rgba(0, 0, 0, 0.6) !default;
+$cadmin-card-box-shadow: unquote(
+	'0 1px 3px -1px hsl(from var(--cadmin-black) h s l / 0.6)'
+) !default;
 $cadmin-card-color: null !default;
 $cadmin-card-height: null !default;
 $cadmin-card-margin-bottom: 24px !default;
@@ -16,7 +20,9 @@ $cadmin-card-margin-bottom: 24px !default;
 $cadmin-card-spacer-x: 20px !default;
 $cadmin-card-spacer-y: 12px !default;
 
-$cadmin-card-cap-bg: rgba($cadmin-black, 0.03) !default;
+$cadmin-card-cap-bg: unquote(
+	'hsl(from var(--cadmin-black) h s l / 0.03)'
+) !default;
 $cadmin-card-cap-color: null !default;
 
 // .card-body
@@ -371,8 +377,9 @@ $cadmin-checkbox-right-card-padding: $cadmin-checkbox-left-card-padding !default
 
 $cadmin-checkbox-position: 16px !default;
 
-$cadmin-form-check-card-checked-box-shadow: 0 0 0 2px
-	clay-lighten($cadmin-component-active-bg, 22.94) !default;
+$cadmin-form-check-card-checked-box-shadow: unquote(
+	'0 0 0 2px hsl(from var(----cadmin-component-active-background-color) h s calc(l + 22.94))'
+) !default;
 
 // Card Interactive
 
@@ -420,17 +427,19 @@ $cadmin-card-interactive: map-deep-merge(
 		transition: $cadmin-component-transition,
 
 		hover: (
-			background-color: #f7f8f9,
+			background-color: $cadmin-gray-100,
 			text-decoration: none,
 		),
 
 		focus: (
-			box-shadow: #{0 0 0 2px #fff,
-			0 0 0 4px #719aff},
+			box-shadow:
+				unquote(
+					'0 0 0 2px #{$cadmin-white}, 0 0 0 4px #{$cadmin-primary-l1}'
+				),
 		),
 
 		active: (
-			background-color: #f1f2f5,
+			background-color: $cadmin-gray-200,
 		),
 
 		after-highlight: $cadmin-card-interactive-after-highlight,

@@ -1,0 +1,37 @@
+:root {
+	@if (variable-exists(cadmin-c-root)) {
+		@include clay-css($cadmin-c-root);
+
+		@media (prefers-color-scheme: light) {
+			color-scheme: light;
+		}
+	}
+}
+
+[data-color-scheme='light']:root,
+:root [data-color-scheme='light'] {
+	color-scheme: light;
+}
+
+@if (variable-exists(cadmin-c-dark)) {
+	@include clay-map-to-css($cadmin-c-dark);
+
+	@media (prefers-color-scheme: dark) {
+		@include clay-map-to-css($cadmin-c-dark);
+	}
+}
+
+@if (variable-exists(cadmin-c-dark-high-contrast)) {
+	@include clay-map-to-css($cadmin-c-dark-high-contrast);
+
+	@media (prefers-contrast: more) {
+		:root {
+			@include clay-css(
+				map-get(
+					$cadmin-c-dark-high-contrast,
+					'[data-color-scheme="dark-high-contrast"]:root, :root [data-color-scheme="dark-high-contrast"]'
+				)
+			);
+		}
+	}
+}
