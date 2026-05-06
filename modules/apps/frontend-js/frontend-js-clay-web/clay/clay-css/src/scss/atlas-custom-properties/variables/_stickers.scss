@@ -249,7 +249,7 @@ $sticker-top-right: map-merge(
 
 // .sticker-outside
 
-$sticker-outside-offset: calc(#{$sticker-size} * 0.5) !default;
+$sticker-outside-offset: calc(#{$sticker-size} * -0.5) !default;
 
 $sticker-outside: () !default;
 $sticker-outside: map-deep-merge(

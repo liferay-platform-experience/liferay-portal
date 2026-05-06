@@ -13,7 +13,7 @@ $card-inner-border-radius: calc(
 
 $card-box-shadow: var(
 	--card-box-shadow,
-	0 1px 3px -1px rgba(0, 0, 0, 0.6)
+	0 1px 3px -1px unquote('hsl(from var(--black) h s l / 0.6)')
 ) !default;
 $card-color: var(--card-color, inherit) !default;
 $card-height: null !default;
@@ -764,17 +764,17 @@ $card-interactive: map-deep-merge(
 		transition: $component-transition,
 
 		hover: (
-			background-color: #f7f8f9,
+			background-color: $gray-100,
 			text-decoration: none,
 		),
 
 		focus: (
-			box-shadow: #{0 0 0 2px #fff,
-			0 0 0 4px #719aff},
+			box-shadow: #{0 0 0 2px $white,
+			0 0 0 4px $primary-l1},
 		),
 
 		active: (
-			background-color: #f1f2f5,
+			background-color: $gray-200,
 		),
 
 		after-highlight: $card-interactive-after-highlight,
@@ -830,13 +830,13 @@ $card-interactive-secondary: map-deep-merge(
 		hover: (
 			background-color: $white,
 			border-color: transparent,
-			box-shadow: 0 0 0 2px #719aff,
+			box-shadow: 0 0 0 2px $primary-l0,
 			color: $gray-900,
 		),
 
 		focus: (
 			border-color: transparent,
-			box-shadow: 0 0 0 2px #719aff,
+			box-shadow: 0 0 0 2px $primary-l0,
 		),
 
 		active: (
@@ -942,7 +942,7 @@ $product-card: map-deep-merge(
 	(
 		aspect-ratio: (
 			background-color: $white,
-			background-image: linear-gradient(0deg, #ebebeb, #ebebeb),
+			background-image: linear-gradient(0deg, $gray-300, $gray-300),
 		),
 
 		card-body: (

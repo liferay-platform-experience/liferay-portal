@@ -1029,7 +1029,7 @@ $table-list-action-link: map-deep-merge(
 			background-color:
 				var(
 					--table-list-action-link-background-color,
-					rgba(0, 0, 0, 0.02)
+					unquote('hsl(from var(--black) h s l / 0.02)')
 				),
 			color: var(--table-list-action-link-hover-color, $gray-900),
 			text-decoration: none,
@@ -1039,7 +1039,7 @@ $table-list-action-link: map-deep-merge(
 			background-color:
 				var(
 					--table-list-action-link-focus-background-color,
-					rgba(0, 0, 0, 0.02)
+					unquote('hsl(from var(--black) h s l / 0.02)')
 				),
 			box-shadow: $component-focus-box-shadow,
 			color: var(--table-list-action-link-focus-color, $gray-900),
@@ -1050,7 +1050,7 @@ $table-list-action-link: map-deep-merge(
 			background-color:
 				var(
 					--table-list-action-link-active-background-color,
-					rgba(0, 0, 0, 0.04)
+					unquote('hsl(from var(--black) h s l / 0.04)')
 				),
 		),
 

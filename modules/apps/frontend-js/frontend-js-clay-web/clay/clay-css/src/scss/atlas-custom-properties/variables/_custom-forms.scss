@@ -384,7 +384,10 @@ $custom-control-primary-label-text: map-deep-merge(
 
 $custom-checkbox-indicator-border-radius: 0.125rem !default;
 
-$custom-checkbox-indicator-icon-checked: clay-icon(check-small, #fff) !default;
+$custom-checkbox-indicator-icon-checked: clay-icon(
+	check-small,
+	$custom-control-indicator-checked-color
+) !default;
 $custom-checkbox-indicator-icon-checked-bg-size: 1rem !default;
 
 $custom-checkbox-indicator-indeterminate-bg: $component-active-bg !default;
@@ -395,7 +398,10 @@ $custom-control-indicator-indeterminate-border-color: $custom-control-indicator-
 $custom-checkbox-indicator-indeterminate-box-shadow: none !default;
 $custom-checkbox-indicator-indeterminate-color: $custom-control-indicator-checked-color !default;
 
-$custom-checkbox-indicator-icon-indeterminate: clay-icon(hr, #fff) !default;
+$custom-checkbox-indicator-icon-indeterminate: clay-icon(
+	hr,
+	$custom-checkbox-indicator-indeterminate-color
+) !default;
 $custom-checkbox-indicator-icon-indeterminate-bg-size: 1rem !default;
 
 $custom-checkbox: () !default;
@@ -441,7 +447,7 @@ $custom-checkbox: map-deep-merge(
 						),
 
 						after: (
-							background-image: clay-icon(check-small, #6b6c7e),
+							background-image: clay-icon(check-small, $gray-400),
 						),
 					),
 
@@ -497,7 +503,7 @@ $custom-checkbox: map-deep-merge(
 						),
 
 						after: (
-							background-image: clay-icon(hr, #6b6c7e),
+							background-image: clay-icon(hr, $gray-400),
 						),
 					),
 
@@ -523,7 +529,10 @@ $custom-checkbox: map-deep-merge(
 
 $custom-radio-indicator-border-radius: 50% !default;
 
-$custom-radio-indicator-icon-checked: clay-icon(circle, #fff) !default;
+$custom-radio-indicator-icon-checked: clay-icon(
+	circle,
+	$custom-control-indicator-checked-color
+) !default;
 $custom-radio-indicator-icon-checked-bg-size: 0.5rem !default;
 
 $custom-radio-indicator-disabled-border-color: $custom-control-indicator-disabled-bg !default;
