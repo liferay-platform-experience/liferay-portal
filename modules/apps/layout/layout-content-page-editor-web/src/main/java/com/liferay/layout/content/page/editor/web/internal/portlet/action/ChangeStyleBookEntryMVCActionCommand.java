@@ -58,7 +58,8 @@ public class ChangeStyleBookEntryMVCActionCommand
 
 		Layout updatedLayout = _layoutLocalService.updateStyleBookEntryERC(
 			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
-			ParamUtil.getString(actionRequest, "styleBookEntryERC"));
+			ParamUtil.getString(actionRequest, "styleBookEntryERC"),
+			ParamUtil.getString(actionRequest, "styleBookEntryScopeERC", null));
 
 		if (layout.isDraftLayout()) {
 			UnicodeProperties layoutTypeSettingsUnicodeProperties =
