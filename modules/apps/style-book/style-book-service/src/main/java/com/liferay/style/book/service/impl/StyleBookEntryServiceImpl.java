@@ -7,16 +7,20 @@ package com.liferay.style.book.service.impl;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.base.StyleBookEntryServiceBaseImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -178,6 +182,34 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 
 		return styleBookEntryLocalService.getStyleBookEntries(
 			groupId, name, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<StyleBookEntry> getStyleBookEntries(
+			long[] groupIds, int start, int end,
+			OrderByComparator<StyleBookEntry> orderByComparator)
+		throws PrincipalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		List<StyleBookEntry> styleBookEntries =
+			styleBookEntryLocalService.getStyleBookEntries(
+				groupIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				orderByComparator);
+
+		List<StyleBookEntry> filteredStyleBookEntries = new ArrayList<>(
+			styleBookEntries.size());
+
+		for (StyleBookEntry styleBookEntry : styleBookEntries) {
+			if (_portletResourcePermission.contains(
+					permissionChecker, styleBookEntry.getGroupId(),
+					StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)) {
+
+				filteredStyleBookEntries.add(styleBookEntry);
+			}
+		}
+
+		return ListUtil.subList(filteredStyleBookEntries, start, end);
 	}
 
 	@Override
