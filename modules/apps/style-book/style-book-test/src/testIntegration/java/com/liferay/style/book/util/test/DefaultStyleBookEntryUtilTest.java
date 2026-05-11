@@ -158,58 +158,6 @@ public class DefaultStyleBookEntryUtilTest {
 	}
 
 	@Test
-	public void testGetStyleBookEntryCrossScope() throws Exception {
-		Group depotGroup = GroupTestUtil.addGroup();
-
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				depotGroup.getGroupId(), false, null,
-				RandomTestUtil.randomString(), null, _THEME_ID_CLASSIC, null);
-
-		_layout.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
-
-		_layout.setStyleBookEntryScopeERC(
-			depotGroup.getExternalReferenceCode());
-
-		_layout = _layoutLocalService.updateLayout(_layout);
-
-		StyleBookEntry resolvedStyleBookEntry =
-			DefaultStyleBookEntryUtil.getStyleBookEntry(_layout);
-
-		Assert.assertEquals(
-			styleBookEntry.getStyleBookEntryId(),
-			resolvedStyleBookEntry.getStyleBookEntryId());
-	}
-
-	@Test
-	public void testGetStyleBookEntryCrossScopeMissingEntryReturnsNull()
-		throws Exception {
-
-		Group depotGroup = GroupTestUtil.addGroup();
-
-		_layout.setStyleBookEntryERC("nonexistent-entry-erc");
-		_layout.setStyleBookEntryScopeERC(
-			depotGroup.getExternalReferenceCode());
-
-		_layout = _layoutLocalService.updateLayout(_layout);
-
-		Assert.assertNull(DefaultStyleBookEntryUtil.getStyleBookEntry(_layout));
-	}
-
-	@Test
-	public void testGetStyleBookEntryCrossScopeMissingScopeGroupReturnsNull()
-		throws Exception {
-
-		_layout.setStyleBookEntryERC(RandomTestUtil.randomString());
-		_layout.setStyleBookEntryScopeERC("nonexistent-scope-erc");
-
-		_layout = _layoutLocalService.updateLayout(_layout);
-
-		Assert.assertNull(DefaultStyleBookEntryUtil.getStyleBookEntry(_layout));
-	}
-
-	@Test
 	public void testGetStyleBookEntryNameForDefaultStyleBookEntryWhenLayoutHasStyleBookEntry()
 		throws Exception {
 
@@ -312,24 +260,6 @@ public class DefaultStyleBookEntryUtilTest {
 			name,
 			DefaultStyleBookEntryUtil.getStyleBookEntryName(
 				_layout, null, styleBookEntry));
-	}
-
-	@Test
-	public void testGetStyleBookEntrySameGroup() throws Exception {
-		StyleBookEntry styleBookEntry = _addStyleBookEntry(false);
-
-		_layout.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
-
-		_layout.setStyleBookEntryScopeERC(null);
-
-		_layout = _layoutLocalService.updateLayout(_layout);
-
-		StyleBookEntry resolvedStyleBookEntry =
-			DefaultStyleBookEntryUtil.getStyleBookEntry(_layout);
-
-		Assert.assertEquals(
-			styleBookEntry.getStyleBookEntryId(),
-			resolvedStyleBookEntry.getStyleBookEntryId());
 	}
 
 	private StyleBookEntry _addStyleBookEntry(boolean defaultStyleBookEntry)

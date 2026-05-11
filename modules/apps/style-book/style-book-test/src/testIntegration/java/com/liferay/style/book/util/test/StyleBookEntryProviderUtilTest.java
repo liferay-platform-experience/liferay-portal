@@ -10,9 +10,13 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -53,6 +57,12 @@ public class StyleBookEntryProviderUtilTest {
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 
 		_group = GroupTestUtil.addGroup();
+
+		LayoutSet layoutSet = _group.getPublicLayoutSet();
+
+		layoutSet.setThemeId(_THEME_ID_CLASSIC);
+
+		_layout = LayoutTestUtil.addTypeContentLayout(_group);
 	}
 
 	@Test
@@ -143,12 +153,83 @@ public class StyleBookEntryProviderUtilTest {
 			styleBookEntries.contains(siteStyleBookEntry));
 	}
 
+	@Test
+	public void testGetStyleBookEntryCrossScope() throws Exception {
+		Group depotGroup = GroupTestUtil.addGroup();
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			depotGroup.getGroupId());
+
+		_layout.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
+
+		_layout.setStyleBookEntryScopeERC(
+			depotGroup.getExternalReferenceCode());
+
+		_layout = _layoutLocalService.updateLayout(_layout);
+
+		StyleBookEntry resolvedStyleBookEntry =
+			StyleBookEntryProviderUtil.getStyleBookEntry(_layout);
+
+		Assert.assertEquals(
+			styleBookEntry.getStyleBookEntryId(),
+			resolvedStyleBookEntry.getStyleBookEntryId());
+	}
+
+	@Test
+	public void testGetStyleBookEntryCrossScopeMissingEntryReturnsNull()
+		throws Exception {
+
+		Group depotGroup = GroupTestUtil.addGroup();
+
+		_layout.setStyleBookEntryERC("nonexistent-entry-erc");
+		_layout.setStyleBookEntryScopeERC(
+			depotGroup.getExternalReferenceCode());
+
+		_layout = _layoutLocalService.updateLayout(_layout);
+
+		Assert.assertNull(
+			StyleBookEntryProviderUtil.getStyleBookEntry(_layout));
+	}
+
+	@Test
+	public void testGetStyleBookEntryCrossScopeMissingScopeGroupReturnsNull()
+		throws Exception {
+
+		_layout.setStyleBookEntryERC(RandomTestUtil.randomString());
+		_layout.setStyleBookEntryScopeERC("nonexistent-scope-erc");
+
+		_layout = _layoutLocalService.updateLayout(_layout);
+
+		Assert.assertNull(
+			StyleBookEntryProviderUtil.getStyleBookEntry(_layout));
+	}
+
+	@Test
+	public void testGetStyleBookEntrySameGroup() throws Exception {
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(_group.getGroupId());
+
+		_layout.setStyleBookEntryERC(styleBookEntry.getExternalReferenceCode());
+
+		_layout.setStyleBookEntryScopeERC(null);
+
+		_layout = _layoutLocalService.updateLayout(_layout);
+
+		StyleBookEntry resolvedStyleBookEntry =
+			StyleBookEntryProviderUtil.getStyleBookEntry(_layout);
+
+		Assert.assertEquals(
+			styleBookEntry.getStyleBookEntryId(),
+			resolvedStyleBookEntry.getStyleBookEntryId());
+	}
+
 	private StyleBookEntry _addStyleBookEntry(long groupId) throws Exception {
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
-			false, null, RandomTestUtil.randomString(), null,
-			"classic_WAR_classictheme", null);
+			false, null, RandomTestUtil.randomString(), null, _THEME_ID_CLASSIC,
+			null);
 	}
+
+	private static final String _THEME_ID_CLASSIC = "classic_WAR_classictheme";
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
@@ -157,6 +238,10 @@ public class StyleBookEntryProviderUtilTest {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _group;
+	private Layout _layout;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
