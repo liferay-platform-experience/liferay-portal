@@ -47,6 +47,7 @@ import com.liferay.layout.content.page.editor.web.internal.manager.FragmentEntry
 import com.liferay.layout.content.page.editor.web.internal.util.CodeEditorUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingContentUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.MappingTypesUtil;
+import com.liferay.layout.content.page.editor.web.internal.util.PageEditorStyleBookEntriesUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.StyleBookEntryUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.converter.PaddingConverter;
@@ -139,7 +140,6 @@ import com.liferay.site.navigation.item.selector.SiteNavigationMenuItemSelectorC
 import com.liferay.site.navigation.item.selector.SiteNavigationMenuItemSelectorReturnType;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.style.book.model.StyleBookEntry;
-import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 import com.liferay.style.book.util.StyleBookUtil;
@@ -194,7 +194,6 @@ public class ContentPageEditorDisplayContext {
 		SegmentsExperimentRelLocalService segmentsExperimentRelLocalService,
 		SegmentsEntryService segmentsEntryService, Staging staging,
 		StagingGroupHelper stagingGroupHelper,
-		StyleBookEntryLocalService styleBookEntryLocalService,
 		WorkflowDefinitionLinkLocalService workflowDefinitionLinkLocalService) {
 
 		_contentPageEditorSidebarPanels = contentPageEditorSidebarPanels;
@@ -224,7 +223,6 @@ public class ContentPageEditorDisplayContext {
 		_segmentsExperimentRelLocalService = segmentsExperimentRelLocalService;
 		_segmentsEntryService = segmentsEntryService;
 		_staging = staging;
-		_styleBookEntryLocalService = styleBookEntryLocalService;
 		_workflowDefinitionLinkLocalService =
 			workflowDefinitionLinkLocalService;
 
@@ -746,6 +744,14 @@ public class ContentPageEditorDisplayContext {
 					}
 
 					return StringPool.BLANK;
+				}
+			).put(
+				"styleBookEntryScopeERC",
+				() -> {
+					Layout layout = themeDisplay.getLayout();
+
+					return GetterUtil.getString(
+						layout.getStyleBookEntryScopeERC());
 				}
 			).put(
 				"styleBooks", _getStyleBooks()
@@ -2076,23 +2082,10 @@ public class ContentPageEditorDisplayContext {
 				}
 			).build());
 
-		List<StyleBookEntry> styleBookEntries =
-			_styleBookEntryLocalService.getStyleBookEntries(
-				_staging.getLiveGroupId(themeDisplay.getScopeGroupId()),
-				frontendTokenDefinition.getThemeId());
-
-		for (StyleBookEntry styleBookEntry : styleBookEntries) {
-			styleBooks.add(
-				HashMapBuilder.<String, Object>put(
-					"imagePreviewURL",
-					styleBookEntry.getImagePreviewURL(themeDisplay)
-				).put(
-					"name", styleBookEntry.getName()
-				).put(
-					"styleBookEntryERC",
-					styleBookEntry.getExternalReferenceCode()
-				).build());
-		}
+		styleBooks.addAll(
+			PageEditorStyleBookEntriesUtil.getStyleBookEntries(
+				themeDisplay.getLayout(), themeDisplay, frontendTokenDefinition,
+				false));
 
 		return styleBooks;
 	}
@@ -2280,7 +2273,6 @@ public class ContentPageEditorDisplayContext {
 		_segmentsExperimentRelLocalService;
 	private List<Map<String, Object>> _sidebarPanels;
 	private final Staging _staging;
-	private final StyleBookEntryLocalService _styleBookEntryLocalService;
 	private ItemSelectorCriterion _urlItemSelectorCriterion;
 	private final WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;
