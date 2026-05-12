@@ -8,6 +8,7 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.FavIcon;
+import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
@@ -16,6 +17,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.Settings;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.problem.Problem;
+import com.liferay.headless.admin.site.client.scope.Scope;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.PageExperiencesTestUtil;
@@ -28,11 +30,14 @@ import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -374,6 +379,122 @@ public class PageSpecificationResourceTest
 		_testPutSitePageSpecification(
 			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
 			layoutPageTemplateEntry.getExternalReferenceCode(), serviceContext);
+	}
+
+	@Test
+	public void testPutSitePageSpecificationPreservesStyleBookEntryScopeERC()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId());
+
+		Group scopeGroup = GroupTestUtil.addGroup();
+
+		try {
+			ServiceContext scopeServiceContext =
+				ServiceContextTestUtil.getServiceContext(
+					scopeGroup.getGroupId(), TestPropsValues.getUserId());
+
+			StyleBookEntry scopedStyleBookEntry =
+				_styleBookEntryLocalService.addStyleBookEntry(
+					null, TestPropsValues.getUserId(), scopeGroup.getGroupId(),
+					false, null, RandomTestUtil.randomString(), null,
+					RandomTestUtil.randomString(), scopeServiceContext);
+
+			Layout layout = _addLayout(
+				LayoutConstants.TYPE_CONTENT, serviceContext);
+
+			Layout draftLayout = layout.fetchDraftLayout();
+
+			draftLayout.setStyleBookEntryERC(
+				scopedStyleBookEntry.getExternalReferenceCode());
+
+			draftLayout.setStyleBookEntryScopeERC(
+				scopeGroup.getExternalReferenceCode());
+
+			draftLayout = _layoutLocalService.updateLayout(draftLayout);
+
+			PageSpecification pageSpecification =
+				pageSpecificationResource.getSitePageSpecification(
+					testGroup.getExternalReferenceCode(),
+					draftLayout.getExternalReferenceCode());
+
+			Settings settings = SettingsTestUtil.getSettings(pageSpecification);
+
+			Assert.assertNotNull(settings);
+
+			ItemExternalReference styleBookItemExternalReference =
+				settings.getStyleBookItemExternalReference();
+
+			Assert.assertNotNull(styleBookItemExternalReference);
+			Assert.assertEquals(
+				scopedStyleBookEntry.getExternalReferenceCode(),
+				styleBookItemExternalReference.getExternalReferenceCode());
+
+			Scope scope = styleBookItemExternalReference.getScope();
+
+			Assert.assertNotNull(scope);
+			Assert.assertEquals(
+				scopeGroup.getExternalReferenceCode(),
+				scope.getExternalReferenceCode());
+
+			pageSpecification.setStatus(PageSpecification.Status.DRAFT);
+
+			pageSpecificationResource.putSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				draftLayout.getExternalReferenceCode(), pageSpecification);
+
+			Layout updatedDraftLayout = _layoutLocalService.getLayout(
+				draftLayout.getPlid());
+
+			Assert.assertEquals(
+				scopedStyleBookEntry.getExternalReferenceCode(),
+				updatedDraftLayout.getStyleBookEntryERC());
+			Assert.assertEquals(
+				scopeGroup.getExternalReferenceCode(),
+				updatedDraftLayout.getStyleBookEntryScopeERC());
+		}
+		finally {
+			GroupLocalServiceUtil.deleteGroup(scopeGroup.getGroupId());
+		}
+	}
+
+	@Test
+	public void testPutSitePageSpecificationStoresUnresolvableStyleBookEntryScopeERC()
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_CONTENT,
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		String unresolvableScopeERC = RandomTestUtil.randomString();
+
+		draftLayout.setStyleBookEntryERC(RandomTestUtil.randomString());
+		draftLayout.setStyleBookEntryScopeERC(unresolvableScopeERC);
+
+		draftLayout = _layoutLocalService.updateLayout(draftLayout);
+
+		PageSpecification pageSpecification =
+			pageSpecificationResource.getSitePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				draftLayout.getExternalReferenceCode());
+
+		pageSpecification.setStatus(PageSpecification.Status.DRAFT);
+
+		pageSpecificationResource.putSitePageSpecification(
+			testGroup.getExternalReferenceCode(),
+			draftLayout.getExternalReferenceCode(), pageSpecification);
+
+		Layout updatedDraftLayout = _layoutLocalService.getLayout(
+			draftLayout.getPlid());
+
+		Assert.assertEquals(
+			unresolvableScopeERC,
+			updatedDraftLayout.getStyleBookEntryScopeERC());
 	}
 
 	@Override
