@@ -443,6 +443,7 @@ public class LayoutUtil {
 			return _updateLayout(
 				layout, nameMap, titleMap, descriptionMap, keywordsMap,
 				robotsMap, layout.getStyleBookEntryERC(),
+				layout.getStyleBookEntryScopeERC(),
 				layout.getFaviconFileEntryERC(),
 				layout.getFaviconFileEntryScopeERC(),
 				layout.getMasterLayoutPageTemplateEntryERC(), friendlyURLMap,
@@ -558,7 +559,7 @@ public class LayoutUtil {
 
 		return _updateLayout(
 			layout, nameMap, null, null, null, null, null, null, null, null,
-			friendlyURLMap, serviceContext);
+			null, friendlyURLMap, serviceContext);
 	}
 
 	public static Layout updatePortletLayout(
@@ -770,6 +771,25 @@ public class LayoutUtil {
 		}
 
 		return itemExternalReference.getExternalReferenceCode();
+	}
+
+	private static String _getStyleBookEntryScopeERC(
+			Settings settings, long scopeGroupId)
+		throws Exception {
+
+		if (settings == null) {
+			return null;
+		}
+
+		ItemExternalReference itemExternalReference =
+			settings.getStyleBookItemExternalReference();
+
+		if (itemExternalReference == null) {
+			return null;
+		}
+
+		return ItemScopeUtil.getItemScopeExternalReferenceCode(
+			itemExternalReference.getScope(), scopeGroupId);
 	}
 
 	private static void _importPortletConfiguration(
@@ -1078,6 +1098,8 @@ public class LayoutUtil {
 			layout, nameMap, titleMap, descriptionMap, keywordsMap, robotsMap,
 			_getStyleBookEntryERC(
 				layout.getCompanyId(), layout.getGroupId(), settings),
+			_getStyleBookEntryScopeERC(
+				settings, serviceContext.getScopeGroupId()),
 			faviconFileEntryERC, faviconFileEntryScopeERC,
 			_getMasterLayoutPageTemplateEntryERC(
 				serviceContext.getScopeGroupId(), layout, settings),
@@ -1093,8 +1115,8 @@ public class LayoutUtil {
 			Layout layout, Map<Locale, String> nameMap,
 			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
 			Map<Locale, String> keywordsMap, Map<Locale, String> robotsMap,
-			String styleBookEntryERC, String faviconFileEntryERC,
-			String faviconFileEntryScopeERC,
+			String styleBookEntryERC, String styleBookEntryScopeERC,
+			String faviconFileEntryERC, String faviconFileEntryScopeERC,
 			String masterLayoutPageTemplateEntryERC,
 			Map<Locale, String> friendlyURLMap, ServiceContext serviceContext)
 		throws Exception {
@@ -1114,8 +1136,9 @@ public class LayoutUtil {
 			GetterUtil.getBoolean(
 				serviceContext.getAttribute("hidden"), layout.isHidden()),
 			friendlyURLMap, layout.getIconImage(), null, styleBookEntryERC,
-			faviconFileEntryERC, faviconFileEntryScopeERC,
-			masterLayoutPageTemplateEntryERC, serviceContext);
+			styleBookEntryScopeERC, faviconFileEntryERC,
+			faviconFileEntryScopeERC, masterLayoutPageTemplateEntryERC,
+			serviceContext);
 	}
 
 	private static Layout _updateLookAndFeel(Layout layout, Settings settings)
