@@ -7,6 +7,7 @@ package com.liferay.headless.delivery.internal.graphql.servlet.v1_0;
 
 import com.liferay.headless.delivery.internal.graphql.mutation.v1_0.Mutation;
 import com.liferay.headless.delivery.internal.graphql.query.v1_0.Query;
+import com.liferay.headless.delivery.internal.resource.v1_0.AssetEntryResourceImpl;
 import com.liferay.headless.delivery.internal.resource.v1_0.BlogPostingImageResourceImpl;
 import com.liferay.headless.delivery.internal.resource.v1_0.BlogPostingResourceImpl;
 import com.liferay.headless.delivery.internal.resource.v1_0.CommentResourceImpl;
@@ -34,6 +35,7 @@ import com.liferay.headless.delivery.internal.resource.v1_0.StructuredContentRes
 import com.liferay.headless.delivery.internal.resource.v1_0.WikiNodeResourceImpl;
 import com.liferay.headless.delivery.internal.resource.v1_0.WikiPageAttachmentResourceImpl;
 import com.liferay.headless.delivery.internal.resource.v1_0.WikiPageResourceImpl;
+import com.liferay.headless.delivery.resource.v1_0.AssetEntryResource;
 import com.liferay.headless.delivery.resource.v1_0.BlogPostingImageResource;
 import com.liferay.headless.delivery.resource.v1_0.BlogPostingResource;
 import com.liferay.headless.delivery.resource.v1_0.CommentResource;
@@ -86,6 +88,8 @@ public class ServletDataImpl implements ServletData {
 
 	@Activate
 	public void activate(BundleContext bundleContext) {
+		Mutation.setAssetEntryResourceComponentServiceObjects(
+			_assetEntryResourceComponentServiceObjects);
 		Mutation.setBlogPostingResourceComponentServiceObjects(
 			_blogPostingResourceComponentServiceObjects);
 		Mutation.setBlogPostingImageResourceComponentServiceObjects(
@@ -139,6 +143,8 @@ public class ServletDataImpl implements ServletData {
 		Mutation.setWikiPageAttachmentResourceComponentServiceObjects(
 			_wikiPageAttachmentResourceComponentServiceObjects);
 
+		Query.setAssetEntryResourceComponentServiceObjects(
+			_assetEntryResourceComponentServiceObjects);
 		Query.setBlogPostingResourceComponentServiceObjects(
 			_blogPostingResourceComponentServiceObjects);
 		Query.setBlogPostingImageResourceComponentServiceObjects(
@@ -229,6 +235,16 @@ public class ServletDataImpl implements ServletData {
 		_resourceMethodObjectValuePairs =
 			new HashMap<String, ObjectValuePair<Class<?>, String>>() {
 				{
+					put(
+						"mutation#createAssetLibraryAssetEntriesPageExportBatch",
+						new ObjectValuePair<>(
+							AssetEntryResourceImpl.class,
+							"postAssetLibraryAssetEntriesPageExportBatch"));
+					put(
+						"mutation#createSiteAssetEntriesPageExportBatch",
+						new ObjectValuePair<>(
+							AssetEntryResourceImpl.class,
+							"postSiteAssetEntriesPageExportBatch"));
 					put(
 						"mutation#deleteBlogPosting",
 						new ObjectValuePair<>(
@@ -1866,6 +1882,16 @@ public class ServletDataImpl implements ServletData {
 							"postWikiPageWikiPageAttachmentsPageExportBatch"));
 
 					put(
+						"query#assetLibraryAssetEntries",
+						new ObjectValuePair<>(
+							AssetEntryResourceImpl.class,
+							"getAssetLibraryAssetEntriesPage"));
+					put(
+						"query#assetEntries",
+						new ObjectValuePair<>(
+							AssetEntryResourceImpl.class,
+							"getSiteAssetEntriesPage"));
+					put(
 						"query#blogPosting",
 						new ObjectValuePair<>(
 							BlogPostingResourceImpl.class, "getBlogPosting"));
@@ -2985,6 +3011,10 @@ public class ServletDataImpl implements ServletData {
 			};
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<AssetEntryResource>
+		_assetEntryResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<BlogPostingResource>
 		_blogPostingResourceComponentServiceObjects;
 
@@ -3093,4 +3123,4 @@ public class ServletDataImpl implements ServletData {
 		_contentSetElementResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1122700236
+// LIFERAY-REST-BUILDER-HASH:-1513413376
