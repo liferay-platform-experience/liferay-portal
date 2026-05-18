@@ -7,15 +7,18 @@ package com.liferay.style.book.item.selector.web.internal.scoped;
 
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
+import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
 import com.liferay.item.selector.criteria.AssetEntryItemSelectorReturnType;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.style.book.item.selector.StyleBookEntryScopedItemSelectorCriterion;
+import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.StyleBookEntryScopesItemSelectorViewDescriptor;
 
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
@@ -58,15 +61,22 @@ public class StyleBookEntryScopedItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
-		servletResponse.getWriter(
-		).write(
-			"<!-- scoped style book item selector skeleton -->"
-		);
+		_itemSelectorViewDescriptorRenderer.renderHTML(
+			servletRequest, servletResponse,
+			styleBookEntryScopedItemSelectorCriterion, portletURL,
+			itemSelectedEventName, search,
+			new StyleBookEntryScopesItemSelectorViewDescriptor(
+				(HttpServletRequest)servletRequest, portletURL));
 	}
 
 	private static final List<ItemSelectorReturnType>
 		_supportedItemSelectorReturnTypes = Collections.singletonList(
 			new AssetEntryItemSelectorReturnType());
+
+	@Reference
+	private ItemSelectorViewDescriptorRenderer
+		<StyleBookEntryScopedItemSelectorCriterion>
+			_itemSelectorViewDescriptorRenderer;
 
 	@Reference
 	private Language _language;
