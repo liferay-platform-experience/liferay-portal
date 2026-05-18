@@ -5,13 +5,16 @@
 
 package com.liferay.style.book.item.selector.web.internal.scoped;
 
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
 import com.liferay.item.selector.criteria.AssetEntryItemSelectorReturnType;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.style.book.item.selector.StyleBookEntryScopedItemSelectorCriterion;
-import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.StyleBookEntryScopesItemSelectorViewDescriptor;
 
 import jakarta.portlet.PortletURL;
 
@@ -61,17 +64,31 @@ public class StyleBookEntryScopedItemSelectorView
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
+		Layout layout = _layoutLocalService.fetchLayout(
+			styleBookEntryScopedItemSelectorCriterion.getSelPlid());
+
+		StyleBookEntryScopedItemSelectorViewDescriptorResolver
+			styleBookEntryScopedItemSelectorViewDescriptorResolver =
+				new StyleBookEntryScopedItemSelectorViewDescriptorResolver(
+					_frontendTokenDefinitionRegistry, _groupLocalService);
+
 		_itemSelectorViewDescriptorRenderer.renderHTML(
 			servletRequest, servletResponse,
 			styleBookEntryScopedItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
-			new StyleBookEntryScopesItemSelectorViewDescriptor(
-				(HttpServletRequest)servletRequest, portletURL));
+			styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
+				(HttpServletRequest)servletRequest, layout, portletURL));
 	}
 
 	private static final List<ItemSelectorReturnType>
 		_supportedItemSelectorReturnTypes = Collections.singletonList(
 			new AssetEntryItemSelectorReturnType());
+
+	@Reference
+	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private ItemSelectorViewDescriptorRenderer
@@ -80,5 +97,8 @@ public class StyleBookEntryScopedItemSelectorView
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 }
