@@ -51,6 +51,13 @@ public class ItemSelectorViewDescriptorRendererDisplayContext {
 	public List<BreadcrumbEntry> getBreadcrumbEntries(PortletURL currentURL)
 		throws PortalException, PortletException {
 
+		List<BreadcrumbEntry> breadcrumbEntries =
+			_itemSelectorViewDescriptor.getBreadcrumbEntries(currentURL);
+
+		if (breadcrumbEntries != null) {
+			return breadcrumbEntries;
+		}
+
 		return Arrays.asList(
 			_getGroupSelectorBreadcrumbEntry(currentURL),
 			_getCurrentGroupBreadcrumbEntry(currentURL));

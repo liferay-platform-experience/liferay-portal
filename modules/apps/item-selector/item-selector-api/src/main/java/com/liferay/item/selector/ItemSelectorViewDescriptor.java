@@ -15,8 +15,10 @@ import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.UserConstants;
+import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 
 import java.util.Date;
@@ -27,6 +29,12 @@ import java.util.Locale;
  * @author Alejandro Tardín
  */
 public interface ItemSelectorViewDescriptor<T> {
+
+	public default List<BreadcrumbEntry> getBreadcrumbEntries(
+		PortletURL portletURL) {
+
+		return null;
+	}
 
 	public default String getDefaultDisplayStyle() {
 		return "icon";
