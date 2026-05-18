@@ -7,6 +7,7 @@ package com.liferay.style.book.item.selector.web.internal.scoped.descriptor;
 
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
+import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.style.book.item.selector.web.internal.scoped.Scope;
+import com.liferay.style.book.model.StyleBookEntry;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
@@ -100,6 +102,8 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 			_siteGroup
 		);
 
+		_styleBookEntry = Mockito.mock(StyleBookEntry.class);
+
 		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
@@ -149,14 +153,15 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 		);
 
 		StyleBookEntryEntriesItemSelectorViewDescriptor
-			styleBookEntryScopedListViewDescriptor =
+			styleBookEntryEntriesItemSelectorViewDescriptor =
 				new StyleBookEntryEntriesItemSelectorViewDescriptor(
 					_frontendTokenDefinitionRegistry, 99L, _groupLocalService,
 					_mockHttpServletRequest, _portletURL, Scope.DESIGN_LIBRARY,
 					_layout);
 
 		List<BreadcrumbEntry> breadcrumbEntries =
-			styleBookEntryScopedListViewDescriptor.getBreadcrumbEntries(null);
+			styleBookEntryEntriesItemSelectorViewDescriptor.
+				getBreadcrumbEntries(null);
 
 		Assert.assertEquals(
 			breadcrumbEntries.toString(), 3, breadcrumbEntries.size());
@@ -181,13 +186,14 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 		);
 
 		StyleBookEntryEntriesItemSelectorViewDescriptor
-			styleBookEntryScopedListViewDescriptor =
+			styleBookEntryEntriesItemSelectorViewDescriptor =
 				new StyleBookEntryEntriesItemSelectorViewDescriptor(
 					_frontendTokenDefinitionRegistry, 11L, _groupLocalService,
 					_mockHttpServletRequest, _portletURL, Scope.SITE, _layout);
 
 		List<BreadcrumbEntry> breadcrumbEntries =
-			styleBookEntryScopedListViewDescriptor.getBreadcrumbEntries(null);
+			styleBookEntryEntriesItemSelectorViewDescriptor.
+				getBreadcrumbEntries(null);
 
 		Assert.assertEquals(
 			breadcrumbEntries.toString(), 3, breadcrumbEntries.size());
@@ -212,6 +218,104 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 			).getURL());
 	}
 
+	@Test
+	public void testGetItemDescriptorPayloadEmitsScopeERCForDL()
+		throws Exception {
+
+		Group depotGroup = Mockito.mock(Group.class);
+
+		Mockito.when(
+			depotGroup.getExternalReferenceCode()
+		).thenReturn(
+			"GroupERC-DL"
+		);
+
+		Mockito.when(
+			_groupLocalService.fetchGroup(99L)
+		).thenReturn(
+			depotGroup
+		);
+
+		Mockito.when(
+			_styleBookEntry.getExternalReferenceCode()
+		).thenReturn(
+			"ERC-2"
+		);
+
+		Mockito.when(
+			_styleBookEntry.getName()
+		).thenReturn(
+			"Sb-DL"
+		);
+
+		Mockito.when(
+			_styleBookEntry.getStyleBookEntryId()
+		).thenReturn(
+			99L
+		);
+
+		StyleBookEntryEntriesItemSelectorViewDescriptor
+			styleBookEntryEntriesItemSelectorViewDescriptor =
+				new StyleBookEntryEntriesItemSelectorViewDescriptor(
+					_frontendTokenDefinitionRegistry, 99L, _groupLocalService,
+					_mockHttpServletRequest, _portletURL, Scope.DESIGN_LIBRARY,
+					_layout);
+
+		ItemSelectorViewDescriptor.ItemDescriptor itemDescriptor =
+			styleBookEntryEntriesItemSelectorViewDescriptor.getItemDescriptor(
+				_styleBookEntry);
+
+		String payload = itemDescriptor.getPayload();
+
+		Assert.assertTrue(
+			payload, payload.contains("\"externalReferenceCode\":\"ERC-2\""));
+		Assert.assertTrue(
+			payload,
+			payload.contains("\"styleBookEntryScopeERC\":\"GroupERC-DL\""));
+	}
+
+	@Test
+	public void testGetItemDescriptorPayloadHasEmptyScopeERCForSite()
+		throws Exception {
+
+		Mockito.when(
+			_styleBookEntry.getExternalReferenceCode()
+		).thenReturn(
+			"ERC-1"
+		);
+
+		Mockito.when(
+			_styleBookEntry.getName()
+		).thenReturn(
+			"Sb-1"
+		);
+
+		Mockito.when(
+			_styleBookEntry.getStyleBookEntryId()
+		).thenReturn(
+			42L
+		);
+
+		StyleBookEntryEntriesItemSelectorViewDescriptor
+			styleBookEntryEntriesItemSelectorViewDescriptor =
+				new StyleBookEntryEntriesItemSelectorViewDescriptor(
+					_frontendTokenDefinitionRegistry, 11L, _groupLocalService,
+					_mockHttpServletRequest, _portletURL, Scope.SITE, _layout);
+
+		ItemSelectorViewDescriptor.ItemDescriptor itemDescriptor =
+			styleBookEntryEntriesItemSelectorViewDescriptor.getItemDescriptor(
+				_styleBookEntry);
+
+		String payload = itemDescriptor.getPayload();
+
+		Assert.assertTrue(
+			payload, payload.contains("\"externalReferenceCode\":\"ERC-1\""));
+		Assert.assertTrue(
+			payload, payload.contains("\"styleBookEntryId\":\"42\""));
+		Assert.assertTrue(
+			payload, payload.contains("\"styleBookEntryScopeERC\":\"\""));
+	}
+
 	private FrontendTokenDefinition _frontendTokenDefinition;
 	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
 	private GroupLocalService _groupLocalService;
@@ -219,5 +323,6 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 	private MockHttpServletRequest _mockHttpServletRequest;
 	private PortletURL _portletURL;
 	private Group _siteGroup;
+	private StyleBookEntry _styleBookEntry;
 
 }

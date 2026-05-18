@@ -5,3 +5,7 @@
 .style-book-scoped-card-group-design-library .card-type-asset-icon {
 	color: var(--teal);
 }
+
+.style-book-scoped-card-entry-design-library .card-type-asset-icon {
+	color: var(--purple);
+}

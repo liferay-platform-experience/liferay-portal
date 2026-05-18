@@ -20,6 +20,7 @@ import com.liferay.style.book.item.selector.web.internal.scoped.Scope;
 import com.liferay.style.book.item.selector.web.internal.scoped.breadcrumb.StyleBookEntryEntriesBreadcrumbEntry;
 import com.liferay.style.book.item.selector.web.internal.scoped.breadcrumb.StyleBookEntryGroupsBreadcrumbEntry;
 import com.liferay.style.book.item.selector.web.internal.scoped.breadcrumb.StyleBookEntryScopesBreadcrumbEntry;
+import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.item.StyleBookEntryDesignLibraryScopedItemDescriptor;
 import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.item.StyleBookEntrySiteScopedItemDescriptor;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
@@ -73,8 +74,9 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptor
 	@Override
 	public ItemDescriptor getItemDescriptor(StyleBookEntry styleBookEntry) {
 		if (_scope == Scope.DESIGN_LIBRARY) {
-			throw new UnsupportedOperationException(
-				"DL-scoped item descriptor not implemented yet");
+			return new StyleBookEntryDesignLibraryScopedItemDescriptor(
+				_groupLocalService.fetchGroup(_groupId), _selLayout,
+				styleBookEntry);
 		}
 
 		return new StyleBookEntrySiteScopedItemDescriptor(
