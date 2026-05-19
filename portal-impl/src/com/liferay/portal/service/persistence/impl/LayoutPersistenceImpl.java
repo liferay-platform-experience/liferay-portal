@@ -9005,6 +9005,7 @@ public class LayoutPersistenceImpl
 		ctMergeColumnNames.add("themeId");
 		ctMergeColumnNames.add("colorSchemeId");
 		ctMergeColumnNames.add("styleBookEntryERC");
+		ctMergeColumnNames.add("styleBookEntryScopeERC");
 		ctMergeColumnNames.add("css");
 		ctMergeColumnNames.add("priority");
 		ctMergeColumnNames.add("faviconFileEntryERC");
@@ -10037,4 +10038,4 @@ public class LayoutPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1008653395
+// LIFERAY-SERVICE-BUILDER-HASH:-668006010
