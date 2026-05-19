@@ -415,6 +415,14 @@ public class StyleBookEntryLocalServiceUtil {
 			groupId, name, start, end, orderByComparator);
 	}
 
+	public static List<StyleBookEntry> getStyleBookEntries(
+		long[] groupIds, int start, int end,
+		OrderByComparator<StyleBookEntry> orderByComparator) {
+
+		return getService().getStyleBookEntries(
+			groupIds, start, end, orderByComparator);
+	}
+
 	public static List<StyleBookEntry> getStyleBookEntriesByUuidAndCompanyId(
 		String uuid, long companyId) {
 
@@ -590,4 +598,4 @@ public class StyleBookEntryLocalServiceUtil {
 			StyleBookEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1973879342
+// LIFERAY-SERVICE-BUILDER-HASH:1410824951

@@ -151,6 +151,17 @@ public class StyleBookEntryServiceWrapper
 	}
 
 	@Override
+	public java.util.List<StyleBookEntry> getStyleBookEntries(
+			long[] groupIds, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator<StyleBookEntry>
+				orderByComparator)
+		throws com.liferay.portal.kernel.security.auth.PrincipalException {
+
+		return _styleBookEntryService.getStyleBookEntries(
+			groupIds, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getStyleBookEntriesCount(long groupId)
 		throws com.liferay.portal.kernel.security.auth.PrincipalException {
 
@@ -258,4 +269,4 @@ public class StyleBookEntryServiceWrapper
 	private StyleBookEntryService _styleBookEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1842900630
+// LIFERAY-SERVICE-BUILDER-HASH:1611628249

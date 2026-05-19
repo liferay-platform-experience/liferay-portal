@@ -139,6 +139,15 @@ public class StyleBookEntryServiceUtil {
 			groupId, name, start, end, orderByComparator);
 	}
 
+	public static List<StyleBookEntry> getStyleBookEntries(
+			long[] groupIds, int start, int end,
+			OrderByComparator<StyleBookEntry> orderByComparator)
+		throws com.liferay.portal.kernel.security.auth.PrincipalException {
+
+		return getService().getStyleBookEntries(
+			groupIds, start, end, orderByComparator);
+	}
+
 	public static int getStyleBookEntriesCount(long groupId)
 		throws com.liferay.portal.kernel.security.auth.PrincipalException {
 
@@ -232,4 +241,4 @@ public class StyleBookEntryServiceUtil {
 			StyleBookEntryServiceUtil.class, StyleBookEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2127676313
+// LIFERAY-SERVICE-BUILDER-HASH:733273141

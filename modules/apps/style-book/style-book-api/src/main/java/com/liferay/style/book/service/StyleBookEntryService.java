@@ -109,6 +109,12 @@ public interface StyleBookEntryService extends BaseService {
 		throws PrincipalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<StyleBookEntry> getStyleBookEntries(
+			long[] groupIds, int start, int end,
+			OrderByComparator<StyleBookEntry> orderByComparator)
+		throws PrincipalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getStyleBookEntriesCount(long groupId) throws PrincipalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -155,4 +161,4 @@ public interface StyleBookEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1554958115
+// LIFERAY-SERVICE-BUILDER-HASH:326279475
