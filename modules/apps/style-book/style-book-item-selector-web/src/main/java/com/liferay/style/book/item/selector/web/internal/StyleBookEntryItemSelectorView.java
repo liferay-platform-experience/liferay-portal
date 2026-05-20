@@ -12,7 +12,6 @@ import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
-import com.liferay.style.book.service.StyleBookEntryLocalService;
 
 import jakarta.portlet.PortletURL;
 
@@ -69,8 +68,7 @@ public class StyleBookEntryItemSelectorView
 			new StyleBookEntryItemSelectorViewDescriptor(
 				_frontendTokenDefinitionRegistry,
 				(HttpServletRequest)servletRequest, portletURL,
-				styleBookEntryItemSelectorCriterion,
-				_styleBookEntryLocalService));
+				styleBookEntryItemSelectorCriterion));
 	}
 
 	private static final List<ItemSelectorReturnType>
@@ -87,8 +85,5 @@ public class StyleBookEntryItemSelectorView
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 }
