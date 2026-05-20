@@ -5,7 +5,6 @@
 
 package com.liferay.style.book.item.selector.web.internal;
 
-import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -22,7 +21,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
 import com.liferay.style.book.model.StyleBookEntry;
-import com.liferay.style.book.service.StyleBookEntryLocalService;
+import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 import com.liferay.style.book.util.StyleBookUtil;
 
 import jakarta.portlet.PortletRequest;
@@ -42,15 +41,14 @@ public class StyleBookEntryItemSelectorViewDescriptor
 	public StyleBookEntryItemSelectorViewDescriptor(
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		HttpServletRequest httpServletRequest, PortletURL portletURL,
-		StyleBookEntryItemSelectorCriterion styleBookEntryItemSelectorCriterion,
-		StyleBookEntryLocalService styleBookEntryLocalService) {
+		StyleBookEntryItemSelectorCriterion
+			styleBookEntryItemSelectorCriterion) {
 
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_httpServletRequest = httpServletRequest;
 		_portletURL = portletURL;
 		_styleBookEntryItemSelectorCriterion =
 			styleBookEntryItemSelectorCriterion;
-		_styleBookEntryLocalService = styleBookEntryLocalService;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -137,8 +135,8 @@ public class StyleBookEntryItemSelectorViewDescriptor
 				_getSelLayout(), _themeDisplay.getLocale()));
 
 		styleBookEntries.addAll(
-			_styleBookEntryLocalService.getStyleBookEntries(
-				StagingUtil.getLiveGroupId(_themeDisplay.getScopeGroupId()),
+			StyleBookEntryProviderUtil.getStyleBookEntries(
+				_themeDisplay.getScopeGroupId(),
 				frontendTokenDefinition.getThemeId()));
 
 		return styleBookEntries;
@@ -151,7 +149,6 @@ public class StyleBookEntryItemSelectorViewDescriptor
 	private Layout _selLayout;
 	private final StyleBookEntryItemSelectorCriterion
 		_styleBookEntryItemSelectorCriterion;
-	private final StyleBookEntryLocalService _styleBookEntryLocalService;
 	private final ThemeDisplay _themeDisplay;
 
 }

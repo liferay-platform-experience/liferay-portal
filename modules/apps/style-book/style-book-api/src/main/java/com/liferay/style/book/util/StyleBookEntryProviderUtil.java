@@ -44,6 +44,13 @@ public class StyleBookEntryProviderUtil {
 			_getGroupIds(companyId, groupId), themeId);
 	}
 
+	public static List<StyleBookEntry> getStyleBookEntries(
+		long groupId, String themeId) {
+
+		return StyleBookEntryLocalServiceUtil.getStyleBookEntries(
+			StagingUtil.getLiveGroupId(groupId), themeId);
+	}
+
 	public static StyleBookEntry getStyleBookEntry(Layout layout) {
 		if (Validator.isNull(layout.getStyleBookEntryERC())) {
 			return null;
