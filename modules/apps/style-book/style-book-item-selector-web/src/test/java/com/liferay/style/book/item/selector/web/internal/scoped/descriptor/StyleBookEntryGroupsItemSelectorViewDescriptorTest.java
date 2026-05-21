@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.style.book.item.selector.web.internal.scoped.Scope;
+import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.item.StyleBookEntryGroupDesignLibraryItemDescriptor;
 import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.item.StyleBookEntryGroupSiteItemDescriptor;
 
 import jakarta.portlet.PortletRequest;
@@ -120,6 +121,16 @@ public class StyleBookEntryGroupsItemSelectorViewDescriptorTest {
 				new StyleBookEntryGroupsItemSelectorViewDescriptor(
 					_groupLocalService, _mockHttpServletRequest, 99L,
 					_portletURL, Scope.SITE, _siteConnectedGroupGroupProvider);
+
+		Group depotGroup = _mockGroup(22L, true, false, "Gerardo DL");
+
+		ItemSelectorViewDescriptor.ItemDescriptor depotItemDescriptor =
+			styleBookEntryGroupsItemSelectorViewDescriptor.getItemDescriptor(
+				depotGroup);
+
+		Assert.assertTrue(
+			depotItemDescriptor instanceof
+				StyleBookEntryGroupDesignLibraryItemDescriptor);
 
 		Group siteGroup = _mockGroup(11L, false, true, "Liferay DXP");
 

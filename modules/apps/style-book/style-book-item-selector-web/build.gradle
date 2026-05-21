@@ -9,6 +9,7 @@ dependencies {
 	compileOnly project(":apps:frontend-token:frontend-token-definition-api")
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
+	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
 	compileOnly project(":apps:style-book:style-book-api")
 	compileOnly project(":apps:style-book:style-book-item-selector-api")
 	compileOnly project(":core:petra:petra-function")

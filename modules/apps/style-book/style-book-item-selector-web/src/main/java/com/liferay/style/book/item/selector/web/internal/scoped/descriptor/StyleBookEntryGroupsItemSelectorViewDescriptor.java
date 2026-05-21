@@ -21,6 +21,7 @@ import com.liferay.style.book.item.selector.web.internal.scoped.Level;
 import com.liferay.style.book.item.selector.web.internal.scoped.Scope;
 import com.liferay.style.book.item.selector.web.internal.scoped.breadcrumb.StyleBookEntryGroupsBreadcrumbEntry;
 import com.liferay.style.book.item.selector.web.internal.scoped.breadcrumb.StyleBookEntryScopesBreadcrumbEntry;
+import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.item.StyleBookEntryGroupDesignLibraryItemDescriptor;
 import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.item.StyleBookEntryGroupSiteItemDescriptor;
 
 import jakarta.portlet.PortletRequest;
@@ -75,6 +76,11 @@ public class StyleBookEntryGroupsItemSelectorViewDescriptor
 		).setParameter(
 			"scope", _scope.getKey()
 		).buildString();
+
+		if (group.isDepot()) {
+			return new StyleBookEntryGroupDesignLibraryItemDescriptor(
+				group, href, _themeDisplay);
+		}
 
 		return new StyleBookEntryGroupSiteItemDescriptor(
 			group, href, _themeDisplay);
