@@ -13,7 +13,9 @@ import com.liferay.client.extension.type.GlobalJSCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItemListBuilder;
+import com.liferay.item.selector.BaseItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.criteria.AssetEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.layout.admin.constants.LayoutScreenNavigationEntryConstants;
 import com.liferay.layout.admin.web.internal.item.selector.MasterLayoutPageTemplateEntryItemSelectorCriterion;
@@ -45,6 +47,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
+import com.liferay.style.book.item.selector.StyleBookEntryScopedItemSelectorCriterion;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -216,22 +219,45 @@ public class LayoutLookAndFeelDisplayContext {
 					RequestBackedPortletURLFactoryUtil.create(
 						_httpServletRequest);
 
-				StyleBookEntryItemSelectorCriterion
-					styleBookEntryItemSelectorCriterion =
-						new StyleBookEntryItemSelectorCriterion();
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
 
-				styleBookEntryItemSelectorCriterion.
-					setDesiredItemSelectorReturnTypes(
-						new UUIDItemSelectorReturnType());
-				styleBookEntryItemSelectorCriterion.setSelPlid(
-					_layoutsAdminDisplayContext.getSelPlid());
+				BaseItemSelectorCriterion baseItemSelectorCriterion;
+
+				if (_isMasterLayout(selLayout)) {
+					StyleBookEntryItemSelectorCriterion
+						styleBookEntryItemSelectorCriterion =
+							new StyleBookEntryItemSelectorCriterion();
+
+					styleBookEntryItemSelectorCriterion.
+						setDesiredItemSelectorReturnTypes(
+							new UUIDItemSelectorReturnType());
+					styleBookEntryItemSelectorCriterion.setSelPlid(
+						_layoutsAdminDisplayContext.getSelPlid());
+
+					baseItemSelectorCriterion =
+						styleBookEntryItemSelectorCriterion;
+				}
+				else {
+					StyleBookEntryScopedItemSelectorCriterion
+						styleBookEntryScopedItemSelectorCriterion =
+							new StyleBookEntryScopedItemSelectorCriterion();
+
+					styleBookEntryScopedItemSelectorCriterion.
+						setDesiredItemSelectorReturnTypes(
+							new AssetEntryItemSelectorReturnType());
+					styleBookEntryScopedItemSelectorCriterion.setSelPlid(
+						_layoutsAdminDisplayContext.getSelPlid());
+
+					baseItemSelectorCriterion =
+						styleBookEntryScopedItemSelectorCriterion;
+				}
 
 				return String.valueOf(
 					_itemSelector.getItemSelectorURL(
 						requestBackedPortletURLFactory,
 						_liferayPortletResponse.getNamespace() +
 							"selectStyleBook",
-						styleBookEntryItemSelectorCriterion));
+						baseItemSelectorCriterion));
 			}
 		).put(
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()
@@ -244,6 +270,14 @@ public class LayoutLookAndFeelDisplayContext {
 			}
 		).put(
 			"styleBookEntryName", getStyleBookEntryName()
+		).put(
+			"styleBookEntryScopeERC",
+			() -> {
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+				return GetterUtil.getString(
+					selLayout.getStyleBookEntryScopeERC());
+			}
 		).build();
 	}
 
@@ -513,6 +547,32 @@ public class LayoutLookAndFeelDisplayContext {
 
 		return group.getLayoutRootNodeName(
 			layoutSet.isPrivateLayout(), _themeDisplay.getLocale());
+	}
+
+	private boolean _isMasterLayout(Layout layout) {
+		if (layout == null) {
+			return false;
+		}
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryLocalServiceUtil.
+				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
+
+		if (layoutPageTemplateEntry == null) {
+			layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
+		}
+
+		if ((layoutPageTemplateEntry != null) &&
+			Objects.equals(
+				layoutPageTemplateEntry.getType(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private Boolean _hasEditableMasterLayout;

@@ -14,10 +14,12 @@ export default function StyleBookConfiguration({
 	portletNamespace,
 	styleBookEntryERC: initialStyleBookEntryERC,
 	styleBookEntryName: initialStyleBookEntryName,
+	styleBookEntryScopeERC: initialStyleBookEntryScopeERC,
 }) {
 	const [styleBookEntry, setStyleBookEntry] = useState({
 		name: initialStyleBookEntryName,
 		styleBookEntryERC: initialStyleBookEntryERC,
+		styleBookEntryScopeERC: initialStyleBookEntryScopeERC || '',
 	});
 
 	const handleChangeStyleBookClick = () => {
@@ -34,6 +36,8 @@ export default function StyleBookConfiguration({
 					setStyleBookEntry({
 						name: itemValue.name,
 						styleBookEntryERC: itemValue.externalReferenceCode,
+						styleBookEntryScopeERC:
+							itemValue.styleBookEntryScopeERC || '',
 					});
 				}
 			},
@@ -49,6 +53,12 @@ export default function StyleBookConfiguration({
 				name={`${portletNamespace}styleBookEntryERC`}
 				type="hidden"
 				value={styleBookEntry.styleBookEntryERC}
+			/>
+
+			<input
+				name={`${portletNamespace}styleBookEntryScopeERC`}
+				type="hidden"
+				value={styleBookEntry.styleBookEntryScopeERC}
 			/>
 
 			<label htmlFor={`${portletNamespace}styleBookEntry`}>
