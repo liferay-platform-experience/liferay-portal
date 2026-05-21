@@ -1,0 +1,7 @@
+.style-book-scoped-card-group-design-library .card-item-first {
+	background-color: var(--teal-l3);
+}
+
+.style-book-scoped-card-group-design-library .card-type-asset-icon {
+	color: var(--teal);
+}
