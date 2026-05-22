@@ -27,6 +27,17 @@ export default function StyleBookConfiguration({
 			return;
 		}
 
+		const url = new URL(changeStyleBookURL);
+
+		url.searchParams.set(
+			'selectedStyleBookEntryERC',
+			styleBookEntry.styleBookEntryERC || ''
+		);
+		url.searchParams.set(
+			'selectedStyleBookEntryScopeERC',
+			styleBookEntry.styleBookEntryScopeERC || ''
+		);
+
 		openSelectionModal({
 			iframeBodyCssClass: '',
 			onSelect(selectedItem) {
@@ -43,7 +54,7 @@ export default function StyleBookConfiguration({
 			},
 			selectEventName: `${portletNamespace}selectStyleBook`,
 			title: Liferay.Language.get('select-style-book'),
-			url: changeStyleBookURL,
+			url: url.toString(),
 		});
 	};
 

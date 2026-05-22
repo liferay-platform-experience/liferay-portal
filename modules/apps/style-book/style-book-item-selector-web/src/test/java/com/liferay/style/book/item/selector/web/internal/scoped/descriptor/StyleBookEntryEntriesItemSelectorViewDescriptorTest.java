@@ -157,7 +157,7 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 				new StyleBookEntryEntriesItemSelectorViewDescriptor(
 					_frontendTokenDefinitionRegistry, 99L, _groupLocalService,
 					_mockHttpServletRequest, _portletURL, Scope.DESIGN_LIBRARY,
-					_layout);
+					_layout, null, null);
 
 		List<BreadcrumbEntry> breadcrumbEntries =
 			styleBookEntryEntriesItemSelectorViewDescriptor.
@@ -189,7 +189,8 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 			styleBookEntryEntriesItemSelectorViewDescriptor =
 				new StyleBookEntryEntriesItemSelectorViewDescriptor(
 					_frontendTokenDefinitionRegistry, 11L, _groupLocalService,
-					_mockHttpServletRequest, _portletURL, Scope.SITE, _layout);
+					_mockHttpServletRequest, _portletURL, Scope.SITE, _layout,
+					null, null);
 
 		List<BreadcrumbEntry> breadcrumbEntries =
 			styleBookEntryEntriesItemSelectorViewDescriptor.
@@ -259,7 +260,7 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 				new StyleBookEntryEntriesItemSelectorViewDescriptor(
 					_frontendTokenDefinitionRegistry, 99L, _groupLocalService,
 					_mockHttpServletRequest, _portletURL, Scope.DESIGN_LIBRARY,
-					_layout);
+					_layout, null, null);
 
 		ItemSelectorViewDescriptor.ItemDescriptor itemDescriptor =
 			styleBookEntryEntriesItemSelectorViewDescriptor.getItemDescriptor(
@@ -300,7 +301,8 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptorTest {
 			styleBookEntryEntriesItemSelectorViewDescriptor =
 				new StyleBookEntryEntriesItemSelectorViewDescriptor(
 					_frontendTokenDefinitionRegistry, 11L, _groupLocalService,
-					_mockHttpServletRequest, _portletURL, Scope.SITE, _layout);
+					_mockHttpServletRequest, _portletURL, Scope.SITE, _layout,
+					null, null);
 
 		ItemSelectorViewDescriptor.ItemDescriptor itemDescriptor =
 			styleBookEntryEntriesItemSelectorViewDescriptor.getItemDescriptor(

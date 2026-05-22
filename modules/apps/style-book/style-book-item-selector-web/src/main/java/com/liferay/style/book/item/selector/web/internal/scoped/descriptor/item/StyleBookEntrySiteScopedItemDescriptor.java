@@ -25,9 +25,12 @@ public class StyleBookEntrySiteScopedItemDescriptor
 	implements ItemSelectorViewDescriptor.ItemDescriptor {
 
 	public StyleBookEntrySiteScopedItemDescriptor(
-		Layout selLayout, StyleBookEntry styleBookEntry) {
+		Layout selLayout, String selectedStyleBookEntryERC,
+		String selectedStyleBookEntryScopeERC, StyleBookEntry styleBookEntry) {
 
 		_selLayout = selLayout;
+		_selectedStyleBookEntryERC = selectedStyleBookEntryERC;
+		_selectedStyleBookEntryScopeERC = selectedStyleBookEntryScopeERC;
 		_styleBookEntry = styleBookEntry;
 	}
 
@@ -69,9 +72,12 @@ public class StyleBookEntrySiteScopedItemDescriptor
 		RenderRequest renderRequest, RowChecker rowChecker) {
 
 		return new StyleBookEntrySiteScopedVerticalCard(
-			renderRequest, _selLayout, _styleBookEntry);
+			renderRequest, _selLayout, _selectedStyleBookEntryERC,
+			_selectedStyleBookEntryScopeERC, _styleBookEntry);
 	}
 
+	private final String _selectedStyleBookEntryERC;
+	private final String _selectedStyleBookEntryScopeERC;
 	private final Layout _selLayout;
 	private final StyleBookEntry _styleBookEntry;
 

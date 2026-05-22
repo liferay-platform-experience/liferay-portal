@@ -11,7 +11,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.style.book.item.selector.web.internal.scoped.frontend.taglib.clay.servlet.taglib.StyleBookEntryDesignLibraryScopedVerticalCard;
 import com.liferay.style.book.model.StyleBookEntry;
 
@@ -26,10 +25,12 @@ public class StyleBookEntryDesignLibraryScopedItemDescriptor
 	implements ItemSelectorViewDescriptor.ItemDescriptor {
 
 	public StyleBookEntryDesignLibraryScopedItemDescriptor(
-		Group scopeGroup, Layout selLayout, StyleBookEntry styleBookEntry) {
+		Group scopeGroup, String selectedStyleBookEntryERC,
+		String selectedStyleBookEntryScopeERC, StyleBookEntry styleBookEntry) {
 
 		_scopeGroup = scopeGroup;
-		_selLayout = selLayout;
+		_selectedStyleBookEntryERC = selectedStyleBookEntryERC;
+		_selectedStyleBookEntryScopeERC = selectedStyleBookEntryScopeERC;
 		_styleBookEntry = styleBookEntry;
 	}
 
@@ -71,11 +72,13 @@ public class StyleBookEntryDesignLibraryScopedItemDescriptor
 		RenderRequest renderRequest, RowChecker rowChecker) {
 
 		return new StyleBookEntryDesignLibraryScopedVerticalCard(
-			renderRequest, _scopeGroup, _selLayout, _styleBookEntry);
+			renderRequest, _scopeGroup, _selectedStyleBookEntryERC,
+			_selectedStyleBookEntryScopeERC, _styleBookEntry);
 	}
 
 	private final Group _scopeGroup;
-	private final Layout _selLayout;
+	private final String _selectedStyleBookEntryERC;
+	private final String _selectedStyleBookEntryScopeERC;
 	private final StyleBookEntry _styleBookEntry;
 
 }

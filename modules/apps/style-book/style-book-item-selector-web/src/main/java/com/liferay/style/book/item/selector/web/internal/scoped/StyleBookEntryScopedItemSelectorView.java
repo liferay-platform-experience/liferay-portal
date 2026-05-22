@@ -14,6 +14,8 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.style.book.item.selector.StyleBookEntryScopedItemSelectorCriterion;
 
 import jakarta.portlet.PortletURL;
@@ -67,6 +69,29 @@ public class StyleBookEntryScopedItemSelectorView
 		Layout layout = _layoutLocalService.fetchLayout(
 			styleBookEntryScopedItemSelectorCriterion.getSelPlid());
 
+		HttpServletRequest httpServletRequest =
+			(HttpServletRequest)servletRequest;
+
+		HttpServletRequest originalHttpServletRequest =
+			PortalUtil.getOriginalServletRequest(httpServletRequest);
+
+		String selectedStyleBookEntryERC = ParamUtil.getString(
+			httpServletRequest, "selectedStyleBookEntryERC",
+			ParamUtil.getString(
+				originalHttpServletRequest, "selectedStyleBookEntryERC",
+				layout.getStyleBookEntryERC()));
+
+		String selectedStyleBookEntryScopeERC = ParamUtil.getString(
+			httpServletRequest, "selectedStyleBookEntryScopeERC",
+			ParamUtil.getString(
+				originalHttpServletRequest, "selectedStyleBookEntryScopeERC",
+				layout.getStyleBookEntryScopeERC()));
+
+		portletURL.setParameter(
+			"selectedStyleBookEntryERC", selectedStyleBookEntryERC);
+		portletURL.setParameter(
+			"selectedStyleBookEntryScopeERC", selectedStyleBookEntryScopeERC);
+
 		StyleBookEntryScopedItemSelectorViewDescriptorResolver
 			styleBookEntryScopedItemSelectorViewDescriptorResolver =
 				new StyleBookEntryScopedItemSelectorViewDescriptorResolver(
@@ -77,7 +102,8 @@ public class StyleBookEntryScopedItemSelectorView
 			styleBookEntryScopedItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
 			styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				(HttpServletRequest)servletRequest, layout, portletURL));
+				httpServletRequest, layout, portletURL,
+				selectedStyleBookEntryERC, selectedStyleBookEntryScopeERC));
 	}
 
 	private static final List<ItemSelectorReturnType>

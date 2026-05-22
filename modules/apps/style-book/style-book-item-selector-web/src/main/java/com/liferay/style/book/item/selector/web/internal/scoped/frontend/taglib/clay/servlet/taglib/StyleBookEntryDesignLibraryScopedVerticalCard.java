@@ -6,7 +6,6 @@
 package com.liferay.style.book.item.selector.web.internal.scoped.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.style.book.model.StyleBookEntry;
 
 import jakarta.portlet.RenderRequest;
@@ -20,13 +19,15 @@ public class StyleBookEntryDesignLibraryScopedVerticalCard
 	extends BaseStyleBookEntryVerticalCard {
 
 	public StyleBookEntryDesignLibraryScopedVerticalCard(
-		RenderRequest renderRequest, Group scopeGroup, Layout selLayout,
+		RenderRequest renderRequest, Group scopeGroup,
+		String selectedStyleBookEntryERC, String selectedStyleBookEntryScopeERC,
 		StyleBookEntry styleBookEntry) {
 
 		super(renderRequest, styleBookEntry);
 
 		_scopeGroup = scopeGroup;
-		_selLayout = selLayout;
+		_selectedStyleBookEntryERC = selectedStyleBookEntryERC;
+		_selectedStyleBookEntryScopeERC = selectedStyleBookEntryScopeERC;
 	}
 
 	@Override
@@ -48,18 +49,19 @@ public class StyleBookEntryDesignLibraryScopedVerticalCard
 	@Override
 	public boolean isSelected() {
 		if (!Objects.equals(
-				_selLayout.getStyleBookEntryScopeERC(),
+				_selectedStyleBookEntryScopeERC,
 				_scopeGroup.getExternalReferenceCode())) {
 
 			return false;
 		}
 
 		return Objects.equals(
-			_selLayout.getStyleBookEntryERC(),
+			_selectedStyleBookEntryERC,
 			styleBookEntry.getExternalReferenceCode());
 	}
 
 	private final Group _scopeGroup;
-	private final Layout _selLayout;
+	private final String _selectedStyleBookEntryERC;
+	private final String _selectedStyleBookEntryScopeERC;
 
 }

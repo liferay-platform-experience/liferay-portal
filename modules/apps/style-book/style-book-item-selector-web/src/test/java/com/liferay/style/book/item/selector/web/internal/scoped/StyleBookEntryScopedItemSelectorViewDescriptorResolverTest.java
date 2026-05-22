@@ -57,8 +57,6 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			true,
 			this::_testResolveReturnsRootWhenDesignLibraryScopeUnresolvable);
 		_withResolver(
-			true, this::_testResolveReturnsRootWhenNoStyleBookSelected);
-		_withResolver(
 			true, this::_testResolveReturnsSiteEntriesWhenScopeERCMissing);
 	}
 
@@ -78,15 +76,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			Scope.DESIGN_LIBRARY.getKey()
 		);
 
-		Mockito.when(
-			layout.getStyleBookEntryERC()
-		).thenReturn(
-			null
-		);
-
 		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
 			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				httpServletRequest, layout, portletURL);
+				httpServletRequest, layout, portletURL, null, null);
 
 		Assert.assertTrue(
 			itemSelectorViewDescriptor instanceof
@@ -107,21 +99,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			Level.SCOPES.getKey()
 		);
 
-		Mockito.when(
-			layout.getStyleBookEntryERC()
-		).thenReturn(
-			"ERC-1"
-		);
-
-		Mockito.when(
-			layout.getStyleBookEntryScopeERC()
-		).thenReturn(
-			null
-		);
-
 		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
 			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				httpServletRequest, layout, portletURL);
+				httpServletRequest, layout, portletURL, "ERC-1", null);
 
 		Assert.assertTrue(
 			itemSelectorViewDescriptor instanceof
@@ -146,21 +126,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			depotGroup
 		);
 
-		Mockito.when(
-			layout.getStyleBookEntryERC()
-		).thenReturn(
-			"ERC-1"
-		);
-
-		Mockito.when(
-			layout.getStyleBookEntryScopeERC()
-		).thenReturn(
-			"DepotERC"
-		);
-
 		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
 			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				httpServletRequest, layout, portletURL);
+				httpServletRequest, layout, portletURL, "ERC-1", "DepotERC");
 
 		Assert.assertTrue(
 			itemSelectorViewDescriptor instanceof
@@ -185,40 +153,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			null
 		);
 
-		Mockito.when(
-			layout.getStyleBookEntryERC()
-		).thenReturn(
-			"ERC-1"
-		);
-
-		Mockito.when(
-			layout.getStyleBookEntryScopeERC()
-		).thenReturn(
-			"DepotERC"
-		);
-
 		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
 			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				httpServletRequest, layout, portletURL);
-
-		Assert.assertTrue(
-			itemSelectorViewDescriptor instanceof
-				StyleBookEntryScopesItemSelectorViewDescriptor);
-	}
-
-	private void _testResolveReturnsRootWhenNoStyleBookSelected(
-		HttpServletRequest httpServletRequest, Layout layout,
-		PortletURL portletURL) {
-
-		Mockito.when(
-			layout.getStyleBookEntryERC()
-		).thenReturn(
-			null
-		);
-
-		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
-			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				httpServletRequest, layout, portletURL);
+				httpServletRequest, layout, portletURL, "ERC-1", "DepotERC");
 
 		Assert.assertTrue(
 			itemSelectorViewDescriptor instanceof
@@ -229,15 +166,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 		HttpServletRequest httpServletRequest, Layout layout,
 		PortletURL portletURL) {
 
-		Mockito.when(
-			layout.getStyleBookEntryERC()
-		).thenReturn(
-			"ERC-1"
-		);
-
 		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
 			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				httpServletRequest, layout, portletURL);
+				httpServletRequest, layout, portletURL, "ERC-1", null);
 
 		Assert.assertTrue(
 			itemSelectorViewDescriptor instanceof
@@ -256,21 +187,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 		HttpServletRequest httpServletRequest, Layout layout,
 		PortletURL portletURL) {
 
-		Mockito.when(
-			layout.getStyleBookEntryERC()
-		).thenReturn(
-			"ERC-1"
-		);
-
-		Mockito.when(
-			layout.getStyleBookEntryScopeERC()
-		).thenReturn(
-			null
-		);
-
 		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
 			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
-				httpServletRequest, layout, portletURL);
+				httpServletRequest, layout, portletURL, "ERC-1", null);
 
 		Assert.assertTrue(
 			itemSelectorViewDescriptor instanceof

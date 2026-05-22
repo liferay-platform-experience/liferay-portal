@@ -38,10 +38,11 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolver {
 
 	public ItemSelectorViewDescriptor<?> resolve(
 		HttpServletRequest httpServletRequest, Layout layout,
-		PortletURL portletURL) {
+		PortletURL portletURL, String selectedStyleBookEntryERC,
+		String selectedStyleBookEntryScopeERC) {
 
 		CurrentLevel currentLevel = _getCurrentLevel(
-			httpServletRequest, layout);
+			httpServletRequest, layout, selectedStyleBookEntryScopeERC);
 
 		if (currentLevel.getLevel() == Level.SCOPES) {
 			return new StyleBookEntryScopesItemSelectorViewDescriptor(
@@ -58,13 +59,16 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolver {
 		return new StyleBookEntryEntriesItemSelectorViewDescriptor(
 			_frontendTokenDefinitionRegistry, currentLevel.getGroupId(),
 			_groupLocalService, httpServletRequest, portletURL,
-			currentLevel.getScope(), layout);
+			currentLevel.getScope(), layout, selectedStyleBookEntryERC,
+			selectedStyleBookEntryScopeERC);
 	}
 
 	private CurrentLevel _getCurrentLevel(
-		HttpServletRequest httpServletRequest, Layout layout) {
+		HttpServletRequest httpServletRequest, Layout layout,
+		String selectedStyleBookEntryScopeERC) {
 
-		CurrentLevel layoutCurrentLevel = _getCurrentLevel(layout);
+		CurrentLevel layoutCurrentLevel = _getCurrentLevel(
+			layout, selectedStyleBookEntryScopeERC);
 
 		return new CurrentLevel(
 			ParamUtil.getLong(
@@ -81,25 +85,18 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolver {
 					).getKey())));
 	}
 
-	private CurrentLevel _getCurrentLevel(Layout layout) {
+	private CurrentLevel _getCurrentLevel(
+		Layout layout, String selectedStyleBookEntryScopeERC) {
+
 		if (!FeatureFlagManagerUtil.isEnabled(
-				layout.getCompanyId(), "LPD-57283")) {
+				layout.getCompanyId(), "LPD-57283") ||
+			Validator.isNull(selectedStyleBookEntryScopeERC)) {
 
-			return CurrentLevel.siteEntries(layout.getGroupId());
-		}
-
-		if (Validator.isNull(layout.getStyleBookEntryERC())) {
-			return CurrentLevel.scopes();
-		}
-
-		String styleBookEntryScopeERC = layout.getStyleBookEntryScopeERC();
-
-		if (Validator.isNull(styleBookEntryScopeERC)) {
 			return CurrentLevel.siteEntries(layout.getGroupId());
 		}
 
 		Group scopeGroup = _groupLocalService.fetchGroupByExternalReferenceCode(
-			styleBookEntryScopeERC, layout.getCompanyId());
+			selectedStyleBookEntryScopeERC, layout.getCompanyId());
 
 		if (scopeGroup == null) {
 			return CurrentLevel.scopes();
