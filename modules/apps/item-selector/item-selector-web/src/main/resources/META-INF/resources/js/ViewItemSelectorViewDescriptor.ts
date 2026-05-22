@@ -58,11 +58,31 @@ export default function ({
 		}
 	);
 
+	const navigateIfHref = (
+		event: DelegatedEvent<KeyboardEvent | MouseEvent>
+	) => {
+		const card =
+			event.delegateTarget.querySelector<HTMLElement>('[data-href]');
+
+		if (card?.dataset.href) {
+			event.preventDefault();
+			window.location.href = card.dataset.href;
+
+			return true;
+		}
+
+		return false;
+	};
+
 	const onClickHandler = delegate(
 		document.getElementById(`${namespace}entriesContainer`)!,
 		'click',
 		'.entry',
 		(event: DelegatedEvent<MouseEvent>) => {
+			if (navigateIfHref(event)) {
+				return;
+			}
+
 			updateSelectedCard(event);
 			dispatchSelectEvent(event);
 		}
@@ -83,6 +103,10 @@ export default function ({
 		'.entry',
 		(event: DelegatedEvent<KeyboardEvent>) => {
 			if (event.code === 'Enter') {
+				if (navigateIfHref(event)) {
+					return;
+				}
+
 				updateSelectedCard(event);
 				dispatchSelectEvent(event);
 			}
