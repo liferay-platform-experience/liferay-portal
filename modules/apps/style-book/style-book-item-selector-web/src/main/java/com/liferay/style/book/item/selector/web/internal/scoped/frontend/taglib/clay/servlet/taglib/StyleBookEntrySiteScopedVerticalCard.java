@@ -5,7 +5,6 @@
 
 package com.liferay.style.book.item.selector.web.internal.scoped.frontend.taglib.clay.servlet.taglib;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.model.StyleBookEntry;
@@ -23,11 +22,14 @@ public class StyleBookEntrySiteScopedVerticalCard
 
 	public StyleBookEntrySiteScopedVerticalCard(
 		RenderRequest renderRequest, Layout selLayout,
+		String selectedStyleBookEntryERC, String selectedStyleBookEntryScopeERC,
 		StyleBookEntry styleBookEntry) {
 
 		super(renderRequest, styleBookEntry);
 
 		_selLayout = selLayout;
+		_selectedStyleBookEntryERC = selectedStyleBookEntryERC;
+		_selectedStyleBookEntryScopeERC = selectedStyleBookEntryScopeERC;
 	}
 
 	@Override
@@ -43,13 +45,11 @@ public class StyleBookEntrySiteScopedVerticalCard
 
 	@Override
 	public boolean isSelected() {
-		if (Validator.isNotNull(_selLayout.getStyleBookEntryScopeERC())) {
+		if (Validator.isNotNull(_selectedStyleBookEntryScopeERC)) {
 			return false;
 		}
 
-		String layoutStyleBookEntryERC = _selLayout.getStyleBookEntryERC();
-
-		if (Validator.isNull(layoutStyleBookEntryERC)) {
+		if (Validator.isNull(_selectedStyleBookEntryERC)) {
 			if (styleBookEntry.getStyleBookEntryId() == 0) {
 				return true;
 			}
@@ -58,9 +58,12 @@ public class StyleBookEntrySiteScopedVerticalCard
 		}
 
 		return Objects.equals(
-			layoutStyleBookEntryERC, styleBookEntry.getExternalReferenceCode());
+			_selectedStyleBookEntryERC,
+			styleBookEntry.getExternalReferenceCode());
 	}
 
+	private final String _selectedStyleBookEntryERC;
+	private final String _selectedStyleBookEntryScopeERC;
 	private final Layout _selLayout;
 
 }

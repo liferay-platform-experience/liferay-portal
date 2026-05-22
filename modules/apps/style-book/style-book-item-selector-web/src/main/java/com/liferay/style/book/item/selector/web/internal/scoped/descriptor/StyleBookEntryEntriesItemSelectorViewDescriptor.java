@@ -46,7 +46,8 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptor
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		long groupId, GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest, PortletURL portletURL,
-		Scope scope, Layout selLayout) {
+		Scope scope, Layout selLayout, String selectedStyleBookEntryERC,
+		String selectedStyleBookEntryScopeERC) {
 
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_groupId = groupId;
@@ -55,6 +56,8 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptor
 		_portletURL = portletURL;
 		_scope = scope;
 		_selLayout = selLayout;
+		_selectedStyleBookEntryERC = selectedStyleBookEntryERC;
+		_selectedStyleBookEntryScopeERC = selectedStyleBookEntryScopeERC;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -75,12 +78,14 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptor
 	public ItemDescriptor getItemDescriptor(StyleBookEntry styleBookEntry) {
 		if (_scope == Scope.DESIGN_LIBRARY) {
 			return new StyleBookEntryDesignLibraryScopedItemDescriptor(
-				_groupLocalService.fetchGroup(_groupId), _selLayout,
+				_groupLocalService.fetchGroup(_groupId),
+				_selectedStyleBookEntryERC, _selectedStyleBookEntryScopeERC,
 				styleBookEntry);
 		}
 
 		return new StyleBookEntrySiteScopedItemDescriptor(
-			_selLayout, styleBookEntry);
+			_selLayout, _selectedStyleBookEntryERC,
+			_selectedStyleBookEntryScopeERC, styleBookEntry);
 	}
 
 	@Override
@@ -144,6 +149,8 @@ public class StyleBookEntryEntriesItemSelectorViewDescriptor
 	private final HttpServletRequest _httpServletRequest;
 	private final PortletURL _portletURL;
 	private final Scope _scope;
+	private final String _selectedStyleBookEntryERC;
+	private final String _selectedStyleBookEntryScopeERC;
 	private final Layout _selLayout;
 	private final ThemeDisplay _themeDisplay;
 
