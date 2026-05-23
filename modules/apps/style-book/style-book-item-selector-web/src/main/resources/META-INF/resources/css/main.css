@@ -9,3 +9,7 @@
 .style-book-scoped-card-entry-design-library .card-type-asset-icon {
 	color: var(--purple);
 }
+
+.style-book-scoped-card-group-site.image-card .aspect-ratio {
+	background-image: none;
+}

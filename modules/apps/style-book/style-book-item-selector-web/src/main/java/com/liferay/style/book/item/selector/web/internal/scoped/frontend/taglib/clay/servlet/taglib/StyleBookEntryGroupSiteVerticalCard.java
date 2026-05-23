@@ -29,7 +29,8 @@ public class StyleBookEntryGroupSiteVerticalCard implements VerticalCard {
 
 	@Override
 	public String getCssClass() {
-		return "card-interactive card-interactive-secondary";
+		return "card-interactive card-interactive-secondary " +
+			"style-book-scoped-card-group-site";
 	}
 
 	@Override
