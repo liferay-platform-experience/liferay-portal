@@ -5,6 +5,7 @@
 
 package com.liferay.style.book.item.selector.web.internal.scoped;
 
+import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
@@ -95,7 +96,8 @@ public class StyleBookEntryScopedItemSelectorView
 		StyleBookEntryScopedItemSelectorViewDescriptorResolver
 			styleBookEntryScopedItemSelectorViewDescriptorResolver =
 				new StyleBookEntryScopedItemSelectorViewDescriptorResolver(
-					_frontendTokenDefinitionRegistry, _groupLocalService);
+					_frontendTokenDefinitionRegistry, _groupLocalService,
+					_siteConnectedGroupGroupProvider);
 
 		_itemSelectorViewDescriptorRenderer.renderHTML(
 			servletRequest, servletResponse,
@@ -126,5 +128,8 @@ public class StyleBookEntryScopedItemSelectorView
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;
 
 }
