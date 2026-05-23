@@ -8,11 +8,14 @@ package com.liferay.style.book.item.selector.web.internal.scoped;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.StyleBookEntryEntriesItemSelectorViewDescriptor;
@@ -30,10 +33,12 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolver {
 
 	public StyleBookEntryScopedItemSelectorViewDescriptorResolver(
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
-		GroupLocalService groupLocalService) {
+		GroupLocalService groupLocalService,
+		SiteConnectedGroupGroupProvider siteConnectedGroupGroupProvider) {
 
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_groupLocalService = groupLocalService;
+		_siteConnectedGroupGroupProvider = siteConnectedGroupGroupProvider;
 	}
 
 	public ItemSelectorViewDescriptor<?> resolve(
@@ -53,7 +58,7 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolver {
 			return new StyleBookEntryGroupsItemSelectorViewDescriptor(
 				_groupLocalService, httpServletRequest, layout.getGroupId(),
 				portletURL, currentLevel.getScope(),
-				_siteConnectedGroupGroupProviderSnapshot.get());
+				_siteConnectedGroupGroupProvider);
 		}
 
 		return new StyleBookEntryEntriesItemSelectorViewDescriptor(
@@ -98,21 +103,40 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolver {
 		Group scopeGroup = _groupLocalService.fetchGroupByExternalReferenceCode(
 			selectedStyleBookEntryScopeERC, layout.getCompanyId());
 
-		if (scopeGroup == null) {
+		if ((scopeGroup == null) ||
+			!_isConnectedGroup(scopeGroup.getGroupId(), layout)) {
+
 			return CurrentLevel.scopes();
 		}
 
 		return CurrentLevel.designLibraryEntries(scopeGroup.getGroupId());
 	}
 
-	private static final Snapshot<SiteConnectedGroupGroupProvider>
-		_siteConnectedGroupGroupProviderSnapshot = new Snapshot<>(
-			StyleBookEntryScopedItemSelectorViewDescriptorResolver.class,
-			SiteConnectedGroupGroupProvider.class);
+	private boolean _isConnectedGroup(long groupId, Layout layout) {
+		try {
+			return ArrayUtil.contains(
+				_siteConnectedGroupGroupProvider.
+					getCurrentAndAncestorSiteAndDepotGroupIds(
+						layout.getGroupId()),
+				groupId);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+
+			return false;
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		StyleBookEntryScopedItemSelectorViewDescriptorResolver.class);
 
 	private final FrontendTokenDefinitionRegistry
 		_frontendTokenDefinitionRegistry;
 	private final GroupLocalService _groupLocalService;
+	private final SiteConnectedGroupGroupProvider
+		_siteConnectedGroupGroupProvider;
 
 	private static class CurrentLevel {
 

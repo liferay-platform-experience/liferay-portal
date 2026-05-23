@@ -5,6 +5,7 @@
 
 package com.liferay.style.book.item.selector.web.internal.scoped;
 
+import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.petra.function.UnsafeTriConsumer;
@@ -53,6 +54,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 		_withResolver(
 			true,
 			this::_testResolveReturnsDesignLibraryEntriesWhenScopeResolves);
+		_withResolver(
+			true,
+			this::_testResolveReturnsRootWhenDesignLibraryScopeNotConnected);
 		_withResolver(
 			true,
 			this::_testResolveReturnsRootWhenDesignLibraryScopeUnresolvable);
@@ -109,8 +113,9 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 	}
 
 	private void _testResolveReturnsDesignLibraryEntriesWhenScopeResolves(
-		HttpServletRequest httpServletRequest, Layout layout,
-		PortletURL portletURL) {
+			HttpServletRequest httpServletRequest, Layout layout,
+			PortletURL portletURL)
+		throws Exception {
 
 		Group depotGroup = Mockito.mock(Group.class);
 
@@ -124,6 +129,13 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			_groupLocalService.fetchGroupByExternalReferenceCode("DepotERC", 7L)
 		).thenReturn(
 			depotGroup
+		);
+
+		Mockito.when(
+			_siteConnectedGroupGroupProvider.
+				getCurrentAndAncestorSiteAndDepotGroupIds(11L)
+		).thenReturn(
+			new long[] {11L, 22L}
 		);
 
 		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
@@ -141,6 +153,41 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			Scope.DESIGN_LIBRARY,
 			ReflectionTestUtil.getFieldValue(
 				itemSelectorViewDescriptor, "_scope"));
+	}
+
+	private void _testResolveReturnsRootWhenDesignLibraryScopeNotConnected(
+			HttpServletRequest httpServletRequest, Layout layout,
+			PortletURL portletURL)
+		throws Exception {
+
+		Group depotGroup = Mockito.mock(Group.class);
+
+		Mockito.when(
+			depotGroup.getGroupId()
+		).thenReturn(
+			22L
+		);
+
+		Mockito.when(
+			_groupLocalService.fetchGroupByExternalReferenceCode("DepotERC", 7L)
+		).thenReturn(
+			depotGroup
+		);
+
+		Mockito.when(
+			_siteConnectedGroupGroupProvider.
+				getCurrentAndAncestorSiteAndDepotGroupIds(11L)
+		).thenReturn(
+			new long[] {11L}
+		);
+
+		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
+			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
+				httpServletRequest, layout, portletURL, "ERC-1", "DepotERC");
+
+		Assert.assertTrue(
+			itemSelectorViewDescriptor instanceof
+				StyleBookEntryScopesItemSelectorViewDescriptor);
 	}
 
 	private void _testResolveReturnsRootWhenDesignLibraryScopeUnresolvable(
@@ -237,10 +284,13 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 
 		_groupLocalService = Mockito.mock(GroupLocalService.class);
 
+		_siteConnectedGroupGroupProvider = Mockito.mock(
+			SiteConnectedGroupGroupProvider.class);
+
 		_styleBookEntryScopedItemSelectorViewDescriptorResolver =
 			new StyleBookEntryScopedItemSelectorViewDescriptorResolver(
 				Mockito.mock(FrontendTokenDefinitionRegistry.class),
-				_groupLocalService);
+				_groupLocalService, _siteConnectedGroupGroupProvider);
 
 		try (MockedStatic<FeatureFlagManagerUtil>
 				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
@@ -257,6 +307,7 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 	}
 
 	private GroupLocalService _groupLocalService;
+	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;
 	private StyleBookEntryScopedItemSelectorViewDescriptorResolver
 		_styleBookEntryScopedItemSelectorViewDescriptorResolver;
 
