@@ -48,7 +48,9 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.item.selector.StyleBookEntryItemSelectorCriterion;
 import com.liferay.style.book.item.selector.StyleBookEntryScopedItemSelectorCriterion;
+import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
+import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -212,14 +214,17 @@ public class LayoutLookAndFeelDisplayContext {
 	}
 
 	public Map<String, Object> getStyleBookConfigurationProps() {
+		Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
+
+		StyleBookEntry styleBookEntry =
+			StyleBookEntryProviderUtil.getStyleBookEntry(selLayout);
+
 		return HashMapBuilder.<String, Object>put(
 			"changeStyleBookURL",
 			() -> {
 				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 					RequestBackedPortletURLFactoryUtil.create(
 						_httpServletRequest);
-
-				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
 
 				BaseItemSelectorCriterion baseItemSelectorCriterion;
 
@@ -263,21 +268,14 @@ public class LayoutLookAndFeelDisplayContext {
 			"isReadOnly", _layoutsAdminDisplayContext.isReadOnly()
 		).put(
 			"styleBookEntryERC",
-			() -> {
-				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
-
-				return GetterUtil.getString(selLayout.getStyleBookEntryERC());
-			}
+			(styleBookEntry == null) ? StringPool.BLANK :
+				styleBookEntry.getExternalReferenceCode()
 		).put(
 			"styleBookEntryName", getStyleBookEntryName()
 		).put(
 			"styleBookEntryScopeERC",
-			() -> {
-				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
-
-				return GetterUtil.getString(
-					selLayout.getStyleBookEntryScopeERC());
-			}
+			(styleBookEntry == null) ? StringPool.BLANK :
+				GetterUtil.getString(selLayout.getStyleBookEntryScopeERC())
 		).build();
 	}
 
