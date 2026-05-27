@@ -571,6 +571,15 @@ $form-check-middle-left: map-deep-merge(
 			),
 
 			custom-control-label: (
+				after: (
+					top: 50%,
+					transform: translateY(-50%),
+				),
+
+				before: (
+					top: 0,
+				),
+
 				left: $checkbox-position,
 				margin-top: 0rem,
 				opacity: 1,
@@ -606,6 +615,15 @@ $form-check-middle-right: map-deep-merge(
 			),
 
 			custom-control-label: (
+				after: (
+					top: 50%,
+					transform: translateY(-50%),
+				),
+
+				before: (
+					top: 0,
+				),
+
 				left: auto,
 				margin-top: 0rem,
 				opacity: 1,
