@@ -62,6 +62,14 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 			this::_testResolveReturnsRootWhenDesignLibraryScopeUnresolvable);
 		_withResolver(
 			true, this::_testResolveReturnsSiteEntriesWhenScopeERCMissing);
+		_withResolver(
+			true, this::_testResolveReturnsLayoutDefaultWhenLevelKeyUnknown);
+		_withResolver(
+			true, this::_testResolveReturnsLayoutDefaultWhenScopeKeyUnknown);
+		_withResolver(
+			true,
+			this::_testResolveReturnsLayoutDefaultWhenEntriesGroupNotConnected);
+		_withResolver(true, this::_testResolveReturnsEntriesWhenGroupConnected);
 	}
 
 	private void _testResolveDispatchesToGroupsDescriptorOnLevelParam(
@@ -151,6 +159,178 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolverTest {
 				itemSelectorViewDescriptor, "_groupId"));
 		Assert.assertEquals(
 			Scope.DESIGN_LIBRARY,
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_scope"));
+	}
+
+	private void _testResolveReturnsEntriesWhenGroupConnected(
+			HttpServletRequest httpServletRequest, Layout layout,
+			PortletURL portletURL)
+		throws Exception {
+
+		Mockito.when(
+			httpServletRequest.getParameter("level")
+		).thenReturn(
+			Level.ENTRIES.getKey()
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("scope")
+		).thenReturn(
+			Scope.DESIGN_LIBRARY.getKey()
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("groupId")
+		).thenReturn(
+			"22"
+		);
+
+		Mockito.when(
+			_siteConnectedGroupGroupProvider.
+				getCurrentAndAncestorSiteAndDepotGroupIds(11L)
+		).thenReturn(
+			new long[] {11L, 22L}
+		);
+
+		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
+			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
+				httpServletRequest, layout, portletURL, "ERC-1", null);
+
+		Assert.assertTrue(
+			itemSelectorViewDescriptor instanceof
+				StyleBookEntryEntriesItemSelectorViewDescriptor);
+		Assert.assertEquals(
+			Long.valueOf(22L),
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_groupId"));
+		Assert.assertEquals(
+			Scope.DESIGN_LIBRARY,
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_scope"));
+	}
+
+	private void _testResolveReturnsLayoutDefaultWhenEntriesGroupNotConnected(
+			HttpServletRequest httpServletRequest, Layout layout,
+			PortletURL portletURL)
+		throws Exception {
+
+		Mockito.when(
+			httpServletRequest.getParameter("level")
+		).thenReturn(
+			Level.ENTRIES.getKey()
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("scope")
+		).thenReturn(
+			Scope.DESIGN_LIBRARY.getKey()
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("groupId")
+		).thenReturn(
+			"999"
+		);
+
+		Mockito.when(
+			_siteConnectedGroupGroupProvider.
+				getCurrentAndAncestorSiteAndDepotGroupIds(11L)
+		).thenReturn(
+			new long[] {11L}
+		);
+
+		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
+			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
+				httpServletRequest, layout, portletURL, "ERC-1", null);
+
+		Assert.assertTrue(
+			itemSelectorViewDescriptor instanceof
+				StyleBookEntryEntriesItemSelectorViewDescriptor);
+		Assert.assertEquals(
+			Long.valueOf(11L),
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_groupId"));
+		Assert.assertEquals(
+			Scope.SITE,
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_scope"));
+	}
+
+	private void _testResolveReturnsLayoutDefaultWhenLevelKeyUnknown(
+		HttpServletRequest httpServletRequest, Layout layout,
+		PortletURL portletURL) {
+
+		Mockito.when(
+			httpServletRequest.getParameter("level")
+		).thenReturn(
+			"foo"
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("scope")
+		).thenReturn(
+			Scope.DESIGN_LIBRARY.getKey()
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("groupId")
+		).thenReturn(
+			"999"
+		);
+
+		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
+			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
+				httpServletRequest, layout, portletURL, "ERC-1", null);
+
+		Assert.assertTrue(
+			itemSelectorViewDescriptor instanceof
+				StyleBookEntryEntriesItemSelectorViewDescriptor);
+		Assert.assertEquals(
+			Long.valueOf(11L),
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_groupId"));
+		Assert.assertEquals(
+			Scope.SITE,
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_scope"));
+	}
+
+	private void _testResolveReturnsLayoutDefaultWhenScopeKeyUnknown(
+		HttpServletRequest httpServletRequest, Layout layout,
+		PortletURL portletURL) {
+
+		Mockito.when(
+			httpServletRequest.getParameter("level")
+		).thenReturn(
+			Level.ENTRIES.getKey()
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("scope")
+		).thenReturn(
+			"bar"
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameter("groupId")
+		).thenReturn(
+			"999"
+		);
+
+		ItemSelectorViewDescriptor<?> itemSelectorViewDescriptor =
+			_styleBookEntryScopedItemSelectorViewDescriptorResolver.resolve(
+				httpServletRequest, layout, portletURL, "ERC-1", null);
+
+		Assert.assertTrue(
+			itemSelectorViewDescriptor instanceof
+				StyleBookEntryEntriesItemSelectorViewDescriptor);
+		Assert.assertEquals(
+			Long.valueOf(11L),
+			ReflectionTestUtil.getFieldValue(
+				itemSelectorViewDescriptor, "_groupId"));
+		Assert.assertEquals(
+			Scope.SITE,
 			ReflectionTestUtil.getFieldValue(
 				itemSelectorViewDescriptor, "_scope"));
 	}

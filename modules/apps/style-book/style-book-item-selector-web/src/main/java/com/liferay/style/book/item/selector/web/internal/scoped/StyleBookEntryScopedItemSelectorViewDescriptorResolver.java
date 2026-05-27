@@ -75,19 +75,32 @@ public class StyleBookEntryScopedItemSelectorViewDescriptorResolver {
 		CurrentLevel layoutCurrentLevel = _getCurrentLevel(
 			layout, selectedStyleBookEntryScopeERC);
 
-		return new CurrentLevel(
-			ParamUtil.getLong(
-				httpServletRequest, "groupId", layoutCurrentLevel.getGroupId()),
-			Level.fromKey(
-				ParamUtil.getString(
-					httpServletRequest, "level",
-					layoutCurrentLevel.getLevel(
-					).getKey())),
-			Scope.fromKey(
-				ParamUtil.getString(
-					httpServletRequest, "scope",
-					layoutCurrentLevel.getScope(
-					).getKey())));
+		Level level = Level.fromKey(
+			ParamUtil.getString(
+				httpServletRequest, "level",
+				layoutCurrentLevel.getLevel(
+				).getKey()));
+		Scope scope = Scope.fromKey(
+			ParamUtil.getString(
+				httpServletRequest, "scope",
+				layoutCurrentLevel.getScope(
+				).getKey()));
+
+		if ((level == null) || (scope == null)) {
+			return layoutCurrentLevel;
+		}
+
+		long groupId = ParamUtil.getLong(
+			httpServletRequest, "groupId", layoutCurrentLevel.getGroupId());
+
+		if ((level == Level.ENTRIES) &&
+			(groupId != layoutCurrentLevel.getGroupId()) &&
+			!_isConnectedGroup(groupId, layout)) {
+
+			return layoutCurrentLevel;
+		}
+
+		return new CurrentLevel(groupId, level, scope);
 	}
 
 	private CurrentLevel _getCurrentLevel(
