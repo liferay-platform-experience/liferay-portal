@@ -389,6 +389,20 @@
 	}
 }
 
+.form-check-middle-left,
+.form-check-middle-right {
+	.custom-control-label {
+		&::after {
+			top: 50%;
+			transform: translateY(-50%);
+		}
+
+		&::before {
+			top: 0;
+		}
+	}
+}
+
 .form-check-top-left {
 	.custom-control-input,
 	.custom-control-label,
