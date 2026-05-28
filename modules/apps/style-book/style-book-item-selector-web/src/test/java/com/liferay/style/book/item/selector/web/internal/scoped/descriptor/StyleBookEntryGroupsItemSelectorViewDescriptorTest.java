@@ -24,6 +24,7 @@ import com.liferay.style.book.item.selector.web.internal.scoped.descriptor.item.
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -158,15 +159,9 @@ public class StyleBookEntryGroupsItemSelectorViewDescriptorTest {
 		);
 
 		Mockito.when(
-			_groupLocalService.fetchGroup(11L)
+			_groupLocalService.getGroups(new long[] {11L, 22L})
 		).thenReturn(
-			siteGroup
-		);
-
-		Mockito.when(
-			_groupLocalService.fetchGroup(22L)
-		).thenReturn(
-			depotGroup
+			Arrays.asList(siteGroup, depotGroup)
 		);
 
 		StyleBookEntryGroupsItemSelectorViewDescriptor
@@ -197,15 +192,9 @@ public class StyleBookEntryGroupsItemSelectorViewDescriptorTest {
 		);
 
 		Mockito.when(
-			_groupLocalService.fetchGroup(11L)
+			_groupLocalService.getGroups(new long[] {11L, 22L})
 		).thenReturn(
-			siteGroup
-		);
-
-		Mockito.when(
-			_groupLocalService.fetchGroup(22L)
-		).thenReturn(
-			depotGroup
+			Arrays.asList(siteGroup, depotGroup)
 		);
 
 		StyleBookEntryGroupsItemSelectorViewDescriptor
