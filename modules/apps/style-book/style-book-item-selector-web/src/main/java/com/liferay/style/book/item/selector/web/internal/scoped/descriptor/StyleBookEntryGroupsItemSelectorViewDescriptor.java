@@ -102,11 +102,8 @@ public class StyleBookEntryGroupsItemSelectorViewDescriptor
 		String keywords = StringUtil.toLowerCase(
 			ParamUtil.getString(_httpServletRequest, "keywords"));
 
-		for (long groupId : groupIds) {
-			Group group = _groupLocalService.fetchGroup(groupId);
-
-			if ((group == null) ||
-				((_scope == Scope.SITE) && !group.isSite()) ||
+		for (Group group : _groupLocalService.getGroups(groupIds)) {
+			if (((_scope == Scope.SITE) && !group.isSite()) ||
 				((_scope == Scope.DESIGN_LIBRARY) && !group.isDepot())) {
 
 				continue;
