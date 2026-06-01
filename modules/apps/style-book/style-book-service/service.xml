@@ -67,6 +67,48 @@
 			<finder-column name="themeId" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="StyleBookTokenCategory" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="styleBookTokenCategoryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="styleBookEntryId" type="long" />
+		<column name="themeFrontendTokenDefinitionId" type="String" />
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="StyleBookEntryId" return-type="Collection">
+			<finder-column name="styleBookEntryId" />
+		</finder>
+		<finder name="SBEI_TFTDI_N" return-type="StyleBookTokenCategory" unique="true">
+			<finder-column name="styleBookEntryId" />
+			<finder-column name="themeFrontendTokenDefinitionId" />
+			<finder-column name="name" />
+		</finder>
+	</entity>
 	<exceptions>
 		<exception>DuplicateStyleBookEntryKey</exception>
 		<exception>DuplicateStyleBookEntryName</exception>
