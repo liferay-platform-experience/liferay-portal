@@ -36,6 +36,16 @@ public class StyleBookTokenCategoryLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.style.book.service.impl.StyleBookTokenCategoryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static StyleBookTokenCategory addStyleBookTokenCategory(
+			long styleBookEntryId, String themeFrontendTokenDefinitionId,
+			String name, String description,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addStyleBookTokenCategory(
+			styleBookEntryId, themeFrontendTokenDefinitionId, name, description,
+			serviceContext);
+	}
 
 	/**
 	 * Adds the style book token category to the database. Also notifies the appropriate model listeners.
@@ -312,4 +322,4 @@ public class StyleBookTokenCategoryLocalServiceUtil {
 			StyleBookTokenCategoryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1180517467
+// LIFERAY-SERVICE-BUILDER-HASH:-660075946

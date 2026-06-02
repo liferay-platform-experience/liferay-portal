@@ -33,6 +33,18 @@ public class StyleBookTokenCategoryLocalServiceWrapper
 			styleBookTokenCategoryLocalService;
 	}
 
+	@Override
+	public StyleBookTokenCategory addStyleBookTokenCategory(
+			long styleBookEntryId, String themeFrontendTokenDefinitionId,
+			String name, String description,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookTokenCategoryLocalService.addStyleBookTokenCategory(
+			styleBookEntryId, themeFrontendTokenDefinitionId, name, description,
+			serviceContext);
+	}
+
 	/**
 	 * Adds the style book token category to the database. Also notifies the appropriate model listeners.
 	 *
@@ -382,4 +394,4 @@ public class StyleBookTokenCategoryLocalServiceWrapper
 		_styleBookTokenCategoryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1930492620
+// LIFERAY-SERVICE-BUILDER-HASH:-536278102
