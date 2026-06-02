@@ -24,3 +24,5 @@ create unique index IX_3EC07F6E on StyleBookEntryVersion (groupId, version, uuid
 create index IX_6C02234D on StyleBookEntryVersion (styleBookEntryId);
 create index IX_930691EE on StyleBookEntryVersion (uuid_[$COLUMN_LENGTH:75$]);
 create unique index IX_2033C367 on StyleBookEntryVersion (version, styleBookEntryId, ctCollectionId);
+
+create unique index IX_6C1CDD67 on StyleBookTokenCategory (styleBookEntryId, themeFrontendTokenDefinitionId[$COLUMN_LENGTH:75$], name[$COLUMN_LENGTH:75$], ctCollectionId);
