@@ -70,6 +70,12 @@ public class StyleBookEntryScopedItemSelectorView
 		Layout layout = _layoutLocalService.fetchLayout(
 			styleBookEntryScopedItemSelectorCriterion.getSelPlid());
 
+		if (layout == null) {
+			throw new ServletException(
+				"Layout was not found for plid " +
+					styleBookEntryScopedItemSelectorCriterion.getSelPlid());
+		}
+
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)servletRequest;
 
