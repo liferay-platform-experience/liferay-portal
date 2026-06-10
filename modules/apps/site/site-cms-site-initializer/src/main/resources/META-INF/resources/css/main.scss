@@ -1,5 +1,7 @@
 @import 'atlas-variables';
 
+@import 'cms_mixins';
+
 .fds {
 	.data-set-wrapper {
 		.col-md-3:has(.hidden-item-selector-item) {
@@ -85,16 +87,12 @@
 	}
 
 	.c-empty-state-animation {
-		background-color: $light;
-		border-radius: 4px;
+		@include cms-dropzone;
+
 		margin: 0;
 		max-height: unset;
 		max-width: unset;
-		outline: 2px dashed $secondary-l2;
 		padding: 2rem;
-		transition-duration: 0.2s;
-		transition-property: background-color, outline;
-		transition-timing-function: ease-in-out;
 	}
 
 	.c-empty-state-text {
@@ -195,7 +193,9 @@
 	}
 }
 
-.custom-empty-state.cms-all-related-assets {
+.custom-empty-state.cms-all-related-assets,
+.custom-empty-state.cms-related-assets,
+.custom-empty-state.cms-space-summary {
 	.fds.c-slideout-container {
 		min-height: unset;
 	}
@@ -203,10 +203,6 @@
 
 .custom-empty-state.cms-related-assets,
 .custom-empty-state.cms-space-summary {
-	.fds.c-slideout-container {
-		min-height: unset;
-	}
-
 	.c-empty-state {
 		margin: 2.5rem auto;
 	}
@@ -249,8 +245,4 @@
 			display: none;
 		}
 	}
-}
-
-.cursor-pointer {
-	cursor: pointer;
 }

@@ -1,0 +1,9 @@
+@mixin cms-hairline-border($side) {
+	border-#{$side}-color: $secondary-l0;
+	border-#{$side}-style: solid;
+	border-#{$side}-width: 0.05rem;
+
+	@media (max-resolution: 1dppx) {
+		border-#{$side}-color: $secondary-l2;
+	}
+}
