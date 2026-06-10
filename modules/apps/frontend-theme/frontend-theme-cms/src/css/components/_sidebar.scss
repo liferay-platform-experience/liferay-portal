@@ -8,6 +8,38 @@
 	}
 }
 
+.sidebar-layout .sidebar-container .sidebar {
+	.menubar-primary .nav-link {
+		&:focus-visible,
+		&:hover,
+		&.active {
+			background-color: $light;
+		}
+
+		&:hover:before {
+			background-color: $gray-600;
+			content: '';
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+		}
+
+		&:hover:not(.active):before {
+			width: 2px;
+		}
+	}
+
+	@media (min-height: 480px) {
+		.sidebar-header {
+			background-color: $white;
+			position: sticky;
+			top: 0;
+			z-index: 9;
+		}
+	}
+}
+
 .cms-sidebar-nav {
 	@include media-breakpoint-up(md) {
 		@include cms-hairline-border(right);

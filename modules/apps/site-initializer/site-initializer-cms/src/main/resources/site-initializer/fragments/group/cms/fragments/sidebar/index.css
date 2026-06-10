@@ -31,29 +31,6 @@
 		height: var(--sidebar-layout-height);
 		scroll-behavior: smooth;
 		width: var(--sidebar-layout-width);
-
-		.menubar-primary {
-			.nav-link {
-				&:focus-visible,
-				&:hover,
-				&.active {
-					background-color: #f1f2f5;
-				}
-
-				&:hover:before {
-					background-color: #6b6c7e;
-					content: '';
-					height: 100%;
-					left: 0;
-					position: absolute;
-					top: 0;
-				}
-
-				&:hover:not(.active):before {
-					width: 2px;
-				}
-			}
-		}
 	}
 
 	.content {
@@ -99,12 +76,4 @@
 		}
 	}
 
-	@media (min-height: 480px) {
-		.sidebar-header {
-			background-color: white;
-			position: sticky;
-			top: 0;
-			z-index: 9;
-		}
-	}
 }

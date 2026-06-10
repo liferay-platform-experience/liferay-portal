@@ -1,11 +1,9 @@
-@import 'clay/atlas/variables/_globals';
+@import 'clay/atlas-custom-properties/_variables';
 
 $border-radius: 0.5rem;
 
 $border-radius-lg: 0.5rem;
 $border-radius-sm: 0.5rem;
-
-$breadcrumb-divider-svg-icon: clay-icon(slash, $gray-600);
 
 $breadcrumb-divider-svg-icon-height: 15px;
 

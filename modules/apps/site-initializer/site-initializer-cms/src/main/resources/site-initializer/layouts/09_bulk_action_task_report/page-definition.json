@@ -10,7 +10,7 @@
 				"pageElements": [
 					{
 						"definition": {
-							"customCSS": ".[$FRAGMENT_CLASS$] {\npadding: 0.75rem 1.5rem;\nborder-bottom: 1px solid #e7e7ed;\n}",
+							"customCSS": ".[$FRAGMENT_CLASS$] {\npadding: 0.75rem 1.5rem;\nborder-bottom: 1px solid var(--gray-300);\n}",
 							"indexed": true,
 							"layout": {
 							}
