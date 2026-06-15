@@ -64,6 +64,26 @@
 			</clay:content-col>
 		</c:if>
 
+		<%
+		String colorSchemeLabelKey = colorScheme.equals("dark") ? "switch-to-light-mode" : "switch-to-dark-mode";
+		%>
+
+		<clay:content-col
+			cssClass="autofit-col-end"
+		>
+			<clay:button
+				aria-label='<%= LanguageUtil.get(request, colorSchemeLabelKey) %>'
+				borderless="<%= true %>"
+				cssClass="lfr-portal-tooltip"
+				displayType="secondary"
+				icon='<%= colorScheme.equals("dark") ? "sun" : "moon" %>'
+				id='<%= liferayPortletResponse.getNamespace() + "colorSchemeToggle" %>'
+				monospaced="<%= true %>"
+				small="<%= true %>"
+				title="<%= colorSchemeLabelKey %>"
+			/>
+		</clay:content-col>
+
 		<clay:content-col
 			cssClass="autofit-col-end"
 		>
@@ -80,3 +100,54 @@
 		</clay:content-col>
 	</clay:content-row>
 </span>
+
+<aui:script>
+	(function () {
+		var button = document.getElementById(
+			'<portlet:namespace />colorSchemeToggle'
+		);
+
+		if (!button) {
+			return;
+		}
+
+		button.addEventListener('click', function () {
+			var next =
+				document.documentElement.dataset.colorScheme === 'dark'
+					? 'light'
+					: 'dark';
+
+			document.documentElement.dataset.colorScheme = next;
+
+			var nextLabel = Liferay.Language.get(
+				next === 'dark' ? 'switch-to-light-mode' : 'switch-to-dark-mode'
+			);
+
+			button.setAttribute('aria-label', nextLabel);
+			button.setAttribute('title', nextLabel);
+
+			var useElement = button.querySelector('use');
+
+			if (useElement) {
+				var hrefAttr = useElement.hasAttribute('href')
+					? 'href'
+					: 'xlink:href';
+
+				useElement.setAttribute(
+					hrefAttr,
+					useElement
+						.getAttribute(hrefAttr)
+						.replace(
+							/#[^#]+$/,
+							'#' + (next === 'dark' ? 'sun' : 'moon')
+						)
+				);
+			}
+
+			Liferay.Util.Session.set(
+				'com_liferay_application_list_taglib_SideNavigationColorScheme',
+				next
+			);
+		});
+	})();
+</aui:script>
