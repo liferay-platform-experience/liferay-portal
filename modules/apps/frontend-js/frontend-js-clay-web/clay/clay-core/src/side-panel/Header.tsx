@@ -23,6 +23,11 @@ type Props = {
 	className?: string;
 
 	/**
+	 * Sets the CSS className for the close button.
+	 */
+	closeClassName?: string;
+
+	/**
 	 * Messages for the Side Panel Header.
 	 */
 	messages?: Messages;
@@ -48,6 +53,7 @@ export type Messages = {
 export function Header({
 	children,
 	className,
+	closeClassName,
 	messages = {
 		backAriaLabel: 'Go back.',
 		closeAriaLabel: 'Close the side panel.',
@@ -85,7 +91,7 @@ export function Header({
 				<div className="autofit-col">
 					<button
 						aria-label={messages.closeAriaLabel}
-						className="close"
+						className={classnames('close', closeClassName)}
 						onClick={() => onOpenChange(false)}
 						type="button"
 					>
