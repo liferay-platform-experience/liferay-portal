@@ -72,7 +72,7 @@
 			cssClass="autofit-col-end"
 		>
 			<clay:button
-				aria-label='<%= LanguageUtil.get(request, colorSchemeLabelKey) %>'
+				aria-label="<%= LanguageUtil.get(request, colorSchemeLabelKey) %>"
 				borderless="<%= true %>"
 				cssClass="lfr-portal-tooltip"
 				displayType="secondary"
