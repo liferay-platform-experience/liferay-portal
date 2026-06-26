@@ -12,6 +12,8 @@ import {FieldBase, openConfirmModal} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
+import {getCustomTokenCSSVariableMapping} from './utils/getCustomTokenCSSVariableMapping';
+
 const EDITOR_TYPE_OPTIONS = [
 	{label: Liferay.Language.get('default'), value: ''},
 	{label: Liferay.Language.get('color-picker'), value: 'ColorPicker'},
@@ -62,15 +64,39 @@ export default function NewCustomTokenModal({
 	const handleSubmit = (event) => {
 		event.preventDefault();
 
-		if (!name.trim()) {
+		const trimmedName = name.trim();
+
+		if (!trimmedName) {
 			setErrorMessage(Liferay.Language.get('this-field-is-required'));
+
+			return;
+		}
+
+		const cssVariableMapping =
+			getCustomTokenCSSVariableMapping(trimmedName);
+
+		if (!cssVariableMapping) {
+			setErrorMessage(Liferay.Language.get('please-enter-a-valid-name'));
+
+			return;
+		}
+
+		const duplicate =
+			!initialValues.name &&
+			Object.values(frontendTokensValues).some(
+				(tokenValue) =>
+					tokenValue.cssVariableMapping === cssVariableMapping
+			);
+
+		if (duplicate) {
+			setErrorMessage(Liferay.Language.get('please-enter-a-unique-name'));
 
 			return;
 		}
 
 		onSubmit({
 			editorType,
-			name: name.trim(),
+			name: trimmedName,
 			tokenSet: showNewTokenSet ? newTokenSet.trim() : tokenSet,
 			value: value.trim(),
 		});

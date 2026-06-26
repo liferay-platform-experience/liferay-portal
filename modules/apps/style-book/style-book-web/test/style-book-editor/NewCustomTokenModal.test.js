@@ -85,6 +85,67 @@ describe('NewCustomTokenModal', () => {
 		expect(onSubmit).not.toHaveBeenCalled();
 	});
 
+	it('shows a valid-name error and does not submit when the name has no alphanumeric characters', async () => {
+		const onSubmit = jest.fn();
+
+		renderComponent({onSubmit});
+
+		const [nameInput] = screen.getAllByRole('textbox');
+
+		await userEvent.type(nameInput, '!!!');
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'create-token'})
+		);
+
+		expect(
+			screen.getByText('please-enter-a-valid-name')
+		).toBeInTheDocument();
+		expect(onSubmit).not.toHaveBeenCalled();
+	});
+
+	it('shows a unique-name error and does not submit when the derived token already exists', async () => {
+		const onSubmit = jest.fn();
+
+		renderComponent({
+			frontendTokensValues: {
+				existingToken: {cssVariableMapping: 'my-token'},
+			},
+			onSubmit,
+		});
+
+		const [nameInput] = screen.getAllByRole('textbox');
+
+		await userEvent.type(nameInput, 'My Token');
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'create-token'})
+		);
+
+		expect(
+			screen.getByText('please-enter-a-unique-name')
+		).toBeInTheDocument();
+		expect(onSubmit).not.toHaveBeenCalled();
+	});
+
+	it('allows a duplicate derived name when editing an existing token', async () => {
+		const onSubmit = jest.fn();
+
+		renderComponent({
+			frontendTokensValues: {
+				existingToken: {cssVariableMapping: 'my-token'},
+			},
+			initialValues: {name: 'My Token'},
+			onSubmit,
+		});
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'create-token'})
+		);
+
+		expect(onSubmit).toHaveBeenCalledTimes(1);
+	});
+
 	it('submits the token and closes the modal when a valid name is provided', async () => {
 		const closeModal = jest.fn();
 		const onSubmit = jest.fn();

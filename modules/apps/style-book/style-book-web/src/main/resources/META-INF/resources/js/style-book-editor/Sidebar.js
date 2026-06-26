@@ -18,6 +18,7 @@ import {
 	useFrontendTokensValues,
 	useSaveTokenValue,
 } from './contexts/StyleBookEditorContext';
+import {getCustomTokenCSSVariableMapping} from './utils/getCustomTokenCSSVariableMapping';
 
 export default React.memo(function Sidebar() {
 	const sidebarRef = useRef();
@@ -351,10 +352,7 @@ function FrontendTokenCategories({activeDefinition}) {
 	);
 
 	const createToken = ({editorType, name, tokenSet, value}) => {
-		const cssVariableMapping = name
-			.toLowerCase()
-			.replace(/[^a-z0-9]+/g, '-')
-			.replace(/(^-+)|(-+$)/g, '');
+		const cssVariableMapping = getCustomTokenCSSVariableMapping(name);
 
 		saveTokenValue({
 			label: name,
