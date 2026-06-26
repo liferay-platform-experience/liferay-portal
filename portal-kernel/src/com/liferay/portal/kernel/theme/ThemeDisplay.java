@@ -194,9 +194,7 @@ public class ThemeDisplay
 
 		boolean rightToLeft = PortalUtil.isRightToLeft(_httpServletRequest);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				getCompanyId(), "LPD-57922")) {
-
+		if (FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPD-57922")) {
 			_clayCSSURL = _getResource(
 				"/clay_atlas_custom_properties.css", getPathThemeCss(),
 				rightToLeft ? "/clay_atlas_custom_properties_rtl.css" :
@@ -578,9 +576,7 @@ public class ThemeDisplay
 
 		boolean rightToLeft = PortalUtil.isRightToLeft(_httpServletRequest);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				getCompanyId(), "LPD-57922")) {
-
+		if (FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPD-57922")) {
 			_mainCSSURL = _getResource(
 				"/main_atlas_custom_properties.css", getPathThemeCss(),
 				rightToLeft ? "/main_atlas_custom_properties_rtl.css" :
