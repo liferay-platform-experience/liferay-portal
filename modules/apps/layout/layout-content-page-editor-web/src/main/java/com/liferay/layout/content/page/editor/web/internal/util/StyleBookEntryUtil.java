@@ -100,6 +100,8 @@ public class StyleBookEntryUtil {
 		Map<String, Object> frontendTokensValues,
 		JSONObject frontendTokenValuesJSONObject, Locale locale) {
 
+		String customLabel = LanguageUtil.get(locale, "custom");
+
 		for (String key : frontendTokenValuesJSONObject.keySet()) {
 			JSONObject valueJSONObject =
 				frontendTokenValuesJSONObject.getJSONObject(key);
@@ -126,8 +128,6 @@ public class StyleBookEntryUtil {
 			if (Validator.isNull(cssVariableMapping)) {
 				continue;
 			}
-
-			String customLabel = LanguageUtil.get(locale, "custom");
 
 			String label = valueJSONObject.getString("label");
 
