@@ -61,8 +61,8 @@ public class AtlasCustomPropertiesLifecycleAction implements LifecycleAction {
 			theme.getCssPath());
 
 		String mainAtlasName = PortalUtil.isRightToLeft(httpServletRequest) ?
-			"/main-atlas-custom-properties_rtl.css" :
-				"/main-atlas-custom-properties.css";
+			"/main_atlas_custom_properties_rtl.css" :
+				"/main_atlas_custom_properties.css";
 
 		String mainHashedFileURI = HashedFilesRegistryUtil.getHashedFileURI(
 			basePath + mainAtlasName);
@@ -79,8 +79,8 @@ public class AtlasCustomPropertiesLifecycleAction implements LifecycleAction {
 		}
 
 		String clayAtlasName = PortalUtil.isRightToLeft(httpServletRequest) ?
-			"/clay-atlas-custom-properties_rtl.css" :
-				"/clay-atlas-custom-properties.css";
+			"/clay_atlas_custom_properties_rtl.css" :
+				"/clay_atlas_custom_properties.css";
 
 		String clayHashedFileURI = HashedFilesRegistryUtil.getHashedFileURI(
 			basePath + clayAtlasName);

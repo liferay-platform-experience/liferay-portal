@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistryUtil;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -191,11 +192,23 @@ public class ThemeDisplay
 			return _clayCSSURL;
 		}
 
-		_clayCSSURL = _getResource(
-			"/clay.css", getPathThemeCss(),
-			PortalUtil.isRightToLeft(_httpServletRequest) ? "/clay_rtl.css" :
-				"/clay.css",
-			_theme.getCssPath());
+		boolean rightToLeft = PortalUtil.isRightToLeft(_httpServletRequest);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				getCompanyId(), "LPD-57922")) {
+
+			_clayCSSURL = _getResource(
+				"/clay_atlas_custom_properties.css", getPathThemeCss(),
+				rightToLeft ? "/clay_atlas_custom_properties_rtl.css" :
+					"/clay_atlas_custom_properties.css",
+				_theme.getCssPath());
+		}
+		else {
+			_clayCSSURL = _getResource(
+				"/clay.css", getPathThemeCss(),
+				rightToLeft ? "/clay_rtl.css" : "/clay.css",
+				_theme.getCssPath());
+		}
 
 		return _clayCSSURL;
 	}
@@ -563,11 +576,23 @@ public class ThemeDisplay
 			return _mainCSSURL;
 		}
 
-		_mainCSSURL = _getResource(
-			"/main.css", getPathThemeCss(),
-			PortalUtil.isRightToLeft(_httpServletRequest) ? "/main_rtl.css" :
-				"/main.css",
-			_theme.getCssPath());
+		boolean rightToLeft = PortalUtil.isRightToLeft(_httpServletRequest);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				getCompanyId(), "LPD-57922")) {
+
+			_mainCSSURL = _getResource(
+				"/main_atlas_custom_properties.css", getPathThemeCss(),
+				rightToLeft ? "/main_atlas_custom_properties_rtl.css" :
+					"/main_atlas_custom_properties.css",
+				_theme.getCssPath());
+		}
+		else {
+			_mainCSSURL = _getResource(
+				"/main.css", getPathThemeCss(),
+				rightToLeft ? "/main_rtl.css" : "/main.css",
+				_theme.getCssPath());
+		}
 
 		return _mainCSSURL;
 	}

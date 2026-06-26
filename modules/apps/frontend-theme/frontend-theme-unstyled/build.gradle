@@ -8,7 +8,6 @@ configurations {
 
 task buildAlloyUITheme(type: Copy)
 task buildClay(type: Copy)
-task buildClayCustomProperties(type: Copy)
 task buildClayFonts(type: Copy)
 task buildClayIcons(type: Copy)
 task buildFontAwesome(type: Copy)
@@ -122,29 +121,47 @@ buildClay {
 				return line
 			}
 		}
-	}
-
-	eachFile new StripPathSegmentsAction(2)
-	from "../../frontend-js/frontend-js-clay-web/clay/clay-css"
-	include "src/scss/"
-	includeEmptyDirs = false
-	into clayDestinationDir
-}
-
-buildClayCustomProperties {
-	File clayDestinationDir = new File(themeDestinationDir, "css/clay")
-
-	dependsOn buildClay
-
-	eachFile {
-		if (name == "atlas.scss") {
-			name = "atlas-custom-properties.scss"
-
+		else if (name in ["_atlas-custom-properties-variables.scss"]) {
 			filter {
 				String line ->
 
-				if (line == '@import "../clay_variables";') {
-					line = '@import "atlas-custom-properties/_variables";'
+				if (line == "// INSERT @use rules") {
+					line = '''\
+@use "sass:math" as *;'''
+				}
+				else if (line == "// INSERT CUSTOM BASE VARS") {
+					line = '''\
+@import "../clay_variables_atlas_custom_properties";'''
+				}
+				else if (line == "// INSERT CUSTOM VARS") {
+					line = '''\
+
+@import "../liferay_variables_custom";
+@import "../liferay_variables";'''
+				}
+
+				return line
+			}
+		}
+		else if (name in ["_atlas-custom-properties.scss"]) {
+			filter {
+				String line ->
+
+				if (line == "// INSERT @use rules") {
+					line = '''\
+@use "sass:math" as *;'''
+				}
+				else if (line == "// INSERT CUSTOM EXTENSIONS") {
+					line = '''\
+
+@import "../liferay_variables_custom";
+@import "../liferay_variables";
+@import "../clay_custom";
+@import "../liferay_custom";'''
+				}
+				else if (line == "// INSERT CUSTOM VARS") {
+					line = '''\
+@import "../clay_variables_atlas_custom_properties";'''
 				}
 
 				return line
@@ -152,8 +169,9 @@ buildClayCustomProperties {
 		}
 	}
 
-	from clayDestinationDir
-	include "atlas.scss"
+	eachFile new StripPathSegmentsAction(2)
+	from "../../frontend-js/frontend-js-clay-web/clay/clay-css"
+	include "src/scss/"
 	includeEmptyDirs = false
 	into clayDestinationDir
 }
@@ -208,7 +226,6 @@ buildLexiconIcons {
 
 buildTheme {
 	dependsOn buildAlloyUITheme
-	dependsOn buildClayCustomProperties
 	dependsOn buildClayFonts
 	dependsOn buildClayIcons
 	dependsOn buildFontAwesome
@@ -222,7 +239,6 @@ classes {
 copyCSS {
 	mustRunAfter buildAlloyUITheme
 	mustRunAfter buildClay
-	mustRunAfter buildClayCustomProperties
 	mustRunAfter buildClayIcons
 	mustRunAfter buildLexiconIcons
 }
@@ -234,7 +250,6 @@ dependencies {
 jarSources {
 	mustRunAfter buildAlloyUITheme
 	mustRunAfter buildClay
-	mustRunAfter buildClayCustomProperties
 	mustRunAfter buildClayFonts
 	mustRunAfter buildClayIcons
 	mustRunAfter buildLexiconIcons

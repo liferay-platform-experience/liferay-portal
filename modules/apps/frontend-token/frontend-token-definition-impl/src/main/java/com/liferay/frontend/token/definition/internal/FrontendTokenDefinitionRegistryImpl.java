@@ -107,7 +107,8 @@ public class FrontendTokenDefinitionRegistryImpl
 		try {
 			theme = layout.getTheme();
 
-			return _getBundleFrontendTokenDefinition(theme.getThemeId());
+			return _getBundleFrontendTokenDefinition(
+				layout.getCompanyId(), theme.getThemeId());
 		}
 		catch (PortalException portalException) {
 			_log.error(
@@ -135,7 +136,7 @@ public class FrontendTokenDefinitionRegistryImpl
 		long companyId, String themeId) {
 
 		FrontendTokenDefinition frontendTokenDefinition =
-			_getBundleFrontendTokenDefinition(themeId);
+			_getBundleFrontendTokenDefinition(companyId, themeId);
 
 		if ((frontendTokenDefinition != null) &&
 			(!Objects.equals(
@@ -160,11 +161,32 @@ public class FrontendTokenDefinitionRegistryImpl
 	public List<FrontendTokenDefinition> getFrontendTokenDefinitions(
 		long companyId) {
 
+		List<FrontendTokenDefinition> frontendTokenDefinitions =
+			new ArrayList<>();
+
 		Map<String, FrontendTokenDefinition> bundleFrontendTokenDefinitions =
 			_getBundleFrontendTokenDefinitions();
 
-		List<FrontendTokenDefinition> frontendTokenDefinitions =
-			new ArrayList<>(bundleFrontendTokenDefinitions.values());
+		boolean atlasCustomProperties = FeatureFlagManagerUtil.isEnabled(
+			companyId, "LPD-57922");
+
+		for (Map.Entry<String, FrontendTokenDefinition> entry :
+				bundleFrontendTokenDefinitions.entrySet()) {
+
+			FrontendTokenDefinition frontendTokenDefinition = entry.getValue();
+
+			if (atlasCustomProperties) {
+				FrontendTokenDefinition featureFlaggedFrontendTokenDefinition =
+					_featureFlaggedFrontendTokenDefinitions.get(entry.getKey());
+
+				if (featureFlaggedFrontendTokenDefinition != null) {
+					frontendTokenDefinition =
+						featureFlaggedFrontendTokenDefinition;
+				}
+			}
+
+			frontendTokenDefinitions.add(frontendTokenDefinition);
+		}
 
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-84497")) {
 			frontendTokenDefinitions.removeIf(
@@ -240,7 +262,14 @@ public class FrontendTokenDefinitionRegistryImpl
 	protected List<FrontendTokenDefinitionImpl> getFrontendTokenDefinitionImpls(
 		Bundle bundle) {
 
-		String json = _getFrontendTokenDefinitionJSON(bundle);
+		return getFrontendTokenDefinitionImpls(
+			bundle, "WEB-INF/frontend-token-definition.json");
+	}
+
+	protected List<FrontendTokenDefinitionImpl> getFrontendTokenDefinitionImpls(
+		Bundle bundle, String fileName) {
+
+		String json = _getFrontendTokenDefinitionJSON(bundle, fileName);
 
 		if (json == null) {
 			return Collections.emptyList();
@@ -391,12 +420,24 @@ public class FrontendTokenDefinitionRegistryImpl
 	}
 
 	private FrontendTokenDefinition _getBundleFrontendTokenDefinition(
-		String themeId) {
+		long companyId, String themeId) {
 
 		Map<String, FrontendTokenDefinition> bundleFrontendTokenDefinitions =
 			_getBundleFrontendTokenDefinitions();
 
-		return bundleFrontendTokenDefinitions.get(themeId);
+		FrontendTokenDefinition frontendTokenDefinition =
+			bundleFrontendTokenDefinitions.get(themeId);
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57922")) {
+			FrontendTokenDefinition featureFlaggedFrontendTokenDefinition =
+				_featureFlaggedFrontendTokenDefinitions.get(themeId);
+
+			if (featureFlaggedFrontendTokenDefinition != null) {
+				return featureFlaggedFrontendTokenDefinition;
+			}
+		}
+
+		return frontendTokenDefinition;
 	}
 
 	private Map<String, FrontendTokenDefinition>
@@ -440,11 +481,13 @@ public class FrontendTokenDefinitionRegistryImpl
 			}
 		}
 
-		return _getBundleFrontendTokenDefinition(themeId);
+		return _getBundleFrontendTokenDefinition(companyId, themeId);
 	}
 
-	private String _getFrontendTokenDefinitionJSON(Bundle bundle) {
-		URL url = bundle.getEntry("WEB-INF/frontend-token-definition.json");
+	private String _getFrontendTokenDefinitionJSON(
+		Bundle bundle, String fileName) {
+
+		URL url = bundle.getEntry(fileName);
 
 		if (url == null) {
 			return null;
@@ -455,8 +498,7 @@ public class FrontendTokenDefinitionRegistryImpl
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
-				"Unable to read WEB-INF/frontend-token-definition.json",
-				ioException);
+				"Unable to read " + fileName, ioException);
 		}
 	}
 
@@ -476,12 +518,32 @@ public class FrontendTokenDefinitionRegistryImpl
 		return frontendTokenDefinitions.get(externalReferenceCode);
 	}
 
+	private void _putFrontendTokenDefinitions(
+		Map<String, FrontendTokenDefinition> frontendTokenDefinitions,
+		List<FrontendTokenDefinitionImpl> frontendTokenDefinitionImpls) {
+
+		for (FrontendTokenDefinitionImpl frontendTokenDefinitionImpl :
+				frontendTokenDefinitionImpls) {
+
+			if (frontendTokenDefinitionImpl.getThemeId() == null) {
+				continue;
+			}
+
+			frontendTokenDefinitions.put(
+				frontendTokenDefinitionImpl.getThemeId(),
+				frontendTokenDefinitionImpl);
+		}
+	}
+
 	private void _removedService(ThemeCSSCET themeCSSCET) {
 		Map<String, FrontendTokenDefinition> frontendTokenDefinitions =
 			_getFrontendTokenDefinitions(themeCSSCET.getCompanyId());
 
 		frontendTokenDefinitions.remove(themeCSSCET.getExternalReferenceCode());
 	}
+
+	private static final String _FRONTEND_TOKEN_DEFINITION_ATLAS_FILE_NAME =
+		"WEB-INF/frontend-token-definition-atlas-custom-properties.json";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FrontendTokenDefinitionRegistryImpl.class);
@@ -503,18 +565,15 @@ public class FrontendTokenDefinitionRegistryImpl
 						frontendTokenDefinitionImpls =
 							getFrontendTokenDefinitionImpls(bundle);
 
-					for (FrontendTokenDefinitionImpl
-							frontendTokenDefinitionImpl :
-								frontendTokenDefinitionImpls) {
+					_putFrontendTokenDefinitions(
+						_frontendTokenDefinitions,
+						frontendTokenDefinitionImpls);
 
-						if (frontendTokenDefinitionImpl.getThemeId() == null) {
-							continue;
-						}
-
-						_frontendTokenDefinitions.put(
-							frontendTokenDefinitionImpl.getThemeId(),
-							frontendTokenDefinitionImpl);
-					}
+					_putFrontendTokenDefinitions(
+						_featureFlaggedFrontendTokenDefinitions,
+						getFrontendTokenDefinitionImpls(
+							bundle,
+							_FRONTEND_TOKEN_DEFINITION_ATLAS_FILE_NAME));
 
 					return frontendTokenDefinitionImpls;
 				}
@@ -538,6 +597,9 @@ public class FrontendTokenDefinitionRegistryImpl
 
 						_frontendTokenDefinitions.remove(
 							frontendTokenDefinitionImpl.getThemeId());
+
+						_featureFlaggedFrontendTokenDefinitions.remove(
+							frontendTokenDefinitionImpl.getThemeId());
 					}
 				}
 
@@ -547,6 +609,8 @@ public class FrontendTokenDefinitionRegistryImpl
 	private ClientExtensionEntryRelLocalService
 		_clientExtensionEntryRelLocalService;
 
+	private final Map<String, FrontendTokenDefinition>
+		_featureFlaggedFrontendTokenDefinitions = new ConcurrentHashMap<>();
 	private final FrontendTokenDefinitionJSONValidator
 		_frontendTokenDefinitionJSONValidator =
 			new FrontendTokenDefinitionJSONValidator();

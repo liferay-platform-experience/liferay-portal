@@ -8,7 +8,10 @@ copyClassicTheme {
 	from("../frontend-theme-classic/src/") {
 		exclude "**/WEB-INF/**"
 		exclude "/images/**"
+		exclude "/css/_clay_variables_atlas-custom_properties.scss"
+		exclude "/css/clay_atlas_custom_properties.scss"
 		exclude "/css/custom_properties/_custom_properties_set.scss"
+		exclude "/css/main_atlas_custom_properties.scss"
 	}
 
 	includeEmptyDirs = false
