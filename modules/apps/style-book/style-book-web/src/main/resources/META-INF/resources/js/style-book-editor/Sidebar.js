@@ -7,11 +7,18 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
+import {openModal, openToast} from 'frontend-js-components-web';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import FrontendTokenSet from './FrontendTokenSet';
+import NewCustomTokenModal from './NewCustomTokenModal';
 import {config} from './config';
-import {useFrontendTokensValues} from './contexts/StyleBookEditorContext';
+import {
+	useDeleteTokenValue,
+	useFrontendTokensValues,
+	useSaveTokenValue,
+} from './contexts/StyleBookEditorContext';
+import {getCustomTokenCSSVariableMapping} from './utils/getCustomTokenCSSVariableMapping';
 
 export default React.memo(function Sidebar() {
 	const sidebarRef = useRef();
@@ -212,6 +219,61 @@ function FrontendTokenCategories({activeDefinition}) {
 		return nextTokenValues;
 	}, [frontendTokensValues]);
 
+	const customTokensByTokenSet = useMemo(() => {
+		const tokensByTokenSet = new Map();
+
+		if (!Liferay.FeatureFlags['LPD-95808']) {
+			return tokensByTokenSet;
+		}
+
+		const knownFrontendTokens = config.frontendTokens || {};
+
+		for (const [name, frontendTokenValue] of Object.entries(
+			frontendTokensValues
+		)) {
+			if (knownFrontendTokens[name]) {
+				continue;
+			}
+
+			const {
+				category,
+				cssVariableMapping,
+				editorType,
+				label: tokenLabel,
+				tokenDefinitionId,
+				type,
+				value,
+			} = frontendTokenValue;
+
+			const tokenSet = category || '';
+
+			if (!tokensByTokenSet.has(tokenSet)) {
+				tokensByTokenSet.set(tokenSet, []);
+			}
+
+			tokensByTokenSet.get(tokenSet).push({
+				category: tokenSet,
+				custom: true,
+				defaultValue: value,
+				editorType,
+				label:
+					tokenLabel ||
+					(cssVariableMapping ? `--${cssVariableMapping}` : name),
+				mappings: [
+					{
+						type: 'cssVariable',
+						value: cssVariableMapping || name,
+					},
+				],
+				name,
+				tokenDefinitionId,
+				type: type || 'String',
+			});
+		}
+
+		return tokensByTokenSet;
+	}, [frontendTokensValues]);
+
 	const frontendTokenCategoriesWithPrefix = useMemo(() => {
 		return frontendTokenCategories.map((category) => ({
 			...category,
@@ -226,58 +288,232 @@ function FrontendTokenCategories({activeDefinition}) {
 		}));
 	}, [activeDefinition, frontendTokenCategories]);
 
-	const activeSelectedCategory = useMemo(() => {
-		if (!selectedCategory) {
-			return frontendTokenCategoriesWithPrefix[0];
+	const outOfDefinitionCategory = useMemo(() => {
+		if (activeDefinition.id !== config.themeFrontendTokenDefinitionId) {
+			return null;
 		}
 
-		return frontendTokenCategoriesWithPrefix.find(
+		// Custom tokens (stylebook values not present in the theme's frontend
+		// token definition) are grouped under a dedicated "Custom" category.
+		// Tokens with a token set get their own panel; tokens without one are
+		// listed directly under "Custom".
+
+		const frontendTokenSets = [...customTokensByTokenSet.entries()]
+			.sort(
+				([tokenSetA], [tokenSetB]) =>
+					(tokenSetA ? 1 : 0) - (tokenSetB ? 1 : 0)
+			)
+			.map(([tokenSet, frontendTokens]) => ({
+				frontendTokens,
+				label: tokenSet,
+				name: tokenSet
+					? `out-of-definition-set:${tokenSet}`
+					: 'out-of-definition-set',
+			}));
+
+		if (!frontendTokenSets.length) {
+			return null;
+		}
+
+		return {
+			frontendTokenSets,
+			label: Liferay.Language.get('custom'),
+			name: 'out-of-definition',
+		};
+	}, [activeDefinition, customTokensByTokenSet]);
+
+	const allFrontendTokenCategories = useMemo(
+		() =>
+			outOfDefinitionCategory
+				? [
+						...frontendTokenCategoriesWithPrefix,
+						outOfDefinitionCategory,
+					]
+				: frontendTokenCategoriesWithPrefix,
+		[frontendTokenCategoriesWithPrefix, outOfDefinitionCategory]
+	);
+
+	const activeSelectedCategory = useMemo(() => {
+		if (!selectedCategory) {
+			return allFrontendTokenCategories[0];
+		}
+
+		return allFrontendTokenCategories.find(
 			(category) => category.name === selectedCategory.name
 		);
-	}, [selectedCategory, frontendTokenCategoriesWithPrefix]);
+	}, [selectedCategory, allFrontendTokenCategories]);
+
+	const deleteTokenValue = useDeleteTokenValue();
+	const saveTokenValue = useSaveTokenValue();
+
+	const tokenSets = useMemo(
+		() => [...customTokensByTokenSet.keys()].filter(Boolean),
+		[customTokensByTokenSet]
+	);
+
+	const createToken = ({editorType, name, tokenSet, value}) => {
+		const cssVariableMapping = getCustomTokenCSSVariableMapping(name);
+
+		saveTokenValue({
+			label: name,
+			name: `${config.themeFrontendTokenDefinitionId}:${cssVariableMapping}`,
+			value: {
+				category: tokenSet,
+				cssVariableMapping,
+				editorType,
+				label: name,
+				tokenDefinitionId: config.themeFrontendTokenDefinitionId,
+				type: 'String',
+				value,
+			},
+		}).then((saved) => {
+			if (saved) {
+				openToast({
+					message: Liferay.Language.get(
+						'the-custom-token-was-created'
+					),
+					type: 'success',
+				});
+			}
+		});
+	};
+
+	const openNewTokenModal = () => {
+		openModal({
+			className: 'style-book-editor__new-token-modal',
+			contentComponent: ({closeModal}) =>
+				NewCustomTokenModal({
+					closeModal,
+					frontendTokensValues,
+					onSubmit: createToken,
+					tokenSets,
+					tokenValues,
+				}),
+			disableAutoClose: true,
+		});
+	};
+
+	const editToken = (frontendToken) => {
+		const storedValue = frontendTokensValues[frontendToken.name] || {};
+
+		openModal({
+			className: 'style-book-editor__new-token-modal',
+			contentComponent: ({closeModal}) =>
+				NewCustomTokenModal({
+					closeModal,
+					frontendTokensValues,
+					initialValues: {
+						editorType: storedValue.editorType || '',
+						name:
+							storedValue.label ||
+							storedValue.cssVariableMapping ||
+							frontendToken.label,
+						tokenSet: storedValue.category || '',
+						value: storedValue.value || '',
+					},
+					onDelete: () => {
+						deleteTokenValue({
+							label: frontendToken.label,
+							name: frontendToken.name,
+						});
+					},
+					onSubmit: ({editorType, name, tokenSet, value}) => {
+						saveTokenValue({
+							label: name,
+							name: frontendToken.name,
+							value: {
+								category: tokenSet,
+								cssVariableMapping:
+									storedValue.cssVariableMapping,
+								editorType,
+								label: name,
+								tokenDefinitionId:
+									storedValue.tokenDefinitionId,
+								type: 'String',
+								value,
+							},
+						}).then((saved) => {
+							if (saved) {
+								openToast({
+									message: Liferay.Language.get(
+										'the-custom-token-was-saved'
+									),
+									type: 'success',
+								});
+							}
+						});
+					},
+					submitLabel: Liferay.Language.get('save'),
+					title: Liferay.Language.get('edit-custom-token'),
+					tokenSets,
+					tokenValues,
+				}),
+			disableAutoClose: true,
+		});
+	};
 
 	return (
 		<>
 			{activeSelectedCategory && (
-				<ClayDropDown
-					active={active}
-					alignmentPosition={Align.BottomLeft}
-					className="mb-4"
-					menuElementAttrs={{
-						containerProps: {
-							className: 'cadmin',
-						},
-					}}
-					onActiveChange={setActive}
-					trigger={
+				<div className="align-items-center d-flex mb-4">
+					<ClayDropDown
+						active={active}
+						alignmentPosition={Align.BottomLeft}
+						className="flex-grow-1 mr-2"
+						menuElementAttrs={{
+							containerProps: {
+								className: 'cadmin',
+							},
+						}}
+						onActiveChange={setActive}
+						trigger={
+							<ClayButton
+								className="form-control form-control-select form-control-sm text-left"
+								displayType="secondary"
+								size="sm"
+								type="button"
+							>
+								{activeSelectedCategory.label}
+							</ClayButton>
+						}
+					>
+						<ClayDropDown.ItemList>
+							{allFrontendTokenCategories.map(
+								(frontendTokenCategory, index) => (
+									<React.Fragment key={index}>
+										{frontendTokenCategory.name ===
+											'out-of-definition' &&
+											index > 0 && (
+												<ClayDropDown.Divider />
+											)}
+
+										<ClayDropDown.Item
+											onClick={() => {
+												setSelectedCategory(
+													frontendTokenCategory
+												);
+												setActive(false);
+											}}
+										>
+											{frontendTokenCategory.label}
+										</ClayDropDown.Item>
+									</React.Fragment>
+								)
+							)}
+						</ClayDropDown.ItemList>
+					</ClayDropDown>
+
+					{Liferay.FeatureFlags['LPD-95808'] && (
 						<ClayButton
-							className="form-control form-control-select form-control-sm mb-3 text-left"
+							className="flex-shrink-0"
 							displayType="secondary"
+							onClick={openNewTokenModal}
 							size="sm"
-							type="button"
 						>
-							{activeSelectedCategory.label}
+							{Liferay.Language.get('new-token')}
 						</ClayButton>
-					}
-				>
-					<ClayDropDown.ItemList>
-						{frontendTokenCategoriesWithPrefix.map(
-							(frontendTokenCategory, index) => (
-								<ClayDropDown.Item
-									key={index}
-									onClick={() => {
-										setSelectedCategory(
-											frontendTokenCategory
-										);
-										setActive(false);
-									}}
-								>
-									{frontendTokenCategory.label}
-								</ClayDropDown.Item>
-							)
-						)}
-					</ClayDropDown.ItemList>
-				</ClayDropDown>
+					)}
+				</div>
 			)}
 
 			{activeSelectedCategory?.frontendTokenSets.map(
@@ -286,6 +522,7 @@ function FrontendTokenCategories({activeDefinition}) {
 						frontendTokens={frontendTokens}
 						key={name}
 						label={label}
+						onEditToken={editToken}
 						open={index === 0}
 						tokenValues={tokenValues}
 					/>

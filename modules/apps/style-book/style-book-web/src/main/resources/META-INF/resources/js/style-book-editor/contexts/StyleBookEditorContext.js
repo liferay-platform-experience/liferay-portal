@@ -9,6 +9,7 @@ import React, {useContext, useReducer} from 'react';
 import {
 	ADD_REDO_ACTION,
 	ADD_UNDO_ACTION,
+	DELETE_TOKEN_VALUE,
 	SET_DRAFT_STATUS,
 	SET_TOKEN_VALUES,
 	UPDATE_UNDO_REDO_HISTORY,
@@ -75,6 +76,8 @@ function internalSaveTokenValues({dispatch, frontendTokensValues, tokens}) {
 				tokens,
 				type: SET_TOKEN_VALUES,
 			});
+
+			return true;
 		})
 		.catch((error) => {
 			if (process.env.NODE_ENV === 'development') {
@@ -90,6 +93,8 @@ function internalSaveTokenValues({dispatch, frontendTokensValues, tokens}) {
 				message: error.message,
 				type: 'danger',
 			});
+
+			return false;
 		});
 }
 
@@ -100,17 +105,49 @@ export function useSaveTokenValue() {
 	return ({label, name, value}) => {
 		const previousValue = frontendTokensValues[name];
 
-		internalSaveTokenValues({
+		return internalSaveTokenValues({
 			dispatch,
 			frontendTokensValues,
 			tokens: {[name]: value},
-		}).then(() => {
+		}).then((saved) => {
 			dispatch({
 				label,
 				name,
 				type: ADD_UNDO_ACTION,
 				value: previousValue,
 			});
+
+			return saved;
+		});
+	};
+}
+
+export function useDeleteTokenValue() {
+	const dispatch = useDispatch();
+	const frontendTokensValues = useFrontendTokensValues();
+
+	return ({label, name}) => {
+		const previousValue = frontendTokensValues[name];
+
+		const remainingTokens = {...frontendTokensValues};
+
+		delete remainingTokens[name];
+
+		return internalSaveTokenValues({
+			dispatch,
+			frontendTokensValues: remainingTokens,
+			tokens: {},
+		}).then((saved) => {
+			dispatch({name, type: DELETE_TOKEN_VALUE});
+
+			dispatch({
+				label,
+				name,
+				type: ADD_UNDO_ACTION,
+				value: previousValue,
+			});
+
+			return saved;
 		});
 	};
 }
