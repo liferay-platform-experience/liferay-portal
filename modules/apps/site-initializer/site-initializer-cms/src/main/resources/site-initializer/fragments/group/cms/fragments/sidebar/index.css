@@ -34,7 +34,7 @@
 	}
 
 	.content {
-		background: var(--body-bg, #fff);
+		background: var(--body-bg, var(--white));
 		grid-area: content;
 	}
 
