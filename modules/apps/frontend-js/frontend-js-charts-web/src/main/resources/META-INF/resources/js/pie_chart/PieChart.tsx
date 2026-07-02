@@ -141,8 +141,10 @@ export default function PieChart({
 					activeDatum={activeDatum}
 					activeIndex={activeIndex}
 					activePercent={activePercent}
+					baseId={baseId}
 					colors={colors}
 					data={data}
+					focusIndex={focusIndex}
 					innerRadius={innerRadius}
 					onFocus={focusSlice}
 					onHover={setHoverIndex}
