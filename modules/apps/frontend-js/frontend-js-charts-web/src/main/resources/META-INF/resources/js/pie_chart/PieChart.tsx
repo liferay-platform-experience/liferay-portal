@@ -121,7 +121,6 @@ export default function PieChart({
 				{'chart-pie-revealed': !animationDisabled},
 				className
 			)}
-			style={{maxWidth: pixelSize}}
 		>
 			<figcaption className="chart-pie-caption" id={titleId}>
 				{title}
@@ -136,39 +135,44 @@ export default function PieChart({
 				/>
 			)}
 
-			<div className="chart-pie-body">
-				<PieChartGraphic
-					activeDatum={activeDatum}
+			<div className="chart-pie-row">
+				<div
+					className="chart-pie-body mx-auto"
+					style={{maxWidth: pixelSize}}
+				>
+					<PieChartGraphic
+						activeDatum={activeDatum}
+						activeIndex={activeIndex}
+						activePercent={activePercent}
+						baseId={baseId}
+						colors={colors}
+						data={data}
+						focusIndex={focusIndex}
+						innerRadius={innerRadius}
+						onFocus={focusSlice}
+						onHover={setHoverIndex}
+						onHoverEnd={() => setHoverIndex(null)}
+						onKeyDown={onKeyDown}
+						onSliceBlur={() => setFocusIndex(null)}
+						pathFactory={pathFactory}
+						pixelSize={pixelSize}
+						sliceRefFactory={sliceRefFactory}
+						total={total}
+					/>
+				</div>
+
+				<PieChartLegend
 					activeIndex={activeIndex}
-					activePercent={activePercent}
-					baseId={baseId}
 					colors={colors}
 					data={data}
-					focusIndex={focusIndex}
-					innerRadius={innerRadius}
+					legend={legend}
 					onFocus={focusSlice}
 					onHover={setHoverIndex}
 					onHoverEnd={() => setHoverIndex(null)}
-					onKeyDown={onKeyDown}
-					onSliceBlur={() => setFocusIndex(null)}
-					pathFactory={pathFactory}
-					pixelSize={pixelSize}
-					sliceRefFactory={sliceRefFactory}
+					titleId={titleId}
 					total={total}
 				/>
 			</div>
-
-			<PieChartLegend
-				activeIndex={activeIndex}
-				colors={colors}
-				data={data}
-				legend={legend}
-				onFocus={focusSlice}
-				onHover={setHoverIndex}
-				onHoverEnd={() => setHoverIndex(null)}
-				titleId={titleId}
-				total={total}
-			/>
 		</figure>
 	);
 }

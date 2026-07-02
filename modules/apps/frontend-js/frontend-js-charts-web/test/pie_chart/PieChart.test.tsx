@@ -67,34 +67,50 @@ describe('PieChart', () => {
 		);
 	});
 
-	it('caps the figure width to the xs preset', () => {
+	it('caps the chart body width to the xs preset', () => {
 		const {container} = render(
 			<PieChart data={DATA} size="xs" title="Sales" />
 		);
 
-		expect(container.querySelector('.chart-pie')).toHaveStyle({
+		expect(container.querySelector('.chart-pie-body')).toHaveStyle({
 			maxWidth: '160px',
 		});
 	});
 
-	it('caps the figure width to the lg preset', () => {
+	it('caps the chart body width to the lg preset', () => {
 		const {container} = render(
 			<PieChart data={DATA} size="lg" title="Sales" />
 		);
 
-		expect(container.querySelector('.chart-pie')).toHaveStyle({
+		expect(container.querySelector('.chart-pie-body')).toHaveStyle({
 			maxWidth: '360px',
 		});
 	});
 
-	it('caps the figure width to a numeric pixel value', () => {
+	it('caps the chart body width to a numeric pixel value', () => {
 		const {container} = render(
 			<PieChart data={DATA} size={300} title="Sales" />
 		);
 
-		expect(container.querySelector('.chart-pie')).toHaveStyle({
+		expect(container.querySelector('.chart-pie-body')).toHaveStyle({
 			maxWidth: '300px',
 		});
+	});
+
+	it('renders the chart body and legend as siblings inside a row', () => {
+		const {container} = render(
+			<PieChart data={DATA} legend="list" title="Sales" />
+		);
+
+		const row = container.querySelector('.chart-pie-row');
+
+		expect(row).toBeInTheDocument();
+		expect(
+			row?.querySelector(':scope > .chart-pie-body')
+		).toBeInTheDocument();
+		expect(
+			row?.querySelector(':scope > ul.chart-pie-legend')
+		).toBeInTheDocument();
 	});
 
 	it('labels each slice with its value and percentage', () => {
