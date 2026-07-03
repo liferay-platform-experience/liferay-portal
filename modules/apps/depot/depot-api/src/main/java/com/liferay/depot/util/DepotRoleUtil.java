@@ -198,6 +198,17 @@ public class DepotRoleUtil {
 				DepotRolesConstants.ASSET_LIBRARY_MEMBER, "space-member"
 			).put(
 				DepotRolesConstants.ASSET_LIBRARY_OWNER, "space-owner"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+				"design-library-administrator"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+				"design-library-content-reviewer"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+				"design-library-member"
+			).put(
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER, "design-library-owner"
 			).build());
 	}
 
