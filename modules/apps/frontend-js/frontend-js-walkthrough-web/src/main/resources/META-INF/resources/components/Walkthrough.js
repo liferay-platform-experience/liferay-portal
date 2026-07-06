@@ -92,6 +92,64 @@ const ALIGNMENTS_INVERSE_MAP = {
 };
 
 /**
+ * Picks the ClayPopover alignment variant whose arrow lands closest to the
+ * highlighted element. ClayPopover only draws the arrow centered or pinned to
+ * an edge (its 12 `alignPosition` values), so when the popover cannot sit
+ * centered on the element and gets pushed aside to stay within the viewport,
+ * the arrow variant is switched to the side the element ended up on. The
+ * decision is derived from the element center, the popover size, and the
+ * viewport (never from the popover's current placement), so it converges in a
+ * single pass instead of oscillating between variants.
+ * @param {String} alignment the base alignment resolved from dom-align
+ * @param {ClientRect} targetRect the highlighted element rect
+ * @param {ClientRect} popoverRect the popover rect
+ * @returns {String} a ClayPopover alignment value
+ */
+function getArrowAlignment(alignment, targetRect, popoverRect) {
+	const [family] = alignment.split('-');
+
+	if (family === 'bottom' || family === 'top') {
+		const targetCenter = targetRect.left + targetRect.width / 2;
+
+		const halfPopoverWidth = popoverRect.width / 2;
+
+		const viewportWidth =
+			window.innerWidth || document.documentElement.clientWidth;
+
+		if (targetCenter - halfPopoverWidth < 0) {
+			return `${family}-left`;
+		}
+
+		if (targetCenter + halfPopoverWidth > viewportWidth) {
+			return `${family}-right`;
+		}
+
+		return family;
+	}
+
+	if (family === 'left' || family === 'right') {
+		const targetCenter = targetRect.top + targetRect.height / 2;
+
+		const halfPopoverHeight = popoverRect.height / 2;
+
+		const viewportHeight =
+			window.innerHeight || document.documentElement.clientHeight;
+
+		if (targetCenter - halfPopoverHeight < 0) {
+			return `${family}-top`;
+		}
+
+		if (targetCenter + halfPopoverHeight > viewportHeight) {
+			return `${family}-bottom`;
+		}
+
+		return family;
+	}
+
+	return alignment;
+}
+
+/**
  * Removes search params on a given url
  * @param {String} url
  * @returns {String} url without the search params
@@ -304,12 +362,21 @@ const Step = ({
 		 * alignment handed to ClayPopover must reflect where dom-align
 		 * actually placed the popover (described by its returned points),
 		 * not the requested position, because dom-align may flip it to avoid
-		 * overflowing the viewport.
+		 * overflowing the viewport. The arrow variant is then nudged to the
+		 * side the element sits on when the popover cannot be centered on it.
 		 */
 		const resolvedAlignment = ALIGNMENTS_INVERSE_MAP[alignmentString];
 
-		if (resolvedAlignment && resolvedAlignment !== currentAlignment) {
-			setCurrentAlignment(resolvedAlignment);
+		if (resolvedAlignment) {
+			const nextAlignment = getArrowAlignment(
+				resolvedAlignment,
+				memoizedTrigger.getBoundingClientRect(),
+				popoverRef.current.getBoundingClientRect()
+			);
+
+			if (nextAlignment !== currentAlignment) {
+				setCurrentAlignment(nextAlignment);
+			}
 		}
 
 		if (!darkbg) {
