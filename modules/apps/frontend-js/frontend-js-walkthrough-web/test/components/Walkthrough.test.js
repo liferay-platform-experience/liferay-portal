@@ -444,6 +444,19 @@ describe('Walkthrough', () => {
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
 	});
 
+	it('does not render "undefined" when a step has no title or content', async () => {
+		renderWalkthrough({
+			pages: {'/home': ['step-1']},
+			steps: [{darkbg: true, id: 'step-1', nodeToHighlight: '.logo'}],
+		});
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(
+			document.querySelector('.lfr-walkthrough-popover').textContent
+		).not.toContain('undefined');
+	});
+
 	it('shows the step title and content in the user language', async () => {
 		themeDisplay.getLanguageId = jest.fn(() => 'es_ES');
 

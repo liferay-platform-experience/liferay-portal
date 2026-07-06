@@ -309,10 +309,10 @@ const Step = ({
 
 		const alignmentSignature = {
 			alignment: currentAlignment,
-			left: triggerRect.left + window.scrollX,
+			left: Math.round(triggerRect.left + window.scrollX),
 			popover: popoverRef.current,
 			step: currentStep,
-			top: triggerRect.top + window.scrollY,
+			top: Math.round(triggerRect.top + window.scrollY),
 			trigger: memoizedTrigger,
 		};
 
@@ -546,7 +546,7 @@ const Step = ({
 										Liferay.Language.get('step-x-of-x'),
 										currentStep + 1,
 										steps.length
-									)}: ${getLocalizedText(title)}`}</span>
+									)}: ${getLocalizedText(title) || ''}`}</span>
 								</ClayLayout.ContentCol>
 
 								{closeable && (
@@ -575,7 +575,7 @@ const Step = ({
 						<div
 							className="lfr-walkthrough-popover-content"
 							dangerouslySetInnerHTML={{
-								__html: getLocalizedText(content),
+								__html: getLocalizedText(content) || '',
 							}}
 						/>
 
