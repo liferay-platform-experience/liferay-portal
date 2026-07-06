@@ -171,6 +171,31 @@ describe('Walkthrough', () => {
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
 	});
 
+	it('locks the page scroll while the popover is open when `lockScroll` is enabled', async () => {
+		renderWalkthrough({lockScroll: true, ...PAGE_MOCK});
+
+		expect(document.documentElement.style.overflow).not.toBe('hidden');
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(document.documentElement.style.overflow).toBe('hidden');
+		expect(document.body.style.overflow).toBe('hidden');
+
+		await userEvent.click(screen.getByLabelText('close'));
+
+		expect(document.documentElement.style.overflow).not.toBe('hidden');
+		expect(document.body.style.overflow).not.toBe('hidden');
+	});
+
+	it('does not lock the page scroll when `lockScroll` is not enabled', async () => {
+		renderWalkthrough(PAGE_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(document.documentElement.style.overflow).not.toBe('hidden');
+		expect(document.body.style.overflow).not.toBe('hidden');
+	});
+
 	it('scrolls the highlighted element into view once per step when the popover opens', async () => {
 		const scrollIntoViewMock = jest.fn();
 

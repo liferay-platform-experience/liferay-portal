@@ -173,6 +173,7 @@ const Step = ({
 	closeable,
 	currentPage,
 	currentStep,
+	lockScroll,
 	memoizedTrigger,
 	onCurrentStep,
 	onPopoverVisible,
@@ -364,6 +365,31 @@ const Step = ({
 		}
 	}, [memoizedTrigger, popoverVisible]);
 
+	/**
+	 * With `lockScroll` enabled, the page cannot be scrolled by the user
+	 * while a step popover is open, so the highlighted element never leaves
+	 * the viewport. An `overflow: hidden` box remains programmatically
+	 * scrollable, so the walkthrough can still move between steps. Hotspot
+	 * mode never locks: discovery must stay non-blocking.
+	 */
+	useEffect(() => {
+		if (!lockScroll || !popoverVisible) {
+			return;
+		}
+
+		const documentElementOverflow = document.documentElement.style.overflow;
+
+		const bodyOverflow = document.body.style.overflow;
+
+		document.documentElement.style.overflow = 'hidden';
+		document.body.style.overflow = 'hidden';
+
+		return () => {
+			document.documentElement.style.overflow = documentElementOverflow;
+			document.body.style.overflow = bodyOverflow;
+		};
+	}, [lockScroll, popoverVisible]);
+
 	useClickOutside(
 		['.lfr-walkthrough-popover', '.lfr-walkthrough-hotspot'],
 		() => {
@@ -543,6 +569,7 @@ const Step = ({
 const Walkthrough = ({
 	closeOnClickOutside,
 	closeable = true,
+	lockScroll = false,
 	pages = {},
 	skippable = true,
 	steps = [],
@@ -654,6 +681,7 @@ const Walkthrough = ({
 			closeable={closeable}
 			currentPage={currentPage}
 			currentStep={renderableStepIndex}
+			lockScroll={lockScroll}
 			memoizedTrigger={memoizedTrigger}
 			onCurrentStep={setCurrentStepIndex}
 			onPopoverVisible={setPopoverVisible}
@@ -668,6 +696,7 @@ const Walkthrough = ({
 Walkthrough.propTypes = {
 	closeOnClickOutside: PropTypes.bool,
 	closeable: PropTypes.bool,
+	lockScroll: PropTypes.bool,
 	skippable: PropTypes.bool,
 	steps: PropTypes.arrayOf(
 		PropTypes.shape({
