@@ -13,8 +13,8 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Matuzalem Teles
  */
 @ExtendedObjectClassDefinition(
-	category = "frontend-walkthrough",
-	scope = ExtendedObjectClassDefinition.Scope.GROUP, strictScope = true
+	generateUI = false, scope = ExtendedObjectClassDefinition.Scope.GROUP,
+	strictScope = true
 )
 @Meta.OCD(
 	id = "com.liferay.frontend.js.walkthrough.web.internal.configuration.WalkthroughConfiguration",
