@@ -276,6 +276,7 @@ const Step = ({
 			alignment: currentAlignment,
 			left: triggerRect.left + window.scrollX,
 			popover: popoverRef.current,
+			step: currentStep,
 			top: triggerRect.top + window.scrollY,
 			trigger: memoizedTrigger,
 		};
@@ -287,15 +288,17 @@ const Step = ({
 		 * popover is anchored to the document and already moves with the
 		 * page. Realigning in that case would fight the user's scroll, so
 		 * only realign when the element actually moved within the document,
-		 * the alignment changed, the step changed, or the popover was
-		 * remounted (for example after being closed and reopened, which
-		 * yields a brand new node that has never been positioned).
+		 * the alignment changed, the step changed (its content can resize the
+		 * popover even on the same anchor), or the popover was remounted (for
+		 * example after being closed and reopened, which yields a brand new
+		 * node that has never been positioned).
 		 */
 		if (
 			lastAlignmentSignature &&
 			lastAlignmentSignature.alignment === alignmentSignature.alignment &&
 			lastAlignmentSignature.left === alignmentSignature.left &&
 			lastAlignmentSignature.popover === alignmentSignature.popover &&
+			lastAlignmentSignature.step === alignmentSignature.step &&
 			lastAlignmentSignature.top === alignmentSignature.top &&
 			lastAlignmentSignature.trigger === alignmentSignature.trigger
 		) {
@@ -339,6 +342,7 @@ const Step = ({
 		}
 	}, [
 		currentAlignment,
+		currentStep,
 		darkbg,
 		popoverRef,
 		popoverVisible,

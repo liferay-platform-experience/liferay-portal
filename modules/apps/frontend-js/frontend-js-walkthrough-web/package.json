@@ -6,6 +6,7 @@
 		"@clayui/layout": "^3.165.0",
 		"@clayui/popover": "^3.165.0",
 		"@liferay/frontend-js-react-web": "*",
+		"@liferay/layout-js-components-web": "*",
 		"dom-align": "1.12.2",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",

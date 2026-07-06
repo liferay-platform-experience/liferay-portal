@@ -33,9 +33,7 @@ export function useFocusTrap(ref, active) {
 		}
 
 		const getFocusableElements = () =>
-			Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter(
-				(element) => !element.hasAttribute('disabled')
-			);
+			Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR));
 
 		const focusableElements = getFocusableElements();
 

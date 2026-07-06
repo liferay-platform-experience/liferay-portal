@@ -27,14 +27,6 @@ export const Hotspot = forwardRef(({onHotspotClick, trigger}, ref) => {
 
 	useObserveRect(align, trigger);
 
-	/**
-	 * Late layout shifts (images or fonts loading after the alignment) can
-	 * move the hotspot without moving the trigger's top-left corner, so the
-	 * hotspot's own rect is observed too. Realigning is idempotent, so this
-	 * settles as soon as the layout does.
-	 */
-	useObserveRect(align, ref?.current);
-
 	return (
 		<button
 			aria-label={Liferay.Language.get('start-the-walkthrough')}

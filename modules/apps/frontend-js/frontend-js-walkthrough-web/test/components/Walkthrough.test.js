@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+// eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
+import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
+import {cleanup, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import domAlign from 'dom-align';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import Walkthrough from '../../src/main/resources/META-INF/resources/components/Walkthrough';
-import {
-	LOCAL_STORAGE_KEYS,
-	doAlign,
-} from '../../src/main/resources/META-INF/resources/utils';
+import {LOCAL_STORAGE_KEYS} from '../../src/main/resources/META-INF/resources/utils';
 import {
 	BOX_SHADOW_ELEMENT_MOCK,
 	DOM_STRUCTURE_FOR_PLACING_STEPS,
@@ -56,19 +56,18 @@ jest.mock('frontend-js-web', () => ({
 	navigate: jest.fn(),
 }));
 
-jest.mock('../../src/main/resources/META-INF/resources/utils', () => ({
-	...jest.requireActual('../../src/main/resources/META-INF/resources/utils'),
-	doAlign: jest.fn((config) => ({
+jest.mock('dom-align', () =>
+	jest.fn((sourceElement, targetElement, config) => ({
 		overflow: {adjustX: false, adjustY: false},
 		points: config.points,
-	})),
-}));
+	}))
+);
 
 navigate.mockImplementation(jest.fn((url) => url));
 
 function countPopoverAligns() {
-	return doAlign.mock.calls.filter(([config]) =>
-		config.sourceElement?.classList?.contains('lfr-walkthrough-popover')
+	return domAlign.mock.calls.filter(([sourceElement]) =>
+		sourceElement?.classList?.contains('lfr-walkthrough-popover')
 	).length;
 }
 
@@ -188,6 +187,14 @@ describe('Walkthrough', () => {
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
 	});
 
+	it('has no accessibility violations while a step popover is open', async () => {
+		const {container} = renderWalkthrough(PAGE_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
 	it('traps Tab and Shift+Tab focus inside the open popover', async () => {
 		renderWalkthrough(PAGE_MOCK);
 
@@ -205,13 +212,13 @@ describe('Walkthrough', () => {
 
 		lastElement.focus();
 
-		fireEvent.keyDown(document, {key: 'Tab'});
+		await userEvent.tab();
 
 		expect(document.activeElement).toBe(firstElement);
 
 		firstElement.focus();
 
-		fireEvent.keyDown(document, {key: 'Tab', shiftKey: true});
+		await userEvent.tab({shift: true});
 
 		expect(document.activeElement).toBe(lastElement);
 	});
@@ -264,6 +271,41 @@ describe('Walkthrough', () => {
 		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
 
 		expect(countPopoverAligns()).toBeGreaterThan(alignsAfterClose);
+	});
+
+	it('realigns the popover when advancing to a step that shares the anchor', async () => {
+		const sameAnchorMock = {
+			pages: {'/home': ['step-1', 'step-2']},
+			steps: [
+				{
+					content: '<span>Short</span>',
+					darkbg: true,
+					id: 'step-1',
+					nodeToHighlight: '.logo',
+					positioning: 'top',
+					title: 'Title 1',
+				},
+				{
+					content:
+						'<span>A much longer body that resizes the popover</span>',
+					darkbg: true,
+					id: 'step-2',
+					nodeToHighlight: '.logo',
+					positioning: 'top',
+					title: 'Title 2',
+				},
+			],
+		};
+
+		renderWalkthrough(sameAnchorMock);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		const alignsOnFirstStep = countPopoverAligns();
+
+		await userEvent.click(screen.getByText('ok'));
+
+		expect(countPopoverAligns()).toBeGreaterThan(alignsOnFirstStep);
 	});
 
 	it('locks the page scroll while the popover is open when `lockScroll` is enabled', async () => {
