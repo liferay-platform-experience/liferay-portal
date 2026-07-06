@@ -349,6 +349,43 @@ const Step = ({
 	}, [popoverVisible]);
 
 	/**
+	 * Realigns the popover when the window resizes, since a reflow can move
+	 * the highlighted element or change which side fits the viewport. The
+	 * cached signature is cleared first so the guard does not short-circuit,
+	 * and the work is coalesced with requestAnimationFrame to avoid running
+	 * on every intermediate resize event.
+	 */
+	useEffect(() => {
+		if (!popoverVisible) {
+			return;
+		}
+
+		let animationFrameId = null;
+
+		const onResize = () => {
+			if (animationFrameId) {
+				window.cancelAnimationFrame(animationFrameId);
+			}
+
+			animationFrameId = window.requestAnimationFrame(() => {
+				lastAlignmentSignatureRef.current = null;
+
+				align();
+			});
+		};
+
+		window.addEventListener('resize', onResize);
+
+		return () => {
+			if (animationFrameId) {
+				window.cancelAnimationFrame(animationFrameId);
+			}
+
+			window.removeEventListener('resize', onResize);
+		};
+	}, [align, popoverVisible]);
+
+	/**
 	 * Brings the highlighted element into view once when the popover opens
 	 * or the step changes, and then leaves the scroll alone so the user can
 	 * interact with the page freely.

@@ -5,7 +5,7 @@
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {cleanup, render, screen} from '@testing-library/react';
+import {act, cleanup, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import domAlign from 'dom-align';
 import {navigate} from 'frontend-js-web';
@@ -306,6 +306,22 @@ describe('Walkthrough', () => {
 		await userEvent.click(screen.getByText('ok'));
 
 		expect(countPopoverAligns()).toBeGreaterThan(alignsOnFirstStep);
+	});
+
+	it('realigns the popover when the window is resized', async () => {
+		renderWalkthrough(PAGE_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		const alignsBeforeResize = countPopoverAligns();
+
+		act(() => {
+			window.dispatchEvent(new Event('resize'));
+		});
+
+		await waitFor(() =>
+			expect(countPopoverAligns()).toBeGreaterThan(alignsBeforeResize)
+		);
 	});
 
 	it('locks the page scroll while the popover is open when `lockScroll` is enabled', async () => {
