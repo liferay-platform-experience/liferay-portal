@@ -45,8 +45,30 @@ const ALIGNMENTS_MAP = {
 	'top-right': ['br', 'tr'],
 };
 
-const OVERLAY_OFFSET_X = 15;
-const OVERLAY_OFFSET_Y = -10;
+const POPOVER_GAP = 10;
+
+/**
+ * Computes the dom-align offset that pushes the popover away from the
+ * highlighted element in the direction of the current alignment, so the
+ * popover never overlaps the element it is pointing at.
+ * @param {String} alignment one of the ALIGNMENTS_MAP keys
+ * @returns {Array<Number>} [x, y] offset
+ */
+function getAlignmentOffset(alignment) {
+	if (alignment.startsWith('bottom')) {
+		return [0, POPOVER_GAP];
+	}
+
+	if (alignment.startsWith('left')) {
+		return [-POPOVER_GAP, 0];
+	}
+
+	if (alignment.startsWith('top')) {
+		return [0, -POPOVER_GAP];
+	}
+
+	return [POPOVER_GAP, 0];
+}
 
 /**
  * Since we can't set tuples as keys for literal dictionaries
@@ -90,31 +112,6 @@ const ALIGNMENTS_GUESS_MAP = {
 	tlbl: 'top',
 	trbr: 'top',
 };
-
-/**
- * Checks if a determining element is inside the viewport
- * @param {Node} element Element to be checked
- * @param {ClientRect} maybeRect boundingClientRect
- * of the element for avoiding calling getBoundingClientRect again.
- * This operation is very costly for browsers.
- * @returns {boolean}
- */
-function isVisibleInViewport(element, maybeRect) {
-	let boundingRect = maybeRect;
-
-	if (!boundingRect) {
-		boundingRect = element.getBoundingClientRect();
-	}
-
-	return (
-		boundingRect.top >= 0 &&
-		boundingRect.left >= 0 &&
-		boundingRect.bottom <=
-			(window.innerHeight || document.documentElement.clientHeight) &&
-		boundingRect.right <=
-			(window.innerWidth || document.documentElement.clientWidth)
-	);
-}
 
 /**
  * Removes search params on a given url
@@ -264,70 +261,108 @@ const Step = ({
 		setCurrentAlignment(defaultPositioning);
 	}, [defaultPositioning]);
 
-	const align = useCallback(
-		(boundingRect) => {
-			if (popoverVisible && popoverRef.current && memoizedTrigger) {
-				const points = ALIGNMENTS_MAP[currentAlignment];
+	const lastAlignmentSignatureRef = useRef(null);
 
-				const alignment = doAlign({
-					offset: [OVERLAY_OFFSET_X, OVERLAY_OFFSET_Y],
-					overflow: {
-						adjustX: true,
-						adjustY: true,
-					},
-					points,
-					sourceElement: popoverRef.current,
-					targetElement: memoizedTrigger,
-				});
+	const align = useCallback(() => {
+		if (!popoverVisible || !popoverRef.current || !memoizedTrigger) {
+			return;
+		}
 
-				const alignmentString = alignment.points.join('');
+		const triggerRect = memoizedTrigger.getBoundingClientRect();
 
-				const pointsString = points.join('');
+		const alignmentSignature = {
+			alignment: currentAlignment,
+			left: triggerRect.left + window.scrollX,
+			top: triggerRect.top + window.scrollY,
+			trigger: memoizedTrigger,
+		};
 
-				if (alignment.overflow.adjustX) {
-					setCurrentAlignment(ALIGNMENTS_GUESS_MAP[alignmentString]);
-				}
-				else if (pointsString !== alignmentString) {
-					setCurrentAlignment(
-						ALIGNMENTS_INVERSE_MAP[alignmentString]
-					);
-				}
+		const lastAlignmentSignature = lastAlignmentSignatureRef.current;
 
-				if (!darkbg) {
-					memoizedTrigger?.classList.add(
-						'lfr-walkthrough-element-shadow'
-					);
+		/**
+		 * Plain scrolling only changes viewport-relative rects, while the
+		 * popover is anchored to the document and already moves with the
+		 * page. Realigning in that case would fight the user's scroll, so
+		 * only realign when the element actually moved within the document,
+		 * the alignment changed, or the step changed.
+		 */
+		if (
+			lastAlignmentSignature &&
+			lastAlignmentSignature.alignment === alignmentSignature.alignment &&
+			lastAlignmentSignature.left === alignmentSignature.left &&
+			lastAlignmentSignature.top === alignmentSignature.top &&
+			lastAlignmentSignature.trigger === alignmentSignature.trigger
+		) {
+			return;
+		}
 
-					if (
-						previousTrigger &&
-						memoizedTrigger !== previousTrigger
-					) {
-						previousTrigger?.classList.remove(
-							'lfr-walkthrough-element-shadow'
-						);
-					}
-				}
+		lastAlignmentSignatureRef.current = alignmentSignature;
 
-				if (!isVisibleInViewport(popoverRef.current, boundingRect)) {
-					popoverRef.current.scrollIntoView();
-				}
+		const points = ALIGNMENTS_MAP[currentAlignment];
+
+		const alignment = doAlign({
+			offset: getAlignmentOffset(currentAlignment),
+			overflow: {
+				adjustX: true,
+				adjustY: true,
+			},
+			points,
+			sourceElement: popoverRef.current,
+			targetElement: memoizedTrigger,
+		});
+
+		const alignmentString = alignment.points.join('');
+
+		const pointsString = points.join('');
+
+		if (alignment.overflow.adjustX) {
+			setCurrentAlignment(ALIGNMENTS_GUESS_MAP[alignmentString]);
+		}
+		else if (pointsString !== alignmentString) {
+			setCurrentAlignment(ALIGNMENTS_INVERSE_MAP[alignmentString]);
+		}
+
+		if (!darkbg) {
+			memoizedTrigger?.classList.add('lfr-walkthrough-element-shadow');
+
+			if (previousTrigger && memoizedTrigger !== previousTrigger) {
+				previousTrigger?.classList.remove(
+					'lfr-walkthrough-element-shadow'
+				);
 			}
-		},
-		[
-			currentAlignment,
-			darkbg,
-			popoverRef,
-			popoverVisible,
-			previousTrigger,
-			memoizedTrigger,
-		]
-	);
+		}
+	}, [
+		currentAlignment,
+		darkbg,
+		popoverRef,
+		popoverVisible,
+		previousTrigger,
+		memoizedTrigger,
+	]);
 
 	useEffect(() => {
 		align();
 	}, [align]);
 
 	useObserveRect(align, popoverRef?.current);
+
+	/**
+	 * Brings the highlighted element into view once when the popover opens
+	 * or the step changes, and then leaves the scroll alone so the user can
+	 * interact with the page freely.
+	 */
+	useEffect(() => {
+		if (popoverVisible && memoizedTrigger) {
+			memoizedTrigger.scrollIntoView?.({
+				behavior: window.matchMedia?.(
+					'(prefers-reduced-motion: reduce)'
+				)?.matches
+					? 'auto'
+					: 'smooth',
+				block: 'center',
+			});
+		}
+	}, [memoizedTrigger, popoverVisible]);
 
 	useClickOutside(
 		['.lfr-walkthrough-popover', '.lfr-walkthrough-hotspot'],

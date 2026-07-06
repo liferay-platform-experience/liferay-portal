@@ -171,6 +171,32 @@ describe('Walkthrough', () => {
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
 	});
 
+	it('scrolls the highlighted element into view once per step when the popover opens', async () => {
+		const scrollIntoViewMock = jest.fn();
+
+		window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
+		renderWalkthrough(PAGE_MOCK);
+
+		expect(scrollIntoViewMock).not.toHaveBeenCalled();
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+		expect(scrollIntoViewMock.mock.instances[0]).toBe(
+			document.querySelector('.logo')
+		);
+
+		await userEvent.click(screen.getByText('ok'));
+
+		expect(scrollIntoViewMock).toHaveBeenCalledTimes(2);
+		expect(scrollIntoViewMock.mock.instances[1]).toBe(
+			document.querySelector('#footer')
+		);
+
+		delete window.HTMLElement.prototype.scrollIntoView;
+	});
+
 	it('warns and falls back to a renderable step when the current selector does not exist', async () => {
 		renderWalkthrough(INVALID_NODE_SELECTOR_MOCK);
 
