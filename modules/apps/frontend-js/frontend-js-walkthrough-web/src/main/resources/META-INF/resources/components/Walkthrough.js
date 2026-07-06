@@ -92,29 +92,6 @@ const ALIGNMENTS_INVERSE_MAP = {
 };
 
 /**
- * This map matches with new positions when the positioning has been given by the user or the default positioning fails.
- *
- * For example, if we receive on ALIGNMENTS_INVERSE_MAP, a lookup for brtr,
- * it points to 'top-right'. Here, at the ALIGNMENTS_GUESS_MAP,
- * we should make corrections if the positioning cannot be achieved in this case, for brtr.
- *
- * A general rule was applied:
- * If the received INVERSE value is top or top something, we should place it to bottom, and vice-versa for bottom and bottom something.
- * If the received INVERSE value is right, it should place to left, and vice-versa.
- * We should remove guesses from the top since people will not place things on top that will collide at the beginning of the viewport.
- */
-const ALIGNMENTS_GUESS_MAP = {
-	...ALIGNMENTS_INVERSE_MAP,
-	blbr: 'top',
-	brbl: 'top',
-	clcr: 'left',
-	crcl: 'right',
-	tcbc: 'top',
-	tlbl: 'top',
-	trbr: 'top',
-};
-
-/**
  * Removes search params on a given url
  * @param {String} url
  * @returns {String} url without the search params
@@ -322,13 +299,17 @@ const Step = ({
 
 		const alignmentString = alignment.points.join('');
 
-		const pointsString = points.join('');
+		/**
+		 * Keep the popover arrow pointing at the highlighted element: the
+		 * alignment handed to ClayPopover must reflect where dom-align
+		 * actually placed the popover (described by its returned points),
+		 * not the requested position, because dom-align may flip it to avoid
+		 * overflowing the viewport.
+		 */
+		const resolvedAlignment = ALIGNMENTS_INVERSE_MAP[alignmentString];
 
-		if (alignment.overflow.adjustX) {
-			setCurrentAlignment(ALIGNMENTS_GUESS_MAP[alignmentString]);
-		}
-		else if (pointsString !== alignmentString) {
-			setCurrentAlignment(ALIGNMENTS_INVERSE_MAP[alignmentString]);
+		if (resolvedAlignment && resolvedAlignment !== currentAlignment) {
+			setCurrentAlignment(resolvedAlignment);
 		}
 
 		if (!darkbg) {
