@@ -81,6 +81,71 @@ export const INVALID_NODE_SELECTOR_MOCK = {
 	],
 };
 
+export const NO_RENDERABLE_STEP_MOCK = {
+	pages: {
+		'/home': ['step-1', 'step-2'],
+	},
+	steps: [
+		{
+			content: '<span>Content 1</span><br/><code>Hello1</code>',
+			darkbg: true,
+			id: 'step-1',
+			nodeToHighlight: '.fiona',
+			title: 'Title 1',
+		},
+		{
+			content: '<span>Content 2</span><br/><code>Hello2</code>',
+			darkbg: true,
+			id: 'step-2',
+			nodeToHighlight: '.shelby',
+			title: 'Title 2',
+		},
+	],
+};
+
+export const INVALID_CSS_SELECTOR_MOCK = {
+	pages: {
+		'/home': ['step-1', 'step-2'],
+	},
+	steps: [
+		{
+			content: '<span>Content 1</span><br/><code>Hello1</code>',
+			darkbg: true,
+			id: 'step-1',
+			nodeToHighlight: ':::not-a-selector',
+			title: 'Title 1',
+		},
+		{
+			content: '<span>Content 2</span><br/><code>Hello2</code>',
+			darkbg: true,
+			id: 'step-2',
+			nodeToHighlight: '#footer',
+			title: 'Title 2',
+		},
+	],
+};
+
+export const LOCALIZED_MOCK = {
+	pages: {
+		'/home': ['step-1'],
+	},
+	steps: [
+		{
+			content: {
+				en_US: '<span>Localized content</span>',
+				es_ES: '<span>Contenido localizado</span>',
+			},
+			darkbg: true,
+			id: 'step-1',
+			nodeToHighlight: '.logo',
+			title: {
+				en_US: 'Localized title',
+				es_ES: 'Título localizado',
+			},
+		},
+	],
+};
+
 export const BOX_SHADOW_ELEMENT_MOCK = {
 	pages: {
 		'/home': ['step-1', 'step-2'],

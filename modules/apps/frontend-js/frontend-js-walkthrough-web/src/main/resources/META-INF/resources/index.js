@@ -12,6 +12,8 @@ import {LOCAL_STORAGE_KEYS} from './utils';
 
 const DEFAULT_CONTAINER_ID = 'walkthroughContainer';
 
+let lastProps = null;
+
 const getDefaultContainer = () => {
 	let container = document.getElementById(DEFAULT_CONTAINER_ID);
 
@@ -24,21 +26,52 @@ const getDefaultContainer = () => {
 	return container;
 };
 
-function Root(props) {
-	if (
-		!localStorage.getItem(
+function isDismissed() {
+	return (
+		localStorage.getItem(
 			LOCAL_STORAGE_KEYS.SKIPPABLE,
 			localStorage.TYPES.NECESSARY
-		)
-	) {
-		return <Walkthrough {...props} />;
+		) === 'true'
+	);
+}
+
+function Root(props) {
+	if (isDismissed()) {
+		return null;
 	}
 
-	return null;
+	return <Walkthrough {...props} />;
 }
 
 export {Walkthrough};
 
 export function main(props = {}) {
+	lastProps = props;
+
+	Liferay.Walkthrough = {restart};
+
 	render(Root, props, getDefaultContainer());
+}
+
+/**
+ * Clears the per-user walkthrough state (current step, popover visibility,
+ * and the "do not show me this again" dismissal) and mounts the walkthrough
+ * again, so a completed or dismissed tour can be replayed.
+ */
+export function restart() {
+	if (!lastProps) {
+		return;
+	}
+
+	Object.values(LOCAL_STORAGE_KEYS).forEach((key) =>
+		localStorage.removeItem(key)
+	);
+
+	const container = document.getElementById(DEFAULT_CONTAINER_ID);
+
+	if (container) {
+		container.remove();
+	}
+
+	main(lastProps);
 }

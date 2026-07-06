@@ -26,13 +26,14 @@ export const Hotspot = forwardRef(({onHotspotClick, trigger}, ref) => {
 	useObserveRect(align, trigger);
 
 	return (
-		<div
+		<button
 			aria-label={Liferay.Language.get('start-the-walkthrough')}
 			className="lfr-walkthrough-hotspot"
 			onClick={onHotspotClick}
 			ref={ref}
+			type="button"
 		>
-			<div className="lfr-walkthrough-hotspot-inner" />
-		</div>
+			<span className="lfr-walkthrough-hotspot-inner" />
+		</button>
 	);
 });

@@ -22,6 +22,8 @@ export function useLocalStorage(key, initialValue) {
 		catch (error) {
 			console.error(error);
 
+			localStorage.removeItem(key);
+
 			return value;
 		}
 	});

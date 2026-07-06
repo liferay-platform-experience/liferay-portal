@@ -13,8 +13,11 @@ import {LOCAL_STORAGE_KEYS} from '../../src/main/resources/META-INF/resources/ut
 import {
 	BOX_SHADOW_ELEMENT_MOCK,
 	DOM_STRUCTURE_FOR_PLACING_STEPS,
+	INVALID_CSS_SELECTOR_MOCK,
 	INVALID_NODE_SELECTOR_MOCK,
+	LOCALIZED_MOCK,
 	MULTI_PAGES_MOCK,
+	NO_RENDERABLE_STEP_MOCK,
 	PAGE_MOCK,
 	PAGE_WITH_PREVIOUS_MOCK,
 } from '../__lib__/walkthroughMock';
@@ -81,9 +84,11 @@ const POSSIBLE_LAYOUT_RELATIVE_URLS_HOME_ABC = [
 
 describe('Walkthrough', () => {
 	let cleanUpDocument;
+	let warnSpy;
 
 	beforeEach(() => {
 		cleanUpDocument = setupDocument();
+		warnSpy = jest.spyOn(console, 'warn').mockImplementation();
 	});
 
 	afterEach(() => {
@@ -94,14 +99,20 @@ describe('Walkthrough', () => {
 	});
 
 	it('renders', () => {
-		const errorSpy = jest.spyOn(console, 'error').mockImplementation();
-
 		const {container, getByLabelText} = renderWalkthrough(PAGE_MOCK);
 
 		expect(container).toBeInTheDocument();
 		expect(getByLabelText('start-the-walkthrough')).toBeInTheDocument();
 
-		expect(errorSpy).not.toHaveBeenCalled();
+		expect(warnSpy).not.toHaveBeenCalled();
+	});
+
+	it('renders nothing when there are no steps', () => {
+		render(<Walkthrough pages={{}} steps={[]} />);
+
+		expect(
+			screen.queryByLabelText('start-the-walkthrough')
+		).not.toBeInTheDocument();
 	});
 
 	it(`when clicking on Next, it navigates to the given URL of 'next'`, async () => {
@@ -160,12 +171,103 @@ describe('Walkthrough', () => {
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
 	});
 
-	it('logs an error when the provided selector is not defined', () => {
-		const errorSpy = jest.spyOn(console, 'error').mockImplementation();
-
+	it('warns and falls back to a renderable step when the current selector does not exist', async () => {
 		renderWalkthrough(INVALID_NODE_SELECTOR_MOCK);
 
+		expect(warnSpy).toHaveBeenCalled();
+
+		const hotspot = screen.getByLabelText('start-the-walkthrough');
+
+		await userEvent.click(hotspot);
+
+		expect(screen.queryByText('Hello2')).toBeInTheDocument();
+	});
+
+	it('warns and renders nothing when no step of the page has an existing element', () => {
+		renderWalkthrough(NO_RENDERABLE_STEP_MOCK);
+
+		expect(warnSpy).toHaveBeenCalled();
+
+		expect(
+			screen.queryByLabelText('start-the-walkthrough')
+		).not.toBeInTheDocument();
+	});
+
+	it('warns and falls back to a renderable step when a selector is not valid CSS', async () => {
+		renderWalkthrough(INVALID_CSS_SELECTOR_MOCK);
+
+		expect(warnSpy).toHaveBeenCalled();
+
+		const hotspot = screen.getByLabelText('start-the-walkthrough');
+
+		await userEvent.click(hotspot);
+
+		expect(screen.queryByText('Hello2')).toBeInTheDocument();
+	});
+
+	it('recovers from a corrupted persisted step by starting from the first step', async () => {
+		window.localStorage.setItem(
+			LOCAL_STORAGE_KEYS.CURRENT_STEP,
+			'{corrupted'
+		);
+
+		const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+		renderWalkthrough(PAGE_MOCK);
+
 		expect(errorSpy).toHaveBeenCalled();
+
+		expect(
+			window.localStorage.getItem(LOCAL_STORAGE_KEYS.CURRENT_STEP)
+		).toBeNull();
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(screen.queryByText('Hello1')).toBeInTheDocument();
+	});
+
+	it('recovers from an out-of-range persisted step by starting from the first step', async () => {
+		window.localStorage.setItem(LOCAL_STORAGE_KEYS.CURRENT_STEP, '7');
+
+		renderWalkthrough(PAGE_MOCK);
+
+		expect(
+			window.localStorage.getItem(LOCAL_STORAGE_KEYS.CURRENT_STEP)
+		).toBe('0');
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(screen.queryByText('Hello1')).toBeInTheDocument();
+	});
+
+	it('shows the step title and content in the user language', async () => {
+		themeDisplay.getLanguageId = jest.fn(() => 'es_ES');
+
+		renderWalkthrough(LOCALIZED_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(
+			screen.queryByText('Título localizado', {exact: false})
+		).toBeInTheDocument();
+		expect(screen.queryByText('Contenido localizado')).toBeInTheDocument();
+
+		themeDisplay.getLanguageId = jest.fn(() => 'en_US');
+	});
+
+	it('falls back to the default language when there is no translation for the user language', async () => {
+		themeDisplay.getLanguageId = jest.fn(() => 'fr_FR');
+
+		renderWalkthrough(LOCALIZED_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(
+			screen.queryByText('Localized title', {exact: false})
+		).toBeInTheDocument();
+		expect(screen.queryByText('Localized content')).toBeInTheDocument();
+
+		themeDisplay.getLanguageId = jest.fn(() => 'en_US');
 	});
 
 	it(`when 'darkbg' is set to false adds a 'lfr-walkthrough-element-shadow' to the nodeToHighlight'`, async () => {
@@ -261,9 +363,29 @@ describe('Walkthrough', () => {
 			screen.getByLabelText('do-not-show-me-this-again')
 		).toBeChecked();
 
+		expect(window.localStorage.getItem(LOCAL_STORAGE_KEYS.SKIPPABLE)).toBe(
+			'true'
+		);
+	});
+
+	it('unchecking "Do not show me this again" removes the dismissal', async () => {
+		renderWalkthrough(PAGE_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		const checkbox = screen.getByLabelText('do-not-show-me-this-again');
+
+		await userEvent.click(checkbox);
+
+		expect(window.localStorage.getItem(LOCAL_STORAGE_KEYS.SKIPPABLE)).toBe(
+			'true'
+		);
+
+		await userEvent.click(checkbox);
+
 		expect(
 			window.localStorage.getItem(LOCAL_STORAGE_KEYS.SKIPPABLE)
-		).toBe('true');
+		).toBeNull();
 	});
 
 	it('when `closeOnClickOutside` is enabled, it should close when clicking outside the popover', async () => {

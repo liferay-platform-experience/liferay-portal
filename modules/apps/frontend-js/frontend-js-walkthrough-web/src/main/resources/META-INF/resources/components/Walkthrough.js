@@ -19,7 +19,12 @@ import {Overlay} from '../components/Overlay';
 import {useClickOutside} from '../hooks/useClickOutside';
 import {useLocalStorage} from '../hooks/useLocalStorage';
 import {useObserveRect} from '../hooks/useObserveRect';
-import {LOCAL_STORAGE_KEYS, doAlign} from '../utils';
+import {
+	LOCAL_STORAGE_KEYS,
+	doAlign,
+	getLocalizedText,
+	querySelectorSafe,
+} from '../utils';
 
 /**
  * This map humanize tuples received from dom-align
@@ -201,32 +206,31 @@ const Step = ({
 
 	const changeStep = useCallback(
 		(action, isNext, index) => {
-			const hasElement = document.querySelector(
-				steps[index].nodeToHighlight
-			);
-
-			if (
-				hasElement ||
-				(action && pages[action].includes(steps[index].id))
-			) {
+			if (action && pages[action]?.includes(steps[index].id)) {
 				onCurrentStep(index);
-			}
-			else {
-				console.error(
-					`Walkthrough Exception: ${steps[index].nodeToHighlight} element for highlight does not exist in DOM`
-				);
 
-				onCurrentStep(
-					index === steps.length - 1
-						? index - 1
-						: isNext
-							? index + 1
-							: index - 1
+				return;
+			}
+
+			const direction = isNext ? 1 : -1;
+
+			for (
+				let nextIndex = index;
+				nextIndex >= 0 && nextIndex < steps.length;
+				nextIndex += direction
+			) {
+				if (querySelectorSafe(steps[nextIndex].nodeToHighlight)) {
+					onCurrentStep(nextIndex);
+
+					return;
+				}
+
+				console.warn(
+					`Walkthrough: skipping step "${steps[nextIndex].id}" because its "${steps[nextIndex].nodeToHighlight}" element does not exist in the DOM`
 				);
-				onPopoverVisible(false);
 			}
 		},
-		[pages, steps, onCurrentStep, onPopoverVisible]
+		[pages, steps, onCurrentStep]
 	);
 
 	const onNext = useCallback(
@@ -340,10 +344,10 @@ const Step = ({
 		<>
 			{!popoverVisible &&
 				currentStep !== steps.length &&
-				!localStorage.getItem(
+				localStorage.getItem(
 					LOCAL_STORAGE_KEYS.SKIPPABLE,
 					localStorage.TYPES.NECESSARY
-				) && (
+				) !== 'true' && (
 					<Hotspot
 						onHotspotClick={() => onPopoverVisible(true)}
 						ref={hotspotRef}
@@ -370,9 +374,11 @@ const Step = ({
 								verticalAlign="center"
 							>
 								<ClayLayout.ContentCol expand>
-									<span>{`Step ${currentStep + 1} of ${
+									<span>{`${Liferay.Util.sub(
+										Liferay.Language.get('step-x-of-x'),
+										currentStep + 1,
 										steps.length
-									}: ${title}`}</span>
+									)}: ${getLocalizedText(title)}`}</span>
 								</ClayLayout.ContentCol>
 
 								{closeable && (
@@ -399,8 +405,9 @@ const Step = ({
 						size="lg"
 					>
 						<div
+							className="lfr-walkthrough-popover-content"
 							dangerouslySetInnerHTML={{
-								__html: content,
+								__html: getLocalizedText(content),
 							}}
 						/>
 
@@ -413,13 +420,22 @@ const Step = ({
 											'do-not-show-me-this-again'
 										)}
 										onChange={() => {
-											setCheckboxValue(!checkboxValue);
+											const dismissed = !checkboxValue;
 
-											localStorage.setItem(
-												LOCAL_STORAGE_KEYS.SKIPPABLE,
-												!checkboxValue,
-												localStorage.TYPES.NECESSARY
-											);
+											setCheckboxValue(dismissed);
+
+											if (dismissed) {
+												localStorage.setItem(
+													LOCAL_STORAGE_KEYS.SKIPPABLE,
+													'true',
+													localStorage.TYPES.NECESSARY
+												);
+											}
+											else {
+												localStorage.removeItem(
+													LOCAL_STORAGE_KEYS.SKIPPABLE
+												);
+											}
 										}}
 									/>
 								</ClayLayout.ContentCol>
@@ -496,15 +512,45 @@ const Walkthrough = ({
 	skippable = true,
 	steps = [],
 }) => {
-	const [currentStepIndex, setCurrentStepIndex] = useLocalStorage(
+	const [storedStepIndex, setCurrentStepIndex] = useLocalStorage(
 		LOCAL_STORAGE_KEYS.CURRENT_STEP,
 		() => (!steps.length ? null : 0)
 	);
 
-	const [popoverVisible, setPopoverVisible] = useLocalStorage(
+	const [storedPopoverVisible, setPopoverVisible] = useLocalStorage(
 		LOCAL_STORAGE_KEYS.POPOVER_VISIBILITY,
 		false
 	);
+
+	/**
+	 * The persisted step index survives changes to the walkthrough
+	 * configuration, so a stored value can point outside the current steps
+	 * (or hold garbage from a corrupted storage). Heal it instead of letting
+	 * it take the whole walkthrough down.
+	 */
+	const currentStepIndex = useMemo(() => {
+		if (!steps.length) {
+			return null;
+		}
+
+		if (
+			!Number.isInteger(storedStepIndex) ||
+			storedStepIndex < 0 ||
+			storedStepIndex >= steps.length
+		) {
+			return 0;
+		}
+
+		return storedStepIndex;
+	}, [steps, storedStepIndex]);
+
+	useEffect(() => {
+		if (currentStepIndex !== storedStepIndex) {
+			setCurrentStepIndex(currentStepIndex);
+		}
+	}, [currentStepIndex, setCurrentStepIndex, storedStepIndex]);
+
+	const popoverVisible = storedPopoverVisible === true;
 
 	const currentLayoutRelativeURL = themeDisplay.getLayoutRelativeURL();
 
@@ -513,26 +559,57 @@ const Walkthrough = ({
 		[pages, currentLayoutRelativeURL]
 	);
 
-	const memoizedTrigger = useMemo(() => {
-		const trigger = steps[currentStepIndex].nodeToHighlight;
-
-		if (trigger) {
-			const currentNode = document.querySelector(trigger);
-
-			if (currentNode) {
-				return currentNode;
-			}
-
-			console.error(
-				`Walkthrough Exception: ${trigger} element for highlight does not exist in DOM`
-			);
+	/**
+	 * When the current step's element is not in the DOM (the page changed
+	 * since the walkthrough was authored, or the selector has a typo), fall
+	 * back to another step of the current page instead of rendering a
+	 * misplaced hotspot, and render nothing when no step is renderable.
+	 */
+	const renderableStepIndex = useMemo(() => {
+		if (currentStepIndex === null) {
+			return null;
 		}
-	}, [steps, currentStepIndex]);
 
-	if (
-		currentStepIndex === null ||
-		!pages[currentPage]?.includes(steps[currentStepIndex].id)
-	) {
+		const pageStepIds = pages[currentPage];
+
+		if (!pageStepIds?.includes(steps[currentStepIndex].id)) {
+			return null;
+		}
+
+		if (querySelectorSafe(steps[currentStepIndex].nodeToHighlight)) {
+			return currentStepIndex;
+		}
+
+		console.warn(
+			`Walkthrough: the "${steps[currentStepIndex].nodeToHighlight}" element of step "${steps[currentStepIndex].id}" does not exist in the DOM`
+		);
+
+		const fallbackStepIndex = steps.findIndex(
+			(step, index) =>
+				index !== currentStepIndex &&
+				pageStepIds.includes(step.id) &&
+				querySelectorSafe(step.nodeToHighlight)
+		);
+
+		if (fallbackStepIndex === -1) {
+			return null;
+		}
+
+		return fallbackStepIndex;
+	}, [currentPage, currentStepIndex, pages, steps]);
+
+	const memoizedTrigger = useMemo(() => {
+		if (renderableStepIndex === null) {
+			return undefined;
+		}
+
+		return (
+			querySelectorSafe(steps[renderableStepIndex].nodeToHighlight) ??
+			undefined
+		);
+	}, [steps, renderableStepIndex]);
+
+	if (renderableStepIndex === null) {
 		return null;
 	}
 
@@ -541,7 +618,7 @@ const Walkthrough = ({
 			closeOnClickOutside={closeOnClickOutside}
 			closeable={closeable}
 			currentPage={currentPage}
-			currentStep={currentStepIndex}
+			currentStep={renderableStepIndex}
 			memoizedTrigger={memoizedTrigger}
 			onCurrentStep={setCurrentStepIndex}
 			onPopoverVisible={setPopoverVisible}
@@ -559,11 +636,11 @@ Walkthrough.propTypes = {
 	skippable: PropTypes.bool,
 	steps: PropTypes.arrayOf(
 		PropTypes.shape({
-			content: PropTypes.string,
+			content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 			darkbg: PropTypes.bool,
 			nodeToHighlight: PropTypes.string.isRequired,
 			positioning: PropTypes.oneOf(Object.keys(ALIGNMENTS_MAP)),
-			title: PropTypes.string,
+			title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 		})
 	),
 };

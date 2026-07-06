@@ -8,6 +8,8 @@ package com.liferay.frontend.js.walkthrough.web.internal.servlet.taglib;
 import com.liferay.frontend.js.loader.modules.extender.esm.ESImportUtil;
 import com.liferay.frontend.js.walkthrough.web.internal.configuration.WalkthroughConfiguration;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -69,9 +71,21 @@ public class WalkthroughBottomJSPDynamicInclude implements DynamicInclude {
 			if (Validator.isNull(steps)) {
 				return;
 			}
+
+			steps = String.valueOf(_jsonFactory.createJSONObject(steps));
+		}
+		catch (JSONException jsonException) {
+			_log.error(
+				"Unable to parse the walkthrough steps configured for group " +
+					group.getGroupId(),
+				jsonException);
+
+			return;
 		}
 		catch (Exception exception) {
 			_log.error(exception);
+
+			return;
 		}
 
 		ScriptData scriptData = new ScriptData();
@@ -107,5 +121,8 @@ public class WalkthroughBottomJSPDynamicInclude implements DynamicInclude {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 }
