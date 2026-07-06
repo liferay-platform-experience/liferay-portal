@@ -1,8 +1,23 @@
 @import 'atlas-variables';
 
+@keyframes lfr-walkthrough-hotspot-pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba($primary-d1, 0.5);
+	}
+
+	70% {
+		box-shadow: 0 0 0 12px rgba($primary-d1, 0);
+	}
+
+	100% {
+		box-shadow: 0 0 0 0 rgba($primary-d1, 0);
+	}
+}
+
 .lfr-walkthrough {
 	&-hotspot {
 		align-items: center;
+		animation: lfr-walkthrough-hotspot-pulse 2s infinite;
 		background-color: rgb(255, 255, 255);
 		border: 2px solid $primary-d1;
 		border-radius: 100%;
@@ -16,6 +31,14 @@
 		position: absolute;
 		width: 32px;
 		z-index: 1020;
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+
+		.c-prefers-reduced-motion & {
+			animation: none;
+		}
 
 		&-inner {
 			background-color: $primary-d2;
