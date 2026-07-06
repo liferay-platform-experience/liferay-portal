@@ -274,6 +274,7 @@ const Step = ({
 		const alignmentSignature = {
 			alignment: currentAlignment,
 			left: triggerRect.left + window.scrollX,
+			popover: popoverRef.current,
 			top: triggerRect.top + window.scrollY,
 			trigger: memoizedTrigger,
 		};
@@ -285,12 +286,15 @@ const Step = ({
 		 * popover is anchored to the document and already moves with the
 		 * page. Realigning in that case would fight the user's scroll, so
 		 * only realign when the element actually moved within the document,
-		 * the alignment changed, or the step changed.
+		 * the alignment changed, the step changed, or the popover was
+		 * remounted (for example after being closed and reopened, which
+		 * yields a brand new node that has never been positioned).
 		 */
 		if (
 			lastAlignmentSignature &&
 			lastAlignmentSignature.alignment === alignmentSignature.alignment &&
 			lastAlignmentSignature.left === alignmentSignature.left &&
+			lastAlignmentSignature.popover === alignmentSignature.popover &&
 			lastAlignmentSignature.top === alignmentSignature.top &&
 			lastAlignmentSignature.trigger === alignmentSignature.trigger
 		) {
@@ -346,6 +350,17 @@ const Step = ({
 	}, [align]);
 
 	useObserveRect(align, popoverRef?.current);
+
+	/**
+	 * Drops the cached alignment once the popover is hidden, so reopening it
+	 * always realigns the freshly mounted node instead of leaving it at its
+	 * default top-left position.
+	 */
+	useEffect(() => {
+		if (!popoverVisible) {
+			lastAlignmentSignatureRef.current = null;
+		}
+	}, [popoverVisible]);
 
 	/**
 	 * Brings the highlighted element into view once when the popover opens

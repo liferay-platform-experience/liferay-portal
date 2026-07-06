@@ -9,7 +9,10 @@ import {navigate} from 'frontend-js-web';
 import React from 'react';
 
 import Walkthrough from '../../src/main/resources/META-INF/resources/components/Walkthrough';
-import {LOCAL_STORAGE_KEYS} from '../../src/main/resources/META-INF/resources/utils';
+import {
+	LOCAL_STORAGE_KEYS,
+	doAlign,
+} from '../../src/main/resources/META-INF/resources/utils';
 import {
 	BOX_SHADOW_ELEMENT_MOCK,
 	DOM_STRUCTURE_FOR_PLACING_STEPS,
@@ -53,7 +56,21 @@ jest.mock('frontend-js-web', () => ({
 	navigate: jest.fn(),
 }));
 
+jest.mock('../../src/main/resources/META-INF/resources/utils', () => ({
+	...jest.requireActual('../../src/main/resources/META-INF/resources/utils'),
+	doAlign: jest.fn((config) => ({
+		overflow: {adjustX: false, adjustY: false},
+		points: config.points,
+	})),
+}));
+
 navigate.mockImplementation(jest.fn((url) => url));
+
+function countPopoverAligns() {
+	return doAlign.mock.calls.filter(([config]) =>
+		config.sourceElement?.classList?.contains('lfr-walkthrough-popover')
+	).length;
+}
 
 /**
  * List of tuples containing as the first member
@@ -169,6 +186,22 @@ describe('Walkthrough', () => {
 		await userEvent.click(screen.getByText('previous'));
 
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
+	});
+
+	it('realigns the popover after it is closed and reopened from the hotspot', async () => {
+		renderWalkthrough(PAGE_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(countPopoverAligns()).toBeGreaterThan(0);
+
+		await userEvent.click(screen.getByLabelText('close'));
+
+		const alignsAfterClose = countPopoverAligns();
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		expect(countPopoverAligns()).toBeGreaterThan(alignsAfterClose);
 	});
 
 	it('locks the page scroll while the popover is open when `lockScroll` is enabled', async () => {
