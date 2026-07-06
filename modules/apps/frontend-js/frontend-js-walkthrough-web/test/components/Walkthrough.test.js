@@ -188,6 +188,22 @@ describe('Walkthrough', () => {
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
 	});
 
+	it('exposes the hotspot as a keyboard-focusable button that opens on Enter', async () => {
+		renderWalkthrough(PAGE_MOCK);
+
+		const hotspot = screen.getByLabelText('start-the-walkthrough');
+
+		expect(hotspot.tagName).toBe('BUTTON');
+
+		hotspot.focus();
+
+		expect(hotspot).toHaveFocus();
+
+		await userEvent.keyboard('{Enter}');
+
+		expect(screen.getByText('ok')).toBeInTheDocument();
+	});
+
 	it('realigns the popover after it is closed and reopened from the hotspot', async () => {
 		renderWalkthrough(PAGE_MOCK);
 

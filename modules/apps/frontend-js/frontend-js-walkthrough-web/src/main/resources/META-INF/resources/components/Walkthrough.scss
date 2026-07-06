@@ -40,6 +40,14 @@
 			animation: none;
 		}
 
+		// Uses outline rather than box-shadow so the keyboard focus ring does
+		// not clash with the pulse animation, which drives box-shadow.
+
+		&:focus-visible {
+			outline: 2px solid $primary-d1;
+			outline-offset: 2px;
+		}
+
 		&-inner {
 			background-color: $primary-d2;
 			border-radius: 100%;
