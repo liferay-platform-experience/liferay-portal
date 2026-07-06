@@ -4,9 +4,90 @@
  */
 
 import {
+	clampToDocument,
 	getLocalizedText,
 	querySelectorSafe,
 } from '../src/main/resources/META-INF/resources/utils';
+
+describe('clampToDocument', () => {
+	function createPositionedElement({left, rect, top}) {
+		const element = document.createElement('div');
+
+		element.style.left = left;
+		element.style.top = top;
+
+		element.getBoundingClientRect = () => ({
+			height: 32,
+			width: 32,
+			...rect,
+		});
+
+		return element;
+	}
+
+	it('shifts an element that overflows the top-left corner back inside', () => {
+		const element = createPositionedElement({
+			left: '-16px',
+			rect: {left: -26, top: -26},
+			top: '-16px',
+		});
+
+		clampToDocument(element);
+
+		expect(element.style.left).toBe('10px');
+		expect(element.style.top).toBe('10px');
+	});
+
+	it('shifts an element that overflows the document width back inside', () => {
+		Object.defineProperty(document.documentElement, 'scrollWidth', {
+			configurable: true,
+			value: 800,
+		});
+		Object.defineProperty(document.documentElement, 'scrollHeight', {
+			configurable: true,
+			value: 600,
+		});
+
+		const element = createPositionedElement({
+			left: '790px',
+			rect: {left: 790, top: 100},
+			top: '100px',
+		});
+
+		clampToDocument(element);
+
+		expect(element.style.left).toBe('768px');
+		expect(element.style.top).toBe('100px');
+
+		delete document.documentElement.scrollWidth;
+		delete document.documentElement.scrollHeight;
+	});
+
+	it('leaves an element that already fits alone', () => {
+		Object.defineProperty(document.documentElement, 'scrollWidth', {
+			configurable: true,
+			value: 800,
+		});
+		Object.defineProperty(document.documentElement, 'scrollHeight', {
+			configurable: true,
+			value: 600,
+		});
+
+		const element = createPositionedElement({
+			left: '100px',
+			rect: {left: 100, top: 100},
+			top: '100px',
+		});
+
+		clampToDocument(element);
+
+		expect(element.style.left).toBe('100px');
+		expect(element.style.top).toBe('100px');
+
+		delete document.documentElement.scrollWidth;
+		delete document.documentElement.scrollHeight;
+	});
+});
 
 describe('getLocalizedText', () => {
 	afterEach(() => {

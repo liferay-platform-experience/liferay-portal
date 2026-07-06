@@ -6,7 +6,7 @@
 import React, {forwardRef, useCallback, useEffect} from 'react';
 
 import {useObserveRect} from '../hooks/useObserveRect';
-import {doAlign} from '../utils';
+import {clampToDocument, doAlign} from '../utils';
 
 export const Hotspot = forwardRef(({onHotspotClick, trigger}, ref) => {
 	const align = useCallback(() => {
@@ -16,6 +16,8 @@ export const Hotspot = forwardRef(({onHotspotClick, trigger}, ref) => {
 				sourceElement: ref.current,
 				targetElement: trigger,
 			});
+
+			clampToDocument(ref.current);
 		}
 	}, [ref, trigger]);
 
@@ -24,6 +26,14 @@ export const Hotspot = forwardRef(({onHotspotClick, trigger}, ref) => {
 	}, [align]);
 
 	useObserveRect(align, trigger);
+
+	/**
+	 * Late layout shifts (images or fonts loading after the alignment) can
+	 * move the hotspot without moving the trigger's top-left corner, so the
+	 * hotspot's own rect is observed too. Realigning is idempotent, so this
+	 * settles as soon as the layout does.
+	 */
+	useObserveRect(align, ref?.current);
 
 	return (
 		<button
