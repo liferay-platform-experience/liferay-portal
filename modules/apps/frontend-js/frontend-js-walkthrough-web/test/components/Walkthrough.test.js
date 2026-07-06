@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
@@ -186,6 +186,52 @@ describe('Walkthrough', () => {
 		await userEvent.click(screen.getByText('previous'));
 
 		expect(screen.queryByText('Hello1')).toBeInTheDocument();
+	});
+
+	it('traps Tab and Shift+Tab focus inside the open popover', async () => {
+		renderWalkthrough(PAGE_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		const popover = document.querySelector('.lfr-walkthrough-popover');
+
+		const focusableElements = popover.querySelectorAll(
+			'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+		);
+
+		const firstElement = focusableElements[0];
+
+		const lastElement = focusableElements[focusableElements.length - 1];
+
+		lastElement.focus();
+
+		fireEvent.keyDown(document, {key: 'Tab'});
+
+		expect(document.activeElement).toBe(firstElement);
+
+		firstElement.focus();
+
+		fireEvent.keyDown(document, {key: 'Tab', shiftKey: true});
+
+		expect(document.activeElement).toBe(lastElement);
+	});
+
+	it('pulls focus back into the popover when it escapes to the dimmed area', async () => {
+		renderWalkthrough(PAGE_MOCK);
+
+		await userEvent.click(screen.getByLabelText('start-the-walkthrough'));
+
+		const popover = document.querySelector('.lfr-walkthrough-popover');
+
+		const outsideElement = document.createElement('button');
+
+		document.body.appendChild(outsideElement);
+
+		outsideElement.focus();
+
+		expect(popover.contains(document.activeElement)).toBe(true);
+
+		outsideElement.remove();
 	});
 
 	it('exposes the hotspot as a keyboard-focusable button that opens on Enter', async () => {

@@ -17,6 +17,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Hotspot} from '../components/Hotspot';
 import {Overlay} from '../components/Overlay';
 import {useClickOutside} from '../hooks/useClickOutside';
+import {useFocusTrap} from '../hooks/useFocusTrap';
 import {useLocalStorage} from '../hooks/useLocalStorage';
 import {useObserveRect} from '../hooks/useObserveRect';
 import {
@@ -413,6 +414,8 @@ const Step = ({
 			}
 		}
 	);
+
+	useFocusTrap(popoverRef, popoverVisible);
 
 	const SITE_PREFIX_PATH = `/${getSitePrefix(currentPage)}`;
 
