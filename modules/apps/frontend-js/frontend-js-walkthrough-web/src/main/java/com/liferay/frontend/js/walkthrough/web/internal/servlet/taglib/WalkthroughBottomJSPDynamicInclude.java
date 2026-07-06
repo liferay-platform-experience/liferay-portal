@@ -8,7 +8,6 @@ package com.liferay.frontend.js.walkthrough.web.internal.servlet.taglib;
 import com.liferay.frontend.js.loader.modules.extender.esm.ESImportUtil;
 import com.liferay.frontend.js.walkthrough.web.internal.configuration.WalkthroughConfiguration;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -50,12 +49,6 @@ public class WalkthroughBottomJSPDynamicInclude implements DynamicInclude {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-44091")) {
-
-			return;
-		}
 
 		Group group = themeDisplay.getScopeGroup();
 
