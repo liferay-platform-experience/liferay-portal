@@ -40,12 +40,17 @@
 			animation: none;
 		}
 
-		// Uses outline rather than box-shadow so the keyboard focus ring does
-		// not clash with the pulse animation, which drives box-shadow.
+		// Matches Clay's default focus ring: a $white separation ring so the
+		// blue dot stands apart, then the $primary color ring. The pulse also
+		// drives box-shadow, so the animation is paused while focused to hand
+		// the property over to the focus ring.
 
 		&:focus-visible {
-			outline: 2px solid $primary-d1;
-			outline-offset: 2px;
+			animation: none;
+			box-shadow:
+				0 0 0 2px $white,
+				0 0 0 4px rgba($primary, 0.5);
+			outline: 0;
 		}
 
 		&-inner {
