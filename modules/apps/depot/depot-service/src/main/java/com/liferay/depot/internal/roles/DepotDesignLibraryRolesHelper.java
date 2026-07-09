@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,8 +46,8 @@ public class DepotDesignLibraryRolesHelper {
 		Role administratorRole = _getOrCreateRole(
 			companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
 
-		List<String> administratorResourceActions =
-			ResourceActionsUtil.getResourceActions(DepotEntry.class.getName());
+		List<String> administratorResourceActions = new ArrayList<>(
+			ResourceActionsUtil.getResourceActions(DepotEntry.class.getName()));
 
 		administratorResourceActions.remove(ActionKeys.ASSIGN_USER_ROLES);
 

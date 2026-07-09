@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -47,8 +48,8 @@ public class DepotRolesPortalInstanceLifecycleListener
 			company.getCompanyId(),
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
 
-		List<String> assetLibraryAdministratorResourceActions =
-			ResourceActionsUtil.getResourceActions(DepotEntry.class.getName());
+		List<String> assetLibraryAdministratorResourceActions = new ArrayList<>(
+			ResourceActionsUtil.getResourceActions(DepotEntry.class.getName()));
 
 		assetLibraryAdministratorResourceActions.remove(
 			ActionKeys.ASSIGN_USER_ROLES);
