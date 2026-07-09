@@ -27,9 +27,9 @@ import java.util.List;
 /**
  * @author Gabriel Prates
  */
-public class DepotDesignLibraryRoleCreator {
+public class DepotDesignLibraryRolesHelper {
 
-	public DepotDesignLibraryRoleCreator(
+	public DepotDesignLibraryRolesHelper(
 		Language language, ResourceLocalService resourceLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService, UserLocalService userLocalService) {
