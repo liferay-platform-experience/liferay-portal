@@ -48,7 +48,7 @@ public class DesignLibraryFeatureFlagListener implements FeatureFlagListener {
 					_resourcePermissionLocalService, _roleLocalService,
 					_userLocalService);
 
-			depotDesignLibraryRolesHelper.checkDesignLibraryRoles(companyId);
+			depotDesignLibraryRolesHelper.setupDesignLibraryRoles(companyId);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
