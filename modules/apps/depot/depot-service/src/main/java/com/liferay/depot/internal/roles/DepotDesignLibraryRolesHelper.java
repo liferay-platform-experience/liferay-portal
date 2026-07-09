@@ -97,28 +97,28 @@ public class DepotDesignLibraryRolesHelper {
 
 		Role role = _roleLocalService.fetchRole(companyId, name);
 
-		if (role == null) {
-			boolean addResource = PermissionThreadLocal.isAddResource();
-
-			try {
-				PermissionThreadLocal.setAddResource(false);
-
-				User user = _userLocalService.getGuestUser(companyId);
-
-				return _roleLocalService.addRole(
-					RoleConstants.toSystemRoleExternalReferenceCode(name),
-					user.getUserId(), null, 0, name,
-					DepotRoleUtil.getTitleMap(_language, name),
-					DepotRoleUtil.getDescriptionMap(companyId, _language, name),
-					RoleConstants.TYPE_DEPOT,
-					DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY, null);
-			}
-			finally {
-				PermissionThreadLocal.setAddResource(addResource);
-			}
+		if (role != null) {
+			return role;
 		}
 
-		return role;
+		boolean addResource = PermissionThreadLocal.isAddResource();
+
+		try {
+			PermissionThreadLocal.setAddResource(false);
+
+			User user = _userLocalService.getGuestUser(companyId);
+
+			return _roleLocalService.addRole(
+				RoleConstants.toSystemRoleExternalReferenceCode(name),
+				user.getUserId(), null, 0, name,
+				DepotRoleUtil.getTitleMap(_language, name),
+				DepotRoleUtil.getDescriptionMap(companyId, _language, name),
+				RoleConstants.TYPE_DEPOT,
+				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY, null);
+		}
+		finally {
+			PermissionThreadLocal.setAddResource(addResource);
+		}
 	}
 
 	private static final String _ASSET_TAGS_RESOURCE_NAME =
