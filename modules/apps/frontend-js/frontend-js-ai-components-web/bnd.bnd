@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Frontend JS AI Components Web
+Bundle-SymbolicName: com.liferay.frontend.js.ai.components.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /frontend-js-ai-components-web
