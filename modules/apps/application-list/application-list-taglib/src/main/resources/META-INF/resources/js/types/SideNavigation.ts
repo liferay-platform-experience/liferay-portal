@@ -5,6 +5,7 @@
 
 export type SideNavigationItem = {
 	canonicalName?: string;
+	filterOnly?: boolean;
 	href?: string;
 	id: string;
 	items?: Array<SideNavigationItem>;

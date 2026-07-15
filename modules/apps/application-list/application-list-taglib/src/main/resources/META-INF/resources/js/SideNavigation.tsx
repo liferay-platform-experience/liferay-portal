@@ -18,6 +18,16 @@ import SideNavigationSiteSelector from './SideNavigationSiteSelector';
 import {SideNavigationItem} from './types/SideNavigation';
 import {useSideNavigationFilter} from './useSideNavigationFilter';
 
+function countNavigationItems(items: Array<SideNavigationItem>): number {
+	return items.reduce(
+		(count, item) =>
+			count +
+			(item.href ? 1 : 0) +
+			(item.items ? countNavigationItems(item.items) : 0),
+		0
+	);
+}
+
 interface Props {
 	canonicalName: string;
 	categoryImageUrl: string;
@@ -114,10 +124,7 @@ function SideNavigation({
 		[updateVisible]
 	);
 
-	const numberOfResults = useMemo(
-		() => items.reduce((acc, item) => acc + (item.items?.length || 0), 0),
-		[items]
-	);
+	const numberOfResults = useMemo(() => countNavigationItems(items), [items]);
 
 	return (
 		<SidePanel

@@ -5,7 +5,8 @@
 
 import '@testing-library/jest-dom';
 import {configure} from '@testing-library/dom';
-import {render, screen} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {SideNavigation} from '../src/main/resources/META-INF/resources/js';
@@ -22,6 +23,15 @@ const ITEMS = [
 				canonicalName: 'assetsCanonicalName',
 				href: 'assetsHref',
 				id: 'assets',
+				items: [
+					{
+						canonicalName: 'categoriesCanonicalName',
+						filterOnly: true,
+						href: 'categoriesHref',
+						id: 'categories',
+						label: 'Categories',
+					},
+				],
 				label: 'Assets',
 				leadingIcon: 'assetsIcon',
 			},
@@ -144,5 +154,38 @@ describe('SideNavigation', () => {
 			'aria-expanded',
 			'true'
 		);
+	});
+
+	it('hides filter-only items until the search matches them', async () => {
+		renderComponent();
+
+		expect(screen.queryByText('Categories')).not.toBeInTheDocument();
+
+		await userEvent.type(
+			screen.getByTestId('sideNavigationSearchInput'),
+			'categories'
+		);
+
+		const categoriesItem = await screen.findByText('Categories');
+
+		expect(categoriesItem).toHaveAttribute('href', 'categoriesHref');
+		expect(screen.getByText('Assets')).toBeInTheDocument();
+		expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
+	});
+
+	it('keeps filter-only items hidden when only their parent matches', async () => {
+		renderComponent();
+
+		await userEvent.type(
+			screen.getByTestId('sideNavigationSearchInput'),
+			'assets'
+		);
+
+		await waitFor(() =>
+			expect(screen.queryByText('Dashboard')).not.toBeInTheDocument()
+		);
+
+		expect(screen.getByText('Assets')).toBeInTheDocument();
+		expect(screen.queryByText('Categories')).not.toBeInTheDocument();
 	});
 });
