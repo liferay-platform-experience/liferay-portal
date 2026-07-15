@@ -5,6 +5,8 @@
 
 package com.liferay.application.list;
 
+import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
+import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationRegistryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -15,6 +17,7 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.portlet.ControlPanelEntry;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
@@ -34,6 +37,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -101,6 +107,43 @@ public abstract class BasePanelApp implements PanelApp {
 			getUserNotificationEventsCount(
 				user.getUserId(), portlet.getPortletId(),
 				UserNotificationDeliveryConstants.TYPE_WEBSITE, true, false);
+	}
+
+	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		String screenNavigationKey = getScreenNavigationKey();
+
+		if (screenNavigationKey == null) {
+			return Collections.emptyList();
+		}
+
+		List<PanelAppNavigationItem> panelAppNavigationItems =
+			new ArrayList<>();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		for (ScreenNavigationCategory screenNavigationCategory :
+				ScreenNavigationRegistryUtil.getScreenNavigationCategories(
+					screenNavigationKey, themeDisplay.getUser(), null)) {
+
+			panelAppNavigationItems.add(
+				new PanelAppNavigationItem(
+					PortletURLBuilder.create(
+						getPortletURL(httpServletRequest)
+					).setParameter(
+						"screenNavigationCategoryKey",
+						screenNavigationCategory.getCategoryKey()
+					).buildString(),
+					screenNavigationCategory.getLabel(
+						themeDisplay.getLocale())));
+		}
+
+		return panelAppNavigationItems;
 	}
 
 	@Override
@@ -209,6 +252,10 @@ public abstract class BasePanelApp implements PanelApp {
 			return groupProvider.getGroup(httpServletRequest);
 		}
 
+		return null;
+	}
+
+	protected String getScreenNavigationKey() {
 		return null;
 	}
 
