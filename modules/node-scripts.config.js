@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '13716d97f75405de1185bae7375d58131e1d80bbf3c51b384f06d309d12aacbd',
+	hash: '6dd28d8a2f85fed0df271dc7acd9d5d1e452b174e5d7291cb3ee34f04d85741d',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -96,6 +96,7 @@ module.exports = {
 		'@liferay/frontend-editor-ckeditor4-sample-web': [],
 		'@liferay/frontend-editor-ckeditor5-sample-web': [],
 		'@liferay/frontend-icons-web': [],
+		'@liferay/frontend-js-ai-components-sample-web': [],
 		'@liferay/frontend-js-ai-components-web': [],
 		'@liferay/frontend-js-audiences-web': ['./custom-attributes'],
 		'@liferay/frontend-js-bootstrap-support-web': [],
