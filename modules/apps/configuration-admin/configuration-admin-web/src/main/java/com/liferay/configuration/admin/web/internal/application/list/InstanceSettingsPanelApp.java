@@ -5,11 +5,14 @@
 
 package com.liferay.configuration.admin.web.internal.application.list;
 
-import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+
+import java.io.Serializable;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = PanelApp.class
 )
-public class InstanceSettingsPanelApp extends BasePanelApp {
+public class InstanceSettingsPanelApp extends BaseSettingsPanelApp {
 
 	@Override
 	public String getIcon() {
@@ -39,6 +42,16 @@ public class InstanceSettingsPanelApp extends BasePanelApp {
 	@Override
 	public String getPortletId() {
 		return ConfigurationAdminPortletKeys.INSTANCE_SETTINGS;
+	}
+
+	@Override
+	protected ExtendedObjectClassDefinition.Scope getScope() {
+		return ExtendedObjectClassDefinition.Scope.COMPANY;
+	}
+
+	@Override
+	protected Serializable getScopePK(ThemeDisplay themeDisplay) {
+		return themeDisplay.getCompanyId();
 	}
 
 	@Reference(

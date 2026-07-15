@@ -7,12 +7,19 @@ package com.liferay.dispatch.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.dispatch.constants.DispatchPortletKeys;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -48,6 +55,32 @@ public class DispatchPanelApp extends BasePanelApp {
 			"content.Language", locale, getClass());
 
 		return _language.get(resourceBundle, _KEY);
+	}
+
+	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		return Arrays.asList(
+			new PanelAppNavigationItem(
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setMVCRenderCommandName(
+					"/dispatch/view_dispatch_trigger"
+				).setTabs1(
+					"dispatch-trigger"
+				).buildString(),
+				_language.get(httpServletRequest, "dispatch-triggers")),
+			new PanelAppNavigationItem(
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setMVCRenderCommandName(
+					"/dispatch/edit_scheduler_response"
+				).setTabs1(
+					"scheduler-response"
+				).buildString(),
+				_language.get(httpServletRequest, "scheduled-jobs")));
 	}
 
 	@Override

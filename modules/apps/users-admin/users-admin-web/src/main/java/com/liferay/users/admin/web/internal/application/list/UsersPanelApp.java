@@ -9,6 +9,7 @@ import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.users.admin.constants.UserScreenNavigationEntryConstants;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
 import org.osgi.service.component.annotations.Component;
@@ -39,6 +40,12 @@ public class UsersPanelApp extends BasePanelApp {
 	@Override
 	public String getPortletId() {
 		return UsersAdminPortletKeys.USERS_ADMIN;
+	}
+
+	@Override
+	protected String getScreenNavigationKey() {
+		return UserScreenNavigationEntryConstants.
+			SCREEN_NAVIGATION_KEY_USERS_AND_ORGANIZATIONS;
 	}
 
 	@Reference(

@@ -7,9 +7,20 @@ package com.liferay.server.admin.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,6 +43,34 @@ public class ServerAdminPanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		List<PanelAppNavigationItem> panelAppNavigationItems =
+			new ArrayList<>();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		for (String tabs1Name : _TABS1_NAMES) {
+			panelAppNavigationItems.add(
+				new PanelAppNavigationItem(
+					PortletURLBuilder.create(
+						getPortletURL(httpServletRequest)
+					).setMVCRenderCommandName(
+						"/server_admin/view"
+					).setTabs1(
+						tabs1Name
+					).buildString(),
+					_language.get(themeDisplay.getLocale(), tabs1Name)));
+		}
+
+		return panelAppNavigationItems;
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -40,6 +79,15 @@ public class ServerAdminPanelApp extends BasePanelApp {
 	public String getPortletId() {
 		return PortletKeys.SERVER_ADMIN;
 	}
+
+	private static final String[] _TABS1_NAMES = {
+		"resources", "log-levels", "properties", "database-migration",
+		"document-migration", "external-services", "friendly-urls", "script",
+		"shutdown", "production-readiness"
+	};
+
+	@Reference
+	private Language _language;
 
 	@Reference(
 		target = "(jakarta.portlet.name=" + PortletKeys.SERVER_ADMIN + ")"
