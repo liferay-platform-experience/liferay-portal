@@ -142,6 +142,18 @@ export default function StyleBookConfiguration({
 		}
 
 		if (Liferay.FeatureFlags['LPD-57283']) {
+			if (styleBookEntry.styleBookEntryERC) {
+				setSelectedItems([
+					{
+						designLibraryExternalReferenceCode:
+							styleBookEntry.styleBookEntryScopeERC || null,
+						designLibraryName: styleBookEntry.designLibraryName,
+						externalReferenceCode: styleBookEntry.styleBookEntryERC,
+						name: styleBookEntry.name,
+					},
+				]);
+			}
+
 			onOpenChange(true);
 		}
 		else {
