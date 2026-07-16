@@ -47,6 +47,16 @@ public class AtlasCustomPropertiesLifecycleAction implements LifecycleAction {
 			return;
 		}
 
+		// When LPD-57922 is enabled, ThemeDisplay selects the Atlas custom
+		// properties files as lazy defaults, which keeps theme CSS client
+		// extensions able to replace them
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-57922")) {
+
+			return;
+		}
+
 		Theme theme = themeDisplay.getTheme();
 
 		String prefix = PortalUtil.getPathModule();
