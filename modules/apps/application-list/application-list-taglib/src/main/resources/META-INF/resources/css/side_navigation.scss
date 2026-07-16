@@ -14,8 +14,8 @@
 		}
 	}
 
-	a.nav-link + .nav {
-		margin-left: 2rem;
+	a.nav-link + .nav .nav-link {
+		padding-left: 3rem;
 	}
 
 	input:not(:focus-within) {
