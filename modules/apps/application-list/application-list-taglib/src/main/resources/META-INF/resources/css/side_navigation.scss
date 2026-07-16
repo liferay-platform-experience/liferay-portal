@@ -15,7 +15,7 @@
 	}
 
 	a.nav-link + .nav .nav-link {
-		padding-left: 3rem;
+		padding-left: calc(#{$nav-link-padding-x} * 3);
 	}
 
 	input:not(:focus-within) {
