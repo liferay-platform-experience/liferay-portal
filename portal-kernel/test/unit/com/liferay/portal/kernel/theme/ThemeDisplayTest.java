@@ -6,14 +6,18 @@
 package com.liferay.portal.kernel.theme;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistryUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -30,6 +34,24 @@ public class ThemeDisplayTest {
 
 	@Before
 	public void setUp() {
+
+		// Instrument FeatureFlagManagerUtil after the field initializers have
+		// mocked JSONFactoryUtil and PropsUtil, so its static initializer
+		// resolves against those mocks instead of an uninitialized runtime
+
+		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+			FeatureFlagManagerUtil.class);
+
+		Company company = Mockito.mock(Company.class);
+
+		Mockito.when(
+			company.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		ReflectionTestUtil.setFieldValue(_themeDisplay, "_company", company);
+
 		Group group = Mockito.mock(Group.class);
 
 		Mockito.when(
@@ -62,9 +84,12 @@ public class ThemeDisplayTest {
 
 	@After
 	public void tearDown() {
+		_featureFlagManagerUtilMockedStatic.close();
 		_groupLocalServiceUtilMockedStatic.close();
 		_hashedFilesRegistryUtilMockedStatic.close();
+		_jsonFactoryUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
+		_propsUtilMockedStatic.close();
 	}
 
 	@Test
@@ -74,6 +99,19 @@ public class ThemeDisplayTest {
 
 		Assert.assertEquals(
 			"/o/classic-theme/css/clay.(" + _HASH + ").css",
+			_themeDisplay.getClayCSSURL());
+	}
+
+	@Test
+	public void testGetClayCSSURLAtlasCustomProperties() {
+		_enableAtlasCustomProperties();
+
+		_mockPortalUtil(
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, false);
+
+		Assert.assertEquals(
+			"/o/classic-theme/css/clay_atlas_custom_properties.(" + _HASH +
+				").css",
 			_themeDisplay.getClayCSSURL());
 	}
 
@@ -140,6 +178,19 @@ public class ThemeDisplayTest {
 
 		Assert.assertEquals(
 			"/o/classic-theme/css/main.(" + _HASH + ").css",
+			_themeDisplay.getMainCSSURL());
+	}
+
+	@Test
+	public void testGetMainCSSURLAtlasCustomProperties() {
+		_enableAtlasCustomProperties();
+
+		_mockPortalUtil(
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, false);
+
+		Assert.assertEquals(
+			"/o/classic-theme/css/main_atlas_custom_properties.(" + _HASH +
+				").css",
 			_themeDisplay.getMainCSSURL());
 	}
 
@@ -284,6 +335,19 @@ public class ThemeDisplayTest {
 	}
 
 	@Test
+	public void testRTLGetClayCSSURLAtlasCustomProperties() {
+		_enableAtlasCustomProperties();
+
+		_mockPortalUtil(
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, true);
+
+		Assert.assertEquals(
+			"/o/classic-theme/css/clay_atlas_custom_properties_rtl.(" + _HASH +
+				").css",
+			_themeDisplay.getClayCSSURL());
+	}
+
+	@Test
 	public void testRTLGetMainCSSURL() {
 		_mockPortalUtil(
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, true);
@@ -291,6 +355,27 @@ public class ThemeDisplayTest {
 		Assert.assertEquals(
 			"/o/classic-theme/css/main_rtl.(" + _HASH + ").css",
 			_themeDisplay.getMainCSSURL());
+	}
+
+	@Test
+	public void testRTLGetMainCSSURLAtlasCustomProperties() {
+		_enableAtlasCustomProperties();
+
+		_mockPortalUtil(
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, true);
+
+		Assert.assertEquals(
+			"/o/classic-theme/css/main_atlas_custom_properties_rtl.(" + _HASH +
+				").css",
+			_themeDisplay.getMainCSSURL());
+	}
+
+	private void _enableAtlasCustomProperties() {
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-57922")
+		).thenReturn(
+			true
+		);
 	}
 
 	private void _mockPortalUtil(
@@ -351,20 +436,28 @@ public class ThemeDisplayTest {
 		return theme;
 	}
 
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
 	private static final long _GROUP_ID = 1;
 
 	private static final String _HASH = RandomTestUtil.randomString(8);
 
 	private static final long _PARENT_GROUP_ID = 2;
 
+	private MockedStatic<FeatureFlagManagerUtil>
+		_featureFlagManagerUtilMockedStatic;
 	private final MockedStatic<GroupLocalServiceUtil>
 		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			GroupLocalServiceUtil.class);
 	private final MockedStatic<HashedFilesRegistryUtil>
 		_hashedFilesRegistryUtilMockedStatic = Mockito.mockStatic(
 			HashedFilesRegistryUtil.class);
+	private final MockedStatic<JSONFactoryUtil> _jsonFactoryUtilMockedStatic =
+		Mockito.mockStatic(JSONFactoryUtil.class);
 	private final MockedStatic<PortalUtil> _portalUtilMockedStatic =
 		Mockito.mockStatic(PortalUtil.class);
+	private final MockedStatic<PropsUtil> _propsUtilMockedStatic =
+		Mockito.mockStatic(PropsUtil.class);
 	private final ThemeDisplay _themeDisplay = new ThemeDisplay();
 
 }
