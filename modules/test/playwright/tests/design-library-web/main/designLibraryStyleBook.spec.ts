@@ -413,11 +413,11 @@ const testWithSite = mergeTests(test, isolatedSiteTest, pagesAdminPagesTest);
 
 testWithSite(
 	'Design library style books are filtered by page theme in the style book selector',
-	{tag: '@LPD-89206'},
+	{tag: '@LPD-83671'},
 	async ({apiHelpers, designLibrariesPage, page, pagesAdminPage, site}) => {
 		const classicStyleBookName = getRandomString();
+		const cmsStyleBookName = getRandomString();
 		const designLibraryName = getRandomString();
-		const dialectStyleBookName = getRandomString();
 		const pageName = getRandomString();
 
 		const createdDesignLibrary = await testWithSite.step(
@@ -437,13 +437,11 @@ testWithSite(
 			await testWithSite.step(
 				'Create a widget page in the site',
 				async () => {
-					await apiHelpers.headlessAdminSite.createPage(
-						site.externalReferenceCode,
-						{
-							name_i18n: {en_US: pageName},
-							type: 'WidgetPage',
-						}
-					);
+					await apiHelpers.jsonWebServicesLayout.addLayout({
+						groupId: String(site.id),
+						options: {type: 'portlet'},
+						title: pageName,
+					});
 				}
 			);
 
@@ -459,12 +457,12 @@ testWithSite(
 			);
 
 			await testWithSite.step(
-				'Create a Dialect Theme style book in the design library',
+				'Create a CMS Theme style book in the design library',
 				async () => {
 					await designLibrariesPage.createStyleBook(
 						designLibraryName,
-						dialectStyleBookName,
-						'Dialect Theme'
+						cmsStyleBookName,
+						'CMS Theme'
 					);
 				}
 			);
@@ -503,7 +501,7 @@ testWithSite(
 					).toBeHidden();
 
 					await expect(
-						selectStyleBookDialog.getByText(dialectStyleBookName, {
+						selectStyleBookDialog.getByText(cmsStyleBookName, {
 							exact: true,
 						})
 					).toBeHidden();
@@ -549,7 +547,7 @@ testWithSite(
 					).toBeVisible();
 
 					await expect(
-						selectStyleBookDialog.getByText(dialectStyleBookName, {
+						selectStyleBookDialog.getByText(cmsStyleBookName, {
 							exact: true,
 						})
 					).toBeHidden();
