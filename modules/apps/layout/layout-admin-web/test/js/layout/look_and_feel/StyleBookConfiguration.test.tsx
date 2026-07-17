@@ -27,10 +27,12 @@ jest.mock('@liferay/frontend-js-item-selector-web', () => ({
 					onClick={() =>
 						onItemsChange([
 							{
-								designLibraryExternalReferenceCode: 'lib-erc',
-								designLibraryName: 'Selected Library',
 								externalReferenceCode: 'selected-erc',
 								name: 'Selected Style Book',
+								scope: {
+									externalReferenceCode: 'lib-erc',
+									label: 'Selected Library',
+								},
 							},
 						])
 					}

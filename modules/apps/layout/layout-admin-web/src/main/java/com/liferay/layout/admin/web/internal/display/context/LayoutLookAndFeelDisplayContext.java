@@ -22,7 +22,6 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -284,14 +283,12 @@ public class LayoutLookAndFeelDisplayContext {
 				Group group = GroupLocalServiceUtil.fetchGroup(
 					_themeDisplay.getSiteGroupId());
 
-				Layout selLayout =
-					_layoutsAdminDisplayContext.getSelLayout();
+				Layout selLayout = _layoutsAdminDisplayContext.getSelLayout();
 
 				return StringBundler.concat(
 					_themeDisplay.getPortalURL(),
 					"/o/headless-admin-site/v1.0/sites/",
-					group.getExternalReferenceCode(),
-					"/page-specifications/",
+					group.getExternalReferenceCode(), "/page-specifications/",
 					selLayout.getExternalReferenceCode(), "/style-books");
 			}
 		).build();

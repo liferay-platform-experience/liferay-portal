@@ -14,11 +14,15 @@ import {openSelectionModal} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
+type Scope = {
+	externalReferenceCode: string;
+	label: string;
+};
+
 type StyleBook = {
-	designLibraryExternalReferenceCode: string | null;
-	designLibraryName: string | null;
 	externalReferenceCode: string;
 	name: string;
+	scope: Scope | null;
 };
 
 const DesignLibraryNameLabel = ({value}: {value: string}) => (
@@ -59,7 +63,7 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 		}) => ({
 			...props,
 			className: 'style-book-selector-card',
-			labels: item.designLibraryName
+			labels: item.scope?.label
 				? [
 						{
 							displayType: 'success',
@@ -71,7 +75,7 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 									</ClayLabel.ItemBefore>
 
 									<ClayLabel.ItemExpand>
-										{item.designLibraryName}
+										{item.scope.label}
 									</ClayLabel.ItemExpand>
 								</>
 							),
@@ -96,7 +100,7 @@ const STYLE_BOOK_VIEWS: IFrontendDataSetProps['views'] = [
 				},
 				{
 					contentRenderer: 'designLibraryNameRenderer',
-					fieldName: 'designLibraryName',
+					fieldName: 'scope',
 					label: Liferay.Language.get('design-library'),
 					sortable: false,
 				},
@@ -145,11 +149,16 @@ export default function StyleBookConfiguration({
 			if (styleBookEntry.styleBookEntryERC) {
 				setSelectedItems([
 					{
-						designLibraryExternalReferenceCode:
-							styleBookEntry.styleBookEntryScopeERC || null,
-						designLibraryName: styleBookEntry.designLibraryName,
 						externalReferenceCode: styleBookEntry.styleBookEntryERC,
 						name: styleBookEntry.name,
+						scope: styleBookEntry.styleBookEntryScopeERC
+							? {
+									externalReferenceCode:
+										styleBookEntry.styleBookEntryScopeERC,
+									label:
+										styleBookEntry.designLibraryName ?? '',
+								}
+							: null,
 					},
 				]);
 			}
@@ -177,6 +186,8 @@ export default function StyleBookConfiguration({
 			});
 		}
 	};
+
+	const styleBookApiURLWithNestedFields = `${styleBooksApiURL}${styleBooksApiURL.includes('?') ? '&' : '?'}nestedFields=scope.key,scope.label`;
 
 	return (
 		<>
@@ -226,15 +237,19 @@ export default function StyleBookConfiguration({
 
 			{open && Liferay.FeatureFlags['LPD-57283'] && (
 				<ItemSelectorModal<StyleBook>
-					apiURL={styleBooksApiURL}
+					apiURL={styleBookApiURLWithNestedFields}
 					fdsProps={{
 						customRenderers: {
 							tableCell: [
 								{
-									component: ({value}: {value: string}) =>
-										value ? (
+									component: ({
+										value,
+									}: {
+										value: Scope | null;
+									}) =>
+										value?.label ? (
 											<DesignLibraryNameLabel
-												value={value}
+												value={value.label}
 											/>
 										) : null,
 									name: 'designLibraryNameRenderer',
@@ -259,14 +274,13 @@ export default function StyleBookConfiguration({
 					onItemsChange={(items) => {
 						if (items[0]) {
 							setStyleBookEntry({
-								designLibraryName: items[0].designLibraryName,
+								designLibraryName:
+									items[0].scope?.label ?? null,
 								name: items[0].name,
 								styleBookEntryERC:
 									items[0].externalReferenceCode,
 								styleBookEntryScopeERC:
-									items[0]
-										.designLibraryExternalReferenceCode ??
-									'',
+									items[0].scope?.externalReferenceCode ?? '',
 							});
 						}
 
