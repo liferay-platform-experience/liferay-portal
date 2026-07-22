@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayIcon from '@clayui/icon';
 import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -15,13 +16,19 @@ import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__
 import {ChatShell} from '../../src/main/resources/META-INF/resources';
 import {ChatShellContext} from '../../src/main/resources/META-INF/resources/ai-assistant-chat/ChatShellContext';
 
-function renderChatShell(onClose: () => void) {
+function renderChatShell(
+	onClose: () => void,
+	contextOverrides: Partial<
+		React.ComponentProps<typeof ChatShellContext.Provider>['value']
+	> = {}
+) {
 	return render(
 		<ChatShellContext.Provider
 			value={{
 				dialogId: 'd1',
 				onClose,
 				titleId: 't1',
+				...contextOverrides,
 			}}
 		>
 			<ChatShell>
@@ -69,6 +76,41 @@ describe('ChatShell', () => {
 
 	it('has no accessibility violations', async () => {
 		const {container} = renderChatShell(jest.fn());
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
+	it('renders no grip when titleBarLeading is absent', () => {
+		const {container} = renderChatShell(jest.fn());
+
+		expect(
+			container.querySelector('.lexicon-icon-drag')
+		).not.toBeInTheDocument();
+	});
+
+	it('renders the titleBarLeading node out of the accessibility tree', () => {
+		const {container} = renderChatShell(jest.fn(), {
+			titleBarLeading: <ClayIcon aria-hidden symbol="drag" />,
+		});
+
+		const grip = container.querySelector('.lexicon-icon-drag');
+
+		expect(grip).toBeInTheDocument();
+		expect(grip).toHaveAttribute('aria-hidden', 'true');
+	});
+
+	it('keeps the dialog accessible name as the title when titleBarLeading is present', () => {
+		renderChatShell(jest.fn(), {
+			titleBarLeading: <ClayIcon aria-hidden symbol="drag" />,
+		});
+
+		expect(screen.getByRole('dialog')).toHaveAccessibleName('Chat');
+	});
+
+	it('has no accessibility violations when titleBarLeading is present', async () => {
+		const {container} = renderChatShell(jest.fn(), {
+			titleBarLeading: <ClayIcon aria-hidden symbol="drag" />,
+		});
 
 		await checkAccessibility({bestPractices: true, context: container});
 	});
