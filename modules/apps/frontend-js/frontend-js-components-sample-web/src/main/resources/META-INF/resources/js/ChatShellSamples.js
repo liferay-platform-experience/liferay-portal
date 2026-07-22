@@ -8,6 +8,7 @@ import ClayLayout from '@clayui/layout';
 import {
 	ChatActionButton,
 	ChatDropdownContainer,
+	ChatFloatingContainer,
 	ChatShell,
 } from 'frontend-js-components-web';
 import React, {useState} from 'react';
@@ -62,10 +63,36 @@ function ChatDropdownCell() {
 	);
 }
 
+function ChatFloatingCell() {
+	const [open, setOpen] = useState(false);
+
+	return (
+		<ClayLayout.Col size={4}>
+			<h4>Floating</h4>
+
+			<div style={{height: DEMO_CELL_HEIGHT}}>
+				<ChatFloatingContainer
+					onOpenChange={setOpen}
+					open={open}
+					trigger={
+						<ClayButton onClick={() => setOpen(true)}>
+							Open AI Assistant
+						</ClayButton>
+					}
+				>
+					<ChatShellSample />
+				</ChatFloatingContainer>
+			</div>
+		</ClayLayout.Col>
+	);
+}
+
 export default function ChatShellSamples() {
 	return (
 		<ClayLayout.Row>
 			<ChatDropdownCell />
+
+			<ChatFloatingCell />
 		</ClayLayout.Row>
 	);
 }
