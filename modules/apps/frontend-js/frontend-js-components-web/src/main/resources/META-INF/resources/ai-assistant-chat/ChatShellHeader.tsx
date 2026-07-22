@@ -22,7 +22,8 @@ export default function ChatShellHeader({
 	title,
 	...otherProps
 }: ChatShellHeaderProps) {
-	const {onClose, titleId} = useChatShellContext();
+	const {onClose, titleBarLeading, titleBarProps, titleId} =
+		useChatShellContext();
 
 	return (
 		<div
@@ -34,10 +35,17 @@ export default function ChatShellHeader({
 		>
 			<div className="align-items-center c-mb-2 d-flex flex-row justify-content-between">
 				<span
-					className="chat-shell-header-title text-3 text-weight-semi-bold"
-					id={titleId}
+					{...titleBarProps}
+					className="align-items-center c-gap-2 chat-shell-header-title-bar d-flex"
 				>
-					{title}
+					{titleBarLeading}
+
+					<span
+						className="chat-shell-header-title text-3 text-weight-semi-bold"
+						id={titleId}
+					>
+						{title}
+					</span>
 				</span>
 
 				<span className="align-items-center d-flex flex-row">
