@@ -13,7 +13,13 @@ import com.liferay.asset.kernel.model.ClassTypeReader;
 import com.liferay.headless.delivery.dto.v1_0.AssetEntry;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -106,6 +112,27 @@ public class AssetEntryDTOConverter
 						return assetRenderer.getStatus();
 					});
 				setTitle(() -> serviceBuilderAssetEntry.getTitle(locale));
+				setViewableByGuest(
+					() -> {
+						if (!dtoConverterContext.containsNestedFieldsValue(
+								"viewableByGuest")) {
+
+							return null;
+						}
+
+						Role guestRole = _roleLocalService.getRole(
+							serviceBuilderAssetEntry.getCompanyId(),
+							RoleConstants.GUEST);
+
+						return _resourcePermissionLocalService.
+							hasResourcePermission(
+								serviceBuilderAssetEntry.getCompanyId(),
+								serviceBuilderAssetEntry.getClassName(),
+								ResourceConstants.SCOPE_INDIVIDUAL,
+								String.valueOf(
+									serviceBuilderAssetEntry.getClassPK()),
+								guestRole.getRoleId(), ActionKeys.VIEW);
+					});
 			}
 		};
 	}
@@ -115,6 +142,12 @@ public class AssetEntryDTOConverter
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
