@@ -5,9 +5,12 @@
 
 package com.liferay.headless.delivery.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -544,6 +547,64 @@ public class AssetEntry implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _titleSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The default permissions that allow viewing the asset entry."
+	)
+	@JsonGetter("viewableBy")
+	@Valid
+	public ViewableBy getViewableBy() {
+		if (_viewableBySupplier != null) {
+			viewableBy = _viewableBySupplier.get();
+
+			_viewableBySupplier = null;
+		}
+
+		return viewableBy;
+	}
+
+	@JsonIgnore
+	public String getViewableByAsString() {
+		ViewableBy viewableBy = getViewableBy();
+
+		if (viewableBy == null) {
+			return null;
+		}
+
+		return viewableBy.toString();
+	}
+
+	public void setViewableBy(ViewableBy viewableBy) {
+		this.viewableBy = viewableBy;
+
+		_viewableBySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setViewableBy(
+		UnsafeSupplier<ViewableBy, Exception> viewableByUnsafeSupplier) {
+
+		_viewableBySupplier = () -> {
+			try {
+				return viewableByUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The default permissions that allow viewing the asset entry."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected ViewableBy viewableBy;
+
+	@JsonIgnore
+	private Supplier<ViewableBy> _viewableBySupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -730,6 +791,20 @@ public class AssetEntry implements Serializable {
 			sb.append("\"");
 		}
 
+		ViewableBy viewableBy = getViewableBy();
+
+		if (viewableBy != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"viewableBy\": ");
+
+			sb.append("\"");
+			sb.append(viewableBy);
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -741,6 +816,44 @@ public class AssetEntry implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("ViewableBy")
+	public static enum ViewableBy {
+
+		ANYONE("Anyone"), MEMBERS("Members"), OWNER("Owner");
+
+		@JsonCreator
+		public static ViewableBy create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (ViewableBy viewableBy : values()) {
+				if (Objects.equals(viewableBy.getValue(), value)) {
+					return viewableBy;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private ViewableBy(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(
@@ -831,4 +944,4 @@ public class AssetEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1847726870
+// LIFERAY-REST-BUILDER-HASH:807514532

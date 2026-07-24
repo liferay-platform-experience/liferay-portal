@@ -185,6 +185,18 @@ public class AssetEntrySerDes {
 			sb.append("\"");
 		}
 
+		if (assetEntry.getViewableBy() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"viewableBy\": ");
+
+			sb.append("\"");
+			sb.append(assetEntry.getViewableBy());
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -288,6 +300,13 @@ public class AssetEntrySerDes {
 			map.put("title", String.valueOf(assetEntry.getTitle()));
 		}
 
+		if (assetEntry.getViewableBy() == null) {
+			map.put("viewableBy", null);
+		}
+		else {
+			map.put("viewableBy", String.valueOf(assetEntry.getViewableBy()));
+		}
+
 		return map;
 	}
 
@@ -339,6 +358,9 @@ public class AssetEntrySerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "title")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "viewableBy")) {
 				return false;
 			}
 
@@ -412,6 +434,13 @@ public class AssetEntrySerDes {
 			else if (Objects.equals(jsonParserFieldName, "title")) {
 				if (jsonParserFieldValue != null) {
 					assetEntry.setTitle((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "viewableBy")) {
+				if (jsonParserFieldValue != null) {
+					assetEntry.setViewableBy(
+						AssetEntry.ViewableBy.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -495,4 +524,4 @@ public class AssetEntrySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-600015839
+// LIFERAY-REST-BUILDER-HASH:718686306
