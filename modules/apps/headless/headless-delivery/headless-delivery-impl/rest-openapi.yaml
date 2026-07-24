@@ -119,6 +119,12 @@ components:
                         The asset entry's title in the requesting locale.
                     readOnly: true
                     type: string
+                viewableBy:
+                    description:
+                        The default permissions that allow viewing the asset entry.
+                    enum: [Anyone, Members, Owner]
+                    readOnly: true
+                    type: string
             type: object
         BlogPosting:
             description:
