@@ -1,0 +1,72 @@
+@import 'atlas-variables';
+
+@keyframes lfr-tour-hotspot-pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba($primary-d1, 0.5);
+	}
+
+	70% {
+		box-shadow: 0 0 0 12px rgba($primary-d1, 0);
+	}
+
+	100% {
+		box-shadow: 0 0 0 0 rgba($primary-d1, 0);
+	}
+}
+
+.lfr-tour {
+	&-hotspot {
+		align-items: center;
+		animation: lfr-tour-hotspot-pulse 2s infinite;
+		background-color: $white;
+		border: 2px solid $primary-d1;
+		border-radius: 100%;
+		cursor: pointer;
+		display: flex;
+		height: 32px;
+		justify-content: center;
+		margin-left: -10px;
+		margin-top: -10px;
+		padding: 0;
+		position: absolute;
+		width: 32px;
+		z-index: 1020;
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+
+		.c-prefers-reduced-motion & {
+			animation: none;
+		}
+
+		// Matches Clay's default focus ring: a $white separation ring so the
+		// blue dot stands apart, then the $primary color ring. The pulse also
+		// drives box-shadow, so the animation is paused while focused to hand
+		// the property over to the focus ring.
+
+		&:focus-visible {
+			animation: none;
+			box-shadow:
+				0 0 0 2px $white,
+				0 0 0 4px rgba($primary, 0.5);
+			outline: 0;
+		}
+
+		&-inner {
+			background-color: $primary-d2;
+			border-radius: 100%;
+			height: 16px;
+			width: 16px;
+		}
+	}
+
+	&-element-shadow {
+		box-shadow: 0 8px 16px 0 rgba($primary-d1, 0.16) !important;
+	}
+
+	&-popover-content {
+		max-height: 50vh;
+		overflow-y: auto;
+	}
+}
