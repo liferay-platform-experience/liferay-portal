@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Mario Leandro
@@ -65,6 +66,25 @@ public class HomeDisplayContext {
 
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
+
+		List<Map<String, Object>> rootPropsItems = new ArrayList<>();
+
+		for (Map<String, Object> rootPropsItem :
+				_getPropsItems(_panelCategory)) {
+
+			if (!Objects.equals(rootPropsItem.get("id"), _portletId)) {
+				rootPropsItems.add(rootPropsItem);
+			}
+		}
+
+		if (!rootPropsItems.isEmpty()) {
+			propsItems.add(
+				HashMapBuilder.<String, Object>put(
+					"id", _panelCategory.getKey()
+				).put(
+					"items", rootPropsItems
+				).build());
+		}
 
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
