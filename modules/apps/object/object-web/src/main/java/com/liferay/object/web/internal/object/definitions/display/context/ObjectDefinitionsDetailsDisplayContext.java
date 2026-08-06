@@ -43,6 +43,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Marco Leo
@@ -155,6 +156,8 @@ public class ObjectDefinitionsDetailsDisplayContext
 		ObjectScopeProvider objectScopeProvider =
 			_objectScopeProviderRegistry.getObjectScopeProvider(scope);
 
+		String selectedPanelCategoryKey = _getSelectedPanelCategoryKey();
+
 		for (String panelCategoryKey :
 				objectScopeProvider.getRootPanelCategoryKeys()) {
 
@@ -172,6 +175,14 @@ public class ObjectDefinitionsDetailsDisplayContext
 			JSONArray itemsJSONArray = JSONFactoryUtil.createJSONArray();
 
 			for (PanelCategory childPanelCategory : childPanelCategories) {
+				if (childPanelCategory.isDeprecated() &&
+					!Objects.equals(
+						selectedPanelCategoryKey,
+						childPanelCategory.getKey())) {
+
+					continue;
+				}
+
 				itemsJSONArray.put(
 					JSONUtil.put(
 						"label",
@@ -180,6 +191,10 @@ public class ObjectDefinitionsDetailsDisplayContext
 					).put(
 						"value", childPanelCategory.getKey()
 					));
+			}
+
+			if (itemsJSONArray.length() == 0) {
+				continue;
 			}
 
 			jsonArray.put(
@@ -224,6 +239,16 @@ public class ObjectDefinitionsDetailsDisplayContext
 				_objectRequestHelper.getCompanyId());
 
 		return ctSettingsConfiguration.enabled();
+	}
+
+	private String _getSelectedPanelCategoryKey() {
+		ObjectDefinition objectDefinition = getObjectDefinition();
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		return objectDefinition.getPanelCategoryKey();
 	}
 
 	private final ConfigurationProvider _configurationProvider;
