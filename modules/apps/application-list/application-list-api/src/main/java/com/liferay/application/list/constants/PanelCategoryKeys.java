@@ -52,6 +52,10 @@ public interface PanelCategoryKeys {
 	public static final String APPLICATIONS_MENU_APPLICATIONS_CUSTOM_APPS =
 		"applications_menu.applications.custom.apps";
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #APPLICATIONS_MENU_APPLICATIONS}
+	 */
+	@Deprecated
 	public static final String APPLICATIONS_MENU_APPLICATIONS_DESIGN =
 		"applications_menu.applications.design";
 
