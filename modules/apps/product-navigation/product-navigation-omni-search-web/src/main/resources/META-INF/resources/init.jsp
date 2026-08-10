@@ -5,5 +5,8 @@
  */
 --%>
 
-<%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
+<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
+taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %>
+
+<%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>

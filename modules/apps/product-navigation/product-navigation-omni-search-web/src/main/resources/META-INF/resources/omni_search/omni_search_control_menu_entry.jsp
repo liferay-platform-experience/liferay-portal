@@ -15,9 +15,23 @@ omniSearchContentURL.setResourceID("/omni_search/omni_search_content");
 com.liferay.portal.kernel.portlet.LiferayPortletURL omniSearchDirectoryURL = com.liferay.portal.kernel.portlet.PortletURLFactoryUtil.create(request, com.liferay.product.navigation.omni.search.web.internal.constants.ProductNavigationOmniSearchPortletKeys.PRODUCT_NAVIGATION_OMNI_SEARCH, jakarta.portlet.PortletRequest.RESOURCE_PHASE);
 
 omniSearchDirectoryURL.setResourceID("/omni_search/omni_search_directory");
+
+String omniSearchLabel = LanguageUtil.get(request, "omni-search") + " (Ctrl+K)";
 %>
 
 <li class="control-menu-nav-item control-menu-nav-item-separator omni-search-control-menu-nav-item">
+	<clay:button
+		aria-haspopup="dialog"
+		aria-label="<%= omniSearchLabel %>"
+		cssClass="control-menu-nav-link lfr-portal-tooltip"
+		data-qa-id="omniSearch"
+		displayType="unstyled"
+		icon="search"
+		id="omniSearchTrigger"
+		small="<%= true %>"
+		title="<%= omniSearchLabel %>"
+	/>
+
 	<react:component
 		module="{OmniSearch} from product-navigation-omni-search-web"
 		props='<%=
