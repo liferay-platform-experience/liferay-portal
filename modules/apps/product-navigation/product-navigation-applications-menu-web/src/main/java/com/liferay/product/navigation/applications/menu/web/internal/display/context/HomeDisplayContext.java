@@ -13,6 +13,7 @@ import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -67,15 +68,10 @@ public class HomeDisplayContext {
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
 
-		List<Map<String, Object>> rootPropsItems = new ArrayList<>();
-
-		for (Map<String, Object> rootPropsItem :
-				_getPropsItems(_panelCategory)) {
-
-			if (!Objects.equals(rootPropsItem.get("id"), _portletId)) {
-				rootPropsItems.add(rootPropsItem);
-			}
-		}
+		List<Map<String, Object>> rootPropsItems = ListUtil.filter(
+			_getPropsItems(_panelCategory),
+			rootPropsItem -> !Objects.equals(
+				rootPropsItem.get("id"), _portletId));
 
 		if (!rootPropsItems.isEmpty()) {
 			propsItems.add(
