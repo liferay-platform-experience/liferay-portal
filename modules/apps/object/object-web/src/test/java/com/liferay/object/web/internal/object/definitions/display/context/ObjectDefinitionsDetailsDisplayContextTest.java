@@ -7,8 +7,6 @@ package com.liferay.object.web.internal.object.definitions.display.context;
 
 import com.liferay.application.list.BasePanelCategory;
 import com.liferay.application.list.PanelCategory;
-import com.liferay.object.constants.ObjectWebKeys;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
@@ -32,8 +30,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -114,61 +114,28 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 
 	@Test
 	@TestInfo("LPD-98002")
-	public void testGetScopeJSONArrayExcludesDeprecatedPanelCategory() {
-		List<String> panelCategoryKeys = _getPanelCategoryKeys(null);
+	public void testGetScopeJSONArrayFlagsDeprecatedPanelCategories() {
+		Map<String, Boolean> deprecatedPanelCategories =
+			_getDeprecatedPanelCategories();
 
 		Assert.assertEquals(
-			panelCategoryKeys.toString(), 1, panelCategoryKeys.size());
-		Assert.assertEquals(_PANEL_CATEGORY_KEY, panelCategoryKeys.get(0));
-	}
-
-	@Test
-	@TestInfo("LPD-98002")
-	public void testGetScopeJSONArrayIncludesSelectedDeprecatedPanelCategory() {
-		List<String> panelCategoryKeys = _getPanelCategoryKeys(
-			_DEPRECATED_PANEL_CATEGORY_KEY);
-
+			deprecatedPanelCategories.toString(), 2,
+			deprecatedPanelCategories.size());
 		Assert.assertEquals(
-			panelCategoryKeys.toString(), 2, panelCategoryKeys.size());
-		Assert.assertTrue(
-			panelCategoryKeys.toString(),
-			panelCategoryKeys.contains(_DEPRECATED_PANEL_CATEGORY_KEY));
+			Boolean.FALSE, deprecatedPanelCategories.get(_PANEL_CATEGORY_KEY));
+		Assert.assertEquals(
+			Boolean.TRUE,
+			deprecatedPanelCategories.get(_DEPRECATED_PANEL_CATEGORY_KEY));
 	}
 
-	private HttpServletRequest _getHttpServletRequest(String panelCategoryKey) {
-		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
-
-		if (panelCategoryKey != null) {
-			ObjectDefinition objectDefinition = Mockito.mock(
-				ObjectDefinition.class);
-
-			Mockito.when(
-				objectDefinition.getPanelCategoryKey()
-			).thenReturn(
-				panelCategoryKey
-			);
-
-			httpServletRequest.setAttribute(
-				ObjectWebKeys.OBJECT_DEFINITION, objectDefinition);
-		}
-
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		themeDisplay.setLocale(LocaleUtil.US);
-
-		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
-
-		return httpServletRequest;
-	}
-
-	private List<String> _getPanelCategoryKeys(String panelCategoryKey) {
-		List<String> panelCategoryKeys = new ArrayList<>();
+	private Map<String, Boolean> _getDeprecatedPanelCategories() {
+		Map<String, Boolean> deprecatedPanelCategories = new HashMap<>();
 
 		ObjectDefinitionsDetailsDisplayContext
 			objectDefinitionsDetailsDisplayContext =
 				new ObjectDefinitionsDetailsDisplayContext(
 					Mockito.mock(ConfigurationProvider.class),
-					_getHttpServletRequest(panelCategoryKey),
+					_getHttpServletRequest(),
 					Mockito.mock(ModelResourcePermission.class),
 					Mockito.mock(ObjectEntryManagerRegistry.class),
 					Mockito.mock(ObjectFolderLocalService.class),
@@ -186,10 +153,24 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 		for (int i = 0; i < itemsJSONArray.length(); i++) {
 			JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
 
-			panelCategoryKeys.add(itemJSONObject.getString("value"));
+			deprecatedPanelCategories.put(
+				itemJSONObject.getString("value"),
+				itemJSONObject.getBoolean("deprecated"));
 		}
 
-		return panelCategoryKeys;
+		return deprecatedPanelCategories;
+	}
+
+	private HttpServletRequest _getHttpServletRequest() {
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setLocale(LocaleUtil.US);
+
+		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
+
+		return httpServletRequest;
 	}
 
 	private void _registerPanelCategory(
