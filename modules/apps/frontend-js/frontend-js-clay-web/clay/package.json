@@ -1,0 +1,6 @@
+{
+	"description": "Anchors the Vercel build declared in vercel.json. The Vercel project Root Directory must stay at this directory.",
+	"name": "clay-root",
+	"private": true,
+	"version": "1.0.0"
+}

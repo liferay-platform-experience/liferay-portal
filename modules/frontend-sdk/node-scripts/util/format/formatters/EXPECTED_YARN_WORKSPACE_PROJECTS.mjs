@@ -248,6 +248,7 @@ export default [
 	'bookmarks-web',
 	'calendar-web',
 	'change-tracking-web',
+	'clay-root',
 	'click-to-chat-web',
 	'commerce-cart-taglib',
 	'commerce-dashboard-web',

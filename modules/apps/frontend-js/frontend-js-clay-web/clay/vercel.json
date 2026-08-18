@@ -1,0 +1,11 @@
+{
+	"builds": [
+		{
+			"config": {
+				"rootDirectory": "www"
+			},
+			"src": "package.json",
+			"use": "@vercel/next"
+		}
+	]
+}
