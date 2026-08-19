@@ -72,6 +72,7 @@ public class StyleBookEntryUtilTest {
 	@Test
 	public void testGetFrontendTokensValues() throws Exception {
 		_testGetFrontendTokensValuesWithCustomDefinition();
+		_testGetFrontendTokensValuesWithCustomTokenValue();
 		_testGetFrontendTokensValuesWithDefaultDefinition();
 	}
 
@@ -501,6 +502,41 @@ public class StyleBookEntryUtilTest {
 		Assert.assertEquals(
 			_DEFAULT_VALUE,
 			_getFrontendTokenValue("successColor", frontendTokensValues));
+	}
+
+	private void _testGetFrontendTokensValuesWithCustomTokenValue()
+		throws Exception {
+
+		FrontendTokenDefinition frontendTokenDefinition =
+			_mockFrontendTokenDefinition(_THEME_ID);
+
+		Locale locale = LocaleUtil.getDefault();
+
+		Assert.assertEquals(
+			"#CUSTOM",
+			_getFrontendTokenValue(
+				"successColor",
+				StyleBookEntryUtil.getFrontendTokensValues(
+					frontendTokenDefinition, locale,
+					_mockStyleBookEntry(
+						JSONUtil.put(
+							"custom:successColor",
+							JSONUtil.put("value", "#CUSTOM"))))));
+
+		Assert.assertEquals(
+			"#CUSTOM",
+			_getFrontendTokenValue(
+				"successColor",
+				StyleBookEntryUtil.getFrontendTokensValues(
+					frontendTokenDefinition, locale,
+					_mockStyleBookEntry(
+						JSONUtil.put(
+							_THEME_ID + ":successColor",
+							JSONUtil.put("value", "#THEME")
+						).put(
+							"custom:successColor",
+							JSONUtil.put("value", "#CUSTOM")
+						)))));
 	}
 
 	private void _testGetFrontendTokensValuesWithDefaultDefinition()
