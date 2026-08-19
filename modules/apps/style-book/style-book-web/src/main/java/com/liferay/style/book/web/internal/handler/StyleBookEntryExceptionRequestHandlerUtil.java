@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryNameException;
+import com.liferay.style.book.exception.StyleBookEntryFrontendTokenDefinitionException;
 import com.liferay.style.book.exception.StyleBookEntryNameException;
 
 import jakarta.portlet.ActionRequest;
@@ -41,6 +42,12 @@ public class StyleBookEntryExceptionRequestHandlerUtil {
 					"different-name");
 		}
 		else if (portalException instanceof StyleBookEntryNameException) {
+			errorMessage = LanguageUtil.get(
+				themeDisplay.getRequest(), "please-enter-a-valid-name");
+		}
+		else if (portalException instanceof
+					StyleBookEntryFrontendTokenDefinitionException) {
+
 			errorMessage = LanguageUtil.get(
 				themeDisplay.getRequest(), "please-enter-a-valid-name");
 		}
