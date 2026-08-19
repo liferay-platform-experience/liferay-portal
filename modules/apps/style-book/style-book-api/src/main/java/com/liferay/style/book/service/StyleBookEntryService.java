@@ -66,6 +66,13 @@ public interface StyleBookEntryService extends BaseService {
 			String themeId, ServiceContext serviceContext)
 		throws PortalException;
 
+	public StyleBookEntry addStyleBookEntryFrontendToken(
+			long styleBookEntryId, String categoryName,
+			String cssVariableMappingValue, String description,
+			String editorType, String label, String name, String tokenSetName,
+			String value)
+		throws PortalException;
+
 	public StyleBookEntry copyStyleBookEntry(
 			long groupId, long sourceStyleBookEntryId,
 			ServiceContext serviceContext)
@@ -159,4 +166,4 @@ public interface StyleBookEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1251938403
+// LIFERAY-SERVICE-BUILDER-HASH:488933672

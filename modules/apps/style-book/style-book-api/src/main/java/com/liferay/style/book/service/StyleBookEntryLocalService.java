@@ -87,6 +87,14 @@ public interface StyleBookEntryLocalService
 	public StyleBookEntry addStyleBookEntry(StyleBookEntry styleBookEntry);
 
 	@Indexable(type = IndexableType.REINDEX)
+	public StyleBookEntry addStyleBookEntryFrontendToken(
+			long styleBookEntryId, String categoryName,
+			String cssVariableMappingValue, String description,
+			String editorType, String label, String name, String tokenSetName,
+			String value)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public StyleBookEntry checkout(
 			StyleBookEntry publishedStyleBookEntry, int version)
@@ -519,4 +527,4 @@ public interface StyleBookEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1439227441
+// LIFERAY-SERVICE-BUILDER-HASH:-189138360
