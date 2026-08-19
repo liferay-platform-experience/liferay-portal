@@ -32,6 +32,14 @@ public class FrontendTokenDefinitionUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testCreateFrontendTokenJSONObject() {
+		_testCreateFrontendTokenJSONObjectWithCustomEditorType();
+		_testCreateFrontendTokenJSONObjectWithDefaultEditorType();
+		_testCreateFrontendTokenJSONObjectWithDescription();
+		_testCreateFrontendTokenJSONObjectWithoutDescription();
+	}
+
+	@Test
 	public void testGetFrontendTokenNames() {
 		_testGetFrontendTokenNamesWithBlankDefinition();
 		_testGetFrontendTokenNamesWithDuplicateName();
@@ -50,6 +58,35 @@ public class FrontendTokenDefinitionUtilTest {
 		_testGetMergedFrontendTokenDefinitionJSONObjectWithReplacedToken();
 		_testGetMergedFrontendTokenDefinitionJSONObjectWithUnknownCategoryName();
 		_testGetMergedFrontendTokenDefinitionJSONObjectWithUnknownSetName();
+	}
+
+	@Test
+	public void testRemoveFrontendToken() {
+		_testRemoveFrontendTokenWithExistingToken();
+		_testRemoveFrontendTokenWithMissingToken();
+		_testRemoveFrontendTokenWithoutFrontendTokenCategories();
+	}
+
+	private void _assertFrontendTokenJSONObject(
+		String cssVariableMappingValue, String label, String name,
+		JSONObject frontendTokenJSONObject) {
+
+		Assert.assertEquals(label, frontendTokenJSONObject.getString("label"));
+		Assert.assertEquals(name, frontendTokenJSONObject.getString("name"));
+		Assert.assertEquals(
+			"String", frontendTokenJSONObject.getString("type"));
+
+		JSONArray mappingsJSONArray = frontendTokenJSONObject.getJSONArray(
+			"mappings");
+
+		Assert.assertEquals(
+			mappingsJSONArray.toString(), 1, mappingsJSONArray.length());
+
+		JSONObject mappingJSONObject = mappingsJSONArray.getJSONObject(0);
+
+		Assert.assertEquals("cssVariable", mappingJSONObject.getString("type"));
+		Assert.assertEquals(
+			cssVariableMappingValue, mappingJSONObject.getString("value"));
 	}
 
 	private JSONObject _createFrontendTokenCategoryJSONObject(
@@ -161,6 +198,73 @@ public class FrontendTokenDefinitionUtilTest {
 			frontendTokenSetsJSONArray.getJSONObject(setIndex);
 
 		return frontendTokenSetJSONObject.getJSONArray("frontendTokens");
+	}
+
+	private void _testCreateFrontendTokenJSONObjectWithCustomEditorType() {
+		String cssVariableMappingValue = RandomTestUtil.randomString();
+		String editorType = "ColorPicker";
+		String label = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+
+		JSONObject frontendTokenJSONObject =
+			FrontendTokenDefinitionUtil.createFrontendTokenJSONObject(
+				cssVariableMappingValue, null, editorType, label, name);
+
+		_assertFrontendTokenJSONObject(
+			cssVariableMappingValue, label, name, frontendTokenJSONObject);
+
+		Assert.assertEquals(
+			editorType, frontendTokenJSONObject.getString("editorType"));
+	}
+
+	private void _testCreateFrontendTokenJSONObjectWithDefaultEditorType() {
+		String cssVariableMappingValue = RandomTestUtil.randomString();
+		String label = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+
+		JSONObject frontendTokenJSONObject =
+			FrontendTokenDefinitionUtil.createFrontendTokenJSONObject(
+				cssVariableMappingValue, null, "Default", label, name);
+
+		_assertFrontendTokenJSONObject(
+			cssVariableMappingValue, label, name, frontendTokenJSONObject);
+
+		Assert.assertFalse(frontendTokenJSONObject.has("editorType"));
+	}
+
+	private void _testCreateFrontendTokenJSONObjectWithDescription() {
+		String cssVariableMappingValue = RandomTestUtil.randomString();
+		String description = RandomTestUtil.randomString();
+		String label = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+
+		JSONObject frontendTokenJSONObject =
+			FrontendTokenDefinitionUtil.createFrontendTokenJSONObject(
+				cssVariableMappingValue, description, "Default", label, name);
+
+		_assertFrontendTokenJSONObject(
+			cssVariableMappingValue, label, name, frontendTokenJSONObject);
+
+		Assert.assertEquals(
+			description, frontendTokenJSONObject.getString("description"));
+	}
+
+	private void _testCreateFrontendTokenJSONObjectWithoutDescription() {
+		String cssVariableMappingValue = RandomTestUtil.randomString();
+		String label = RandomTestUtil.randomString();
+		String name = RandomTestUtil.randomString();
+
+		JSONObject frontendTokenJSONObject =
+			FrontendTokenDefinitionUtil.createFrontendTokenJSONObject(
+				cssVariableMappingValue, null, "Default", label, name);
+
+		Assert.assertFalse(frontendTokenJSONObject.has("description"));
+
+		frontendTokenJSONObject =
+			FrontendTokenDefinitionUtil.createFrontendTokenJSONObject(
+				cssVariableMappingValue, "", "Default", label, name);
+
+		Assert.assertFalse(frontendTokenJSONObject.has("description"));
 	}
 
 	private void _testGetFrontendTokenNamesWithBlankDefinition() {
@@ -631,6 +735,122 @@ public class FrontendTokenDefinitionUtilTest {
 		Assert.assertEquals(
 			overrideTokenName,
 			overrideFrontendTokenJSONObject.getString("name"));
+	}
+
+	private void _testRemoveFrontendTokenWithExistingToken() {
+		String keptTokenName1 = RandomTestUtil.randomString();
+		String keptTokenName2 = RandomTestUtil.randomString();
+		String keptTokenName3 = RandomTestUtil.randomString();
+		String removedTokenName = RandomTestUtil.randomString();
+
+		JSONObject frontendTokenDefinitionJSONObject =
+			_createFrontendTokenDefinitionJSONObject(
+				JSONUtil.putAll(
+					_createFrontendTokenCategoryJSONObject(
+						RandomTestUtil.randomString(),
+						JSONUtil.putAll(
+							_createFrontendTokenSetJSONObject(
+								RandomTestUtil.randomString(),
+								_createFrontendTokenJSONObject(
+									keptTokenName1)))),
+					_createFrontendTokenCategoryJSONObject(
+						RandomTestUtil.randomString(),
+						JSONUtil.putAll(
+							_createFrontendTokenSetJSONObject(
+								RandomTestUtil.randomString(),
+								_createFrontendTokenJSONObject(keptTokenName2)),
+							_createFrontendTokenSetJSONObject(
+								RandomTestUtil.randomString(),
+								JSONUtil.putAll(
+									_createFrontendTokenJSONObject(
+										removedTokenName),
+									_createFrontendTokenJSONObject(
+										keptTokenName3)))))));
+
+		JSONObject resultJSONObject =
+			FrontendTokenDefinitionUtil.removeFrontendToken(
+				frontendTokenDefinitionJSONObject, removedTokenName);
+
+		Assert.assertSame(frontendTokenDefinitionJSONObject, resultJSONObject);
+
+		Assert.assertEquals(
+			keptTokenName1,
+			_getFrontendTokensJSONArray(
+				resultJSONObject, 0, 0
+			).getJSONObject(
+				0
+			).getString(
+				"name"
+			));
+
+		Assert.assertEquals(
+			keptTokenName2,
+			_getFrontendTokensJSONArray(
+				resultJSONObject, 1, 0
+			).getJSONObject(
+				0
+			).getString(
+				"name"
+			));
+
+		JSONArray frontendTokensJSONArray = _getFrontendTokensJSONArray(
+			resultJSONObject, 1, 1);
+
+		Assert.assertEquals(
+			frontendTokensJSONArray.toString(), 1,
+			frontendTokensJSONArray.length());
+		Assert.assertEquals(
+			keptTokenName3,
+			frontendTokensJSONArray.getJSONObject(
+				0
+			).getString(
+				"name"
+			));
+	}
+
+	private void _testRemoveFrontendTokenWithMissingToken() {
+		String categoryName = RandomTestUtil.randomString();
+		String setName = RandomTestUtil.randomString();
+		String tokenName = RandomTestUtil.randomString();
+
+		JSONObject frontendTokenDefinitionJSONObject =
+			_createFrontendTokenDefinitionJSONObject(
+				categoryName, setName,
+				_createFrontendTokenJSONObject(tokenName));
+
+		JSONObject resultJSONObject =
+			FrontendTokenDefinitionUtil.removeFrontendToken(
+				frontendTokenDefinitionJSONObject,
+				RandomTestUtil.randomString());
+
+		Assert.assertSame(frontendTokenDefinitionJSONObject, resultJSONObject);
+
+		JSONArray frontendTokensJSONArray = _getFrontendTokensJSONArray(
+			resultJSONObject, 0, 0);
+
+		Assert.assertEquals(
+			frontendTokensJSONArray.toString(), 1,
+			frontendTokensJSONArray.length());
+
+		JSONObject frontendTokenJSONObject =
+			frontendTokensJSONArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			tokenName, frontendTokenJSONObject.getString("name"));
+	}
+
+	private void _testRemoveFrontendTokenWithoutFrontendTokenCategories() {
+		JSONObject frontendTokenDefinitionJSONObject = JSONUtil.put(
+			"name", RandomTestUtil.randomString());
+
+		JSONObject resultJSONObject =
+			FrontendTokenDefinitionUtil.removeFrontendToken(
+				frontendTokenDefinitionJSONObject,
+				RandomTestUtil.randomString());
+
+		Assert.assertSame(frontendTokenDefinitionJSONObject, resultJSONObject);
+		Assert.assertFalse(resultJSONObject.has("frontendTokenCategories"));
+		Assert.assertEquals(1, resultJSONObject.length());
 	}
 
 	private static final String _INVALID_JSON_OBJECT = "not-an-object";
