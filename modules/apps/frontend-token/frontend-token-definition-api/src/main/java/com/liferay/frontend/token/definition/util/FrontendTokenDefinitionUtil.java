@@ -24,6 +24,37 @@ import java.util.Objects;
  */
 public class FrontendTokenDefinitionUtil {
 
+	public static JSONObject createFrontendTokenJSONObject(
+		String cssVariableMappingValue, String description, String editorType,
+		String label, String name) {
+
+		JSONObject frontendTokenJSONObject = JSONUtil.put(
+			"label", label
+		).put(
+			"mappings",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"type", "cssVariable"
+				).put(
+					"value", cssVariableMappingValue
+				))
+		).put(
+			"name", name
+		).put(
+			"type", "String"
+		);
+
+		if (Validator.isNotNull(description)) {
+			frontendTokenJSONObject.put("description", description);
+		}
+
+		if (!Objects.equals(editorType, "Default")) {
+			frontendTokenJSONObject.put("editorType", editorType);
+		}
+
+		return frontendTokenJSONObject;
+	}
+
 	public static List<String> getFrontendTokenNames(
 		String frontendTokenDefinition) {
 
@@ -114,6 +145,50 @@ public class FrontendTokenDefinitionUtil {
 		}
 	}
 
+	public static JSONObject removeFrontendToken(
+		JSONObject frontendTokenDefinitionJSONObject, String name) {
+
+		JSONArray frontendTokenCategoriesJSONArray =
+			_getFrontendTokenCategoriesJSONArray(
+				frontendTokenDefinitionJSONObject);
+
+		if (frontendTokenCategoriesJSONArray == null) {
+			return frontendTokenDefinitionJSONObject;
+		}
+
+		for (int i = 0; i < frontendTokenCategoriesJSONArray.length(); i++) {
+			JSONObject frontendTokenCategoryJSONObject =
+				frontendTokenCategoriesJSONArray.getJSONObject(i);
+
+			JSONArray frontendTokenSetsJSONArray =
+				frontendTokenCategoryJSONObject.getJSONArray(
+					"frontendTokenSets");
+
+			if (frontendTokenSetsJSONArray == null) {
+				continue;
+			}
+
+			for (int j = 0; j < frontendTokenSetsJSONArray.length(); j++) {
+				JSONObject frontendTokenSetJSONObject =
+					frontendTokenSetsJSONArray.getJSONObject(j);
+
+				JSONArray frontendTokensJSONArray =
+					frontendTokenSetJSONObject.getJSONArray("frontendTokens");
+
+				if (frontendTokensJSONArray == null) {
+					continue;
+				}
+
+				frontendTokenSetJSONObject.put(
+					"frontendTokens",
+					_getNamedFilteredFrontendTokensJSONArray(
+						frontendTokensJSONArray, name));
+			}
+		}
+
+		return frontendTokenDefinitionJSONObject;
+	}
+
 	private static JSONObject _clone(JSONObject jsonObject) {
 		if (jsonObject == null) {
 			return JSONFactoryUtil.createJSONObject();
@@ -171,6 +246,26 @@ public class FrontendTokenDefinitionUtil {
 
 		return frontendTokenDefinitionJSONObject.getJSONArray(
 			"frontendTokenCategories");
+	}
+
+	private static JSONArray _getNamedFilteredFrontendTokensJSONArray(
+		JSONArray frontendTokensJSONArray, String name) {
+
+		JSONArray filteredFrontendTokensJSONArray =
+			JSONFactoryUtil.createJSONArray();
+
+		for (int i = 0; i < frontendTokensJSONArray.length(); i++) {
+			JSONObject frontendTokenJSONObject =
+				frontendTokensJSONArray.getJSONObject(i);
+
+			if (!Objects.equals(
+					name, frontendTokenJSONObject.getString("name"))) {
+
+				filteredFrontendTokensJSONArray.put(frontendTokenJSONObject);
+			}
+		}
+
+		return filteredFrontendTokensJSONArray;
 	}
 
 	private static JSONObject _getNamedJSONObject(
