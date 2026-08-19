@@ -12,6 +12,7 @@ import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.fragment.exception.InvalidPropagationTargetGroupException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
@@ -113,6 +115,8 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 
 	@Test
 	public void testPropagateChanges() throws Exception {
+		_testPropagateChangesAddsSessionErrorWhenNoGroupIsValid();
+		_testPropagateChangesDoesNotSignalErrorForGlobalFragmentEntry();
 		_testPropagateChangesInMixedBatchSkipsInvalidGroup();
 		_testPropagateChangesOfFragmentEntryToLockedContentLayout(
 			_fragmentEntry);
@@ -289,6 +293,71 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 			fragmentEntry.getHtml(), persistedFragmentEntryLink.getHtml());
 		Assert.assertEquals(
 			fragmentEntry.getJs(), persistedFragmentEntryLink.getJs());
+
+		_layoutLocalService.deleteLayout(layout);
+	}
+
+	private void _testPropagateChangesAddsSessionErrorWhenNoGroupIsValid()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry();
+		Group disconnectedGroup = GroupTestUtil.addGroup();
+
+		try {
+			FragmentEntry fragmentEntry = _addFragmentEntry(
+				depotEntry.getGroupId());
+
+			Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+			fragmentEntry = _updateFragmentEntry(fragmentEntry);
+
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+				_getMockLiferayPortletActionRequest(
+					fragmentEntry, layout,
+					new long[] {disconnectedGroup.getGroupId()});
+
+			boolean success = ReflectionTestUtil.invoke(
+				_mvcActionCommand, "processAction",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+
+			Assert.assertFalse(success);
+
+			Assert.assertTrue(
+				SessionErrors.contains(
+					mockLiferayPortletActionRequest,
+					InvalidPropagationTargetGroupException.class));
+
+			_layoutLocalService.deleteLayout(layout);
+		}
+		finally {
+			_depotEntryLocalService.deleteDepotEntry(depotEntry);
+			_groupLocalService.deleteGroup(disconnectedGroup);
+		}
+	}
+
+	private void _testPropagateChangesDoesNotSignalErrorForGlobalFragmentEntry()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(
+				_globalFragmentEntry, layout, new long[0]);
+
+		boolean success = ReflectionTestUtil.invoke(
+			_mvcActionCommand, "processAction",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertTrue(success);
+
+		Assert.assertFalse(
+			SessionErrors.contains(
+				mockLiferayPortletActionRequest,
+				InvalidPropagationTargetGroupException.class));
 
 		_layoutLocalService.deleteLayout(layout);
 	}
