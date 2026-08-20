@@ -177,23 +177,10 @@ public class StyleBookEntryLocalServiceImpl
 			FrontendTokenDefinitionUtil.createFrontendTokenJSONObject(
 				cssVariableMappingValue, description, editorType, label, name);
 
-		JSONObject overrideFrontendTokenDefinitionJSONObject = JSONUtil.put(
-			"frontendTokenCategories",
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"frontendTokenSets",
-					JSONUtil.putAll(
-						JSONUtil.put(
-							"frontendTokens",
-							JSONUtil.putAll(frontendTokenJSONObject)
-						).put(
-							"label", tokenSetName
-						).put(
-							"name", tokenSetName
-						))
-				).put(
-					"name", categoryName
-				)));
+		JSONObject overrideFrontendTokenDefinitionJSONObject =
+			FrontendTokenDefinitionUtil.
+				createFrontendTokenDefinitionJSONObject(
+					categoryName, tokenSetName, frontendTokenJSONObject);
 
 		frontendTokenDefinitionJSONObject =
 			FrontendTokenDefinitionUtil.
@@ -884,50 +871,11 @@ public class StyleBookEntryLocalServiceImpl
 			String frontendTokenDefinition)
 		throws PortalException {
 
-		JSONObject frontendTokenDefinitionJSONObject =
-			FrontendTokenDefinitionUtil.parseFrontendTokenDefinitionJSONObject(
-				frontendTokenDefinition);
+		for (JSONObject frontendTokenJSONObject :
+				FrontendTokenDefinitionUtil.getFrontendTokens(
+					frontendTokenDefinition)) {
 
-		if (frontendTokenDefinitionJSONObject == null) {
-			return;
-		}
-
-		JSONArray frontendTokenCategoriesJSONArray =
-			frontendTokenDefinitionJSONObject.getJSONArray(
-				"frontendTokenCategories");
-
-		if (frontendTokenCategoriesJSONArray == null) {
-			return;
-		}
-
-		for (int i = 0; i < frontendTokenCategoriesJSONArray.length(); i++) {
-			JSONObject frontendTokenCategoryJSONObject =
-				frontendTokenCategoriesJSONArray.getJSONObject(i);
-
-			JSONArray frontendTokenSetsJSONArray =
-				frontendTokenCategoryJSONObject.getJSONArray(
-					"frontendTokenSets");
-
-			if (frontendTokenSetsJSONArray == null) {
-				continue;
-			}
-
-			for (int j = 0; j < frontendTokenSetsJSONArray.length(); j++) {
-				JSONObject frontendTokenSetJSONObject =
-					frontendTokenSetsJSONArray.getJSONObject(j);
-
-				JSONArray frontendTokensJSONArray =
-					frontendTokenSetJSONObject.getJSONArray("frontendTokens");
-
-				if (frontendTokensJSONArray == null) {
-					continue;
-				}
-
-				for (int k = 0; k < frontendTokensJSONArray.length(); k++) {
-					_validateFrontendTokenCssVariableMapping(
-						frontendTokensJSONArray.getJSONObject(k));
-				}
-			}
+			_validateFrontendTokenCssVariableMapping(frontendTokenJSONObject);
 		}
 	}
 

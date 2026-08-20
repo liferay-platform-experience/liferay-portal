@@ -41,12 +41,9 @@ public class StyleBookEntryExceptionRequestHandlerUtil {
 				"a-style-book-with-this-name-already-exists.-please-enter-a-" +
 					"different-name");
 		}
-		else if (portalException instanceof StyleBookEntryNameException) {
-			errorMessage = LanguageUtil.get(
-				themeDisplay.getRequest(), "please-enter-a-valid-name");
-		}
-		else if (portalException instanceof
-					StyleBookEntryFrontendTokenDefinitionException) {
+		else if ((portalException instanceof StyleBookEntryNameException) ||
+				 (portalException instanceof
+					 StyleBookEntryFrontendTokenDefinitionException)) {
 
 			errorMessage = LanguageUtil.get(
 				themeDisplay.getRequest(), "please-enter-a-valid-name");

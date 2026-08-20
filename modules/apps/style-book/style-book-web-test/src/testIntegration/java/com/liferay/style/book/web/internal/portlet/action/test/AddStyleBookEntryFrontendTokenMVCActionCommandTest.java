@@ -121,26 +121,10 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 		JSONObject frontendTokenDefinitionJSONObject =
 			JSONFactoryUtil.createJSONObject(frontendTokenDefinition);
 
-		JSONArray frontendTokenCategoriesJSONArray =
+		return _getNamedJSONObject(
 			frontendTokenDefinitionJSONObject.getJSONArray(
-				"frontendTokenCategories");
-
-		if (frontendTokenCategoriesJSONArray == null) {
-			return null;
-		}
-
-		for (int i = 0; i < frontendTokenCategoriesJSONArray.length(); i++) {
-			JSONObject frontendTokenCategoryJSONObject =
-				frontendTokenCategoriesJSONArray.getJSONObject(i);
-
-			if (categoryName.equals(
-					frontendTokenCategoryJSONObject.getString("name"))) {
-
-				return frontendTokenCategoryJSONObject;
-			}
-		}
-
-		return null;
+				"frontendTokenCategories"),
+			"name", categoryName);
 	}
 
 	private JSONObject _getFrontendTokenDefinitionJSONObject(
@@ -150,25 +134,9 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 		JSONObject responseJSONObject = JSONFactoryUtil.createJSONObject(
 			frontendTokenDefinitionsResponse);
 
-		JSONArray frontendTokenDefinitionsJSONArray =
-			responseJSONObject.getJSONArray("frontendTokenDefinitions");
-
-		if (frontendTokenDefinitionsJSONArray == null) {
-			return null;
-		}
-
-		for (int i = 0; i < frontendTokenDefinitionsJSONArray.length(); i++) {
-			JSONObject frontendTokenDefinitionJSONObject =
-				frontendTokenDefinitionsJSONArray.getJSONObject(i);
-
-			if (themeId.equals(
-					frontendTokenDefinitionJSONObject.getString("id"))) {
-
-				return frontendTokenDefinitionJSONObject;
-			}
-		}
-
-		return null;
+		return _getNamedJSONObject(
+			responseJSONObject.getJSONArray("frontendTokenDefinitions"), "id",
+			themeId);
 	}
 
 	private JSONObject _getFrontendTokenJSONObject(
@@ -183,23 +151,9 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 			return null;
 		}
 
-		JSONArray frontendTokensJSONArray =
-			frontendTokenSetJSONObject.getJSONArray("frontendTokens");
-
-		if (frontendTokensJSONArray == null) {
-			return null;
-		}
-
-		for (int i = 0; i < frontendTokensJSONArray.length(); i++) {
-			JSONObject frontendTokenJSONObject =
-				frontendTokensJSONArray.getJSONObject(i);
-
-			if (name.equals(frontendTokenJSONObject.getString("name"))) {
-				return frontendTokenJSONObject;
-			}
-		}
-
-		return null;
+		return _getNamedJSONObject(
+			frontendTokenSetJSONObject.getJSONArray("frontendTokens"), "name",
+			name);
 	}
 
 	private JSONObject _getFrontendTokenSetJSONObject(
@@ -215,21 +169,25 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 			return null;
 		}
 
-		JSONArray frontendTokenSetsJSONArray =
-			frontendTokenCategoryJSONObject.getJSONArray("frontendTokenSets");
+		return _getNamedJSONObject(
+			frontendTokenCategoryJSONObject.getJSONArray("frontendTokenSets"),
+			"name", tokenSetName);
+	}
 
-		if (frontendTokenSetsJSONArray == null) {
+	private JSONObject _getNamedJSONObject(
+		JSONArray jsonArray, String key, String value) {
+
+		if (jsonArray == null) {
 			return null;
 		}
 
-		for (int i = 0; i < frontendTokenSetsJSONArray.length(); i++) {
-			JSONObject frontendTokenSetJSONObject =
-				frontendTokenSetsJSONArray.getJSONObject(i);
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-			if (tokenSetName.equals(
-					frontendTokenSetJSONObject.getString("name"))) {
+			if ((jsonObject != null) &&
+				value.equals(jsonObject.getString(key))) {
 
-				return frontendTokenSetJSONObject;
+				return jsonObject;
 			}
 		}
 

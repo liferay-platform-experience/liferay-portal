@@ -24,6 +24,29 @@ import java.util.Objects;
  */
 public class FrontendTokenDefinitionUtil {
 
+	public static JSONObject createFrontendTokenDefinitionJSONObject(
+		String categoryName, String tokenSetName,
+		JSONObject frontendTokenJSONObject) {
+
+		return JSONUtil.put(
+			"frontendTokenCategories",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"frontendTokenSets",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"frontendTokens",
+							JSONUtil.putAll(frontendTokenJSONObject)
+						).put(
+							"label", tokenSetName
+						).put(
+							"name", tokenSetName
+						))
+				).put(
+					"name", categoryName
+				)));
+	}
+
 	public static JSONObject createFrontendTokenJSONObject(
 		String cssVariableMappingValue, String description, String editorType,
 		String label, String name) {
@@ -58,6 +81,20 @@ public class FrontendTokenDefinitionUtil {
 	public static List<String> getFrontendTokenNames(
 		String frontendTokenDefinition) {
 
+		List<String> frontendTokenNames = new ArrayList<>();
+
+		for (JSONObject frontendTokenJSONObject :
+				getFrontendTokens(frontendTokenDefinition)) {
+
+			frontendTokenNames.add(frontendTokenJSONObject.getString("name"));
+		}
+
+		return frontendTokenNames;
+	}
+
+	public static List<JSONObject> getFrontendTokens(
+		String frontendTokenDefinition) {
+
 		JSONObject frontendTokenDefinitionJSONObject =
 			parseFrontendTokenDefinitionJSONObject(frontendTokenDefinition);
 
@@ -73,7 +110,7 @@ public class FrontendTokenDefinitionUtil {
 			return Collections.emptyList();
 		}
 
-		List<String> frontendTokenNames = new ArrayList<>();
+		List<JSONObject> frontendTokenJSONObjects = new ArrayList<>();
 
 		for (int i = 0; i < frontendTokenCategoriesJSONArray.length(); i++) {
 			JSONObject frontendTokenCategoryJSONObject =
@@ -83,11 +120,11 @@ public class FrontendTokenDefinitionUtil {
 				continue;
 			}
 
-			_collectFrontendTokenNames(
-				frontendTokenCategoryJSONObject, frontendTokenNames);
+			_collectFrontendTokens(
+				frontendTokenCategoryJSONObject, frontendTokenJSONObjects);
 		}
 
-		return frontendTokenNames;
+		return frontendTokenJSONObjects;
 	}
 
 	public static JSONObject getMergedFrontendTokenDefinitionJSONObject(
@@ -197,9 +234,9 @@ public class FrontendTokenDefinitionUtil {
 		return JSONFactoryUtil.createJSONObject(jsonObject.toMap());
 	}
 
-	private static void _collectFrontendTokenNames(
+	private static void _collectFrontendTokens(
 		JSONObject frontendTokenCategoryJSONObject,
-		List<String> frontendTokenNames) {
+		List<JSONObject> frontendTokenJSONObjects) {
 
 		JSONArray frontendTokenSetsJSONArray =
 			frontendTokenCategoryJSONObject.getJSONArray("frontendTokenSets");
@@ -231,8 +268,7 @@ public class FrontendTokenDefinitionUtil {
 					continue;
 				}
 
-				frontendTokenNames.add(
-					frontendTokenJSONObject.getString("name"));
+				frontendTokenJSONObjects.add(frontendTokenJSONObject);
 			}
 		}
 	}
