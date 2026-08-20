@@ -162,7 +162,7 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 	}
 
 	private void _assertFragmentEntryLinkContent(
-		FragmentEntryLink fragmentEntryLink, String css, String html,
+		String css, FragmentEntryLink fragmentEntryLink, String html,
 		String js) {
 
 		FragmentEntryLink persistedFragmentEntryLink =
@@ -215,10 +215,10 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 		mockLiferayPortletActionRequest.setParameter(
 			"fragmentEntryGroupId", String.valueOf(fragmentEntry.getGroupId()));
 
-		String[] rowIdsParameter = TransformUtil.transform(
+		String[] rowIdsStrings = TransformUtil.transform(
 			rowIds, String::valueOf, String.class);
 
-		mockLiferayPortletActionRequest.setParameter("rowIds", rowIdsParameter);
+		mockLiferayPortletActionRequest.setParameter("rowIds", rowIdsStrings);
 
 		return mockLiferayPortletActionRequest;
 	}
@@ -428,11 +428,11 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 			Assert.assertTrue(success);
 
 			_assertFragmentEntryLinkContent(
-				connectedFragmentEntryLink, fragmentEntry.getCss(),
+				fragmentEntry.getCss(), connectedFragmentEntryLink,
 				fragmentEntry.getHtml(), fragmentEntry.getJs());
 
 			_assertFragmentEntryLinkContent(
-				disconnectedFragmentEntryLink, originalDisconnectedCss,
+				originalDisconnectedCss, disconnectedFragmentEntryLink,
 				originalDisconnectedHtml, originalDisconnectedJs);
 
 			_layoutLocalService.deleteLayout(connectedLayout);
@@ -526,7 +526,7 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 				new MockLiferayPortletActionResponse());
 
 			_assertFragmentEntryLinkContent(
-				fragmentEntryLink, fragmentEntry.getCss(),
+				fragmentEntry.getCss(), fragmentEntryLink,
 				fragmentEntry.getHtml(), fragmentEntry.getJs());
 
 			_layoutLocalService.deleteLayout(layout);
