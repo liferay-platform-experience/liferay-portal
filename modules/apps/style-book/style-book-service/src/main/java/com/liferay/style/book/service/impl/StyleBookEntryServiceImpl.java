@@ -78,6 +78,26 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 	}
 
 	@Override
+	public StyleBookEntry addStyleBookEntryFrontendToken(
+			long styleBookEntryId, String categoryName,
+			String cssVariableMappingValue, String description,
+			String editorType, String label, String name, String tokenSetName,
+			String value)
+		throws PortalException {
+
+		StyleBookEntry styleBookEntry =
+			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), styleBookEntry.getGroupId(),
+			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
+
+		return styleBookEntryLocalService.addStyleBookEntryFrontendToken(
+			styleBookEntryId, categoryName, cssVariableMappingValue,
+			description, editorType, label, name, tokenSetName, value);
+	}
+
+	@Override
 	public StyleBookEntry copyStyleBookEntry(
 			long groupId, long sourceStyleBookEntryId,
 			ServiceContext serviceContext)

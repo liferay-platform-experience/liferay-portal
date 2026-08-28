@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryNameException;
+import com.liferay.style.book.exception.StyleBookEntryFrontendTokenDefinitionException;
 import com.liferay.style.book.exception.StyleBookEntryNameException;
 
 import jakarta.portlet.ActionRequest;
@@ -40,7 +41,10 @@ public class StyleBookEntryExceptionRequestHandlerUtil {
 				"a-style-book-with-this-name-already-exists.-please-enter-a-" +
 					"different-name");
 		}
-		else if (portalException instanceof StyleBookEntryNameException) {
+		else if ((portalException instanceof StyleBookEntryNameException) ||
+				 (portalException instanceof
+					 StyleBookEntryFrontendTokenDefinitionException)) {
+
 			errorMessage = LanguageUtil.get(
 				themeDisplay.getRequest(), "please-enter-a-valid-name");
 		}
