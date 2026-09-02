@@ -51,7 +51,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marcos Castro
  * @author Thiago Buarque
  */
-@Component(service = OmniSearchResultProvider.class)
+@Component(
+	property = "omni.search.result.provider.order:Integer=300",
+	service = OmniSearchResultProvider.class
+)
 public class SearchOmniSearchResultProvider
 	implements OmniSearchResultProvider {
 
