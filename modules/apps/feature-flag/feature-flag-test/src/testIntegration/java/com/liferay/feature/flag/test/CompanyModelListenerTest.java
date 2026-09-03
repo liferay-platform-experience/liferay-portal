@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.PortalPreferencesWrapper;
@@ -79,6 +80,53 @@ public class CompanyModelListenerTest {
 					FeatureFlagConstants.PREFERENCE_NAMESPACE,
 					deprecationFeatureFlag.getKey()));
 			Assert.assertFalse(deprecationFeatureFlag.isEnabled());
+		}
+	}
+
+	@Test
+	public void testDeprecationFeatureFlagsWhenDeprecationAutoDisabledIsFalse()
+		throws Exception {
+
+		String key = FeatureFlagConstants.getKey("deprecation.auto.disable");
+
+		String value = PropsUtil.get(key);
+
+		PropsUtil.set(key, "false");
+
+		try {
+			Company company = CompanyTestUtil.addCompany();
+
+			PortalPreferencesWrapper portalPreferencesWrapper =
+				(PortalPreferencesWrapper)
+					_portalPreferencesLocalService.getPreferences(
+						company.getCompanyId(),
+						PortletKeys.PREFS_OWNER_TYPE_COMPANY);
+
+			PortalPreferences portalPreferences =
+				portalPreferencesWrapper.getPortalPreferencesImpl();
+
+			Assert.assertNull(
+				portalPreferences.getValue(
+					FeatureFlagConstants.PREFERENCE_NAMESPACE,
+					FeatureFlagConstants.PREFERENCE_KEY_DEPRECATION_PROCESSED));
+
+			List<FeatureFlag> deprecationFeatureFlags =
+				_featureFlagManager.getFeatureFlags(
+					company.getCompanyId(),
+					FeatureFlagType.DEPRECATION.getPredicate());
+
+			Assert.assertFalse(deprecationFeatureFlags.isEmpty());
+
+			for (FeatureFlag deprecationFeatureFlag : deprecationFeatureFlags) {
+				Assert.assertNull(
+					portalPreferences.getValue(
+						FeatureFlagConstants.PREFERENCE_NAMESPACE,
+						deprecationFeatureFlag.getKey()));
+				Assert.assertTrue(deprecationFeatureFlag.isEnabled());
+			}
+		}
+		finally {
+			PropsUtil.set(key, value);
 		}
 	}
 

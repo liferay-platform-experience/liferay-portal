@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagType;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -22,6 +24,7 @@ import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portlet.PortalPreferencesWrapper;
 
 import java.util.List;
@@ -67,6 +70,19 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 	}
 
 	private void _processDeprecationFeatureFlags(long companyId) {
+		if (!GetterUtil.getBoolean(
+				PropsUtil.get(_PORTAL_PROPERTY_KEY_DEPRECATION_AUTO_DISABLE),
+				true)) {
+
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					"Skipping deprecation feature flags processing for " +
+						"company " + companyId);
+			}
+
+			return;
+		}
+
 		PortalPreferences portalPreferences = _getPortalPreferences(companyId);
 
 		boolean processed = GetterUtil.getBoolean(
@@ -99,6 +115,12 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 		_portalPreferencesLocalService.updatePreferences(
 			companyId, PortletKeys.PREFS_OWNER_TYPE_COMPANY, portalPreferences);
 	}
+
+	private static final String _PORTAL_PROPERTY_KEY_DEPRECATION_AUTO_DISABLE =
+		FeatureFlagConstants.getKey("deprecation.auto.disable");
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CompanyModelListener.class);
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
