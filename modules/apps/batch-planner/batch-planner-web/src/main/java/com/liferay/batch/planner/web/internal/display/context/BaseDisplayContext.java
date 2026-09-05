@@ -6,9 +6,12 @@
 package com.liferay.batch.planner.web.internal.display.context;
 
 import com.liferay.batch.planner.batch.engine.task.TaskItemUtil;
+import com.liferay.batch.planner.web.internal.constants.BatchPlannerNavigationConstants;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemBuilder;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
@@ -37,31 +40,22 @@ public abstract class BaseDisplayContext {
 		String tabs1 = ParamUtil.getString(
 			renderRequest, "tabs1", "batch-planner-plans");
 
-		return NavigationItemListBuilder.add(
-			navigationItem -> {
-				navigationItem.setActive(tabs1.equals("batch-planner-plans"));
-				navigationItem.setHref(
-					renderResponse.createRenderURL(), "tabs1",
-					"batch-planner-plans");
-				navigationItem.setLabel(
-					LanguageUtil.get(
-						PortalUtil.getHttpServletRequest(renderRequest),
-						"import-and-export"));
-			}
-		).add(
-			navigationItem -> {
-				navigationItem.setActive(
-					tabs1.equals("batch-planner-plan-templates"));
-				navigationItem.setHref(
-					renderResponse.createRenderURL(), "tabs1",
-					"batch-planner-plan-templates", "mvcRenderCommandName",
-					"/batch_planner/view_batch_planner_plan_templates");
-				navigationItem.setLabel(
-					LanguageUtil.get(
-						PortalUtil.getHttpServletRequest(renderRequest),
-						"templates"));
-			}
-		).build();
+		return TransformUtil.transform(
+			BatchPlannerNavigationConstants.batchPlannerNavigationTabs,
+			batchPlannerNavigationTab -> NavigationItemBuilder.setActive(
+				tabs1.equals(batchPlannerNavigationTab.getTabs1Name())
+			).setHref(
+				() -> PortletURLBuilder.createRenderURL(
+					renderResponse
+				).setMVCRenderCommandName(
+					batchPlannerNavigationTab.getMVCRenderCommandName(), false
+				).setTabs1(
+					batchPlannerNavigationTab.getTabs1Name()
+				).buildString()
+			).setLabel(
+				LanguageUtil.get(
+					httpServletRequest, batchPlannerNavigationTab.getLabelKey())
+			).build());
 	}
 
 	public String getSimpleClassName(String internalClassNameKey) {

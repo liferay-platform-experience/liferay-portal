@@ -32,6 +32,7 @@ page import="com.liferay.announcements.kernel.model.AnnouncementsEntryConstants"
 page import="com.liferay.announcements.kernel.model.AnnouncementsFlagConstants" %><%@
 page import="com.liferay.announcements.kernel.service.AnnouncementsFlagLocalServiceUtil" %><%@
 page import="com.liferay.announcements.web.internal.configuration.AnnouncementsPortletInstanceConfiguration" %><%@
+page import="com.liferay.announcements.web.internal.constants.AnnouncementsNavigationConstants" %><%@
 page import="com.liferay.announcements.web.internal.constants.AnnouncementsWebKeys" %><%@
 page import="com.liferay.announcements.web.internal.display.context.AnnouncementsAdminViewManagementToolbarDisplayContext" %><%@
 page import="com.liferay.announcements.web.internal.display.context.AnnouncementsDisplayContext" %><%@

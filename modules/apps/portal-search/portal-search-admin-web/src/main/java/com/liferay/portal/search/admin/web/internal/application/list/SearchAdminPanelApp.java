@@ -7,9 +7,24 @@ package com.liferay.portal.search.admin.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.admin.web.internal.constants.SearchAdminPortletKeys;
+import com.liferay.portal.search.admin.web.internal.util.SearchAdminNavigationUtil;
+import com.liferay.portal.search.index.IndexInformation;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,6 +47,29 @@ public class SearchAdminPanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			SearchAdminNavigationUtil.getTabs1Names(
+				_indexInformationSnapshot.get() != null,
+				themeDisplay.getPermissionChecker()),
+			tabs1Name -> new PanelAppNavigationItem(
+				_language.get(LocaleUtil.ENGLISH, tabs1Name),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setTabs1(
+					tabs1Name
+				).buildString(),
+				_language.get(themeDisplay.getLocale(), tabs1Name)));
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -40,6 +78,13 @@ public class SearchAdminPanelApp extends BasePanelApp {
 	public String getPortletId() {
 		return SearchAdminPortletKeys.SEARCH_ADMIN;
 	}
+
+	private static final Snapshot<IndexInformation> _indexInformationSnapshot =
+		new Snapshot<>(
+			SearchAdminPanelApp.class, IndexInformation.class, null, true);
+
+	@Reference
+	private Language _language;
 
 	@Reference(
 		target = "(jakarta.portlet.name=" + SearchAdminPortletKeys.SEARCH_ADMIN + ")"

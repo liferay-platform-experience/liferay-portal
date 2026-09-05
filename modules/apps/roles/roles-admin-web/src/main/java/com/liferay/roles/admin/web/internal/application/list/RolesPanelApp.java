@@ -7,9 +7,23 @@ package com.liferay.roles.admin.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.roles.admin.constants.RolesAdminPortletKeys;
+import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
+import com.liferay.roles.admin.web.internal.role.type.contributor.util.RoleTypeContributorRetrieverUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,6 +46,34 @@ public class RolesPanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			RoleTypeContributorRetrieverUtil.getRoleTypeContributors(
+				themeDisplay.getPermissionChecker(),
+				_roleTypeContributorProvider),
+			roleTypeContributor -> new PanelAppNavigationItem(
+				_language.get(
+					LocaleUtil.ENGLISH,
+					roleTypeContributor.getTabTitle(LocaleUtil.ENGLISH)),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setParameter(
+					"roleType", roleTypeContributor.getType()
+				).buildString(),
+				_language.get(
+					themeDisplay.getLocale(),
+					roleTypeContributor.getTabTitle(
+						themeDisplay.getLocale()))));
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -41,9 +83,15 @@ public class RolesPanelApp extends BasePanelApp {
 		return RolesAdminPortletKeys.ROLES_ADMIN;
 	}
 
+	@Reference
+	private Language _language;
+
 	@Reference(
 		target = "(jakarta.portlet.name=" + RolesAdminPortletKeys.ROLES_ADMIN + ")"
 	)
 	private Portlet _portlet;
+
+	@Reference
+	private RoleTypeContributorProvider _roleTypeContributorProvider;
 
 }

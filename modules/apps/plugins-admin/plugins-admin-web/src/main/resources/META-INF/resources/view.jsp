@@ -27,26 +27,14 @@ boolean showEditPluginHREF = true;
 	navigationItems='<%=
 		new JSPNavigationItemList(pageContext) {
 			{
-				add(
-					navigationItem -> {
-						navigationItem.setActive(tabs2.equals("portlets"));
-						navigationItem.setHref(renderResponse.createRenderURL(), "tabs2", "portlets");
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "portlets"));
-					});
-
-				add(
-					navigationItem -> {
-						navigationItem.setActive(tabs2.equals("themes"));
-						navigationItem.setHref(renderResponse.createRenderURL(), "tabs2", "themes");
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "themes"));
-					});
-
-				add(
-					navigationItem -> {
-						navigationItem.setActive(tabs2.equals("layout-templates"));
-						navigationItem.setHref(renderResponse.createRenderURL(), "tabs2", "layout-templates");
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "layout-templates"));
-					});
+				for (String tabs2Name : PluginsAdminNavigationConstants.TABS2_NAMES) {
+					add(
+						navigationItem -> {
+							navigationItem.setActive(tabs2.equals(tabs2Name));
+							navigationItem.setHref(renderResponse.createRenderURL(), "tabs2", tabs2Name);
+							navigationItem.setLabel(LanguageUtil.get(httpServletRequest, tabs2Name));
+						});
+				}
 			}
 		}
 	%>'

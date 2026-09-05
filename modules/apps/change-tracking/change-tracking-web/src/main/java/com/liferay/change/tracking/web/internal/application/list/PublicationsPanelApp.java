@@ -7,21 +7,30 @@ package com.liferay.change.tracking.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.change.tracking.configuration.helper.CTSettingsConfigurationHelper;
 import com.liferay.change.tracking.constants.CTPortletKeys;
+import com.liferay.change.tracking.web.internal.util.PublicationsNavigationUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,6 +50,37 @@ public class PublicationsPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "publications";
+	}
+
+	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!_ctSettingsConfigurationHelper.isEnabled(
+				themeDisplay.getCompanyId())) {
+
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.unsafeTransform(
+			PublicationsNavigationUtil.getNavigationTabs(),
+			publicationsNavigationTab -> new PanelAppNavigationItem(
+				_language.get(
+					LocaleUtil.ENGLISH,
+					publicationsNavigationTab.getLabelKey()),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setMVCRenderCommandName(
+					publicationsNavigationTab.getMVCRenderCommandName()
+				).buildString(),
+				_language.get(
+					themeDisplay.getLocale(),
+					publicationsNavigationTab.getLabelKey())));
 	}
 
 	@Override
@@ -93,6 +133,9 @@ public class PublicationsPanelApp extends BasePanelApp {
 
 	@Reference
 	private CTSettingsConfigurationHelper _ctSettingsConfigurationHelper;
+
+	@Reference
+	private Language _language;
 
 	@Reference(
 		target = "(jakarta.portlet.name=" + CTPortletKeys.PUBLICATIONS + ")"

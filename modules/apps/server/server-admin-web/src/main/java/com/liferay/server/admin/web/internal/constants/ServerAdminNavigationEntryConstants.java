@@ -25,4 +25,10 @@ public class ServerAdminNavigationEntryConstants {
 	public static final String SCREEN_NAVIGATION_KEY_PROPERTIES =
 		"properties.form";
 
+	public static final String[] TABS1_NAMES = {
+		"resources", "log-levels", "properties", "database-migration",
+		"document-migration", "external-services", "friendly-urls", "script",
+		"shutdown", "production-readiness"
+	};
+
 }

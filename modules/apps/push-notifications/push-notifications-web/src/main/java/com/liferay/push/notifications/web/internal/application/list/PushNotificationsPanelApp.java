@@ -7,9 +7,22 @@ package com.liferay.push.notifications.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.push.notifications.constants.PushNotificationsPortletKeys;
+import com.liferay.push.notifications.web.internal.constants.PushNotificationsNavigationConstants;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,6 +45,27 @@ public class PushNotificationsPanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransformToList(
+			PushNotificationsNavigationConstants.TABS1_NAMES,
+			tabs1Name -> new PanelAppNavigationItem(
+				_language.get(LocaleUtil.ENGLISH, tabs1Name),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setTabs1(
+					tabs1Name
+				).buildString(),
+				_language.get(themeDisplay.getLocale(), tabs1Name)));
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -40,6 +74,9 @@ public class PushNotificationsPanelApp extends BasePanelApp {
 	public String getPortletId() {
 		return PushNotificationsPortletKeys.PUSH_NOTIFICATIONS;
 	}
+
+	@Reference
+	private Language _language;
 
 	@Reference(
 		target = "(jakarta.portlet.name=" + PushNotificationsPortletKeys.PUSH_NOTIFICATIONS + ")"

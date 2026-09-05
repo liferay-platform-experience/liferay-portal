@@ -1,0 +1,44 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.search.experiences.web.internal.blueprint.admin.navigation;
+
+/**
+ * @author Mario Leandro
+ */
+public class SXPBlueprintAdminNavigationTab {
+
+	public SXPBlueprintAdminNavigationTab(
+		Boolean hidden, String labelKey, String mvcRenderCommandName,
+		String tabs1Name) {
+
+		_hidden = hidden;
+		_labelKey = labelKey;
+		_mvcRenderCommandName = mvcRenderCommandName;
+		_tabs1Name = tabs1Name;
+	}
+
+	public Boolean getHidden() {
+		return _hidden;
+	}
+
+	public String getLabelKey() {
+		return _labelKey;
+	}
+
+	public String getMVCRenderCommandName() {
+		return _mvcRenderCommandName;
+	}
+
+	public String getTabs1Name() {
+		return _tabs1Name;
+	}
+
+	private final Boolean _hidden;
+	private final String _labelKey;
+	private final String _mvcRenderCommandName;
+	private final String _tabs1Name;
+
+}

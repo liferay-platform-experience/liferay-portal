@@ -68,6 +68,7 @@ import com.liferay.roles.admin.panel.category.role.type.mapper.PanelCategoryRole
 import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
 import com.liferay.roles.admin.role.type.contributor.RoleTypeContributorShowFilterRegistryUtil;
 import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
+import com.liferay.roles.admin.web.internal.role.type.contributor.util.RoleTypeContributorRetrieverUtil;
 import com.liferay.segments.service.SegmentsEntryRoleLocalService;
 
 import jakarta.portlet.ActionRequest;
@@ -748,17 +749,9 @@ public class RolesAdminPortlet extends MVCPortlet {
 
 		portletRequest.setAttribute(
 			RolesAdminWebKeys.ROLE_TYPES,
-			ListUtil.filter(
-				_roleTypeContributorProvider.getRoleTypeContributors(),
-				roleTypeContributor -> {
-					if (roleTypeContributor == null) {
-						return false;
-					}
-
-					return RoleTypeContributorShowFilterRegistryUtil.isShow(
-						themeDisplay.getPermissionChecker(),
-						roleTypeContributor);
-				}));
+			RoleTypeContributorRetrieverUtil.getRoleTypeContributors(
+				themeDisplay.getPermissionChecker(),
+				_roleTypeContributorProvider));
 
 		String mvcPath = ParamUtil.getString(portletRequest, "mvcPath");
 

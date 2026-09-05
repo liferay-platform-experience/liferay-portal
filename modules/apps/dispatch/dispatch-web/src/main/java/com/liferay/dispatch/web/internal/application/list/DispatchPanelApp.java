@@ -7,12 +7,23 @@ package com.liferay.dispatch.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.dispatch.constants.DispatchPortletKeys;
+import com.liferay.dispatch.web.internal.constants.DispatchNavigationConstants;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -48,6 +59,32 @@ public class DispatchPanelApp extends BasePanelApp {
 			"content.Language", locale, getClass());
 
 		return _language.get(resourceBundle, _KEY);
+	}
+
+	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			DispatchNavigationConstants.dispatchNavigationTabs,
+			dispatchNavigationTab -> new PanelAppNavigationItem(
+				_language.get(
+					LocaleUtil.ENGLISH, dispatchNavigationTab.getLabelKey()),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setMVCRenderCommandName(
+					dispatchNavigationTab.getMVCRenderCommandName()
+				).setTabs1(
+					dispatchNavigationTab.getTabs1Name()
+				).buildString(),
+				_language.get(
+					themeDisplay.getLocale(),
+					dispatchNavigationTab.getLabelKey())));
 	}
 
 	@Override

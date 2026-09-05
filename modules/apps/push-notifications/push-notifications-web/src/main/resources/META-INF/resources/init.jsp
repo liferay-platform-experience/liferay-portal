@@ -32,6 +32,7 @@ page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.push.notifications.constants.PushNotificationsActionKeys" %><%@
 page import="com.liferay.push.notifications.model.PushNotificationsDevice" %><%@
 page import="com.liferay.push.notifications.service.PushNotificationsDeviceLocalServiceUtil" %><%@
+page import="com.liferay.push.notifications.web.internal.constants.PushNotificationsNavigationConstants" %><%@
 page import="com.liferay.push.notifications.web.internal.display.context.PushNotificationsManagementToolbarDisplayContext" %><%@
 page import="com.liferay.push.notifications.web.internal.security.permission.resource.PushNotificationsPermission" %><%@
 page import="com.liferay.push.notifications.web.internal.util.PushNotificationsUtil" %><%@

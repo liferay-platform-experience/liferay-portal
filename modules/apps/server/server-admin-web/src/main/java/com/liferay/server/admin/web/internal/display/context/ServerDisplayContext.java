@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.server.admin.web.internal.constants.ServerAdminNavigationEntryConstants;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
@@ -95,7 +96,9 @@ public class ServerDisplayContext {
 
 		return new NavigationItemList() {
 			{
-				for (String tabs1Name : _TABS1_NAMES) {
+				for (String tabs1Name :
+						ServerAdminNavigationEntryConstants.TABS1_NAMES) {
+
 					add(
 						navigationItem -> {
 							navigationItem.setActive(tabs1.equals(tabs1Name));
@@ -140,12 +143,6 @@ public class ServerDisplayContext {
 
 		return StringPool.BLANK;
 	}
-
-	private static final String[] _TABS1_NAMES = {
-		"resources", "log-levels", "properties", "database-migration",
-		"document-migration", "external-services", "friendly-urls", "script",
-		"shutdown", "production-readiness"
-	};
 
 	private final FriendlyURLPublicMappingChecker
 		_friendlyURLPublicMappingChecker;

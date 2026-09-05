@@ -7,13 +7,25 @@ package com.liferay.batch.planner.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.batch.planner.constants.BatchPlannerPortletKeys;
+import com.liferay.batch.planner.web.internal.constants.BatchPlannerNavigationConstants;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -36,6 +48,33 @@ public class BatchPlannerPanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			BatchPlannerNavigationConstants.batchPlannerNavigationTabs,
+			batchPlannerNavigationTab -> new PanelAppNavigationItem(
+				_language.get(
+					LocaleUtil.ENGLISH,
+					batchPlannerNavigationTab.getLabelKey()),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setMVCRenderCommandName(
+					batchPlannerNavigationTab.getMVCRenderCommandName(), false
+				).setTabs1(
+					batchPlannerNavigationTab.getTabs1Name()
+				).buildString(),
+				_language.get(
+					themeDisplay.getLocale(),
+					batchPlannerNavigationTab.getLabelKey())));
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -55,6 +94,9 @@ public class BatchPlannerPanelApp extends BasePanelApp {
 
 		return super.isShow(permissionChecker, group);
 	}
+
+	@Reference
+	private Language _language;
 
 	@Reference(
 		target = "(jakarta.portlet.name=" + BatchPlannerPortletKeys.BATCH_PLANNER + ")"

@@ -5,14 +5,13 @@
 
 package com.liferay.change.tracking.web.internal.display.context;
 
+import com.liferay.change.tracking.web.internal.util.PublicationsNavigationUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -90,33 +89,9 @@ public class ViewScheduledDisplayContext {
 	}
 
 	public List<NavigationItem> getViewNavigationItems() {
-		return NavigationItemListBuilder.add(
-			navigationItem -> {
-				navigationItem.setActive(false);
-				navigationItem.setHref(_renderResponse.createRenderURL());
-				navigationItem.setLabel(
-					_language.get(_httpServletRequest, "ongoing"));
-			}
-		).add(
-			() -> PropsValues.SCHEDULER_ENABLED,
-			navigationItem -> {
-				navigationItem.setActive(true);
-				navigationItem.setHref(
-					_renderResponse.createRenderURL(), "mvcRenderCommandName",
-					"/change_tracking/view_scheduled");
-				navigationItem.setLabel(
-					_language.get(_httpServletRequest, "scheduled"));
-			}
-		).add(
-			navigationItem -> {
-				navigationItem.setActive(false);
-				navigationItem.setHref(
-					_renderResponse.createRenderURL(), "mvcRenderCommandName",
-					"/change_tracking/view_history");
-				navigationItem.setLabel(
-					_language.get(_httpServletRequest, "history"));
-			}
-		).build();
+		return PublicationsNavigationUtil.getNavigationItems(
+			_httpServletRequest, _language, _renderResponse,
+			"/change_tracking/view_scheduled");
 	}
 
 	private final HttpServletRequest _httpServletRequest;

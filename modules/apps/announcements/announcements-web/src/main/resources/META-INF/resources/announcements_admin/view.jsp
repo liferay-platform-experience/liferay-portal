@@ -17,18 +17,14 @@ AnnouncementsAdminViewDisplayContext announcementsAdminViewDisplayContext = new 
 	navigationItems='<%=
 		new JSPNavigationItemList(pageContext) {
 			{
-				add(
-					navigationItem -> {
-						navigationItem.setActive(navigation.equals("announcements"));
-						navigationItem.setHref(renderResponse.createRenderURL());
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "announcements"));
-					});
-				add(
-					navigationItem -> {
-						navigationItem.setActive(navigation.equals("alerts"));
-						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "alerts");
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "alerts"));
-					});
+				for (String navigationName : AnnouncementsNavigationConstants.NAVIGATION_NAMES) {
+					add(
+						navigationItem -> {
+							navigationItem.setActive(navigation.equals(navigationName));
+							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", navigationName);
+							navigationItem.setLabel(LanguageUtil.get(httpServletRequest, navigationName));
+						});
+				}
 			}
 		}
 	%>'

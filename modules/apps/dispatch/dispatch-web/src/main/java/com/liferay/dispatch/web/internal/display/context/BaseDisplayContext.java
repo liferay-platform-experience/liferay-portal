@@ -5,10 +5,11 @@
 
 package com.liferay.dispatch.web.internal.display.context;
 
+import com.liferay.dispatch.web.internal.constants.DispatchNavigationConstants;
 import com.liferay.dispatch.web.internal.display.context.helper.DispatchRequestHelper;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemBuilder;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -38,24 +39,17 @@ public abstract class BaseDisplayContext {
 		String tabs1 = ParamUtil.getString(
 			httpServletRequest, "tabs1", "dispatch-trigger");
 
-		return NavigationItemList.of(
-			NavigationItemBuilder.setActive(
-				tabs1.equals("dispatch-trigger")
+		return TransformUtil.transform(
+			DispatchNavigationConstants.dispatchNavigationTabs,
+			dispatchNavigationTab -> NavigationItemBuilder.setActive(
+				tabs1.equals(dispatchNavigationTab.getTabs1Name())
 			).setHref(
 				liferayPortletResponse.createRenderURL(), "tabs1",
-				"dispatch-trigger", "mvcRenderCommandName",
-				"/dispatch/view_dispatch_trigger"
+				dispatchNavigationTab.getTabs1Name(), "mvcRenderCommandName",
+				dispatchNavigationTab.getMVCRenderCommandName()
 			).setLabel(
-				LanguageUtil.get(httpServletRequest, "dispatch-triggers")
-			).build(),
-			NavigationItemBuilder.setActive(
-				tabs1.equals("scheduler-response")
-			).setHref(
-				liferayPortletResponse.createRenderURL(), "tabs1",
-				"scheduler-response", "mvcRenderCommandName",
-				"/dispatch/edit_scheduler_response"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "scheduled-jobs")
+				LanguageUtil.get(
+					httpServletRequest, dispatchNavigationTab.getLabelKey())
 			).build());
 	}
 

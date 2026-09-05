@@ -7,9 +7,22 @@ package com.liferay.oauth.client.admin.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.oauth.client.admin.web.internal.constants.OAuthClientAdminNavigationConstants;
 import com.liferay.oauth.client.constants.OAuthClientAdminPortletKeys;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,6 +45,33 @@ public class OAuthClientAdminPanelApp extends BasePanelApp {
 	}
 
 	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			OAuthClientAdminNavigationConstants.oAuthClientAdminNavigationTabs,
+			oAuthClientAdminNavigationTab -> new PanelAppNavigationItem(
+				_language.get(
+					LocaleUtil.ENGLISH,
+					oAuthClientAdminNavigationTab.getLabelKey()),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setMVCRenderCommandName(
+					oAuthClientAdminNavigationTab.getMVCRenderCommandName()
+				).setNavigation(
+					oAuthClientAdminNavigationTab.getNavigation()
+				).buildString(),
+				_language.get(
+					themeDisplay.getLocale(),
+					oAuthClientAdminNavigationTab.getLabelKey())));
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
@@ -40,6 +80,9 @@ public class OAuthClientAdminPanelApp extends BasePanelApp {
 	public String getPortletId() {
 		return OAuthClientAdminPortletKeys.OAUTH_CLIENT_ADMIN;
 	}
+
+	@Reference
+	private Language _language;
 
 	@Reference(
 		target = "(jakarta.portlet.name=" + OAuthClientAdminPortletKeys.OAUTH_CLIENT_ADMIN + ")"

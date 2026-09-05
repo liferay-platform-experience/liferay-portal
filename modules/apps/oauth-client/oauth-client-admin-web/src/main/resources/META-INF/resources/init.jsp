@@ -18,10 +18,12 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.expando.kernel.model.ExpandoColumn" %><%@
 page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.JSPNavigationItemList" %><%@
+page import="com.liferay.oauth.client.admin.web.internal.constants.OAuthClientAdminNavigationConstants" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.constants.OAuthClientWebKeys" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthClientASLocalMetadataManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthClientEntriesManagementToolbarDisplayContext" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.display.context.OAuthClientPRLocalMetadataManagementToolbarDisplayContext" %><%@
+page import="com.liferay.oauth.client.admin.web.internal.navigation.OAuthClientAdminNavigationTab" %><%@
 page import="com.liferay.oauth.client.admin.web.internal.servlet.taglib.util.OAuthClientPRLocalMetadataActionDropdownItemsProvider" %><%@
 page import="com.liferay.oauth.client.persistence.constants.OAuthClientEntryConstants" %><%@
 page import="com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientASLocalMetadataException" %><%@

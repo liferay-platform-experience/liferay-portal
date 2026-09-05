@@ -18,11 +18,11 @@ import com.liferay.change.tracking.spi.display.CTDisplayRendererRegistry;
 import com.liferay.change.tracking.web.internal.helper.PublicationHelper;
 import com.liferay.change.tracking.web.internal.security.permission.resource.CTCollectionPermission;
 import com.liferay.change.tracking.web.internal.security.permission.resource.CTPermission;
+import com.liferay.change.tracking.web.internal.util.PublicationsNavigationUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -531,33 +530,9 @@ public class PublicationsDisplayContext {
 	}
 
 	public List<NavigationItem> getViewNavigationItems() {
-		return NavigationItemListBuilder.add(
-			navigationItem -> {
-				navigationItem.setActive(true);
-				navigationItem.setHref(_renderResponse.createRenderURL());
-				navigationItem.setLabel(
-					_language.get(_httpServletRequest, "ongoing"));
-			}
-		).add(
-			() -> PropsValues.SCHEDULER_ENABLED,
-			navigationItem -> {
-				navigationItem.setActive(false);
-				navigationItem.setHref(
-					_renderResponse.createRenderURL(), "mvcRenderCommandName",
-					"/change_tracking/view_scheduled");
-				navigationItem.setLabel(
-					_language.get(_httpServletRequest, "scheduled"));
-			}
-		).add(
-			navigationItem -> {
-				navigationItem.setActive(false);
-				navigationItem.setHref(
-					_renderResponse.createRenderURL(), "mvcRenderCommandName",
-					"/change_tracking/view_history");
-				navigationItem.setLabel(
-					_language.get(_httpServletRequest, "history"));
-			}
-		).build();
+		return PublicationsNavigationUtil.getNavigationItems(
+			_httpServletRequest, _language, _renderResponse,
+			"/change_tracking/view_publications");
 	}
 
 	private final long _ctCollectionId;

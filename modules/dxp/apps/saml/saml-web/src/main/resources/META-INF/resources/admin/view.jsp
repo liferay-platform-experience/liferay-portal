@@ -15,24 +15,12 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setTabs1(
 	tabs1
 ).buildPortletURL();
-
-String tabs1Names = "general";
-
-if (samlProviderConfigurationHelper.isRoleIb()) {
-	tabs1Names += ",identity-provider,service-provider-connections,service-provider,identity-provider-connections";
-}
-else if (samlProviderConfigurationHelper.isRoleIdp()) {
-	tabs1Names += ",identity-provider,service-provider-connections";
-}
-else if (samlProviderConfigurationHelper.isRoleSp()) {
-	tabs1Names += ",service-provider,identity-provider-connections";
-}
 %>
 
 <div class="container-fluid container-fluid-max-xl sheet">
 	<liferay-ui:tabs
 		cssClass="subnav-tbar-light"
-		names="<%= tabs1Names %>"
+		names="<%= StringUtil.merge(SamlAdminNavigationUtil.getTabs1Names(samlProviderConfigurationHelper)) %>"
 		url="<%= portletURL.toString() %>"
 	>
 		<clay:container-fluid>

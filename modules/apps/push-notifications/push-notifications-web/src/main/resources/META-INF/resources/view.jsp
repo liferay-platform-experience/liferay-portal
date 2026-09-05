@@ -21,18 +21,14 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	navigationItems='<%=
 		new JSPNavigationItemList(pageContext) {
 			{
-				add(
-					navigationItem -> {
-						navigationItem.setActive(tabs1.equals("devices"));
-						navigationItem.setHref(renderResponse.createRenderURL());
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "devices"));
-					});
-				add(
-					navigationItem -> {
-						navigationItem.setActive(tabs1.equals("test"));
-						navigationItem.setHref(renderResponse.createRenderURL(), "tabs1", "test");
-						navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "test"));
-					});
+				for (String tabs1Name : PushNotificationsNavigationConstants.TABS1_NAMES) {
+					add(
+						navigationItem -> {
+							navigationItem.setActive(tabs1.equals(tabs1Name));
+							navigationItem.setHref(renderResponse.createRenderURL(), "tabs1", tabs1Name);
+							navigationItem.setLabel(LanguageUtil.get(httpServletRequest, tabs1Name));
+						});
+				}
 			}
 		}
 	%>'

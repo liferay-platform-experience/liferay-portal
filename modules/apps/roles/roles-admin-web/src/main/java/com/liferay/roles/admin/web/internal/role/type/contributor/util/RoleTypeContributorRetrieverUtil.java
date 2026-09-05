@@ -5,8 +5,12 @@
 
 package com.liferay.roles.admin.web.internal.role.type.contributor.util;
 
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.roles.admin.constants.RolesAdminWebKeys;
 import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
+import com.liferay.roles.admin.role.type.contributor.RoleTypeContributorShowFilterRegistryUtil;
+import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
 
 import jakarta.portlet.PortletRequest;
 
@@ -38,6 +42,22 @@ public class RoleTypeContributorRetrieverUtil {
 
 		return (List<RoleTypeContributor>)httpServletRequest.getAttribute(
 			RolesAdminWebKeys.ROLE_TYPES);
+	}
+
+	public static List<RoleTypeContributor> getRoleTypeContributors(
+		PermissionChecker permissionChecker,
+		RoleTypeContributorProvider roleTypeContributorProvider) {
+
+		return ListUtil.filter(
+			roleTypeContributorProvider.getRoleTypeContributors(),
+			roleTypeContributor -> {
+				if (roleTypeContributor == null) {
+					return false;
+				}
+
+				return RoleTypeContributorShowFilterRegistryUtil.isShow(
+					permissionChecker, roleTypeContributor);
+			});
 	}
 
 	public static List<RoleTypeContributor> getRoleTypeContributors(

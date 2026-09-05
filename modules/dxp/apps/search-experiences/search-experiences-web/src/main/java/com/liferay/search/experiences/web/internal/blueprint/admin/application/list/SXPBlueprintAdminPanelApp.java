@@ -7,14 +7,25 @@ package com.liferay.search.experiences.web.internal.blueprint.admin.application.
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
+import com.liferay.search.experiences.web.internal.blueprint.admin.constants.SXPBlueprintAdminNavigationConstants;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -36,6 +47,34 @@ public class SXPBlueprintAdminPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "blue-print";
+	}
+
+	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			SXPBlueprintAdminNavigationConstants.
+				sxpBlueprintAdminNavigationTabs,
+			sxpBlueprintAdminNavigationTab -> new PanelAppNavigationItem(
+				_language.get(
+					LocaleUtil.ENGLISH,
+					sxpBlueprintAdminNavigationTab.getLabelKey()),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setMVCRenderCommandName(
+					sxpBlueprintAdminNavigationTab.getMVCRenderCommandName()
+				).setTabs1(
+					sxpBlueprintAdminNavigationTab.getTabs1Name()
+				).buildString(),
+				_language.get(
+					themeDisplay.getLocale(),
+					sxpBlueprintAdminNavigationTab.getLabelKey())));
 	}
 
 	@Override
@@ -61,6 +100,9 @@ public class SXPBlueprintAdminPanelApp extends BasePanelApp {
 
 	@Reference
 	protected SearchEngineInformation searchEngineInformation;
+
+	@Reference
+	private Language _language;
 
 	@Reference(
 		target = "(jakarta.portlet.name=" + SXPPortletKeys.SXP_BLUEPRINT_ADMIN + ")"
