@@ -5,6 +5,8 @@
 
 package com.liferay.frontend.token.definition.util;
 
+import com.liferay.frontend.token.definition.FrontendToken;
+import com.liferay.frontend.token.definition.FrontendTokenMapping;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -20,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Gabriel Lima
@@ -27,16 +30,78 @@ import java.util.Map;
  */
 public class FrontendTokenDefinitionUtil {
 
+	public static JSONObject createFrontendTokenDefinitionJSONObject(
+		JSONObject frontendTokenSetsJSONObject, String name) {
+
+		return JSONUtil.put(
+			"frontendTokenCategories",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"frontendTokenSets",
+					JSONUtil.putAll(frontendTokenSetsJSONObject)
+				).put(
+					"name", name
+				)));
+	}
+
+	public static JSONObject createFrontendTokenJSONObject(
+		String cssVariableMappingValue, String description, String editorType,
+		String label, String name) {
+
+		JSONObject frontendTokenJSONObject = JSONUtil.put(
+			"label", label
+		).put(
+			"mappings",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"type", FrontendTokenMapping.TYPE_CSS_VARIABLE
+				).put(
+					"value", cssVariableMappingValue
+				))
+		).put(
+			"name", name
+		).put(
+			"type", FrontendToken.Type.STRING.getValue()
+		);
+
+		if (Validator.isNotNull(description)) {
+			frontendTokenJSONObject.put("description", description);
+		}
+
+		if (Validator.isNotNull(editorType) &&
+			!Objects.equals(editorType, "Default")) {
+
+			frontendTokenJSONObject.put("editorType", editorType);
+		}
+
+		return frontendTokenJSONObject;
+	}
+
+	public static JSONObject createFrontendTokenSetJSONObject(
+		String description, JSONObject frontendTokensJSONObject, String label,
+		String name) {
+
+		JSONObject frontendTokenSetJSONObject = JSONUtil.put(
+			"frontendTokens", JSONUtil.putAll(frontendTokensJSONObject)
+		).put(
+			"label", label
+		).put(
+			"name", name
+		);
+
+		if (Validator.isNotNull(description)) {
+			frontendTokenSetJSONObject.put("description", description);
+		}
+
+		return frontendTokenSetJSONObject;
+	}
+
 	public static List<String> getFrontendTokenNames(
 		JSONObject frontendTokenDefinitionJSONObject) {
 
-		if (frontendTokenDefinitionJSONObject == null) {
-			return Collections.emptyList();
-		}
-
 		JSONArray frontendTokenCategoriesJSONArray =
-			frontendTokenDefinitionJSONObject.getJSONArray(
-				"frontendTokenCategories");
+			_getFrontendTokenCategoriesJSONArray(
+				frontendTokenDefinitionJSONObject);
 
 		if (frontendTokenCategoriesJSONArray == null) {
 			return Collections.emptyList();
