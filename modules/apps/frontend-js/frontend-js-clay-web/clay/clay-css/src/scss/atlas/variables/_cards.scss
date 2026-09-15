@@ -175,9 +175,7 @@ $card-interactive: map-deep-merge(
 	$card-interactive
 );
 
-$card-interactive-primary-hover-box-shadow: unquote(
-	'#{$card-hover-box-shadow}, 0px -2.5rem 0px -2.25rem #{$primary} inset'
-) !default;
+$card-interactive-primary-hover-box-shadow: $card-hover-box-shadow !default;
 
 $card-interactive-primary: () !default;
 $card-interactive-primary: map-deep-merge(

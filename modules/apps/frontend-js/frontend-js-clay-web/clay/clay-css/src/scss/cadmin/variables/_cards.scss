@@ -557,9 +557,7 @@ $cadmin-card-interactive: map-deep-merge(
 
 // Card Interactive Primary
 
-$cadmin-card-interactive-primary-hover-box-shadow: unquote(
-	'#{$cadmin-card-hover-box-shadow}, 0px -2.5rem 0px -2.25rem #{$cadmin-primary} inset'
-) !default;
+$cadmin-card-interactive-primary-hover-box-shadow: $cadmin-card-hover-box-shadow !default;
 
 $cadmin-card-interactive-primary-after-highlight: () !default;
 $cadmin-card-interactive-primary-after-highlight: map-deep-merge(
