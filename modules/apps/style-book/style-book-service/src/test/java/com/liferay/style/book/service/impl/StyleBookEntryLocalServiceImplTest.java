@@ -66,6 +66,44 @@ public class StyleBookEntryLocalServiceImplTest {
 	}
 
 	@Test
+	public void testUpdateDefaultStyleBookEntry() throws Exception {
+		StyleBookEntry styleBookEntry = Mockito.mock(StyleBookEntry.class);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			styleBookEntry.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		String themeId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			styleBookEntry.getThemeId()
+		).thenReturn(
+			themeId
+		);
+
+		long styleBookEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_styleBookEntryPersistence.fetchByPrimaryKey(styleBookEntryId)
+		).thenReturn(
+			styleBookEntry
+		);
+
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			styleBookEntryId, true);
+
+		Mockito.verify(
+			_styleBookEntryPersistence
+		).fetchByG_D_T_Head_First(
+			groupId, true, themeId, true, null
+		);
+	}
+
+	@Test
 	public void testUpdateFrontendTokenDefinition() throws Exception {
 		_testUpdateFrontendTokenDefinitionClearsFrontendTokenDefinition(null);
 		_testUpdateFrontendTokenDefinitionClearsFrontendTokenDefinition(
