@@ -127,7 +127,7 @@ const previewOptions = [
 ];
 
 describe('StyleBookEditor', () => {
-	it('initializes config with namespaced tokens and backward compatibility for theme tokens', () => {
+	it('initializes config with namespaced tokens only', () => {
 		render(
 			<StyleBookEditor
 				defaultTokenDefinitionPriority={
@@ -139,22 +139,13 @@ describe('StyleBookEditor', () => {
 			/>
 		);
 
-		// Namespaced keys should exist
-
 		expect(config.frontendTokens['theme:themeToken']).toBeDefined();
 		expect(config.frontendTokens['theme:themeToken'].value).toBe('#000');
 
 		expect(config.frontendTokens['clay:clayToken']).toBeDefined();
 		expect(config.frontendTokens['clay:clayToken'].value).toBe('#fff');
 
-		// Backward compatibility: theme tokens should also exist without namespace
-
-		expect(config.frontendTokens['themeToken']).toBeDefined();
-		expect(config.frontendTokens['themeToken'].name).toBe('themeToken');
-		expect(config.frontendTokens['themeToken'].value).toBe('#000');
-
-		// Clay tokens should NOT exist without namespace (unless it was the theme)
-
+		expect(config.frontendTokens['themeToken']).toBeUndefined();
 		expect(config.frontendTokens['clayToken']).toBeUndefined();
 	});
 
