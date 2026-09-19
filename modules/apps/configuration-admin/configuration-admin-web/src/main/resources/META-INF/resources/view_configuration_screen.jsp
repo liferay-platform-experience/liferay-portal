@@ -34,34 +34,43 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(portletURL.toString());
 
 renderResponse.setTitle(categoryDisplayName);
+
+ConfigurationCategoryNavigationItemContributor configurationCategoryNavigationItemContributor = (ConfigurationCategoryNavigationItemContributor)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTOR);
+
+List<ConfigurationCategoryNavigationItemContributor> configurationCategoryNavigationItemContributors = (List<ConfigurationCategoryNavigationItemContributor>)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS);
 %>
 
-<clay:container-fluid>
-	<clay:col
-		size="12"
-	>
-		<liferay-site-navigation:breadcrumb
-			breadcrumbEntries="<%= BreadcrumbEntriesUtil.getBreadcrumbEntries(request, false, false, false, false, true) %>"
-		/>
-	</clay:col>
-</clay:container-fluid>
+<liferay-util:include page="/configuration_category_navigation_bar.jsp" servletContext="<%= application %>" />
 
-<clay:container-fluid>
-	<clay:row>
-		<clay:col
-			md="3"
+<c:choose>
+	<c:when test="<%= configurationCategoryNavigationItemContributor != null %>">
+
+		<%
+		configurationCategoryNavigationItemContributor.render(request, PipingServletResponseFactory.createPipingServletResponse(pageContext));
+		%>
+
+	</c:when>
+	<c:otherwise>
+		<clay:container-fluid
+			cssClass='<%= ListUtil.isNotEmpty(configurationCategoryNavigationItemContributors) ? "pt-4" : StringPool.BLANK %>'
 		>
-			<liferay-util:include page="/configuration_category_menu.jsp" servletContext="<%= application %>" />
-		</clay:col>
+			<clay:row>
+				<clay:col
+					md="3"
+				>
+					<liferay-util:include page="/configuration_category_menu.jsp" servletContext="<%= application %>" />
+				</clay:col>
 
-		<clay:col
-			md="9"
-		>
+				<clay:col
+					md="9"
+				>
 
-			<%
-			configurationScreen.render(request, PipingServletResponseFactory.createPipingServletResponse(pageContext));
-			%>
+					<%
+					configurationScreen.render(request, PipingServletResponseFactory.createPipingServletResponse(pageContext));
+					%>
 
-		</clay:col>
-	</clay:row>
-</clay:container-fluid>
+				</clay:col>
+			</clay:row>
+		</clay:container-fluid>
+	</c:otherwise>
+</c:choose>

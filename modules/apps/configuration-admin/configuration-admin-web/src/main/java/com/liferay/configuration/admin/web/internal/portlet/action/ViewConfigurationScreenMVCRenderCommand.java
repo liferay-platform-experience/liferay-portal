@@ -5,6 +5,8 @@
 
 package com.liferay.configuration.admin.web.internal.portlet.action;
 
+import com.liferay.configuration.admin.category.ConfigurationCategory;
+import com.liferay.configuration.admin.category.ConfigurationCategoryNavigationItemContributor;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.web.internal.constants.ConfigurationAdminWebKeys;
@@ -14,9 +16,11 @@ import com.liferay.configuration.admin.web.internal.display.context.Configuratio
 import com.liferay.configuration.admin.web.internal.display.context.ConfigurationScopeDisplayContextFactory;
 import com.liferay.configuration.admin.web.internal.util.ConfigurationEntryRetriever;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletException;
@@ -47,34 +51,115 @@ public class ViewConfigurationScreenMVCRenderCommand
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		String configurationScreenKey = ParamUtil.getString(
-			renderRequest, "configurationScreenKey");
+		String configurationCategoryNavigationItemKey = ParamUtil.getString(
+			renderRequest, "configurationCategoryNavigationItemKey");
+
+		ConfigurationScopeDisplayContext configurationScopeDisplayContext =
+			ConfigurationScopeDisplayContextFactory.create(renderRequest);
+
+		String configurationCategoryKey = null;
+
+		if (Validator.isNull(configurationCategoryNavigationItemKey)) {
+			configurationCategoryKey =
+				_setConfigurationScreenAttributesAndGetCategoryKey(
+					renderRequest);
+		}
+		else {
+			configurationCategoryKey =
+				_setConfigurationCategoryNavigationItemContributorAttributeAndGetCategoryKey(
+					configurationCategoryNavigationItemKey, renderRequest,
+					configurationScopeDisplayContext.getScope());
+		}
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		renderRequest.setAttribute(
+			ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_MENU_DISPLAY,
+			_configurationEntryRetriever.getConfigurationCategoryMenuDisplay(
+				configurationCategoryKey, themeDisplay.getLanguageId(),
+				configurationScopeDisplayContext.getScope(),
+				configurationScopeDisplayContext.getScopePK()));
+
+		renderRequest.setAttribute(
+			ConfigurationAdminWebKeys.
+				CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS,
+			_configurationEntryRetriever.
+				getConfigurationCategoryNavigationItemContributors(
+					configurationCategoryKey,
+					configurationScopeDisplayContext.getScope()));
+
+		return "/view_configuration_screen.jsp";
+	}
+
+	private String
+			_setConfigurationCategoryNavigationItemContributorAttributeAndGetCategoryKey(
+				String configurationCategoryNavigationItemKey,
+				RenderRequest renderRequest,
+				ExtendedObjectClassDefinition.Scope scope)
+		throws PortletException {
+
+		ConfigurationCategoryNavigationItemContributor
+			configurationCategoryNavigationItemContributor =
+				_configurationEntryRetriever.
+					getConfigurationCategoryNavigationItemContributor(
+						configurationCategoryNavigationItemKey);
+
+		if ((configurationCategoryNavigationItemContributor == null) ||
+			!configurationCategoryNavigationItemContributor.isVisible() ||
+			!scope.equals(
+				configurationCategoryNavigationItemContributor.getScope())) {
+
+			throw new PortletException(
+				StringBundler.concat(
+					"The configuration category navigation item \"",
+					configurationCategoryNavigationItemKey,
+					"\" is not accessible"));
+		}
+
+		String configurationCategoryKey =
+			configurationCategoryNavigationItemContributor.getCategoryKey();
+
+		ConfigurationCategory configurationCategory =
+			_configurationEntryRetriever.getConfigurationCategory(
+				configurationCategoryKey);
+
+		if (configurationCategory == null) {
+			throw new PortletException(
+				StringBundler.concat(
+					"The configuration category \"", configurationCategoryKey,
+					"\" is not accessible"));
+		}
+
+		renderRequest.setAttribute(
+			ConfigurationAdminWebKeys.
+				CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTOR,
+			configurationCategoryNavigationItemContributor);
+
+		return configurationCategoryKey;
+	}
+
+	private String _setConfigurationScreenAttributesAndGetCategoryKey(
+			RenderRequest renderRequest)
+		throws PortletException {
+
+		String configurationScreenKey = ParamUtil.getString(
+			renderRequest, "configurationScreenKey");
 
 		ConfigurationScreen configurationScreen =
 			_configurationEntryRetriever.getConfigurationScreen(
 				configurationScreenKey);
 
 		if (!configurationScreen.isVisible()) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
 			throw new PortletException(
 				StringBundler.concat(
 					"The ", configurationScreen.getScope(), " configuration \"",
 					configurationScreen.getName(themeDisplay.getLocale()),
 					"\" is not accessible"));
 		}
-
-		ConfigurationScopeDisplayContext configurationScopeDisplayContext =
-			ConfigurationScopeDisplayContextFactory.create(renderRequest);
-
-		renderRequest.setAttribute(
-			ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_MENU_DISPLAY,
-			_configurationEntryRetriever.getConfigurationCategoryMenuDisplay(
-				configurationScreen.getCategoryKey(),
-				themeDisplay.getLanguageId(),
-				configurationScopeDisplayContext.getScope(),
-				configurationScopeDisplayContext.getScopePK()));
 
 		renderRequest.setAttribute(
 			ConfigurationAdminWebKeys.CONFIGURATION_SCREEN,
@@ -86,7 +171,7 @@ public class ViewConfigurationScreenMVCRenderCommand
 		renderRequest.setAttribute(
 			ConfigurationAdminWebKeys.CONFIGURATION_ENTRY, configurationEntry);
 
-		return "/view_configuration_screen.jsp";
+		return configurationScreen.getCategoryKey();
 	}
 
 	@Reference

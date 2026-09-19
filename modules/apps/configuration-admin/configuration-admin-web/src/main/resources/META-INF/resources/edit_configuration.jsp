@@ -52,6 +52,8 @@ portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(redirect);
 
 renderResponse.setTitle(categoryDisplayName);
+
+List<ConfigurationCategoryNavigationItemContributor> configurationCategoryNavigationItemContributors = (List<ConfigurationCategoryNavigationItemContributor>)request.getAttribute(ConfigurationAdminWebKeys.CONFIGURATION_CATEGORY_NAVIGATION_ITEM_CONTRIBUTORS);
 %>
 
 <liferay-ui:error exception="<%= ConfigurationValidationException.class %>">
@@ -75,17 +77,11 @@ renderResponse.setTitle(categoryDisplayName);
 <portlet:actionURL name="/configuration_admin/bind_configuration" var="bindConfigurationActionURL" />
 <portlet:actionURL name="/configuration_admin/delete_configuration" var="deleteConfigurationActionURL" />
 
-<clay:container-fluid>
-	<clay:col
-		size="12"
-	>
-		<liferay-site-navigation:breadcrumb
-			breadcrumbEntries="<%= BreadcrumbEntriesUtil.getBreadcrumbEntries(request, false, false, false, false, true) %>"
-		/>
-	</clay:col>
-</clay:container-fluid>
+<liferay-util:include page="/configuration_category_navigation_bar.jsp" servletContext="<%= application %>" />
 
-<clay:container-fluid>
+<clay:container-fluid
+	cssClass='<%= ListUtil.isNotEmpty(configurationCategoryNavigationItemContributors) ? "pt-4" : StringPool.BLANK %>'
+>
 	<clay:row>
 		<clay:col
 			md="3"
