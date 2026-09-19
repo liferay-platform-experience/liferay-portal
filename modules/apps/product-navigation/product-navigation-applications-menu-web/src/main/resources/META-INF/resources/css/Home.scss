@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import '_atlas-custom-properties-variables';
 
 .home-title {
 	font-size: 24px;
@@ -22,13 +22,35 @@
 	}
 }
 
+.home-card {
+	.card-title {
+		color: var(--dark);
+	}
+
+	.sticker {
+		background-color: transparent;
+	}
+
+	.lexicon-icon {
+		color: var(--primary-l0);
+	}
+}
+
 .home-horizontal {
+	.home-card .sticker .lexicon-icon {
+		font-size: 12px;
+	}
+
 	.card-title {
 		font-size: 14px;
 
 		@include media-breakpoint-up(lg, $grid-breakpoints) {
 			font-size: 16px;
 		}
+	}
+
+	.card-body {
+		padding: var(--spacer-2);
 	}
 
 	@include media-breakpoint-up(lg, $grid-breakpoints) {
@@ -54,6 +76,21 @@
 
 		@include media-breakpoint-up(lg, $grid-breakpoints) {
 			font-size: 14px;
+		}
+	}
+
+	.home-card {
+		.aspect-ratio-item {
+			height: 100%;
+		}
+
+		.lexicon-icon {
+			aspect-ratio: 1;
+			height: auto;
+			position: absolute;
+			right: var(--spacer-3);
+			top: var(--spacer-3);
+			width: 15%;
 		}
 	}
 

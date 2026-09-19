@@ -238,15 +238,22 @@ public class NavigationCardTag extends BaseCardTag {
 		String title = getTitle();
 
 		if (small || (title != null) || (description != null)) {
-			jspWriter.write("<span class=\"card-body\">");
+			jspWriter.write("<span class=\"card-body");
+
+			if (!small) {
+				jspWriter.write(" text-left");
+			}
+
+			jspWriter.write("\">");
 
 			if (!small) {
 				if (title != null) {
-					_writeDescription(jspWriter, "title", title);
+					_writeDescription(jspWriter, "mb-0", "title", title);
 				}
 
 				if (description != null) {
-					_writeDescription(jspWriter, "text", description);
+					_writeDescription(
+						jspWriter, "mt-1", "subtitle", description);
 				}
 			}
 
@@ -268,7 +275,7 @@ public class NavigationCardTag extends BaseCardTag {
 					jspWriter.write("autofit-col-expand\"><div class=\"");
 					jspWriter.write("autofit-section\">");
 
-					_writeDescription(jspWriter, "title", title);
+					_writeDescription(jspWriter, null, "title", title);
 
 					jspWriter.write("</div></div>");
 				}
@@ -283,10 +290,18 @@ public class NavigationCardTag extends BaseCardTag {
 	}
 
 	private void _writeDescription(
-			JspWriter jspWriter, String displayType, String description)
+			JspWriter jspWriter, String cssClass, String displayType,
+			String description)
 		throws Exception {
 
-		jspWriter.write("<p class=\"card-");
+		jspWriter.write("<p class=\"");
+
+		if (Validator.isNotNull(cssClass)) {
+			jspWriter.write(cssClass);
+			jspWriter.write(StringPool.SPACE);
+		}
+
+		jspWriter.write("card-");
 		jspWriter.write(displayType);
 		jspWriter.write("\" title=\"");
 		jspWriter.write(HtmlUtil.escapeAttribute(description));

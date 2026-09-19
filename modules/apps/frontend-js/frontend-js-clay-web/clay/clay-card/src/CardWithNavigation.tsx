@@ -7,6 +7,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import {Keys} from '@clayui/shared';
 import ClaySticker from '@clayui/sticker';
+import classNames from 'classnames';
 import React from 'react';
 
 import ClayCard from './Card';
@@ -52,6 +53,11 @@ interface IProps
 	spritemap?: string;
 
 	/**
+	 * CSS classes for the sticker rendered in the `horizontal` variant.
+	 */
+	stickerClassName?: string;
+
+	/**
 	 * Title for bottom-left icon.
 	 */
 	stickerTitle?: string;
@@ -74,6 +80,7 @@ export function ClayCardWithNavigation({
 	onClick,
 	onKeyDown = noop,
 	spritemap,
+	stickerClassName,
 	stickerTitle,
 	title,
 	...otherProps
@@ -86,8 +93,9 @@ export function ClayCardWithNavigation({
 			onClick={onClick}
 			onKeyDown={(event: React.KeyboardEvent) => {
 				if (
-					(event && event.key === Keys.Enter) ||
-					(event && event.key === Keys.Spacebar)
+					!href &&
+					((event && event.key === Keys.Enter) ||
+						(event && event.key === Keys.Spacebar))
 				) {
 					event.preventDefault();
 					if (onClick) {
@@ -107,12 +115,15 @@ export function ClayCardWithNavigation({
 			)}
 
 			{(horizontal || title || description) && (
-				<ClayCard.Body>
+				<ClayCard.Body
+					className={classNames({'text-left': !horizontal})}
+				>
 					{!horizontal && (
 						<>
 							{title && (
 								<ClayCard.Description
 									aria-label={title}
+									className="mb-0"
 									displayType="title"
 									truncate
 								>
@@ -122,7 +133,8 @@ export function ClayCardWithNavigation({
 
 							{description && (
 								<ClayCard.Description
-									displayType="text"
+									className="mt-1"
+									displayType="subtitle"
 									truncate
 								>
 									{description}
@@ -134,7 +146,11 @@ export function ClayCardWithNavigation({
 					{horizontal && (
 						<ClayCard.Row>
 							<ClayLayout.ContentCol>
-								<ClaySticker inline title={stickerTitle}>
+								<ClaySticker
+									className={stickerClassName}
+									inline
+									title={stickerTitle}
+								>
 									<ClayIcon
 										spritemap={spritemap}
 										symbol={horizontalSymbol}

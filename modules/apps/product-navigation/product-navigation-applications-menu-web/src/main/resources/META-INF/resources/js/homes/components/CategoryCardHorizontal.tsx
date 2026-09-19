@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayCard from '@clayui/card';
-import ClayIcon from '@clayui/icon';
-import ClayLayout from '@clayui/layout';
-import ClaySticker from '@clayui/sticker';
+import {ClayCardWithNavigation} from '@clayui/card';
 import React from 'react';
 
 import {CategoryItem} from '../types';
@@ -17,38 +14,14 @@ const CategoryCardHorizontal = ({
 	item: CategoryItem;
 }) => {
 	return (
-		<ClayCard
+		<ClayCardWithNavigation
 			className="c-mb-2 c-mb-lg-3 home-card"
 			horizontal
+			horizontalSymbol={leadingIcon}
 			href={href}
-			interactive
-		>
-			<ClayCard.Body className="c-p-2">
-				<ClayCard.Row>
-					{leadingIcon ? (
-						<ClayLayout.ContentCol>
-							<ClaySticker
-								className="border-0"
-								displayType="outline"
-								inline
-								size="sm"
-							>
-								<ClayIcon fontSize={12} symbol={leadingIcon} />
-							</ClaySticker>
-						</ClayLayout.ContentCol>
-					) : null}
-
-					<ClayLayout.ContentCol expand>
-						<ClayCard.Description
-							className="text-4 text-dark"
-							displayType="title"
-						>
-							{label}
-						</ClayCard.Description>
-					</ClayLayout.ContentCol>
-				</ClayCard.Row>
-			</ClayCard.Body>
-		</ClayCard>
+			stickerClassName="sticker-sm"
+			title={label}
+		/>
 	);
 };
 

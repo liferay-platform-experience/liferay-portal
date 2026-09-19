@@ -8,6 +8,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import {cleanup, fireEvent, render} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import ClayCard, {
@@ -812,6 +813,93 @@ describe('ClayCardWithUser', () => {
 		fireEvent.click(container.querySelector('img') as HTMLElement, {});
 
 		expect(onClickFn).toHaveBeenCalledTimes(1);
+	});
+
+	it('renders the description as a card subtitle', () => {
+		const {container} = render(
+			<ClayCardWithNavigation
+				description="Pick and choose your layout"
+				href="#"
+				title="Layout Page"
+			>
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		const subtitle = container.querySelector('.card-subtitle');
+
+		expect(subtitle).toHaveTextContent('Pick and choose your layout');
+		expect(subtitle).toHaveClass('mt-1');
+		expect(container.querySelector('.card-text')).toBeNull();
+	});
+
+	it('left aligns the body and removes the title margin', () => {
+		const {container} = render(
+			<ClayCardWithNavigation href="#" title="Layout Page">
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		expect(container.querySelector('.card-body')).toHaveClass('text-left');
+		expect(container.querySelector('.card-title')).toHaveClass('mb-0');
+	});
+
+	it('applies stickerClassName to the horizontal sticker', () => {
+		const {container} = render(
+			<ClayCardWithNavigation
+				horizontal
+				horizontalSymbol="user"
+				href="#"
+				spritemap="foo/bar"
+				stickerClassName="border-0 sticker-sm"
+				title="Layout Page"
+			/>
+		);
+
+		expect(container.querySelector('.sticker')).toHaveClass(
+			'border-0',
+			'sticker-sm'
+		);
+	});
+
+	it('does not prevent the default action on Enter when the card is a link', async () => {
+		const keyDownSpy = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation href="#" title="Layout Page">
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('link').focus();
+
+		await userEvent.keyboard('{Enter}');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(false);
+	});
+
+	it('prevents the default action on Enter when the card is not a link', async () => {
+		const keyDownSpy = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation onClick={() => {}} title="Layout Page">
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('button').focus();
+
+		await userEvent.keyboard('{Enter}');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(true);
 	});
 });
 

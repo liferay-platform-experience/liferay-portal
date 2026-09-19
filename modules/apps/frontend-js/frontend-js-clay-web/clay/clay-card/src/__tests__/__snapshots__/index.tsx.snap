@@ -3004,11 +3004,11 @@ exports[`ClayCardWithUser renders ClayCardWithNavigation with image 1`] = `
       </span>
     </span>
     <span
-      class="card-body"
+      class="card-body text-left"
     >
       <p
         aria-label="Layout Page"
-        class="card-title"
+        class="mb-0 card-title"
         title="Layout Page"
       >
         <span
