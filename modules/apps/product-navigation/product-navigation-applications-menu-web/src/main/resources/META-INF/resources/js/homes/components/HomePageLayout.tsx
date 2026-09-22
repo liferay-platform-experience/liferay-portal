@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClaySticker from '@clayui/sticker';
 import classNames from 'classnames';
 import React from 'react';
 
 import '../../../css/Home.scss';
+
+import {ClayCardWithNavigation} from '@clayui/card';
+
 import {CategoryItemGrouped} from '../types';
-import CategoryCard from './CategoryCard';
-import CategoryCardHorizontal from './CategoryCardHorizontal';
 
 type Props = {
 	displayType?: 'horizontal' | 'vertical';
@@ -85,7 +87,14 @@ const HomePageLayout = ({
 					if (!isHorizontal) {
 						return group.items.map((item) => (
 							<ClayLayout.Col key={item.id} lg={3} md={4} sm={6}>
-								<CategoryCard item={item} />
+								<ClayCardWithNavigation
+									cardType="navigation"
+									className="home-card"
+									href={item.href}
+									title={item.label}
+								>
+									<ClayIcon symbol={item.leadingIcon} />
+								</ClayCardWithNavigation>
 							</ClayLayout.Col>
 						));
 					}
@@ -112,7 +121,14 @@ const HomePageLayout = ({
 							<ClayLayout.Row>
 								{group.items.map((app) => (
 									<ClayLayout.Col key={app.id} md={4} sm={6}>
-										<CategoryCardHorizontal item={app} />
+										<ClayCardWithNavigation
+											cardType="navigation"
+											className="c-mb-2 c-mb-lg-3 home-card"
+											horizontal
+											horizontalSymbol={app.leadingIcon}
+											href={app.href}
+											title={app.label}
+										/>
 									</ClayLayout.Col>
 								))}
 							</ClayLayout.Row>
