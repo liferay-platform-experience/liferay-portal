@@ -32,6 +32,7 @@ import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateEntryM
 import com.liferay.layout.util.comparator.LayoutModifiedDateComparator;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -135,8 +136,33 @@ public class EditStyleBookEntryDisplayContext {
 			() -> {
 				StyleBookEntry styleBookEntry = _getStyleBookEntry();
 
-				return JSONFactoryUtil.createJSONObject(
-					styleBookEntry.getFrontendTokensValues());
+				JSONObject frontendTokensValuesJSONObject =
+					JSONFactoryUtil.createJSONObject(
+						styleBookEntry.getFrontendTokensValues());
+
+				String themeId = styleBookEntry.getThemeId();
+
+				for (String key :
+						new ArrayList<>(
+							frontendTokensValuesJSONObject.keySet())) {
+
+					if (key.contains(StringPool.COLON)) {
+						continue;
+					}
+
+					String namespacedKey = StringBundler.concat(
+						themeId, StringPool.COLON, key);
+
+					if (!frontendTokensValuesJSONObject.has(namespacedKey)) {
+						frontendTokensValuesJSONObject.put(
+							namespacedKey,
+							frontendTokensValuesJSONObject.get(key));
+					}
+
+					frontendTokensValuesJSONObject.remove(key);
+				}
+
+				return frontendTokensValuesJSONObject;
 			}
 		).put(
 			"isPrivateLayoutsEnabled",
