@@ -29,6 +29,24 @@ public class StyleBookEntryServiceWrapper
 	}
 
 	@Override
+	public StyleBookEntry addFrontendToken(
+			long styleBookEntryId, String cssVariableMappingValue,
+			String editorType, String frontendTokenCategoryName,
+			String frontendTokenDescription, String frontendTokenLabel,
+			String frontendTokenName, String frontendTokenSetDescription,
+			String frontendTokenSetLabel, String frontendTokenSetName,
+			String value,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _styleBookEntryService.addFrontendToken(
+			styleBookEntryId, cssVariableMappingValue, editorType,
+			frontendTokenCategoryName, frontendTokenDescription,
+			frontendTokenLabel, frontendTokenName, frontendTokenSetDescription,
+			frontendTokenSetLabel, frontendTokenSetName, value, serviceContext);
+	}
+
+	@Override
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
 			boolean defaultStyleBookEntry, String frontendTokenDefinition,
@@ -273,4 +291,4 @@ public class StyleBookEntryServiceWrapper
 	private StyleBookEntryService _styleBookEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1653020229
+// LIFERAY-SERVICE-BUILDER-HASH:-151811257
