@@ -10,10 +10,38 @@ import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
 import ClayCard from './Card';
-import {ClayCardNavigation} from './CardNavigation';
+import {CardType, ClayCardNavigation} from './CardNavigation';
+
+interface IAspectRatioProps {
+
+	/**
+	 * Props for the aspect ratio element wrapping the card's content slot.
+	 */
+	container?: Omit<
+		React.ComponentProps<typeof ClayCard.AspectRatio>,
+		'children'
+	>;
+
+	/**
+	 * Props for the aspect ratio item element holding the card's `children`.
+	 */
+	item?: React.HTMLAttributes<HTMLSpanElement>;
+}
 
 interface IProps
 	extends React.BaseHTMLAttributes<HTMLAnchorElement | HTMLDivElement> {
+
+	/**
+	 * Props for the aspect ratio element and the aspect ratio item element.
+	 */
+	aspectRatioProps?: IAspectRatioProps;
+
+	/**
+	 * Determines which card type classes are emitted and which aspect ratio
+	 * defaults apply.
+	 */
+	cardType?: CardType;
+
 	children?: React.ReactNode;
 
 	/**
@@ -62,10 +90,33 @@ interface IProps
 	title?: string;
 }
 
+const DEFAULT_ASPECT_RATIO_PROPS: Record<
+	'navigation' | 'template',
+	IAspectRatioProps
+> = {
+	navigation: {
+		container: {
+			containerAspectRatio: '16/9',
+		},
+		item: {
+			className: 'aspect-ratio-item aspect-ratio-item-top-right',
+		},
+	},
+	template: {
+		container: {},
+		item: {
+			className:
+				'aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-flush',
+		},
+	},
+};
+
 function noop() {}
 
 export function ClayCardWithNavigation({
 	'aria-label': ariaLabel,
+	'aspectRatioProps': externalAspectRatioProps,
+	cardType = 'template',
 	children,
 	description,
 	horizontal = false,
@@ -78,16 +129,23 @@ export function ClayCardWithNavigation({
 	title,
 	...otherProps
 }: IProps) {
+	const defaultAspectRatioProps =
+		DEFAULT_ASPECT_RATIO_PROPS[
+			cardType === 'template' ? 'template' : 'navigation'
+		];
+
 	return (
 		<ClayCardNavigation
 			{...otherProps}
+			cardType={cardType}
 			horizontal={horizontal}
 			href={href}
 			onClick={onClick}
 			onKeyDown={(event: React.KeyboardEvent) => {
 				if (
-					(event && event.key === Keys.Enter) ||
-					(event && event.key === Keys.Spacebar)
+					!href &&
+					((event && event.key === Keys.Enter) ||
+						(event && event.key === Keys.Spacebar))
 				) {
 					event.preventDefault();
 					if (onClick) {
@@ -99,8 +157,14 @@ export function ClayCardWithNavigation({
 			tabIndex={0}
 		>
 			{!horizontal && (
-				<ClayCard.AspectRatio>
-					<span className="aspect-ratio-item aspect-ratio-item-center-middle aspect-ratio-item-flush">
+				<ClayCard.AspectRatio
+					{...defaultAspectRatioProps.container}
+					{...externalAspectRatioProps?.container}
+				>
+					<span
+						{...defaultAspectRatioProps.item}
+						{...externalAspectRatioProps?.item}
+					>
 						{children}
 					</span>
 				</ClayCard.AspectRatio>
@@ -122,7 +186,7 @@ export function ClayCardWithNavigation({
 
 							{description && (
 								<ClayCard.Description
-									displayType="text"
+									displayType="subtitle"
 									truncate
 								>
 									{description}
