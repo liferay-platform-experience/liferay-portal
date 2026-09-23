@@ -188,6 +188,19 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommandTest {
 			FrontendTokenDefinitionConstants.PRIORITY_CUSTOM,
 			customFrontendTokenDefinitionJSONObject.getInt("priority"));
 
+		JSONObject frontendTokensValuesJSONObject =
+			responseJSONObject.getJSONObject("frontendTokensValues");
+
+		for (String frontendTokenName :
+				FrontendTokenDefinitionUtil.getFrontendTokenNames(
+					customFrontendTokenDefinitionJSONObject)) {
+
+			Assert.assertTrue(
+				frontendTokensValuesJSONObject.has(
+					StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID +
+						StringPool.COLON + frontendTokenName));
+		}
+
 		return customFrontendTokenDefinitionJSONObject;
 	}
 
