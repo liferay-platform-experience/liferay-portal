@@ -47,7 +47,7 @@ public class NavigationCardTag extends BaseCardTag {
 
 		String cardType = navigationCard.getCardType();
 
-		if (cardType == null) {
+		if (Validator.isNull(cardType)) {
 			return "template";
 		}
 

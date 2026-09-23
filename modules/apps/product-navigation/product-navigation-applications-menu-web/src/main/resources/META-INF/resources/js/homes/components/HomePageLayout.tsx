@@ -119,15 +119,15 @@ const HomePageLayout = ({
 							)}
 
 							<ClayLayout.Row>
-								{group.items.map((app) => (
-									<ClayLayout.Col key={app.id} md={4} sm={6}>
+								{group.items.map((item) => (
+									<ClayLayout.Col key={item.id} md={4} sm={6}>
 										<ClayCardWithNavigation
 											cardType="navigation"
 											className="c-mb-2 c-mb-lg-3 home-card"
 											horizontal
-											horizontalSymbol={app.leadingIcon}
-											href={app.href}
-											title={app.label}
+											horizontalSymbol={item.leadingIcon}
+											href={item.href}
+											title={item.label}
 										/>
 									</ClayLayout.Col>
 								))}
