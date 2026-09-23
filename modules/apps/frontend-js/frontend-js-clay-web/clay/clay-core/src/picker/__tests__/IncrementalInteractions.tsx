@@ -351,6 +351,62 @@ describe('Picker incremental interactions', () => {
 			expect(combobox.textContent).not.toBe('Blueberry');
 		});
 
+		it('pressing the down arrow key navigates past a disabled first option', () => {
+			const {getByRole} = render(
+				<Picker items={['Apple', 'Banana', 'Blueberry']}>
+					{(item) => (
+						<Option disabled={item === 'Apple'} key={item}>
+							{item}
+						</Option>
+					)}
+				</Picker>
+			);
+
+			const combobox = getByRole('combobox');
+
+			userEvent.click(combobox);
+
+			// The visual focus starts on the disabled option, which is not
+			// focusable and so is absent from the navigable options.
+
+			expect(combobox.getAttribute('aria-activedescendant')).toBe(
+				'Apple'
+			);
+
+			userEvent.keyboard('[ArrowDown]');
+
+			expect(combobox.getAttribute('aria-activedescendant')).toBe(
+				'Banana'
+			);
+
+			userEvent.keyboard('[ArrowDown]');
+
+			expect(combobox.getAttribute('aria-activedescendant')).toBe(
+				'Blueberry'
+			);
+		});
+
+		it('pressing the up arrow key navigates past a disabled first option', () => {
+			const {getByRole} = render(
+				<Picker items={['Apple', 'Banana', 'Blueberry']}>
+					{(item) => (
+						<Option disabled={item === 'Apple'} key={item}>
+							{item}
+						</Option>
+					)}
+				</Picker>
+			);
+
+			const combobox = getByRole('combobox');
+
+			userEvent.click(combobox);
+			userEvent.keyboard('[ArrowUp]');
+
+			expect(combobox.getAttribute('aria-activedescendant')).toBe(
+				'Blueberry'
+			);
+		});
+
 		it('pressing the up arrow key navigates up and update the visual focus', () => {
 			const {getByRole} = render(
 				<Picker items={['Apple', 'Banana', 'Blueberry']}>
