@@ -264,6 +264,13 @@ export function useNavigation<T extends HTMLElement | null>({
 										element.getAttribute('id') === active
 								);
 							}
+
+							if (position === -1) {
+								item =
+									items[
+										event.key === key ? items.length - 1 : 0
+									];
+							}
 						}
 
 						if (position === -1) {
