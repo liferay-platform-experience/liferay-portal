@@ -7,6 +7,7 @@ package com.liferay.style.book.web.internal.portlet.action;
 
 import com.liferay.frontend.token.definition.FrontendToken;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -60,7 +61,12 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommand
 				"customFrontendTokenDefinition",
 				StyleBookFrontendTokenDefinitionUtil.
 					getCustomFrontendTokenDefinitionJSONObject(
-						themeDisplay.getLocale(), styleBookEntry));
+						themeDisplay.getLocale(), styleBookEntry)
+			).put(
+				"frontendTokensValues",
+				_jsonFactory.createJSONObject(
+					styleBookEntry.getFrontendTokensValues())
+			);
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse, jsonObject);
@@ -101,6 +107,9 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommand
 				actionRequest, "type", FrontendToken.Type.STRING.getValue()),
 			ServiceContextFactory.getInstance(actionRequest));
 	}
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private StyleBookEntryService _styleBookEntryService;
