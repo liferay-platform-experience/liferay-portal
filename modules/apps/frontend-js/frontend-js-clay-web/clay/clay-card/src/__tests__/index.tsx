@@ -940,6 +940,52 @@ describe('ClayCardWithUser', () => {
 		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(false);
 	});
 
+	it('activates a link with an onClick on Space', async () => {
+		const keyDownSpy = jest.fn();
+		const onClickFn = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation
+				href="#"
+				onClick={onClickFn}
+				title="Layout Page"
+			>
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('button').focus();
+
+		await userEvent.keyboard(' ');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(true);
+		expect(onClickFn).toHaveBeenCalledTimes(1);
+	});
+
+	it('does not prevent the default action on Space when the card is only a link', async () => {
+		const keyDownSpy = jest.fn();
+
+		document.addEventListener('keydown', keyDownSpy);
+
+		const {getByRole} = render(
+			<ClayCardWithNavigation href="#" title="Layout Page">
+				<img alt="portlet image" src="/some/path" />
+			</ClayCardWithNavigation>
+		);
+
+		getByRole('link').focus();
+
+		await userEvent.keyboard(' ');
+
+		document.removeEventListener('keydown', keyDownSpy);
+
+		expect(keyDownSpy.mock.calls[0][0].defaultPrevented).toBe(false);
+	});
+
 	it('prevents the default action on Enter when the card is not a link', async () => {
 		const keyDownSpy = jest.fn();
 

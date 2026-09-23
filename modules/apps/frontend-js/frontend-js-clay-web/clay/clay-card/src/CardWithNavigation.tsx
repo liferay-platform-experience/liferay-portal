@@ -143,9 +143,8 @@ export function ClayCardWithNavigation({
 			onClick={onClick}
 			onKeyDown={(event: React.KeyboardEvent) => {
 				if (
-					!href &&
-					((event && event.key === Keys.Enter) ||
-						(event && event.key === Keys.Spacebar))
+					(!href && event.key === Keys.Enter) ||
+					(onClick && event.key === Keys.Spacebar)
 				) {
 					event.preventDefault();
 					if (onClick) {
