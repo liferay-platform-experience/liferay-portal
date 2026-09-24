@@ -412,6 +412,12 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 		);
 
 		Mockito.when(
+			themeDisplay.getPathThemeImagesSpritemap()
+		).thenReturn(
+			"http://localhost:8080/o/classic-theme/images/clay/empty_states.svg"
+		);
+
+		Mockito.when(
 			themeDisplay.getPathThemeRoot()
 		).thenReturn(
 			"/o/classic-theme"

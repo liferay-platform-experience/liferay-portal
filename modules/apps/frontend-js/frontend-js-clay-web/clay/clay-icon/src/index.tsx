@@ -13,6 +13,14 @@ interface IProps extends React.SVGAttributes<SVGSVGElement> {
 	className?: string;
 
 	/**
+	 * Flag to include `lexicon-icon lexicon-icon-*` classes on the svg element.
+	 * Set it to `false` for spritemaps that are drawn at their own size, like
+	 * the illustrations in `empty_states.svg`, so the `lexicon-icon` classes do
+	 * not force them to the 1em glyph sizing.
+	 */
+	lexiconIcon?: boolean;
+
+	/**
 	 * Path to the location of the spritemap resource.
 	 */
 	spritemap?: string;
@@ -24,7 +32,16 @@ interface IProps extends React.SVGAttributes<SVGSVGElement> {
 }
 
 const Icon = React.forwardRef<SVGSVGElement, IProps>(
-	({className, spritemap, symbol, ...otherProps}: IProps, ref) => {
+	(
+		{
+			className,
+			lexiconIcon = true,
+			spritemap,
+			symbol,
+			...otherProps
+		}: IProps,
+		ref
+	) => {
 		let spriteMapVal = React.useContext(ClayIconSpriteContext);
 
 		if (spritemap) {
@@ -39,10 +56,12 @@ const Icon = React.forwardRef<SVGSVGElement, IProps>(
 		return (
 			<svg
 				{...otherProps}
-				className={classNames(
-					`lexicon-icon lexicon-icon-${symbol}`,
-					className
-				)}
+				className={
+					classNames(
+						lexiconIcon && `lexicon-icon lexicon-icon-${symbol}`,
+						className
+					) || undefined
+				}
 				key={symbol}
 				ref={ref}
 				role="presentation"

@@ -28,4 +28,29 @@ describe('ClayIcon', () => {
 
 		expect(testRenderer.toJSON()).toMatchSnapshot();
 	});
+
+	it('renders without the lexicon-icon classes when `lexiconIcon` is false', () => {
+		const testRenderer = TestRenderer.create(
+			<ClayIcon
+				lexiconIcon={false}
+				spritemap="/path/to/some/empty_states.svg"
+				symbol="success-state"
+			/>
+		);
+
+		expect(testRenderer.toJSON()).toMatchSnapshot();
+	});
+
+	it('renders the className when `lexiconIcon` is false', () => {
+		const testRenderer = TestRenderer.create(
+			<ClayIcon
+				className="custom-icon"
+				lexiconIcon={false}
+				spritemap="/path/to/some/empty_states.svg"
+				symbol="success-state"
+			/>
+		);
+
+		expect(testRenderer.toJSON()).toMatchSnapshot();
+	});
 });
