@@ -196,17 +196,30 @@ public class NavigationCardTag extends BaseCardTag {
 	protected String processCssClasses(Set<String> cssClasses) {
 		cssClasses.add("card");
 		cssClasses.add("card-interactive");
-		cssClasses.add("card-interactive-primary");
 
-		if (Objects.equals(getCardType(), "template")) {
-			cssClasses.add("card-type-template");
-		}
+		String cardType = getCardType();
 
-		if (isSmall()) {
-			cssClasses.add("template-card-horizontal");
+		if (Objects.equals(cardType, "navigation")) {
+			if (isSmall()) {
+				cssClasses.add("navigation-card-horizontal");
+			}
+			else {
+				cssClasses.add("navigation-card");
+			}
 		}
 		else {
-			cssClasses.add("template-card");
+			cssClasses.add("card-interactive-primary");
+		}
+
+		if (Objects.equals(cardType, "template")) {
+			cssClasses.add("card-type-template");
+
+			if (isSmall()) {
+				cssClasses.add("template-card-horizontal");
+			}
+			else {
+				cssClasses.add("template-card");
+			}
 		}
 
 		return super.processCssClasses(cssClasses);
@@ -221,18 +234,16 @@ public class NavigationCardTag extends BaseCardTag {
 		Boolean small = isSmall();
 
 		if (!small) {
+			jspWriter.write("<span class=\"card-item-first aspect-ratio ");
+			jspWriter.write("aspect-ratio-16-to-9\"><span ");
+			jspWriter.write("class=\"aspect-ratio-item");
+
 			if (Objects.equals(getCardType(), "template")) {
-				jspWriter.write("<span class=\"aspect-ratio\"><span ");
-				jspWriter.write("class=\"aspect-ratio-item ");
-				jspWriter.write("aspect-ratio-item-center-middle ");
-				jspWriter.write("aspect-ratio-item-flush\">");
+				jspWriter.write(" aspect-ratio-item-center-middle ");
+				jspWriter.write("aspect-ratio-item-flush");
 			}
-			else {
-				jspWriter.write("<span class=\"aspect-ratio ");
-				jspWriter.write("aspect-ratio-16-to-9\"><span ");
-				jspWriter.write("class=\"aspect-ratio-item ");
-				jspWriter.write("aspect-ratio-item-top-right\">");
-			}
+
+			jspWriter.write("\">");
 
 			String imageSrc = getImageSrc();
 
@@ -278,7 +289,7 @@ public class NavigationCardTag extends BaseCardTag {
 				}
 
 				if (description != null) {
-					_writeDescription(jspWriter, "subtitle", description);
+					_writeDescription(jspWriter, "text", description);
 				}
 			}
 
