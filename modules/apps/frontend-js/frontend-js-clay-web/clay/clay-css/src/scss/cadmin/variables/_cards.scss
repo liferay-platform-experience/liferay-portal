@@ -1021,3 +1021,58 @@ $cadmin-template-card-horizontal: map-deep-merge(
 	),
 	$cadmin-template-card-horizontal
 );
+
+// Navigation Card
+
+$cadmin-navigation-card: () !default;
+$cadmin-navigation-card: map-deep-merge(
+	(
+		hover: (
+			transform: translateY(-0.25rem),
+			after: (
+				bottom: -0.25rem,
+				content: '',
+				height: 0.25rem,
+				left: 0,
+				position: absolute,
+				right: 0,
+			),
+		),
+
+		card-title: (
+			font-size: 1rem,
+		),
+
+		aspect-ratio-item: (
+			color: $cadmin-primary-l0,
+			font-size: 2rem,
+			left: auto,
+			line-height: 1,
+			right: 1rem,
+			top: 1rem,
+		),
+	),
+	$cadmin-navigation-card
+);
+
+$cadmin-navigation-card-horizontal: () !default;
+$cadmin-navigation-card-horizontal: map-deep-merge(
+	(
+		card-body: (
+			padding: 0.4375rem,
+		),
+
+		card-title: (
+			font-size: 1rem,
+		),
+
+		sticker: (
+			color: $cadmin-primary-l0,
+			font-size: 1.25rem,
+			height: 2.5rem,
+			margin-right: 0.5rem,
+			width: 2.5rem,
+		),
+	),
+	$cadmin-navigation-card-horizontal
+);
