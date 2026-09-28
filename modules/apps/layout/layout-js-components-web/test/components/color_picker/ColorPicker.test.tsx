@@ -208,6 +208,29 @@ describe('ColorPicker', () => {
 			expect(getByTitle('Orange')).toBeDisabled();
 			expect(getByTitle('Blue')).toBeDisabled();
 		});
+
+		it('disables the colors that reference the token through a chain', async () => {
+			const {getByLabelText, getByText, getByTitle} = renderColorPicker({
+				editedTokenValues: {
+					darkBlue: {
+						name: 'blue',
+						value: 'var(--blue)',
+					},
+					orange: {
+						name: 'darkBlue',
+						value: 'var(--dark-blue)',
+					},
+				},
+				field: {...FIELD, name: 'blue'},
+				value: '#fff',
+			});
+
+			await userEvent.click(getByLabelText('select-color'));
+			await userEvent.click(getByText('value-from-stylebook'));
+
+			expect(getByTitle('Orange')).toBeDisabled();
+			expect(getByTitle('Green')).not.toBeDisabled();
+		});
 	});
 
 	describe('When the value is an hexadecimal', () => {
@@ -400,6 +423,29 @@ describe('ColorPicker', () => {
 						blue: {
 							name: 'orange',
 							value: '#ffb46e',
+						},
+					},
+					field: {...FIELD, name: 'orange'},
+					value: '#fff',
+				});
+
+				await onTypeValue(baseElement.querySelector('input')!, 'blue');
+
+				expect(
+					getByText('tokens-cannot-be-mutually-referenced')
+				).toBeInTheDocument();
+			});
+
+			it('renders an error when the written token references the field through a chain', async () => {
+				const {baseElement, getByText} = renderColorPicker({
+					editedTokenValues: {
+						blue: {
+							name: 'darkBlue',
+							value: 'var(--dark-blue)',
+						},
+						darkBlue: {
+							name: 'orange',
+							value: 'var(--orange)',
 						},
 					},
 					field: {...FIELD, name: 'orange'},
