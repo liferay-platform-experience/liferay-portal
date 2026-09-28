@@ -233,4 +233,35 @@ describe('Sidebar', () => {
 			value: 'var(--brand-color-1)',
 		});
 	});
+
+	it('shows the color at the end of a token link chain', () => {
+		renderComponent({
+			frontendTokensValues: {
+				'theme:brandColor1': {
+					cssVariableMapping: 'brand-color-1',
+					name: 'theme:token1',
+					tokenDefinitionId: 'theme',
+					value: 'var(--token-1)',
+				},
+				'theme:btnLinkColor': {
+					cssVariableMapping: 'btn-link-color',
+					name: 'theme:brandColor1',
+					tokenDefinitionId: 'theme',
+					value: 'var(--brand-color-1)',
+				},
+				'theme:token1': {
+					cssVariableMapping: 'token-1',
+					tokenDefinitionId: 'theme',
+					value: '#00ff00',
+				},
+			},
+		});
+
+		const tokenButton = within(
+			screen.getByLabelText('Button Link Color')
+		).getByRole('button', {name: /select-color/});
+
+		expect(tokenButton).toHaveTextContent('Brand Color 1');
+		expect(tokenButton.firstChild).toHaveStyle({background: '#00ff00'});
+	});
 });
