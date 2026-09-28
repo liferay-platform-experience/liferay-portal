@@ -4,7 +4,14 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen} from '@testing-library/react';
+import {
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import Sidebar from '../../src/main/resources/META-INF/resources/js/style-book-editor/Sidebar';
@@ -31,6 +38,19 @@ jest.mock(
 												},
 											],
 											name: 'token1',
+											type: 'color',
+										},
+										{
+											defaultValue: '#fff',
+											editorType: 'ColorPicker',
+											label: 'Button Link Color',
+											mappings: [
+												{
+													type: 'cssVariable',
+													value: 'btn-link-color',
+												},
+											],
+											name: 'btnLinkColor',
 											type: 'color',
 										},
 									],
@@ -84,6 +104,26 @@ jest.mock(
 					name: 'clay:clayToken',
 					type: 'color',
 				},
+				'theme:brandColor1': {
+					defaultValue: '#fff',
+					editorType: 'ColorPicker',
+					label: 'Brand Color 1',
+					mappings: [{type: 'cssVariable', value: 'brand-color-1'}],
+					name: 'theme:brandColor1',
+					tokenCategoryLabel: 'Category 1',
+					tokenSetLabel: 'Set 1',
+					type: 'color',
+				},
+				'theme:btnLinkColor': {
+					defaultValue: '#fff',
+					editorType: 'ColorPicker',
+					label: 'Button Link Color',
+					mappings: [{type: 'cssVariable', value: 'btn-link-color'}],
+					name: 'theme:btnLinkColor',
+					tokenCategoryLabel: 'Category 1',
+					tokenSetLabel: 'Set 1',
+					type: 'color',
+				},
 				'theme:token1': {
 					defaultValue: '#000',
 					label: 'Token 1',
@@ -92,6 +132,8 @@ jest.mock(
 					type: 'color',
 				},
 			},
+			namespace: '_namespace_',
+			saveDraftURL: '/save-draft',
 			sortFrontendTokenValues: (frontendTokensValues) =>
 				Object.values(frontendTokensValues),
 			themeFrontendTokenDefinitionId: 'theme',
@@ -100,17 +142,11 @@ jest.mock(
 	})
 );
 
-global.Liferay = {
-	Language: {
-		get: jest.fn((key) => key),
-	},
-};
-
-const renderComponent = () => {
+const renderComponent = ({frontendTokensValues = {}} = {}) => {
 	render(
 		<StyleBookEditorContextProvider
 			initialState={{
-				frontendTokensValues: {},
+				frontendTokensValues,
 			}}
 		>
 			<Sidebar />
@@ -159,5 +195,42 @@ describe('Sidebar', () => {
 
 		expect(screen.getAllByText('Clay Category')[0]).toBeInTheDocument();
 		expect(screen.queryByText('Category 1')).not.toBeInTheDocument();
+	});
+
+	it('links a token to another token through its CSS variable', async () => {
+		fetch.mockResponseOnce(JSON.stringify({}));
+
+		renderComponent({
+			frontendTokensValues: {
+				'theme:brandColor1': {
+					cssVariableMapping: 'brand-color-1',
+					tokenDefinitionId: 'theme',
+					value: '#ff0000',
+				},
+			},
+		});
+
+		const buttonLinkColor = screen.getByLabelText('Button Link Color');
+
+		await userEvent.click(
+			within(buttonLinkColor).getByLabelText('select-color')
+		);
+		await userEvent.click(screen.getByText('value-from-stylebook'));
+		await userEvent.click(screen.getByTitle('Brand Color 1'));
+
+		await waitFor(() => expect(fetch).toHaveBeenCalled());
+
+		const [, {body}] = fetch.mock.calls[0];
+
+		expect(
+			JSON.parse(body.get('_namespace_frontendTokensValues'))[
+				'theme:btnLinkColor'
+			]
+		).toEqual({
+			cssVariableMapping: 'btn-link-color',
+			name: 'theme:brandColor1',
+			tokenDefinitionId: 'theme',
+			value: 'var(--brand-color-1)',
+		});
 	});
 });
