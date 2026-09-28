@@ -29,6 +29,10 @@ export default function FrontendTokenSet({
 
 	const updateFrontendTokensValues = useCallback(
 		(frontendToken, value) => {
+			if (!value) {
+				return;
+			}
+
 			const {
 				label,
 				mappings = [],
@@ -36,22 +40,22 @@ export default function FrontendTokenSet({
 				tokenDefinitionId,
 			} = frontendToken;
 
-			const cssVariableMapping = mappings.find(
-				(mapping) => mapping.type === 'cssVariable'
-			);
+			const cssVariableMapping = getCSSVariableMapping(mappings);
 
-			if (value) {
-				saveTokenValue({
-					label,
-					name,
-					value: {
-						cssVariableMapping: cssVariableMapping.value,
-						name: tokenValues[value]?.name,
-						tokenDefinitionId,
-						value: tokenValues[value]?.value || value,
-					},
-				});
-			}
+			const linkedToken = tokenValues[value];
+
+			saveTokenValue({
+				label,
+				name,
+				value: {
+					cssVariableMapping: cssVariableMapping.value,
+					name: linkedToken?.name,
+					tokenDefinitionId,
+					value: linkedToken
+						? `var(--${getCSSVariableMapping(linkedToken.mappings).value})`
+						: value,
+				},
+			});
 		},
 		[saveTokenValue, tokenValues]
 	);
@@ -91,6 +95,10 @@ export default function FrontendTokenSet({
 			</ClayPanel.Body>
 		</ClayPanel>
 	);
+}
+
+function getCSSVariableMapping(mappings = []) {
+	return mappings.find((mapping) => mapping.type === 'cssVariable');
 }
 
 function getFrontendTokenComponent(frontendToken) {
