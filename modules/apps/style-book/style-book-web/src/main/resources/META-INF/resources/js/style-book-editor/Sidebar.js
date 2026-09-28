@@ -184,6 +184,21 @@ function getDefinitionName({id, name}) {
 		: name || id;
 }
 
+function getTokenValue(frontendTokensValues, name) {
+	const visitedNames = new Set();
+
+	while (frontendTokensValues[name]?.name && !visitedNames.has(name)) {
+		visitedNames.add(name);
+
+		name = frontendTokensValues[name].name;
+	}
+
+	return (
+		frontendTokensValues[name]?.value ||
+		config.frontendTokens[name]?.defaultValue
+	);
+}
+
 function FrontendTokenCategories({activeDefinition}) {
 	const frontendTokensValues = useFrontendTokensValues();
 
@@ -200,11 +215,11 @@ function FrontendTokenCategories({activeDefinition}) {
 	const tokenValues = useMemo(() => {
 		const nextTokenValues = {...config.frontendTokens};
 
-		for (const [name, {value}] of Object.entries(frontendTokensValues)) {
+		for (const name of Object.keys(frontendTokensValues)) {
 			if (nextTokenValues[name]) {
 				nextTokenValues[name] = {
 					...nextTokenValues[name],
-					value: value || nextTokenValues[name].defaultValue,
+					value: getTokenValue(frontendTokensValues, name),
 				};
 			}
 		}
