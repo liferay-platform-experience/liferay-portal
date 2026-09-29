@@ -30,6 +30,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.manager.RecentGroupManager;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -88,6 +89,24 @@ public class RecentGroupManagerTest {
 
 		Assert.assertEquals(
 			Collections.singletonList(_group),
+			_recentGroupManager.getRecentGroups(mockHttpServletRequest));
+	}
+
+	@Test
+	public void testGetRecentGroupsWithStoredCompanyGroup() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest();
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		SessionClicks.put(
+			mockHttpServletRequest.getSession(), _KEY_RECENT_GROUPS,
+			StringUtil.merge(
+				new long[] {companyGroup.getGroupId(), _group.getGroupId()}));
+
+		Assert.assertEquals(
+			Arrays.asList(companyGroup, _group),
 			_recentGroupManager.getRecentGroups(mockHttpServletRequest));
 	}
 
