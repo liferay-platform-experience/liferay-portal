@@ -3,7 +3,8 @@
 Storybook for the Clay components, deployed to `storybook.clayui.com`.
 
 This is a standalone project with its own lockfile, outside the yarn monorepo,
-so it is installed and run on its own:
+so it is installed and run on its own. It runs on Node 24.0.0, pinned in
+`.nvmrc` and in the `engines` field of `package.json`:
 
 ```bash
 yarn
