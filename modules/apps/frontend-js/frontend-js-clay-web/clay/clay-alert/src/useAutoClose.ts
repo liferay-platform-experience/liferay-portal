@@ -60,7 +60,7 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 		startTimer();
 
 		return pauseTimer;
-	}, [disableAlertAutoClose]);
+	}, [autoClose, disableAlertAutoClose]);
 
 	return {
 		pauseAutoCloseTimer: () => {
