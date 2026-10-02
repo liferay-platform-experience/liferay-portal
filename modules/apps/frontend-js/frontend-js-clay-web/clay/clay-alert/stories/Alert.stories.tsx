@@ -4,7 +4,9 @@
  */
 
 import ClayButton from '@clayui/button';
-import React from 'react';
+import {Provider} from '@clayui/core';
+const spritemap = require('@clayui/css/src/images/icons/icons.svg');
+import React, {useState} from 'react';
 
 import ClayAlert from '../src';
 
@@ -124,6 +126,27 @@ export function Toast() {
 				displayed.
 			</ClayAlert>
 		</ClayAlert.ToastContainer>
+	);
+}
+
+export function ToastWithDisableAlertAutoClose() {
+	const [visible, setVisible] = useState(true);
+
+	return (
+		<Provider disableAlertAutoClose spritemap={spritemap}>
+			{visible && (
+				<ClayAlert.ToastContainer>
+					<ClayAlert
+						autoClose={5000}
+						displayType="info"
+						onClose={() => setVisible(false)}
+						title="Info"
+					>
+						This alert stays until it is dismissed.
+					</ClayAlert>
+				</ClayAlert.ToastContainer>
+			)}
+		</Provider>
 	);
 }
 
