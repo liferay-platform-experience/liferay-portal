@@ -16,6 +16,7 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 
 	const elapsedRef = useRef(0);
 	const expiredRef = useRef(false);
+	const pauseRequestedRef = useRef(false);
 	const startedAtRef = useRef<number>(0);
 	const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
@@ -37,6 +38,7 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 			!autoClose ||
 			disableAlertAutoClose ||
 			expiredRef.current ||
+			pauseRequestedRef.current ||
 			timerRef.current
 		) {
 			return;
@@ -61,7 +63,15 @@ export function useAutoClose({autoClose, onClose}: IProps) {
 	}, [disableAlertAutoClose]);
 
 	return {
-		pauseAutoCloseTimer: pauseTimer,
-		startAutoCloseTimer: startTimer,
+		pauseAutoCloseTimer: () => {
+			pauseRequestedRef.current = true;
+
+			pauseTimer();
+		},
+		startAutoCloseTimer: () => {
+			pauseRequestedRef.current = false;
+
+			startTimer();
+		},
 	};
 }
