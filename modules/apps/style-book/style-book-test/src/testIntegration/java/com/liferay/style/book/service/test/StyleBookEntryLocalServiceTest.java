@@ -15,6 +15,9 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -23,6 +26,7 @@ import com.liferay.style.book.exception.DuplicateStyleBookEntryExternalReference
 import com.liferay.style.book.exception.StyleBookEntryThemeIdException;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
+import com.liferay.style.book.service.persistence.StyleBookEntryPersistence;
 import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
 
 import org.junit.Assert;
@@ -55,21 +59,14 @@ public class StyleBookEntryLocalServiceTest {
 
 	@Test(expected = StyleBookEntryThemeIdException.MustNotBeNull.class)
 	public void testAddStyleBookEntry() throws Exception {
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, null,
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(), _serviceContext);
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			false, RandomTestUtil.randomString());
 
 		Assert.assertTrue(
 			Validator.isNotNull(styleBookEntry.getExternalReferenceCode()));
 
-		styleBookEntry = _styleBookEntryLocalService.addStyleBookEntry(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(), true, null, null,
-			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
-			_serviceContext);
+		styleBookEntry = _addStyleBookEntry(
+			true, RandomTestUtil.randomString());
 
 		StyleBookEntry defaultStyleBookEntry1 =
 			_styleBookEntryLocalService.fetchDefaultStyleBookEntry(
@@ -79,11 +76,8 @@ public class StyleBookEntryLocalServiceTest {
 			styleBookEntry.getStyleBookEntryId(),
 			defaultStyleBookEntry1.getStyleBookEntryId());
 
-		styleBookEntry = _styleBookEntryLocalService.addStyleBookEntry(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(), true, null, null,
-			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
-			_serviceContext);
+		styleBookEntry = _addStyleBookEntry(
+			true, RandomTestUtil.randomString());
 
 		StyleBookEntry defaultStyleBookEntry2 =
 			_styleBookEntryLocalService.fetchDefaultStyleBookEntry(
@@ -96,10 +90,7 @@ public class StyleBookEntryLocalServiceTest {
 			styleBookEntry.getStyleBookEntryId(),
 			defaultStyleBookEntry2.getStyleBookEntryId());
 
-		_styleBookEntryLocalService.addStyleBookEntry(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(), false, null, null,
-			RandomTestUtil.randomString(), null, null, _serviceContext);
+		_addStyleBookEntry(false, null);
 	}
 
 	@Test(
@@ -166,12 +157,8 @@ public class StyleBookEntryLocalServiceTest {
 
 	@Test
 	public void testDeleteGroup() throws Exception {
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, null,
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(), _serviceContext);
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			false, RandomTestUtil.randomString());
 
 		StyleBookEntry draftStyleBookEntry =
 			_styleBookEntryLocalService.getDraft(styleBookEntry);
@@ -190,12 +177,8 @@ public class StyleBookEntryLocalServiceTest {
 	public void testDeleteStyleBookEntryByExternalReferenceCode()
 		throws Exception {
 
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, null,
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(), _serviceContext);
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			false, RandomTestUtil.randomString());
 
 		_styleBookEntryLocalService.deleteStyleBookEntry(
 			styleBookEntry.getExternalReferenceCode(),
@@ -210,11 +193,7 @@ public class StyleBookEntryLocalServiceTest {
 	public void testUpdateDefaultStyleBookEntry() throws Exception {
 		String themeId = RandomTestUtil.randomString();
 
-		StyleBookEntry styleBookEntry1 =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), true, null, null,
-				RandomTestUtil.randomString(), null, themeId, _serviceContext);
+		StyleBookEntry styleBookEntry1 = _addStyleBookEntry(true, themeId);
 
 		Assert.assertTrue(styleBookEntry1.isDefaultStyleBookEntry());
 
@@ -223,13 +202,11 @@ public class StyleBookEntryLocalServiceTest {
 
 		Assert.assertTrue(draftStyleBookEntry.isDefaultStyleBookEntry());
 
-		StyleBookEntry styleBookEntry2 =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, null,
-				RandomTestUtil.randomString(), null, themeId, _serviceContext);
+		StyleBookEntry styleBookEntry2 = _addStyleBookEntry(false, themeId);
 
 		Assert.assertFalse(styleBookEntry2.isDefaultStyleBookEntry());
+
+		_styleBookEntryLocalService.getDraft(styleBookEntry2);
 
 		styleBookEntry2 =
 			_styleBookEntryLocalService.updateDefaultStyleBookEntry(
@@ -237,25 +214,84 @@ public class StyleBookEntryLocalServiceTest {
 
 		Assert.assertTrue(styleBookEntry2.isDefaultStyleBookEntry());
 
-		styleBookEntry1 = _styleBookEntryLocalService.getStyleBookEntry(
-			styleBookEntry1.getStyleBookEntryId());
+		_assertDefaultStyleBookEntry(styleBookEntry2, styleBookEntry1);
+	}
 
-		Assert.assertFalse(styleBookEntry1.isDefaultStyleBookEntry());
+	@Test
+	public void testUpdateDefaultStyleBookEntryWithDefaultStyleBookEntry()
+		throws Exception {
 
-		draftStyleBookEntry = _styleBookEntryLocalService.getDraft(
-			styleBookEntry1);
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			true, RandomTestUtil.randomString());
 
-		Assert.assertFalse(draftStyleBookEntry.isDefaultStyleBookEntry());
+		StyleBookEntry draftStyleBookEntry =
+			_styleBookEntryLocalService.getDraft(styleBookEntry);
+
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			styleBookEntry.getStyleBookEntryId(), true);
+
+		_assertDefaultStyleBookEntry(styleBookEntry);
+
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			draftStyleBookEntry.getStyleBookEntryId(), true);
+
+		_assertDefaultStyleBookEntry(styleBookEntry);
+	}
+
+	@Test
+	public void testUpdateDefaultStyleBookEntryWithDraftStyleBookEntryId()
+		throws Exception {
+
+		String themeId = RandomTestUtil.randomString();
+
+		StyleBookEntry styleBookEntry1 = _addStyleBookEntry(true, themeId);
+
+		_styleBookEntryLocalService.getDraft(styleBookEntry1);
+
+		StyleBookEntry styleBookEntry2 = _addStyleBookEntry(false, themeId);
+
+		StyleBookEntry draftStyleBookEntry =
+			_styleBookEntryLocalService.getDraft(styleBookEntry2);
+
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			draftStyleBookEntry.getStyleBookEntryId(), true);
+
+		_assertDefaultStyleBookEntry(styleBookEntry2, styleBookEntry1);
+	}
+
+	@Test
+	public void testUpdateDefaultStyleBookEntryWithDuplicateDefaultStyleBookEntries()
+		throws Throwable {
+
+		String themeId = RandomTestUtil.randomString();
+
+		StyleBookEntry styleBookEntry1 = _addStyleBookEntry(true, themeId);
+
+		_styleBookEntryLocalService.getDraft(styleBookEntry1);
+
+		StyleBookEntry styleBookEntry2 = _addStyleBookEntry(false, themeId);
+
+		styleBookEntry2.setDefaultStyleBookEntry(true);
+
+		styleBookEntry2 = _updateStyleBookEntry(styleBookEntry2);
+
+		_styleBookEntryLocalService.getDraft(styleBookEntry2);
+
+		StyleBookEntry styleBookEntry3 = _addStyleBookEntry(false, themeId);
+
+		_styleBookEntryLocalService.getDraft(styleBookEntry3);
+
+		_styleBookEntryLocalService.updateDefaultStyleBookEntry(
+			styleBookEntry3.getStyleBookEntryId(), true);
+
+		_assertDefaultStyleBookEntry(
+			styleBookEntry3, styleBookEntry1, styleBookEntry2);
 	}
 
 	@Test
 	public void testUpdateFrontendTokenDefinition() throws Exception {
-		StyleBookEntry styleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, null,
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString(), _serviceContext);
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			false, RandomTestUtil.randomString());
 
 		long styleBookEntryId = styleBookEntry.getStyleBookEntryId();
 
@@ -272,6 +308,88 @@ public class StyleBookEntryLocalServiceTest {
 			styleBookEntry.getFrontendTokenDefinition());
 	}
 
+	@Test
+	public void testUpdateStyleBookEntryWithDefaultStyleBookEntry()
+		throws Exception {
+
+		StyleBookEntry styleBookEntry = _addStyleBookEntry(
+			true, RandomTestUtil.randomString());
+
+		_styleBookEntryLocalService.getDraft(styleBookEntry);
+
+		_styleBookEntryLocalService.updateStyleBookEntry(
+			TestPropsValues.getUserId(), styleBookEntry.getStyleBookEntryId(),
+			true, styleBookEntry.getFrontendTokenDefinition(),
+			styleBookEntry.getFrontendTokensValues(),
+			RandomTestUtil.randomString(),
+			styleBookEntry.getStyleBookEntryKey(),
+			styleBookEntry.getPreviewFileEntryId(), _serviceContext);
+
+		_assertDefaultStyleBookEntry(styleBookEntry);
+	}
+
+	private StyleBookEntry _addStyleBookEntry(
+			boolean defaultStyleBookEntry, String themeId)
+		throws Exception {
+
+		return _styleBookEntryLocalService.addStyleBookEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			_group.getGroupId(), defaultStyleBookEntry, null, null,
+			RandomTestUtil.randomString(), null, themeId, _serviceContext);
+	}
+
+	private void _assertDefaultStyleBookEntry(
+			boolean defaultStyleBookEntry, StyleBookEntry styleBookEntry)
+		throws Exception {
+
+		styleBookEntry = _styleBookEntryLocalService.getStyleBookEntry(
+			styleBookEntry.getStyleBookEntryId());
+
+		Assert.assertEquals(
+			defaultStyleBookEntry, styleBookEntry.isDefaultStyleBookEntry());
+
+		StyleBookEntry draftStyleBookEntry =
+			_styleBookEntryLocalService.fetchDraft(styleBookEntry);
+
+		Assert.assertEquals(
+			defaultStyleBookEntry,
+			draftStyleBookEntry.isDefaultStyleBookEntry());
+	}
+
+	private void _assertDefaultStyleBookEntry(
+			StyleBookEntry styleBookEntry,
+			StyleBookEntry... nondefaultStyleBookEntries)
+		throws Exception {
+
+		StyleBookEntry defaultStyleBookEntry =
+			_styleBookEntryLocalService.fetchDefaultStyleBookEntry(
+				_group.getGroupId(), styleBookEntry.getThemeId());
+
+		Assert.assertEquals(
+			styleBookEntry.getStyleBookEntryId(),
+			defaultStyleBookEntry.getStyleBookEntryId());
+
+		_assertDefaultStyleBookEntry(true, styleBookEntry);
+
+		for (StyleBookEntry nondefaultStyleBookEntry :
+				nondefaultStyleBookEntries) {
+
+			_assertDefaultStyleBookEntry(false, nondefaultStyleBookEntry);
+		}
+	}
+
+	private StyleBookEntry _updateStyleBookEntry(StyleBookEntry styleBookEntry)
+		throws Throwable {
+
+		return TransactionInvokerUtil.invoke(
+			_transactionConfig,
+			() -> _styleBookEntryPersistence.update(styleBookEntry));
+	}
+
+	private static final TransactionConfig _transactionConfig =
+		TransactionConfig.Factory.create(
+			Propagation.REQUIRED, new Class<?>[] {Exception.class});
+
 	@DeleteAfterTestRun
 	private Group _group;
 
@@ -282,5 +400,8 @@ public class StyleBookEntryLocalServiceTest {
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
+
+	@Inject
+	private StyleBookEntryPersistence _styleBookEntryPersistence;
 
 }
