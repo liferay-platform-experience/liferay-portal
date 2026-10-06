@@ -222,7 +222,7 @@ function Contextual({
 			aria-expanded={visible}
 			aria-haspopup={Boolean(items)}
 			className={classNames({
-				active: visible,
+				hover: visible,
 			})}
 			onClick={(event) => {
 				keyboardRef.current = false;
