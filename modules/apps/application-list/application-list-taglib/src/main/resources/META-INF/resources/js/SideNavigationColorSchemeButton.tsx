@@ -25,9 +25,16 @@ function SideNavigationColorSchemeButton({
 			: initialColorScheme;
 	});
 
+	const mountedRef = useRef(false);
 	const reducedMotionAddedRef = useRef(false);
 
 	useEffect(() => {
+		if (!mountedRef.current) {
+			mountedRef.current = true;
+
+			return;
+		}
+
 		if (document.documentElement.dataset.colorScheme !== colorScheme) {
 			document.documentElement.dataset.colorScheme = colorScheme;
 		}
