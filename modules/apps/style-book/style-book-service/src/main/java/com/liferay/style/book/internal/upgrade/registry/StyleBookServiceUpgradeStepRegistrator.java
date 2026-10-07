@@ -112,6 +112,15 @@ public class StyleBookServiceUpgradeStepRegistrator
 		registry.register(
 			"1.10.0", "1.10.1",
 			new StyleBookEntryDefaultStyleBookEntryUpgradeProcess());
+
+		registry.register(
+			"1.10.1", "1.11.0",
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntry", "colorScheme VARCHAR(75) null",
+				"parentStyleBookEntryId LONG"),
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntryVersion", "colorScheme VARCHAR(75) null",
+				"parentStyleBookEntryId LONG"));
 	}
 
 	@Reference
