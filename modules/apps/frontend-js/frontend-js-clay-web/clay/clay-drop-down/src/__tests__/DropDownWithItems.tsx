@@ -6,6 +6,7 @@
 import {ClayDropDownWithItems} from '..';
 import ClayButton from '@clayui/button';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 const spritemap = 'icons.svg';
@@ -250,5 +251,39 @@ describe('ClayDropDownWithItems', () => {
 		fireEvent.mouseEnter(screen.getByTestId('dropdown'));
 
 		expect(onMouseEnter).toHaveBeenCalledTimes(1);
+	});
+
+	it('opens a contextual submenu without marking its trigger active', async () => {
+		Object.defineProperty(document.body, 'clientWidth', {
+			configurable: true,
+			value: 1440,
+		});
+
+		render(
+			<ClayDropDownWithItems
+				items={[
+					{
+						items: [{label: 'one'}],
+						label: 'contextual',
+						type: 'contextual' as const,
+					},
+				]}
+				spritemap={spritemap}
+				trigger={<ClayButton>Click Me</ClayButton>}
+			/>
+		);
+
+		await userEvent.click(screen.getByRole('button', {name: 'Click Me'}));
+
+		const contextualMenuItem = screen.getByRole('menuitem', {
+			name: 'contextual',
+		});
+
+		await userEvent.click(contextualMenuItem);
+
+		expect(screen.getByRole('menuitem', {name: 'one'})).toBeVisible();
+		expect(contextualMenuItem).not.toHaveClass('active');
+
+		delete (document.body as any).clientWidth;
 	});
 });
