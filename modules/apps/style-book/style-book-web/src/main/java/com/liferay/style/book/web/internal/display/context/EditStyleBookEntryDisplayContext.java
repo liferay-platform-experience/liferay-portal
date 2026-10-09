@@ -9,6 +9,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalServiceUtil;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorCriterion;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorReturnType;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
@@ -217,6 +218,16 @@ public class EditStyleBookEntryDisplayContext {
 		).buildString();
 	}
 
+	private long[] _getFragmentCollectionGroupIds() {
+		return ArrayUtil.append(
+			new long[] {
+				_themeDisplay.getSiteGroupId(),
+				_themeDisplay.getCompanyGroupId()
+			},
+			DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+				_themeDisplay.getSiteGroupId()));
+	}
+
 	private String _getFragmentCollectionItemSelectorURL() {
 		FragmentCollectionItemSelectorCriterion
 			fragmentCollectionItemSelectorCriterion =
@@ -234,7 +245,9 @@ public class EditStyleBookEntryDisplayContext {
 	}
 
 	private JSONObject _getFragmentCollectionOptionJSONObject() {
-		int fragmentCollectionsCount = _getFragmentCollectionsCount();
+		long[] groupIds = _getFragmentCollectionGroupIds();
+
+		int fragmentCollectionsCount = _getFragmentCollectionsCount(groupIds);
 
 		return JSONUtil.put(
 			"itemSelectorURL", _getFragmentCollectionItemSelectorURL()
@@ -243,11 +256,7 @@ public class EditStyleBookEntryDisplayContext {
 			() -> {
 				List<FragmentCollection> fragmentCollections =
 					FragmentCollectionServiceUtil.getFragmentCollections(
-						new long[] {
-							_themeDisplay.getSiteGroupId(),
-							_themeDisplay.getCompanyGroupId()
-						},
-						0, Math.min(fragmentCollectionsCount, 4),
+						groupIds, 0, Math.min(fragmentCollectionsCount, 4),
 						FragmentCollectionCreateDateComparator.getInstance(
 							false));
 
@@ -275,6 +284,12 @@ public class EditStyleBookEntryDisplayContext {
 						TransformUtil.transformToArray(
 							filteredFragmentCollectionContributors,
 							fragmentCollectionContributor -> JSONUtil.put(
+								"fragmentCollectionKey",
+								fragmentCollectionContributor.
+									getFragmentCollectionKey()
+							).put(
+								"groupId", CompanyConstants.SYSTEM
+							).put(
 								"name",
 								fragmentCollectionContributor.getName(
 									_themeDisplay.getLocale())
@@ -293,6 +308,11 @@ public class EditStyleBookEntryDisplayContext {
 						(JSONObject[])TransformUtil.transformToArray(
 							fragmentCollections,
 							fragmentCollection -> JSONUtil.put(
+								"fragmentCollectionKey",
+								fragmentCollection.getFragmentCollectionKey()
+							).put(
+								"groupId", fragmentCollection.getGroupId()
+							).put(
 								"name", fragmentCollection.getName()
 							).put(
 								"url",
@@ -325,13 +345,9 @@ public class EditStyleBookEntryDisplayContext {
 		).buildString();
 	}
 
-	private int _getFragmentCollectionsCount() {
+	private int _getFragmentCollectionsCount(long[] groupIds) {
 		int fragmentCollectionsCount =
-			FragmentCollectionServiceUtil.getFragmentCollectionsCount(
-				new long[] {
-					_themeDisplay.getSiteGroupId(),
-					_themeDisplay.getCompanyGroupId()
-				});
+			FragmentCollectionServiceUtil.getFragmentCollectionsCount(groupIds);
 
 		if (_fragmentCollectionContributorRegistry == null) {
 			return fragmentCollectionsCount;
@@ -456,6 +472,11 @@ public class EditStyleBookEntryDisplayContext {
 							LayoutPageTemplateEntryModifiedDateComparator.
 								getInstance(false)),
 					layoutPageTemplateEntry -> JSONUtil.put(
+						"id",
+						String.valueOf(
+							layoutPageTemplateEntry.
+								getLayoutPageTemplateEntryId())
+					).put(
 						"name", layoutPageTemplateEntry.getName()
 					).put(
 						"private", false
@@ -534,6 +555,8 @@ public class EditStyleBookEntryDisplayContext {
 										String.valueOf(layout.getPlid()),
 										role.getRoleId(), ActionKeys.VIEW);
 							}
+						).put(
+							"id", String.valueOf(layout.getPlid())
 						).put(
 							"name", _getName(entryGroup, layout)
 						).put(

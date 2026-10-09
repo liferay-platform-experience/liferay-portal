@@ -1,10 +1,11 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.fragment.collection.item.selector.web.internal;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorCriterion;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -12,6 +13,7 @@ import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
@@ -31,13 +33,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Rubén Pulido
+ * @author Gabriel Lima
  */
 @Component(
-	property = "item.selector.view.order:Integer=200",
+	property = "item.selector.view.order:Integer=400",
 	service = ItemSelectorView.class
 )
-public class FragmentCollectionGlobalItemSelectorView
+public class FragmentCollectionDesignLibraryItemSelectorView
 	implements ItemSelectorView<FragmentCollectionItemSelectorCriterion> {
 
 	@Override
@@ -54,7 +56,18 @@ public class FragmentCollectionGlobalItemSelectorView
 
 	@Override
 	public String getTitle(Locale locale) {
-		return _language.get(locale, "global");
+		return _language.get(locale, "design-libraries");
+	}
+
+	@Override
+	public boolean isVisible(
+		FragmentCollectionItemSelectorCriterion
+			fragmentCollectionItemSelectorCriterion,
+		ThemeDisplay themeDisplay) {
+
+		return ArrayUtil.isNotEmpty(
+			DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+				themeDisplay.getSiteGroupId()));
 	}
 
 	@Override
@@ -72,8 +85,9 @@ public class FragmentCollectionGlobalItemSelectorView
 			servletRequest, servletResponse,
 			fragmentCollectionItemSelectorCriterion, portletURL,
 			itemSelectedEventName, search,
-			new FragmentCollectionItemSelectorViewDescriptor(
-				new long[] {themeDisplay.getCompanyGroupId()},
+			new FragmentCollectionDesignLibraryItemSelectorViewDescriptor(
+				DesignLibraryUtil.fetchConnectedDesignLibraryGroupIds(
+					themeDisplay.getSiteGroupId()),
 				(HttpServletRequest)servletRequest, portletURL));
 	}
 

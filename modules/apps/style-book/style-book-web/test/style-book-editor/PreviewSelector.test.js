@@ -5,7 +5,7 @@
 
 import '@testing-library/jest-dom';
 import {useIsMobileDevice} from '@clayui/shared';
-import {fireEvent, render} from '@testing-library/react';
+import {act, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
 import {LayoutSelector} from '../../src/main/resources/META-INF/resources/js/style-book-editor/LayoutSelector';
@@ -29,6 +29,8 @@ jest.mock(
 	'../../src/main/resources/META-INF/resources/js/style-book-editor/config',
 	() => ({
 		config: {
+			fragmentCollectionPreviewURL: 'http://localhost/preview',
+			namespace: '_ns_',
 			previewOptions: [
 				{
 					data: {
@@ -100,12 +102,21 @@ jest.mock(
 						itemSelectorURL: 'fragment-collection-selector-url',
 						recentLayouts: [
 							{
+								fragmentCollectionKey: 'collection-1',
+								groupId: 10,
 								name: 'Fragment Collection 1',
 								private: false,
 								url: 'fragment-collection-1-url',
 							},
+							{
+								fragmentCollectionKey: 'collection-2',
+								groupId: 0,
+								name: 'Fragment Collection 2',
+								private: false,
+								url: 'fragment-collection-2-url',
+							},
 						],
-						totalLayouts: 1,
+						totalLayouts: 5,
 					},
 					type: 'fragmentCollection',
 				},
@@ -215,5 +226,69 @@ describe('PreviewSelector', () => {
 				itemSelectorURL: 'page-item-selector-url',
 			})
 		);
+	});
+
+	describe('fragment collection items picked from More', () => {
+		const pickFragmentCollection = (value) => {
+			const {container, getAllByText, getByText} = render(
+				<LayoutContextProvider
+					initialState={{
+						previewLayout: {
+							name: 'Fragment Collection 1',
+							url: 'fragment-collection-1-url',
+						},
+						previewLayoutType: LAYOUT_TYPES.fragmentCollection,
+					}}
+				>
+					<LayoutSelector
+						layoutType={LAYOUT_TYPES.fragmentCollection}
+					/>
+				</LayoutContextProvider>
+			);
+
+			fireEvent.click(getAllByText('Fragment Collection 1')[0]);
+			fireEvent.click(getByText('more'));
+
+			act(() => {
+				openItemSelector.mock.calls[0][0].callback({
+					value: JSON.stringify(value),
+				});
+			});
+
+			fireEvent.click(container.querySelector('button'));
+
+			return () =>
+				Array.from(
+					container.ownerDocument.querySelectorAll('.dropdown-item')
+				)
+					.map((item) => item.textContent)
+					.filter((text) => text !== 'more');
+		};
+
+		it('does not list a fragment collection twice when it matches by key and group', () => {
+			const getItems = pickFragmentCollection({
+				fragmentCollectionKey: 'collection-1',
+				groupId: 10,
+				name: 'Fragment Collection 1',
+			});
+
+			expect(getItems()).toEqual([
+				'Fragment Collection 1',
+				'Fragment Collection 2',
+			]);
+		});
+
+		it('lists a fragment collection with the same key in another group separately', () => {
+			const getItems = pickFragmentCollection({
+				fragmentCollectionKey: 'collection-1',
+				groupId: 20,
+				name: 'Other Group Collection 1',
+			});
+
+			expect(getItems()).toEqual([
+				'Other Group Collection 1',
+				'Fragment Collection 1',
+			]);
+		});
 	});
 });
