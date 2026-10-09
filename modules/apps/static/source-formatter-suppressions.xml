@@ -3,6 +3,7 @@
 <suppressions>
 	<source-check>
 		<suppress checks="JavaCompanyThreadLocalCheck" files="osgi/osgi-util/src/main/java/com/liferay/osgi/util/configuration/ConfigurationFactoryUtil\.java" />
+		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-configuration/portal-configuration-plugin-impl/src/main/java/com/liferay/portal/configuration/plugin/internal/GroupKeyToGroupConfigurationPluginImpl\.java" />
 		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-file-install/portal-file-install-impl/src/main/java/com/liferay/portal/file/install/internal/configuration/ConfigurationFileInstaller\.java" />
 	</source-check>
 </suppressions>
