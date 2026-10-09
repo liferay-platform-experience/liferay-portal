@@ -136,6 +136,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testPostSiteStyleBookWithDuplicateExternalReferenceCode();
 		_testPostSiteStyleBookWithDuplicateKey();
 		_testPostSiteStyleBookWithNullDefaultStyleBook();
+		_testPostSiteStyleBookWithParentStyleBook();
 	}
 
 	@Override
@@ -150,11 +151,13 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	protected StyleBook randomStyleBook() throws Exception {
 		StyleBook styleBook = super.randomStyleBook();
 
+		styleBook.setColorScheme(() -> null);
 		styleBook.setFrontendTokensValues(
 			JSONUtil.put(
 				RandomTestUtil.randomString(),
 				JSONUtil.put("value", RandomTestUtil.randomString())
 			).toString());
+		styleBook.setParentStyleBookExternalReferenceCode(() -> null);
 
 		return styleBook;
 	}
@@ -784,6 +787,26 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			randomStyleBook);
 
 		Assert.assertFalse(postStyleBook.getDefaultStyleBook());
+	}
+
+	private void _testPostSiteStyleBookWithParentStyleBook() throws Exception {
+		StyleBook parentStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook());
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setColorScheme(() -> "dark");
+		randomStyleBook.setParentStyleBookExternalReferenceCode(
+			parentStyleBook::getExternalReferenceCode);
+		randomStyleBook.setThemeId(parentStyleBook::getThemeId);
+
+		StyleBook postStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook);
+
+		Assert.assertEquals("dark", postStyleBook.getColorScheme());
+		Assert.assertEquals(
+			parentStyleBook.getExternalReferenceCode(),
+			postStyleBook.getParentStyleBookExternalReferenceCode());
 	}
 
 	private void _testPutSiteStyleBookWithNullDefaultStyleBook()
