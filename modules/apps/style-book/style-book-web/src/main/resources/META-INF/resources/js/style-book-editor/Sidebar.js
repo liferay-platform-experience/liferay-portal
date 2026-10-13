@@ -22,6 +22,8 @@ import {
 	useDispatch,
 	useFrontendTokensValues,
 } from './contexts/StyleBookEditorContext';
+import {getFrontendTokenValue} from './utils/getFrontendTokenValue';
+import {getResolvedFrontendTokensValues} from './utils/getResolvedFrontendTokensValues';
 
 export default React.memo(function Sidebar() {
 	const sidebarRef = useRef();
@@ -154,7 +156,9 @@ function UpdateStyle({sidebarRef}) {
 			for (const {
 				cssVariableMapping,
 				value,
-			} of config.sortFrontendTokenValues(frontendTokensValues)) {
+			} of config.sortFrontendTokenValues(
+				getResolvedFrontendTokensValues(frontendTokensValues)
+			)) {
 				sidebarRef.current.style.setProperty(
 					`--${cssVariableMapping}`,
 					value
@@ -225,11 +229,16 @@ function FrontendTokenCategories({activeDefinition}) {
 	const tokenValues = useMemo(() => {
 		const nextTokenValues = {...frontendTokens};
 
-		for (const [name, {value}] of Object.entries(frontendTokensValues)) {
+		for (const name of Object.keys(frontendTokensValues)) {
 			if (nextTokenValues[name]) {
 				nextTokenValues[name] = {
 					...nextTokenValues[name],
-					value: value || nextTokenValues[name].defaultValue,
+					value:
+						getFrontendTokenValue(
+							frontendTokensValues,
+							name,
+							frontendTokens
+						) || nextTokenValues[name].defaultValue,
 				};
 			}
 		}
