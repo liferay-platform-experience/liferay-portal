@@ -97,6 +97,26 @@ describe('ClayAlert', () => {
 		expect(container).toMatchSnapshot();
 	});
 
+	it('renders each toast of the ToastContainer in its own wrapper', () => {
+		const {container} = render(
+			<ClayAlert.ToastContainer>
+				<ClayAlert spritemap="/foo/bar" title="One!" />
+
+				<ClayAlert spritemap="/foo/bar" title="Two!" />
+			</ClayAlert.ToastContainer>
+		);
+
+		const {children} = container.querySelector(
+			'.alert-notifications-fixed'
+		)!;
+
+		expect(children).toHaveLength(2);
+
+		Array.from(children).forEach((slot) => {
+			expect(slot.querySelectorAll('.alert')).toHaveLength(1);
+		});
+	});
+
 	it('renders with an icon for closing with autoClose', () => {
 		const {container} = render(
 			<ClayAlert

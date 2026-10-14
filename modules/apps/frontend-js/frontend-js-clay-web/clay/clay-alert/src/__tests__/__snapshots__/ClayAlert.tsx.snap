@@ -304,128 +304,134 @@ exports[`ClayAlert renders with ToastContainer as a wrapper  1`] = `
     <div
       class="alert-notifications alert-notifications-fixed"
     >
-      <div
-        class="alert alert-info"
-      >
+      <div>
         <div
-          class="alert-autofit-row autofit-row"
-          role="alert"
+          class="alert alert-info"
         >
           <div
-            class="autofit-col"
+            class="alert-autofit-row autofit-row"
+            role="alert"
           >
             <div
-              class="autofit-section"
+              class="autofit-col"
             >
-              <span
-                class="alert-indicator"
+              <div
+                class="autofit-section"
               >
-                <svg
-                  class="lexicon-icon lexicon-icon-info-circle"
-                  role="presentation"
+                <span
+                  class="alert-indicator"
                 >
-                  <use
-                    href="/foo/bar#info-circle"
-                  />
-                </svg>
-              </span>
+                  <svg
+                    class="lexicon-icon lexicon-icon-info-circle"
+                    role="presentation"
+                  >
+                    <use
+                      href="/foo/bar#info-circle"
+                    />
+                  </svg>
+                </span>
+              </div>
             </div>
-          </div>
-          <div
-            class="autofit-col autofit-col-expand"
-          >
             <div
-              class="autofit-section"
+              class="autofit-col autofit-col-expand"
             >
-              <strong
-                class="lead"
+              <div
+                class="autofit-section"
               >
-                One!
-              </strong>
+                <strong
+                  class="lead"
+                >
+                  One!
+                </strong>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div
-        class="alert alert-info"
-      >
+      <div>
         <div
-          class="alert-autofit-row autofit-row"
-          role="alert"
+          class="alert alert-info"
         >
           <div
-            class="autofit-col"
+            class="alert-autofit-row autofit-row"
+            role="alert"
           >
             <div
-              class="autofit-section"
+              class="autofit-col"
             >
-              <span
-                class="alert-indicator"
+              <div
+                class="autofit-section"
               >
-                <svg
-                  class="lexicon-icon lexicon-icon-info-circle"
-                  role="presentation"
+                <span
+                  class="alert-indicator"
                 >
-                  <use
-                    href="/foo/bar#info-circle"
-                  />
-                </svg>
-              </span>
+                  <svg
+                    class="lexicon-icon lexicon-icon-info-circle"
+                    role="presentation"
+                  >
+                    <use
+                      href="/foo/bar#info-circle"
+                    />
+                  </svg>
+                </span>
+              </div>
             </div>
-          </div>
-          <div
-            class="autofit-col autofit-col-expand"
-          >
             <div
-              class="autofit-section"
+              class="autofit-col autofit-col-expand"
             >
-              <strong
-                class="lead"
+              <div
+                class="autofit-section"
               >
-                Two!
-              </strong>
+                <strong
+                  class="lead"
+                >
+                  Two!
+                </strong>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div
-        class="alert alert-info"
-      >
+      <div>
         <div
-          class="alert-autofit-row autofit-row"
-          role="alert"
+          class="alert alert-info"
         >
           <div
-            class="autofit-col"
+            class="alert-autofit-row autofit-row"
+            role="alert"
           >
             <div
-              class="autofit-section"
+              class="autofit-col"
             >
-              <span
-                class="alert-indicator"
+              <div
+                class="autofit-section"
               >
-                <svg
-                  class="lexicon-icon lexicon-icon-info-circle"
-                  role="presentation"
+                <span
+                  class="alert-indicator"
                 >
-                  <use
-                    href="/foo/bar#info-circle"
-                  />
-                </svg>
-              </span>
+                  <svg
+                    class="lexicon-icon lexicon-icon-info-circle"
+                    role="presentation"
+                  >
+                    <use
+                      href="/foo/bar#info-circle"
+                    />
+                  </svg>
+                </span>
+              </div>
             </div>
-          </div>
-          <div
-            class="autofit-col autofit-col-expand"
-          >
             <div
-              class="autofit-section"
+              class="autofit-col autofit-col-expand"
             >
-              <strong
-                class="lead"
+              <div
+                class="autofit-section"
               >
-                Three!
-              </strong>
+                <strong
+                  class="lead"
+                >
+                  Three!
+                </strong>
+              </div>
             </div>
           </div>
         </div>
