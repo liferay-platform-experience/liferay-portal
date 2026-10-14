@@ -437,6 +437,36 @@ $cadmin-alert-notification-sm-down: map-merge(
 	$cadmin-alert-notification-sm-down
 );
 
+// .alert-notifications-fixed stack
+
+$cadmin-alert-stack: () !default;
+$cadmin-alert-stack: map-deep-merge(
+	(
+		collapse: (
+			fade-start-depth: 20,
+			fade-step: 0.09,
+			min-opacity: 0.1,
+			strip-height: 12px,
+			threshold: 21,
+		),
+		compact: (
+			breakpoints: $cadmin-grid-breakpoints,
+			gap: 4px,
+			inset: 8px,
+			max-inset-depth: 7,
+			padding-y: 2px,
+			threshold: 7,
+			width: $cadmin-alert-notifications-max-width,
+		),
+		overlap: (
+			strip-height: 20px,
+			threshold: 13,
+		),
+		slot-margin-bottom: $cadmin-alert-margin-bottom,
+	),
+	$cadmin-alert-stack
+);
+
 // Alert Autofit Row
 
 $cadmin-alert-autofit-row: () !default;

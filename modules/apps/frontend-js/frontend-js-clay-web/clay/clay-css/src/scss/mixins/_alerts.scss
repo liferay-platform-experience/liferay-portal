@@ -319,3 +319,178 @@
 		}
 	}
 }
+
+/// A mixin to stack the toasts of an `.alert-notifications-fixed` column by toast count.
+/// @param {Map} $map - A map of `key: value` pairs. The keys and value types are listed below:
+/// @example
+/// (
+/// 	enabled: {Bool}, // Set to false to prevent mixin styles from being output. Default: true
+/// 	collapse: {Map}, // The `threshold` toast count where this level starts, plus the keys of `clay-alert-stack-collapse`
+/// 	compact: {Map}, // The `threshold` toast count where this level starts, plus the keys of `clay-alert-stack-compact`
+/// 	overlap: {Map}, // The `threshold` toast count where this level starts, plus the keys of `clay-alert-stack-overlap`
+/// 	slot-margin-bottom: {Number}, // Space below each toast
+/// )
+
+@mixin clay-alert-stack($map) {
+	@if (type-of($map) == 'map') {
+		$enabled: setter(map-get($map, enabled), true);
+
+		@if ($enabled) {
+			$collapse: map-get($map, collapse);
+			$compact: map-get($map, compact);
+			$overlap: map-get($map, overlap);
+
+			> * {
+				display: flow-root;
+				margin-bottom: map-get($map, slot-margin-bottom);
+				position: relative;
+
+				&:focus-within,
+				&:hover {
+					z-index: 1;
+				}
+			}
+
+			&:has(> :nth-last-child(#{map-get($compact, threshold)})) {
+				@include clay-alert-stack-compact($compact);
+			}
+
+			&:has(> :nth-last-child(#{map-get($overlap, threshold)})) {
+				@include clay-alert-stack-overlap($overlap);
+			}
+
+			&:has(> :nth-last-child(#{map-get($collapse, threshold)})) {
+				@include clay-alert-stack-collapse($collapse);
+			}
+		}
+	}
+}
+
+/// A mixin to hide the text of the oldest toasts and fade them out.
+/// @param {Map} $map - A map of `key: value` pairs. The keys and value types are listed below:
+/// @example
+/// (
+/// 	enabled: {Bool}, // Set to false to prevent mixin styles from being output. Default: true
+/// 	fade-start-depth: {Number}, // Depth where the text hides and the box starts to fade
+/// 	fade-step: {Number}, // Opacity lost per depth
+/// 	min-opacity: {Number}, // Opacity the fade stops at
+/// 	strip-height: {Number}, // Height of an older toast
+/// )
+
+@mixin clay-alert-stack-collapse($map) {
+	@if (type-of($map) == 'map') {
+		$enabled: setter(map-get($map, enabled), true);
+
+		@if ($enabled) {
+			$fade-start-depth: map-get($map, fade-start-depth);
+			$fade-step: map-get($map, fade-step);
+			$min-opacity: map-get($map, min-opacity);
+			$fade-levels: round(clay-div(1 - $min-opacity, $fade-step));
+
+			> :not(:last-child) {
+				height: map-get($map, strip-height);
+			}
+
+			> :nth-last-child(n + #{$fade-start-depth + 1}) {
+				.alert-autofit-row,
+				.close {
+					opacity: 0;
+				}
+			}
+
+			@for $level from 1 through $fade-levels - 1 {
+				> :nth-last-child(#{$fade-start-depth + $level}) {
+					opacity: 1 - $fade-step * $level;
+				}
+			}
+
+			> :nth-last-child(n + #{$fade-start-depth + $fade-levels}) {
+				opacity: $min-opacity;
+			}
+
+			> :focus-within,
+			> :hover {
+				opacity: 1;
+
+				.alert-autofit-row,
+				.close {
+					opacity: 1;
+				}
+			}
+		}
+	}
+}
+
+/// A mixin to narrow the older toasts and tighten the space between them.
+/// @param {Map} $map - A map of `key: value` pairs. The keys and value types are listed below:
+/// @example
+/// (
+/// 	enabled: {Bool}, // Set to false to prevent mixin styles from being output. Default: true
+/// 	breakpoints: {Map}, // The breakpoints for the column width
+/// 	gap: {Number}, // Space between older toasts
+/// 	inset: {Number}, // Side space added per depth
+/// 	max-inset-depth: {Number}, // Depth where the side space stops growing
+/// 	padding-y: {Number}, // Top and bottom padding of older toasts
+/// 	width: {Number}, // Column width from the `md` breakpoint up
+/// )
+
+@mixin clay-alert-stack-compact($map) {
+	@if (type-of($map) == 'map') {
+		$enabled: setter(map-get($map, enabled), true);
+
+		@if ($enabled) {
+			$inset: map-get($map, inset);
+			$max-inset-depth: map-get($map, max-inset-depth);
+
+			@include media-breakpoint-up(md, map-get($map, breakpoints)) {
+				width: map-get($map, width);
+			}
+
+			.alert {
+				float: none;
+			}
+
+			> :not(:last-child) {
+				margin-bottom: map-get($map, gap);
+
+				.alert {
+					padding-bottom: map-get($map, padding-y);
+					padding-top: map-get($map, padding-y);
+				}
+			}
+
+			@for $depth from 1 through $max-inset-depth - 1 {
+				> :nth-last-child(#{$depth + 1}) {
+					margin-left: $inset * $depth;
+					margin-right: $inset * $depth;
+				}
+			}
+
+			> :nth-last-child(n + #{$max-inset-depth + 1}) {
+				margin-left: $inset * $max-inset-depth;
+				margin-right: $inset * $max-inset-depth;
+			}
+		}
+	}
+}
+
+/// A mixin to turn the older toasts into overlapping strips.
+/// @param {Map} $map - A map of `key: value` pairs. The keys and value types are listed below:
+/// @example
+/// (
+/// 	enabled: {Bool}, // Set to false to prevent mixin styles from being output. Default: true
+/// 	strip-height: {Number}, // Height of an older toast
+/// )
+
+@mixin clay-alert-stack-overlap($map) {
+	@if (type-of($map) == 'map') {
+		$enabled: setter(map-get($map, enabled), true);
+
+		@if ($enabled) {
+			> :not(:last-child) {
+				height: map-get($map, strip-height);
+				margin-bottom: 0;
+			}
+		}
+	}
+}
