@@ -11,7 +11,11 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.portal.kernel.dao.search.RowChecker;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -20,6 +24,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 import com.liferay.style.book.util.StyleBookUtil;
 import com.liferay.style.book.web.internal.security.permissions.resource.StyleBookPermission;
 import com.liferay.style.book.web.internal.servlet.taglib.util.StyleBookEntryActionDropdownItemsProvider;
@@ -27,6 +32,7 @@ import com.liferay.style.book.web.internal.servlet.taglib.util.StyleBookEntryAct
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -130,26 +136,60 @@ public class StyleBookVerticalCard
 		StyleBookEntry draftStyleBookEntry =
 			StyleBookEntryLocalServiceUtil.fetchDraft(_styleBookEntry);
 
-		if (_styleBookEntry.isHead() && (draftStyleBookEntry != null)) {
-			return LabelItemListBuilder.add(
-				labelItem -> labelItem.setStatus(
-					WorkflowConstants.STATUS_APPROVED)
-			).add(
-				labelItem -> labelItem.setStatus(WorkflowConstants.STATUS_DRAFT)
-			).build();
+		List<LabelItem> labelItems = new ArrayList<>();
+
+		int variationsCount = _getVariationsCount(
+			(draftStyleBookEntry != null) ? draftStyleBookEntry :
+				_styleBookEntry);
+
+		if (variationsCount > 0) {
+			labelItems.addAll(
+				LabelItemListBuilder.add(
+					labelItem -> {
+						if (variationsCount == 1) {
+							labelItem.setLabel(
+								LanguageUtil.get(
+									_themeDisplay.getLocale(), "1-variation"));
+						}
+						else {
+							labelItem.setLabel(
+								LanguageUtil.format(
+									_themeDisplay.getLocale(), "x-variations",
+									variationsCount));
+						}
+
+						labelItem.setStyle("info");
+					}
+				).build());
 		}
 
-		return LabelItemListBuilder.add(
-			labelItem -> {
-				int status = WorkflowConstants.STATUS_APPROVED;
+		if (_styleBookEntry.isHead() && (draftStyleBookEntry != null)) {
+			labelItems.addAll(
+				LabelItemListBuilder.add(
+					labelItem -> labelItem.setStatus(
+						WorkflowConstants.STATUS_APPROVED)
+				).add(
+					labelItem -> labelItem.setStatus(
+						WorkflowConstants.STATUS_DRAFT)
+				).build());
 
-				if (!_styleBookEntry.isHead()) {
-					status = WorkflowConstants.STATUS_DRAFT;
+			return labelItems;
+		}
+
+		labelItems.addAll(
+			LabelItemListBuilder.add(
+				labelItem -> {
+					int status = WorkflowConstants.STATUS_APPROVED;
+
+					if (!_styleBookEntry.isHead()) {
+						status = WorkflowConstants.STATUS_DRAFT;
+					}
+
+					labelItem.setStatus(status);
 				}
+			).build());
 
-				labelItem.setStatus(status);
-			}
-		).build();
+		return labelItems;
 	}
 
 	@Override
@@ -204,6 +244,26 @@ public class StyleBookVerticalCard
 
 		return true;
 	}
+
+	private int _getVariationsCount(StyleBookEntry styleBookEntry) {
+		try {
+			JSONObject variationsJSONObject =
+				StyleBookFrontendTokensValuesUtil.getVariationsJSONObject(
+					styleBookEntry.getFrontendTokensValues());
+
+			return variationsJSONObject.length() - 1;
+		}
+		catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
+
+			return 0;
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		StyleBookVerticalCard.class);
 
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
