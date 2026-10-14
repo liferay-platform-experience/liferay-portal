@@ -8,9 +8,11 @@ package com.liferay.style.book.internal.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -72,11 +74,10 @@ public class StyleBookEntryFrontendTokensValuesUtilTest {
 			)
 		).toString();
 
-		Assert.assertEquals(
+		JSONAssert.assertEquals(
 			frontendTokensValues,
-			StyleBookEntryFrontendTokensValuesUtil.
-				normalizeFrontendTokensValues(
-					null, frontendTokensValues, themeId));
+			_normalizeFrontendTokensValues(null, frontendTokensValues, themeId),
+			JSONCompareMode.STRICT);
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -91,29 +92,28 @@ public class StyleBookEntryFrontendTokensValuesUtilTest {
 					"value", "#fff"
 				)
 			).toString(),
-			StyleBookEntryFrontendTokensValuesUtil.
-				normalizeFrontendTokensValues(
-					null,
+			_normalizeFrontendTokensValues(
+				null,
+				JSONUtil.put(
+					themeId + ":token1",
 					JSONUtil.put(
-						themeId + ":token1",
-						JSONUtil.put(
-							"cssVariableMapping", "token-1"
-						).put(
-							"name", "token2"
-						).put(
-							"tokenDefinitionId", themeId
-						).put(
-							"value", "#fff"
-						)
+						"cssVariableMapping", "token-1"
 					).put(
-						"token1",
-						JSONUtil.put(
-							"cssVariableMapping", "token-1"
-						).put(
-							"value", "#000"
-						)
-					).toString(),
-					themeId),
+						"name", "token2"
+					).put(
+						"tokenDefinitionId", themeId
+					).put(
+						"value", "#fff"
+					)
+				).put(
+					"token1",
+					JSONUtil.put(
+						"cssVariableMapping", "token-1"
+					).put(
+						"value", "#000"
+					)
+				).toString(),
+				themeId),
 			JSONCompareMode.STRICT);
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -137,27 +137,26 @@ public class StyleBookEntryFrontendTokensValuesUtilTest {
 					"value", "#000"
 				)
 			).toString(),
-			StyleBookEntryFrontendTokensValuesUtil.
-				normalizeFrontendTokensValues(
-					null,
+			_normalizeFrontendTokensValues(
+				null,
+				JSONUtil.put(
+					"token1",
 					JSONUtil.put(
-						"token1",
-						JSONUtil.put(
-							"cssVariableMapping", "token-1"
-						).put(
-							"name", "token2"
-						).put(
-							"value", "var(--token-2)"
-						)
+						"cssVariableMapping", "token-1"
 					).put(
-						"token2",
-						JSONUtil.put(
-							"cssVariableMapping", "token-2"
-						).put(
-							"value", "#000"
-						)
-					).toString(),
-					themeId),
+						"name", "token2"
+					).put(
+						"value", "var(--token-2)"
+					)
+				).put(
+					"token2",
+					JSONUtil.put(
+						"cssVariableMapping", "token-2"
+					).put(
+						"value", "#000"
+					)
+				).toString(),
+				themeId),
 			JSONCompareMode.STRICT);
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -210,69 +209,220 @@ public class StyleBookEntryFrontendTokensValuesUtilTest {
 					"value", "#fff"
 				)
 			).toString(),
-			StyleBookEntryFrontendTokensValuesUtil.
-				normalizeFrontendTokensValues(
-					JSONUtil.put(
-						"frontendTokenCategories",
-						JSONUtil.putAll(
-							JSONUtil.put(
-								"frontendTokenSets",
-								JSONUtil.putAll(
-									JSONUtil.put(
-										"frontendTokens",
-										JSONUtil.putAll(
-											JSONUtil.put(
-												"name", "customToken1"),
-											JSONUtil.put(
-												"name", "customToken2"))))))
-					).toString(),
-					JSONUtil.put(
-						"clayToken",
+			_normalizeFrontendTokensValues(
+				JSONUtil.put(
+					"frontendTokenCategories",
+					JSONUtil.putAll(
 						JSONUtil.put(
-							"cssVariableMapping", "clay-token"
-						).put(
-							"tokenDefinitionId",
-							"com.liferay.frontend.js.clay.web"
+							"frontendTokenSets",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"frontendTokens",
+									JSONUtil.putAll(
+										JSONUtil.put("name", "customToken1"),
+										JSONUtil.put(
+											"name", "customToken2"))))))
+				).toString(),
+				JSONUtil.put(
+					"clayToken",
+					JSONUtil.put(
+						"cssVariableMapping", "clay-token"
+					).put(
+						"tokenDefinitionId", "com.liferay.frontend.js.clay.web"
+					).put(
+						"value", "#000"
+					)
+				).put(
+					"customToken1",
+					JSONUtil.put(
+						"cssVariableMapping", "custom-token-1"
+					).put(
+						"name", "token1"
+					).put(
+						"value", "var(--token-1)"
+					)
+				).put(
+					"customToken2",
+					JSONUtil.put(
+						"cssVariableMapping", "custom-token-2"
+					).put(
+						"value", "#fff"
+					)
+				).put(
+					"customToken3",
+					JSONUtil.put(
+						"cssVariableMapping", "custom-token-3"
+					).put(
+						"tokenDefinitionId", "custom"
+					).put(
+						"value", "#fff"
+					)
+				).put(
+					"token1",
+					JSONUtil.put(
+						"cssVariableMapping", "token-1"
+					).put(
+						"name", "customToken2"
+					).put(
+						"value", "var(--custom-token-2)"
+					)
+				).toString(),
+				themeId),
+			JSONCompareMode.STRICT);
+	}
+
+	@Test
+	public void testNormalizeFrontendTokensValuesWhenCurrentValuesHaveVariations()
+		throws Exception {
+
+		String themeId = RandomTestUtil.randomString();
+
+		String currentFrontendTokensValues = JSONUtil.put(
+			"dark",
+			JSONUtil.put(
+				"name", "dark"
+			).put(
+				"tokens",
+				JSONUtil.put(
+					themeId + ":token1",
+					JSONUtil.put(
+						"cssVariableMapping", "token-1"
+					).put(
+						"value", "#000"
+					))
+			)
+		).put(
+			"default",
+			JSONUtil.put(
+				"name", "default"
+			).put(
+				"tokens",
+				JSONUtil.put(
+					themeId + ":token1", JSONFactoryUtil.createJSONObject())
+			)
+		).toString();
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"dark",
+				JSONUtil.put(
+					"name", "dark"
+				).put(
+					"tokens",
+					JSONUtil.put(
+						themeId + ":token1",
+						JSONUtil.put(
+							"cssVariableMapping", "token-1"
 						).put(
 							"value", "#000"
-						)
-					).put(
-						"customToken1",
+						))
+				)
+			).put(
+				"default",
+				JSONUtil.put(
+					"name", "default"
+				).put(
+					"tokens",
+					JSONUtil.put(
+						themeId + ":token1",
 						JSONUtil.put(
-							"cssVariableMapping", "custom-token-1"
+							"cssVariableMapping", "token-1"
 						).put(
-							"name", "token1"
-						).put(
-							"value", "var(--token-1)"
-						)
-					).put(
-						"customToken2",
-						JSONUtil.put(
-							"cssVariableMapping", "custom-token-2"
+							"tokenDefinitionId", themeId
 						).put(
 							"value", "#fff"
-						)
-					).put(
-						"customToken3",
-						JSONUtil.put(
-							"cssVariableMapping", "custom-token-3"
-						).put(
-							"tokenDefinitionId", "custom"
-						).put(
-							"value", "#fff"
-						)
-					).put(
+						))
+				)
+			).toString(),
+			StyleBookEntryFrontendTokensValuesUtil.
+				normalizeFrontendTokensValues(
+					currentFrontendTokensValues, null,
+					JSONUtil.put(
 						"token1",
 						JSONUtil.put(
 							"cssVariableMapping", "token-1"
 						).put(
-							"name", "customToken2"
-						).put(
-							"value", "var(--custom-token-2)"
+							"value", "#fff"
 						)
 					).toString(),
 					themeId),
 			JSONCompareMode.STRICT);
+	}
+
+	@Test
+	public void testNormalizeFrontendTokensValuesWithVariations()
+		throws Exception {
+
+		String themeId = RandomTestUtil.randomString();
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"dark",
+				JSONUtil.put(
+					"name", "Dark"
+				).put(
+					"tokens",
+					JSONUtil.put(
+						themeId + ":token1",
+						JSONUtil.put(
+							"cssVariableMapping", "token-1"
+						).put(
+							"tokenDefinitionId", themeId
+						).put(
+							"value", "#000"
+						))
+				)
+			).put(
+				"default",
+				JSONUtil.put(
+					"name", "default"
+				).put(
+					"tokens", JSONFactoryUtil.createJSONObject()
+				)
+			).toString(),
+			StyleBookEntryFrontendTokensValuesUtil.
+				normalizeFrontendTokensValues(
+					null,
+					JSONUtil.put(
+						"dark",
+						JSONUtil.put(
+							"name", "Dark"
+						).put(
+							"tokens",
+							JSONUtil.put(
+								"token1",
+								JSONUtil.put(
+									"cssVariableMapping", "token-1"
+								).put(
+									"value", "#000"
+								))
+						)
+					).put(
+						"default",
+						JSONUtil.put(
+							"tokens", JSONFactoryUtil.createJSONObject())
+					).toString(),
+					themeId),
+			JSONCompareMode.STRICT);
+	}
+
+	private String _normalizeFrontendTokensValues(
+			String customFrontendTokenDefinition, String frontendTokensValues,
+			String themeId)
+		throws Exception {
+
+		JSONObject variationsJSONObject = JSONFactoryUtil.createJSONObject(
+			StyleBookEntryFrontendTokensValuesUtil.
+				normalizeFrontendTokensValues(
+					customFrontendTokenDefinition, frontendTokensValues,
+					themeId));
+
+		Assert.assertTrue(
+			StyleBookFrontendTokensValuesUtil.isVariationsJSONObject(
+				variationsJSONObject));
+
+		return StyleBookFrontendTokensValuesUtil.getDefaultFrontendTokensValues(
+			variationsJSONObject.toString());
 	}
 
 }

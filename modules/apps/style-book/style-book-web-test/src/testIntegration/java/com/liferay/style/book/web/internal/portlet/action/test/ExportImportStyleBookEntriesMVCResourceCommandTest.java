@@ -61,6 +61,7 @@ import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessorImportResultEntry;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -811,8 +812,9 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 				_targetGroup.getGroupId(), styleBookEntryKey);
 
 		JSONObject frontendTokensValuesJSONObject =
-			JSONFactoryUtil.createJSONObject(
-				targetGroupStyleBookEntry.getFrontendTokensValues());
+			StyleBookFrontendTokensValuesUtil.
+				getDefaultFrontendTokensValuesJSONObject(
+					targetGroupStyleBookEntry.getFrontendTokensValues());
 
 		JSONObject frontendTokenValueJSONObject =
 			frontendTokensValuesJSONObject.getJSONObject(

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -29,6 +30,7 @@ import com.liferay.style.book.exception.StyleBookEntryFrontendTokensValuesExcept
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.service.persistence.StyleBookEntryPersistence;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 
 import java.util.List;
 
@@ -115,6 +117,26 @@ public class StyleBookEntryLocalServiceImplTest {
 		_testUpdateFrontendTokensValuesWithInvalidJSON();
 		_testUpdateFrontendTokensValuesWithLegacyFrontendTokenName();
 		_testUpdateFrontendTokensValuesWithSameValue();
+	}
+
+	private void _assertDefaultFrontendTokensValues(
+			String expectedFrontendTokensValues, StyleBookEntry styleBookEntry)
+		throws Exception {
+
+		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
+			String.class);
+
+		Mockito.verify(
+			styleBookEntry
+		).setFrontendTokensValues(
+			argumentCaptor.capture()
+		);
+
+		JSONAssert.assertEquals(
+			expectedFrontendTokensValues,
+			StyleBookFrontendTokensValuesUtil.getDefaultFrontendTokensValues(
+				argumentCaptor.getValue()),
+			JSONCompareMode.STRICT);
 	}
 
 	private void _assertUpdateFrontendTokenDefinitionFailure(
@@ -420,7 +442,9 @@ public class StyleBookEntryLocalServiceImplTest {
 		);
 
 		JSONObject frontendTokensValuesJSONObject =
-			JSONFactoryUtil.createJSONObject(argumentCaptor.getValue());
+			StyleBookFrontendTokensValuesUtil.
+				getDefaultFrontendTokensValuesJSONObject(
+					argumentCaptor.getValue());
 
 		JSONObject frontendTokenValueJSONObject =
 			frontendTokensValuesJSONObject.getJSONObject(existingName);
@@ -662,11 +686,18 @@ public class StyleBookEntryLocalServiceImplTest {
 		_styleBookEntryLocalService.updateFrontendTokensValues(
 			styleBookEntryId, frontendTokensValues);
 
-		Mockito.verify(
-			styleBookEntry
-		).setFrontendTokensValues(
-			frontendTokensValues
-		);
+		if (Validator.isBlank(frontendTokensValues)) {
+			Mockito.verify(
+				styleBookEntry
+			).setFrontendTokensValues(
+				frontendTokensValues
+			);
+
+			return;
+		}
+
+		_assertDefaultFrontendTokensValues(
+			frontendTokensValues, styleBookEntry);
 	}
 
 	private void _testUpdateFrontendTokensValuesWithInvalidCharacters(
@@ -728,18 +759,9 @@ public class StyleBookEntryLocalServiceImplTest {
 				)
 			).toString());
 
-		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
-			String.class);
-
-		Mockito.verify(
-			styleBookEntry
-		).setFrontendTokensValues(
-			argumentCaptor.capture()
-		);
-
 		String themeId = styleBookEntry.getThemeId();
 
-		JSONAssert.assertEquals(
+		_assertDefaultFrontendTokensValues(
 			JSONUtil.put(
 				StringBundler.concat(
 					themeId, StringPool.COLON, frontendTokenName),
@@ -751,7 +773,7 @@ public class StyleBookEntryLocalServiceImplTest {
 					"value", value
 				)
 			).toString(),
-			argumentCaptor.getValue(), JSONCompareMode.STRICT);
+			styleBookEntry);
 	}
 
 	private void _testUpdateFrontendTokensValuesWithSameValue()
@@ -775,11 +797,8 @@ public class StyleBookEntryLocalServiceImplTest {
 		_styleBookEntryLocalService.updateFrontendTokensValues(
 			styleBookEntryId, frontendTokensValues);
 
-		Mockito.verify(
-			styleBookEntry
-		).setFrontendTokensValues(
-			frontendTokensValues
-		);
+		_assertDefaultFrontendTokensValues(
+			frontendTokensValues, styleBookEntry);
 	}
 
 	private static final String _PRIMARY_COLOR_TOKEN_NAME = "primaryColor";
