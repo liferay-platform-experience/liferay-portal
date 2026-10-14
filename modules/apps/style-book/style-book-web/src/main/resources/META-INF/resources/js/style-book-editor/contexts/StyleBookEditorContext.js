@@ -4,11 +4,15 @@
  */
 
 import {openToast} from 'frontend-js-components-web';
-import React, {useContext, useReducer} from 'react';
+import {escapeHTML} from 'frontend-js-web';
+import React, {useContext, useMemo, useReducer} from 'react';
 
 import {
 	ADD_REDO_ACTION,
 	ADD_UNDO_ACTION,
+	ADD_VARIATION,
+	DELETE_VARIATION,
+	SET_ACTIVE_VARIATION,
 	SET_DRAFT_STATUS,
 	SET_TOKEN_VALUES,
 	UPDATE_UNDO_REDO_HISTORY,
@@ -17,14 +21,17 @@ import {DRAFT_STATUS} from '../constants/draftStatusConstants';
 import {UNDO_TYPES} from '../constants/undoTypes';
 import editorReducer from '../reducers/editorReducer';
 import saveDraft from '../saveDraft';
+import {DEFAULT_VARIATION, getVariations} from '../utils/variations';
 
 const StyleBookEditorDispatchContext = React.createContext(() => {});
 export const StyleBookEditorStoreContext = React.createContext({
+	activeVariation: DEFAULT_VARIATION,
 	customFrontendTokenDefinition: {},
 	draftStatus: null,
 	frontendTokensValues: {},
 	redoHistory: [],
 	undoHistory: [],
+	variations: {},
 });
 
 export function StyleBookEditorContextProvider({children, initialState}) {
@@ -36,6 +43,13 @@ export function StyleBookEditorContextProvider({children, initialState}) {
 				{children}
 			</StyleBookEditorStoreContext.Provider>
 		</StyleBookEditorDispatchContext.Provider>
+	);
+}
+
+export function useActiveVariation() {
+	return (
+		useContext(StyleBookEditorStoreContext).activeVariation ??
+		DEFAULT_VARIATION
 	);
 }
 
@@ -52,6 +66,28 @@ export function useDraftStatus() {
 	return useContext(StyleBookEditorStoreContext).draftStatus;
 }
 
+export function useEffectiveFrontendTokensValues() {
+	const {
+		activeVariation = DEFAULT_VARIATION,
+		frontendTokensValues,
+		variations = {},
+	} = useContext(StyleBookEditorStoreContext);
+
+	return useMemo(() => {
+		if (activeVariation === DEFAULT_VARIATION) {
+			return frontendTokensValues;
+		}
+
+		// A variation only stores the tokens it overrides, the rest come from
+		// the default variation
+
+		return {
+			...variations[DEFAULT_VARIATION]?.tokens,
+			...frontendTokensValues,
+		};
+	}, [activeVariation, frontendTokensValues, variations]);
+}
+
 export function useFrontendTokensValues() {
 	return useContext(StyleBookEditorStoreContext).frontendTokensValues;
 }
@@ -64,13 +100,112 @@ export function useUndoHistory() {
 	return useContext(StyleBookEditorStoreContext).undoHistory;
 }
 
-function internalSaveTokenValues({dispatch, frontendTokensValues, tokens}) {
+export function useVariations() {
+	const state = useContext(StyleBookEditorStoreContext);
+
+	return useMemo(() => getVariations(state), [state]);
+}
+
+function useVariationsState() {
+	const {activeVariation, variations} = useContext(
+		StyleBookEditorStoreContext
+	);
+
+	return {activeVariation, variations};
+}
+
+export function useAddVariation() {
+	const dispatch = useDispatch();
+	const frontendTokensValues = useFrontendTokensValues();
+	const {activeVariation, variations} = useVariationsState();
+
+	return ({key, name}) =>
+		saveVariations({
+			dispatch,
+			variations: {
+				...getVariations({
+					activeVariation,
+					frontendTokensValues,
+					variations,
+				}),
+				[key]: {name, tokens: {}},
+			},
+		}).then(() => dispatch({key, name, type: ADD_VARIATION}));
+}
+
+export function useDeleteVariation() {
+	const dispatch = useDispatch();
+	const frontendTokensValues = useFrontendTokensValues();
+	const {activeVariation, variations} = useVariationsState();
+
+	return (key) => {
+		const nextVariations = getVariations({
+			activeVariation,
+			frontendTokensValues,
+			variations,
+		});
+
+		delete nextVariations[key];
+
+		return saveVariations({dispatch, variations: nextVariations}).then(() =>
+			dispatch({key, type: DELETE_VARIATION})
+		);
+	};
+}
+
+export function useSelectVariation() {
+	const dispatch = useDispatch();
+
+	return (key) => dispatch({key, type: SET_ACTIVE_VARIATION});
+}
+
+function saveVariations({dispatch, variations}) {
 	dispatch({
 		type: SET_DRAFT_STATUS,
 		value: DRAFT_STATUS.saving,
 	});
 
-	return saveDraft({...frontendTokensValues, ...tokens})
+	return saveDraft(variations[DEFAULT_VARIATION].tokens, {
+		activeVariation: DEFAULT_VARIATION,
+		variations,
+	})
+		.then(() => {
+			dispatch({
+				type: SET_DRAFT_STATUS,
+				value: DRAFT_STATUS.draftSaved,
+			});
+		})
+		.catch((error) => {
+			dispatch({
+				type: SET_DRAFT_STATUS,
+				value: DRAFT_STATUS.notSaved,
+			});
+
+			openToast({
+				message: escapeHTML(error.message),
+				type: 'danger',
+			});
+
+			throw error;
+		});
+}
+
+function internalSaveTokenValues({
+	activeVariation,
+	dispatch,
+	frontendTokensValues,
+	tokens,
+	variations,
+}) {
+	dispatch({
+		type: SET_DRAFT_STATUS,
+		value: DRAFT_STATUS.saving,
+	});
+
+	return saveDraft(
+		{...frontendTokensValues, ...tokens},
+		{activeVariation, variations}
+	)
 		.then(() => {
 			dispatch({
 				type: SET_DRAFT_STATUS,
@@ -101,12 +236,14 @@ function internalSaveTokenValues({dispatch, frontendTokensValues, tokens}) {
 
 export function useSaveTokenValue() {
 	const dispatch = useDispatch();
+	const variationsState = useVariationsState();
 	const frontendTokensValues = useFrontendTokensValues();
 
 	return ({label, name, value}) => {
 		const previousValue = frontendTokensValues[name];
 
 		internalSaveTokenValues({
+			...variationsState,
 			dispatch,
 			frontendTokensValues,
 			tokens: {[name]: value},
@@ -123,6 +260,7 @@ export function useSaveTokenValue() {
 
 export function useOnUndo() {
 	const dispatch = useDispatch();
+	const variationsState = useVariationsState();
 	const frontendTokensValues = useFrontendTokensValues();
 	const undoHistory = useUndoHistory();
 
@@ -135,6 +273,7 @@ export function useOnUndo() {
 		}
 
 		internalSaveTokenValues({
+			...variationsState,
 			dispatch,
 			frontendTokensValues,
 			tokens: lastUndo.value ? {[lastUndo.name]: lastUndo.value} : {},
@@ -155,6 +294,7 @@ export function useOnUndo() {
 
 export function useOnRedo() {
 	const dispatch = useDispatch();
+	const variationsState = useVariationsState();
 	const frontendTokensValues = useFrontendTokensValues();
 	const redoHistory = useRedoHistory();
 
@@ -163,6 +303,7 @@ export function useOnRedo() {
 		const previousValue = frontendTokensValues[lastRedo.name];
 
 		internalSaveTokenValues({
+			...variationsState,
 			dispatch,
 			frontendTokensValues,
 			tokens: {[lastRedo.name]: lastRedo.value},
@@ -184,6 +325,7 @@ export function useOnRedo() {
 
 export function useMultipleUndo() {
 	const dispatch = useDispatch();
+	const variationsState = useVariationsState();
 	const undoHistory = useUndoHistory();
 	const redoHistory = useRedoHistory();
 	const frontendTokensValues = useFrontendTokensValues();
@@ -242,6 +384,7 @@ export function useMultipleUndo() {
 					};
 
 		return internalSaveTokenValues({
+			...variationsState,
 			dispatch,
 			frontendTokensValues,
 			tokens,

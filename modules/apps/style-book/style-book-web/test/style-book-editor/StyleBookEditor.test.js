@@ -190,11 +190,16 @@ describe('StyleBookEditor', () => {
 		expect(
 			JSON.parse(formData.get('_namespace_frontendTokensValues'))
 		).toEqual({
-			'theme:a': {
-				cssVariableMapping: 'token-a',
-				name: 'theme:b',
-				tokenDefinitionId: 'theme',
-				value: 'var(--token-b)',
+			default: {
+				name: 'default',
+				tokens: {
+					'theme:a': {
+						cssVariableMapping: 'token-a',
+						name: 'theme:b',
+						tokenDefinitionId: 'theme',
+						value: 'var(--token-b)',
+					},
+				},
 			},
 		});
 	});

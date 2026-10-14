@@ -14,6 +14,7 @@ import PreviewSelector from './PreviewSelector';
 import PublishButton from './PublishButton';
 import Undo from './Undo';
 import UndoHistory from './UndoHistory';
+import VariationsSelector from './VariationsSelector';
 import {DRAFT_STATUS} from './constants/draftStatusConstants';
 import {usePreviewLayout} from './contexts/LayoutContext';
 import {useDraftStatus} from './contexts/StyleBookEditorContext';
@@ -36,6 +37,10 @@ export default React.memo(function Toolbar() {
 							<PreviewSelector />
 						</li>
 					)}
+
+					<li className="ml-2 nav-item">
+						<VariationsSelector />
+					</li>
 				</ul>
 
 				<ul className="end navbar-nav">
