@@ -24,6 +24,7 @@ import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -144,8 +145,9 @@ public class StyleBookEntryUtil {
 		throws Exception {
 
 		if (styleBookEntry != null) {
-			return JSONFactoryUtil.createJSONObject(
-				styleBookEntry.getFrontendTokensValues());
+			return StyleBookFrontendTokensValuesUtil.
+				getDefaultFrontendTokensValuesJSONObject(
+					styleBookEntry.getFrontendTokensValues());
 		}
 
 		return JSONFactoryUtil.createJSONObject();
