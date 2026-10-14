@@ -60,8 +60,8 @@ import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
-import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessorImportResultEntry;
 import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
+import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessorImportResultEntry;
 
 import java.io.File;
 import java.io.InputStream;
