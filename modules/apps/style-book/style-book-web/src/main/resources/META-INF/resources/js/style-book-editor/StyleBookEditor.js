@@ -18,6 +18,7 @@ import {useCloseProductMenu} from './useCloseProductMenu';
 import {getFrontendTokenDefinitionsFactory} from './utils/getFrontendTokenDefinitionsFactory';
 import {getFrontendTokenValuesSorter} from './utils/getFrontendTokenValuesSorter';
 import {getFrontendTokensFactory} from './utils/getFrontendTokensFactory';
+import {DEFAULT_VARIATION, parseVariations} from './utils/variations';
 
 const StyleBookEditor = React.memo(() => {
 	useCloseProductMenu();
@@ -101,12 +102,16 @@ export default function ({
 	return (
 		<StyleBookEditorContextProvider
 			initialState={{
+				activeVariation: DEFAULT_VARIATION,
 				customFrontendTokenDefinition:
 					customFrontendTokenDefinition ?? {},
 				draftStatus: DRAFT_STATUS.notSaved,
-				frontendTokensValues,
+				frontendTokensValues:
+					parseVariations(frontendTokensValues)[DEFAULT_VARIATION]
+						.tokens,
 				redoHistory: [],
 				undoHistory: [],
+				variations: parseVariations(frontendTokensValues),
 			}}
 		>
 			<StyleBookEditor />

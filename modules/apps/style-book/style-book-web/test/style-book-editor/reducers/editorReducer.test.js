@@ -6,6 +6,10 @@
 import {
 	ADD_REDO_ACTION,
 	ADD_UNDO_ACTION,
+	ADD_VARIATION,
+	DELETE_VARIATION,
+	SET_ACTIVE_VARIATION,
+	SET_DEFAULT_VARIATION_TOKEN_VALUES,
 	SET_DRAFT_STATUS,
 	SET_TOKEN_VALUES,
 	UPDATE_UNDO_REDO_HISTORY,
@@ -173,5 +177,91 @@ describe('editorReducer', () => {
 
 		expect(redoHistory).toEqual(STATE.redoHistory);
 		expect(undoHistory).toEqual(STATE.undoHistory);
+	});
+});
+
+describe('editorReducer with variations', () => {
+	const VARIATIONS_STATE = {
+		activeVariation: 'default',
+		frontendTokensValues: {
+			primary: {cssVariableMapping: 'primary', value: '#000'},
+		},
+		redoHistory: [],
+		undoHistory: [{name: 'primary', value: {value: '#111'}}],
+		variations: {
+			dark: {
+				name: 'Dark',
+				tokens: {
+					primary: {cssVariableMapping: 'primary', value: '#fff'},
+				},
+			},
+			default: {name: 'default', tokens: {}},
+		},
+	};
+
+	it('switches to a variation, keeping the edited tokens and clearing the history', () => {
+		const state = editorReducer(VARIATIONS_STATE, {
+			key: 'dark',
+			type: SET_ACTIVE_VARIATION,
+		});
+
+		expect(state.activeVariation).toBe('dark');
+		expect(state.frontendTokensValues).toEqual(
+			VARIATIONS_STATE.variations.dark.tokens
+		);
+		expect(state.undoHistory).toEqual([]);
+		expect(state.variations.default.tokens).toEqual(
+			VARIATIONS_STATE.frontendTokensValues
+		);
+	});
+
+	it('adds a variation without tokens and selects it', () => {
+		const state = editorReducer(VARIATIONS_STATE, {
+			key: 'calm',
+			name: 'Calm',
+			type: ADD_VARIATION,
+		});
+
+		expect(state.activeVariation).toBe('calm');
+		expect(state.frontendTokensValues).toEqual({});
+		expect(state.variations.calm).toEqual({name: 'Calm', tokens: {}});
+	});
+
+	it('deletes a variation and goes back to the default one', () => {
+		const darkState = editorReducer(VARIATIONS_STATE, {
+			key: 'dark',
+			type: SET_ACTIVE_VARIATION,
+		});
+
+		const state = editorReducer(darkState, {
+			key: 'dark',
+			type: DELETE_VARIATION,
+		});
+
+		expect(state.activeVariation).toBe('default');
+		expect(state.frontendTokensValues).toEqual(
+			VARIATIONS_STATE.frontendTokensValues
+		);
+		expect(state.variations.dark).toBeUndefined();
+	});
+
+	it('adds new custom token values to the default variation while another one is active', () => {
+		const darkState = editorReducer(VARIATIONS_STATE, {
+			key: 'dark',
+			type: SET_ACTIVE_VARIATION,
+		});
+
+		const state = editorReducer(darkState, {
+			tokens: {custom: {cssVariableMapping: 'custom', value: 'red'}},
+			type: SET_DEFAULT_VARIATION_TOKEN_VALUES,
+		});
+
+		expect(state.frontendTokensValues).toEqual(
+			VARIATIONS_STATE.variations.dark.tokens
+		);
+		expect(state.variations.default.tokens.custom).toEqual({
+			cssVariableMapping: 'custom',
+			value: 'red',
+		});
 	});
 });

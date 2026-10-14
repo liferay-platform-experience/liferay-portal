@@ -13,7 +13,7 @@ import {config} from './config';
 import {FRONTEND_TOKEN_EDITOR_TYPES} from './constants/frontendTokenEditorTypes';
 import {FRONTEND_TOKEN_TYPES} from './constants/frontendTokenTypes';
 import {
-	useFrontendTokensValues,
+	useEffectiveFrontendTokensValues,
 	useSaveTokenValue,
 } from './contexts/StyleBookEditorContext';
 import BooleanFrontendToken from './frontend_tokens/BooleanFrontendToken';
@@ -28,7 +28,7 @@ export default function FrontendTokenSet({
 	open,
 	tokenValues,
 }) {
-	const frontendTokensValues = useFrontendTokensValues();
+	const frontendTokensValues = useEffectiveFrontendTokensValues();
 	const saveTokenValue = useSaveTokenValue();
 
 	const updateFrontendTokensValues = useCallback(

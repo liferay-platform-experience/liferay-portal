@@ -7,7 +7,6 @@ package com.liferay.style.book.web.internal.portlet.action;
 
 import com.liferay.frontend.token.definition.FrontendToken;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -21,6 +20,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryService;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 import com.liferay.style.book.web.internal.handler.StyleBookEntryExceptionRequestHandlerUtil;
 import com.liferay.style.book.web.internal.util.StyleBookFrontendTokenDefinitionUtil;
 
@@ -65,8 +65,9 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommand
 							themeDisplay.getLocale(), styleBookEntry)
 				).put(
 					"frontendTokensValues",
-					_jsonFactory.createJSONObject(
-						styleBookEntry.getFrontendTokensValues())
+					StyleBookFrontendTokensValuesUtil.
+						getDefaultFrontendTokensValuesJSONObject(
+							styleBookEntry.getFrontendTokensValues())
 				));
 		}
 		catch (PortalException portalException) {
@@ -105,9 +106,6 @@ public class AddStyleBookEntryFrontendTokenMVCActionCommand
 				actionRequest, "type", FrontendToken.Type.STRING.getValue()),
 			ServiceContextFactory.getInstance(actionRequest));
 	}
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private StyleBookEntryService _styleBookEntryService;

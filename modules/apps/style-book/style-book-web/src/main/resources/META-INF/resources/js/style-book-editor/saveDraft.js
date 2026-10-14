@@ -6,11 +6,16 @@
 import {fetch, objectToFormData} from 'frontend-js-web';
 
 import {config} from './config';
+import {DEFAULT_VARIATION, getVariations} from './utils/variations';
 
-export default function saveDraft(frontendTokensValues) {
+export default function saveDraft(
+	frontendTokensValues,
+	{activeVariation = DEFAULT_VARIATION, variations = {}} = {}
+) {
 	const body = objectToFormData({
-		[`${config.namespace}frontendTokensValues`]:
-			JSON.stringify(frontendTokensValues),
+		[`${config.namespace}frontendTokensValues`]: JSON.stringify(
+			getVariations({activeVariation, frontendTokensValues, variations})
+		),
 		[`${config.namespace}styleBookEntryId`]: config.styleBookEntryId,
 	});
 
