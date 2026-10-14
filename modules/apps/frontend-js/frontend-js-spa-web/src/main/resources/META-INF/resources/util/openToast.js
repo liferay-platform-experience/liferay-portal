@@ -70,12 +70,15 @@ export function openToast(type, title, message) {
 	const div = document.createElement('div');
 	div.innerHTML = html;
 
-	const button = div.querySelector('button');
-	button.onclick = () => div.remove();
+	const toast = div.firstElementChild;
 
-	document.body.appendChild(div);
+	const button = toast.querySelector('button');
+
+	button.onclick = () => toast.remove();
+
+	document.body.appendChild(toast);
 
 	return {
-		dispose: () => div.remove(),
+		dispose: () => toast.remove(),
 	};
 }
