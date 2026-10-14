@@ -177,10 +177,13 @@ export default function LaunchDetails({
 						description={Liferay.Language.get(
 							'this-launch-has-no-entries-yet'
 						)}
-						imgProps={{
-							alt: Liferay.Language.get('no-entries'),
-						}}
-						imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+						image={
+							<ClayIcon
+								className="c-empty-state-icon c-empty-state-icon-empty-state"
+								illustration
+								symbol="empty-state"
+							/>
+						}
 						title={Liferay.Language.get('no-entries')}
 					/>
 				)}

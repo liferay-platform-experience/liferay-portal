@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayTable from '@clayui/table';
 import ClayTabs from '@clayui/tabs';
@@ -106,10 +107,13 @@ export default function LaunchesLanding({onNew, onSelect}: Props) {
 								description={Liferay.Language.get(
 									'click-new-to-create-your-first-launch'
 								)}
-								imgProps={{
-									alt: Liferay.Language.get('no-launches'),
-								}}
-								imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+								image={
+									<ClayIcon
+										className="c-empty-state-icon c-empty-state-icon-empty-state"
+										illustration
+										symbol="empty-state"
+									/>
+								}
 								title={Liferay.Language.get(
 									'no-ongoing-launches'
 								)}
@@ -134,12 +138,13 @@ export default function LaunchesLanding({onNew, onSelect}: Props) {
 							description={Liferay.Language.get(
 								'no-published-launches'
 							)}
-							imgProps={{
-								alt: Liferay.Language.get(
-									'no-published-launches'
-								),
-							}}
-							imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+							image={
+								<ClayIcon
+									className="c-empty-state-icon c-empty-state-icon-empty-state"
+									illustration
+									symbol="empty-state"
+								/>
+							}
 							title={Liferay.Language.get(
 								'no-published-launches'
 							)}
