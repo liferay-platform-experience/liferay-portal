@@ -26,7 +26,11 @@ export function ClayToastContainer({
 			className={classNames(className, 'alert-container container')}
 		>
 			<div className="alert-notifications alert-notifications-fixed">
-				{children}
+				{React.Children.toArray(children)
+					.filter(React.isValidElement)
+					.map((child) => (
+						<div key={child.key}>{child}</div>
+					))}
 			</div>
 		</div>
 	);
