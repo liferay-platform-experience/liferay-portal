@@ -20,8 +20,8 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplat
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
