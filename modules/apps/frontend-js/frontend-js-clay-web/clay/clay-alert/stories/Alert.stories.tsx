@@ -150,6 +150,44 @@ export function ToastWithPersistentAlerts() {
 	);
 }
 
+const TOAST_DISPLAY_TYPES = ['success', 'warning', 'danger', 'info'] as const;
+
+export function ToastStack() {
+	const [nextId, setNextId] = useState<number>(1);
+	const [toastIds, setToastIds] = useState<number[]>([]);
+
+	const addToast = () => {
+		setToastIds((toastIds) => toastIds.concat(nextId));
+		setNextId((nextId) => nextId + 1);
+	};
+
+	const removeToast = (id: number) => {
+		setToastIds((toastIds) => toastIds.filter((toastId) => toastId !== id));
+	};
+
+	return (
+		<Provider spritemap={spritemap}>
+			<ClayButton displayType="primary" onClick={addToast}>
+				Add toast
+			</ClayButton>
+
+			<ClayAlert.ToastContainer>
+				{toastIds.map((id) => (
+					<ClayAlert
+						displayType={
+							TOAST_DISPLAY_TYPES[id % TOAST_DISPLAY_TYPES.length]
+						}
+						key={id}
+						onClose={() => removeToast(id)}
+					>
+						{`Toast ${id}: this notification stays until you close it, so you can read the full message again later.`}
+					</ClayAlert>
+				))}
+			</ClayAlert.ToastContainer>
+		</Provider>
+	);
+}
+
 Default.args = {
 	content: 'This is an alert!',
 	displayType: 'info',
