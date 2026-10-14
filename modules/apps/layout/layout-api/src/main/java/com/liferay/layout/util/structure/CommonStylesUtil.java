@@ -36,6 +36,7 @@ import com.liferay.portal.language.LanguageResources;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -400,8 +401,9 @@ public class CommonStylesUtil {
 		if (styleBookEntry != null) {
 			try {
 				frontendTokenValuesJSONObject =
-					JSONFactoryUtil.createJSONObject(
-						styleBookEntry.getFrontendTokensValues());
+					StyleBookFrontendTokensValuesUtil.
+						getDefaultFrontendTokensValuesJSONObject(
+							styleBookEntry.getFrontendTokensValues());
 			}
 			catch (JSONException jsonException) {
 				if (_log.isDebugEnabled()) {

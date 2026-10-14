@@ -6,7 +6,6 @@
 package com.liferay.style.book.web.internal.portlet.action;
 
 import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -21,6 +20,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 import com.liferay.style.book.util.StyleBookUtil;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessorImportResultEntry;
@@ -138,21 +138,24 @@ public class ImportStyleBookEntriesMVCActionCommand
 			List<String> frontendTokenNames, StyleBookEntry styleBookEntry)
 		throws JSONException {
 
-		JSONObject frontendTokensValuesJSONObject =
-			_jsonFactory.createJSONObject(
+		JSONObject variationsJSONObject =
+			StyleBookFrontendTokensValuesUtil.getVariationsJSONObject(
 				styleBookEntry.getFrontendTokensValues());
 
-		for (String key : frontendTokensValuesJSONObject.keySet()) {
-			if (!frontendTokenNames.contains(key)) {
-				return false;
+		for (String variationKey : variationsJSONObject.keySet()) {
+			JSONObject tokensJSONObject =
+				StyleBookFrontendTokensValuesUtil.getTokensJSONObject(
+					variationsJSONObject.getJSONObject(variationKey));
+
+			for (String key : tokensJSONObject.keySet()) {
+				if (!frontendTokenNames.contains(key)) {
+					return false;
+				}
 			}
 		}
 
 		return true;
 	}
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;
