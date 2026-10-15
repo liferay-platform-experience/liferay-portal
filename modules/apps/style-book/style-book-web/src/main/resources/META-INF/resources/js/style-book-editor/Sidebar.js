@@ -15,12 +15,12 @@ import NewTokenModalContent from './NewTokenModalContent';
 import {config} from './config';
 import {
 	SET_CUSTOM_FRONTEND_TOKEN_DEFINITION,
-	SET_TOKEN_VALUES,
+	SET_DEFAULT_VARIATION_TOKEN_VALUES,
 } from './constants/actionTypes';
 import {
 	useCustomFrontendTokenDefinition,
 	useDispatch,
-	useFrontendTokensValues,
+	useEffectiveFrontendTokensValues,
 } from './contexts/StyleBookEditorContext';
 
 export default React.memo(function Sidebar() {
@@ -145,7 +145,7 @@ function TokenDefinitionSelector({
 }
 
 function UpdateStyle({sidebarRef}) {
-	const frontendTokensValues = useFrontendTokensValues();
+	const frontendTokensValues = useEffectiveFrontendTokensValues();
 
 	useEffect(() => {
 		if (sidebarRef.current) {
@@ -209,7 +209,7 @@ function getDefinitionName({id, name}) {
 function FrontendTokenCategories({activeDefinition}) {
 	const dispatch = useDispatch();
 	const customFrontendTokenDefinition = useCustomFrontendTokenDefinition();
-	const frontendTokensValues = useFrontendTokensValues();
+	const frontendTokensValues = useEffectiveFrontendTokensValues();
 
 	const frontendTokenCategories = activeDefinition.frontendTokenCategories;
 	const [active, setActive] = useState(false);
@@ -271,7 +271,7 @@ function FrontendTokenCategories({activeDefinition}) {
 
 		dispatch({
 			tokens: frontendTokensValues,
-			type: SET_TOKEN_VALUES,
+			type: SET_DEFAULT_VARIATION_TOKEN_VALUES,
 		});
 	};
 

@@ -23,6 +23,19 @@ public class StyleBookEntryFrontendTokensValuesException
 
 	}
 
+	public static class MustHaveValidVariationKey
+		extends StyleBookEntryFrontendTokensValuesException {
+
+		public MustHaveValidVariationKey(String variationKey) {
+			super(
+				StringBundler.concat(
+					"Variation key \"", variationKey,
+					"\" must contain only lowercase letters, numbers and ",
+					"hyphens"));
+		}
+
+	}
+
 	public static class MustNotContainInvalidCharacters
 		extends StyleBookEntryFrontendTokensValuesException {
 
@@ -31,6 +44,22 @@ public class StyleBookEntryFrontendTokensValuesException
 				StringBundler.concat(
 					"Frontend token value \"", key,
 					"\" contains invalid characters"));
+		}
+
+	}
+
+	public static class MustNotContainUnknownFrontendToken
+		extends StyleBookEntryFrontendTokensValuesException {
+
+		public MustNotContainUnknownFrontendToken(
+			String key, String variationKey) {
+
+			super(
+				StringBundler.concat(
+					"Variation \"", variationKey,
+					"\" contains frontend token \"", key,
+					"\", which is not declared by the frontend token ",
+					"definitions of the style book"));
 		}
 
 	}

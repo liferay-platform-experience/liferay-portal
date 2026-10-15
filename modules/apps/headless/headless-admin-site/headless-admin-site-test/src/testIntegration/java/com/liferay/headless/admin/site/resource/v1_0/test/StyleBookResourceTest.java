@@ -20,6 +20,7 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplat
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -152,8 +153,17 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 		styleBook.setFrontendTokensValues(
 			JSONUtil.put(
-				RandomTestUtil.randomString(),
-				JSONUtil.put("value", RandomTestUtil.randomString())
+				"default",
+				JSONUtil.put(
+					"name", "default"
+				).put(
+					"tokens",
+					JSONUtil.put(
+						StringBundler.concat(
+							RandomTestUtil.randomString(), StringPool.COLON,
+							RandomTestUtil.randomString()),
+						JSONUtil.put("value", RandomTestUtil.randomString()))
+				)
 			).toString());
 
 		return styleBook;

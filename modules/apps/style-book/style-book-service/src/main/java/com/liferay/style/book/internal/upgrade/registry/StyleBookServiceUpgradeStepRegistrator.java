@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.style.book.internal.upgrade.v1_10_0.StyleBookEntryFrontendTokensValuesUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_10_1.StyleBookEntryDefaultStyleBookEntryUpgradeProcess;
+import com.liferay.style.book.internal.upgrade.v1_11_0.StyleBookEntryFrontendTokensValuesVariationsUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_1_0.StyleBookEntryUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_2_0.StyleBookEntryVersionUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_7_0.StyleBookEntryThemeIdUpgradeProcess;
@@ -112,6 +113,10 @@ public class StyleBookServiceUpgradeStepRegistrator
 		registry.register(
 			"1.10.0", "1.10.1",
 			new StyleBookEntryDefaultStyleBookEntryUpgradeProcess());
+
+		registry.register(
+			"1.10.1", "1.11.0",
+			new StyleBookEntryFrontendTokensValuesVariationsUpgradeProcess());
 	}
 
 	@Reference
