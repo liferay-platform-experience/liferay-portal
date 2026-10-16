@@ -28,54 +28,64 @@ const ICON_MAP = {
 	warn: 'warning-full',
 };
 
+const TPL_ALERT_CONTAINER = `
+<div class="alert-container cadmin container">
+	<div class="alert-notifications alert-notifications-fixed" id="ToastAlertContainer"></div>
+</div>`;
+
 export function openToast(type, title, message) {
+	if (!document.getElementById('ToastAlertContainer')) {
+		document.body.insertAdjacentHTML('beforeend', TPL_ALERT_CONTAINER);
+	}
+
 	const spritemap = getSpritemap();
 
 	const html = `
-<div class="alert-container cadmin container">
-	<div class="alert-notifications alert-notifications-fixed" id="ToastAlertContainer">
-		<div class="lfr-tooltip-scope">
-			<div class="alert alert-dismissible alert-${CLASS_NAME_MAP[type]} mb-3">
-				<div class="alert-autofit-row autofit-row" role="alert">
-					<div class="autofit-col">
-						<div class="autofit-section">
-							<span class="alert-indicator">
-								<svg class="lexicon-icon lexicon-icon-${ICON_MAP[type]}" role="presentation">
-									<use href="${spritemap}#${ICON_MAP[type]}"></use>
-								</svg>
-							</span>
-						</div>
-					</div>
-					<div class="autofit-col autofit-col-expand">
-						<div class="autofit-section">
-							<div>
-								<strong class="lead">
-									${title}
-								</strong>
-								${message}
-							</div>
-						</div>
+<div class="lfr-tooltip-scope">
+	<div class="alert alert-dismissible alert-${CLASS_NAME_MAP[type]}">
+		<div class="alert-autofit-row autofit-row" role="alert">
+			<div class="autofit-col">
+				<div class="autofit-section">
+					<span class="alert-indicator">
+						<svg class="lexicon-icon lexicon-icon-${ICON_MAP[type]}" role="presentation">
+							<use href="${spritemap}#${ICON_MAP[type]}"></use>
+						</svg>
+					</span>
+				</div>
+			</div>
+			<div class="autofit-col autofit-col-expand">
+				<div class="autofit-section">
+					<div>
+						<strong class="lead">
+							${title}
+						</strong>
+						${message}
 					</div>
 				</div>
-				<button aria-label="Close" class="close" type="button">
-					<svg class="lexicon-icon lexicon-icon-times" role="presentation">
-						<use href="${spritemap}#times"></use>
-					</svg>
-				</button>
 			</div>
 		</div>
+		<button aria-label="Close" class="close" type="button">
+			<svg class="lexicon-icon lexicon-icon-times" role="presentation">
+				<use href="${spritemap}#times"></use>
+			</svg>
+		</button>
 	</div>
 </div>`;
 
 	const div = document.createElement('div');
 	div.innerHTML = html;
 
-	const button = div.querySelector('button');
-	button.onclick = () => div.remove();
+	const toast = div.firstElementChild;
 
-	document.body.appendChild(div);
+	const button = toast.querySelector('button');
+
+	button.onclick = () => toast.remove();
+
+	const toastAlertContainer = document.getElementById('ToastAlertContainer');
+
+	toastAlertContainer.appendChild(toast);
 
 	return {
-		dispose: () => div.remove(),
+		dispose: () => toast.remove(),
 	};
 }

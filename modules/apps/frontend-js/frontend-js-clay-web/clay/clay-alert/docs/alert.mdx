@@ -203,6 +203,8 @@ export default function App() {
 
 You can use alerts with a `ToastContainer` to render the alerts in a container with `position: fixed`.
 
+Each toast renders in its own wrapper. When many toasts pile up, the column gets more compact past 6, 12, and 20 toasts, and hovering or focusing a toast shows it in full.
+
 ```jsx preview
 import {Provider, Button} from '@clayui/core';
 import Alert from '@clayui/alert';

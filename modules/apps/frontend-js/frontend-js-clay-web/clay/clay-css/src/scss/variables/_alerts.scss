@@ -440,6 +440,36 @@ $alert-notification-sm-down: map-merge(
 	$alert-notification-sm-down
 );
 
+// .alert-notifications-fixed stack
+
+$alert-stack: () !default;
+$alert-stack: map-deep-merge(
+	(
+		collapse: (
+			fade-start-depth: 20,
+			fade-step: 0.09,
+			min-opacity: 0.1,
+			strip-height: 0.75rem,
+			threshold: 21,
+		),
+		compact: (
+			breakpoints: $grid-breakpoints,
+			gap: 0.25rem,
+			inset: 0.5rem,
+			max-inset-depth: 7,
+			padding-y: 0.125rem,
+			threshold: 7,
+			width: $alert-notifications-max-width,
+		),
+		overlap: (
+			strip-height: 1.25rem,
+			threshold: 13,
+		),
+		slot-margin-bottom: $alert-margin-bottom,
+	),
+	$alert-stack
+);
+
 // .autofit-row.alert-autofit-row
 
 $alert-autofit-row: () !default;

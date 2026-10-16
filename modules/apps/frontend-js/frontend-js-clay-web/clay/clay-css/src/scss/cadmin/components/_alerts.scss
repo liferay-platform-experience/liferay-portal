@@ -116,6 +116,7 @@
 		);
 	}
 
+	@include clay-alert-stack($cadmin-alert-stack);
 	@include clay-css($cadmin-alert-notifications-fixed);
 }
 

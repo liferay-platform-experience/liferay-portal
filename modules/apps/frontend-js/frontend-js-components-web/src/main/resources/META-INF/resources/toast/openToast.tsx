@@ -183,7 +183,10 @@ function openToast({
 			onClose={onCloseFn as () => void}
 			variant={variant}
 			{...toastProps}
-			className={classNames('mb-3', toastProps?.className)}
+			className={classNames(
+				{'mb-3': !rootElement.closest('.alert-notifications-fixed')},
+				toastProps?.className
+			)}
 			role="alert"
 		>
 			<div

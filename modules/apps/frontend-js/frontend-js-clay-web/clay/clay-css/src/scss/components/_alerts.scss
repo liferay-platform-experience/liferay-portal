@@ -112,6 +112,7 @@
 		);
 	}
 
+	@include clay-alert-stack($alert-stack);
 	@include clay-css($alert-notifications-fixed);
 }
 
