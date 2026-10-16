@@ -6,19 +6,11 @@
 package com.liferay.portal.configuration.plugin.internal;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import java.util.Dictionary;
-import java.util.Objects;
 
 import javax.sql.DataSource;
 
@@ -45,11 +37,11 @@ public class WebIdToCompanyConfigurationPluginImpl
 			"dxp.lxc.liferay.com.virtualInstanceId");
 
 		if (Validator.isNull(webId)) {
-			return;
+			webId = (String)properties.get("companyWebId");
 		}
 
-		if (Objects.equals(webId, "default")) {
-			webId = PropsValues.COMPANY_DEFAULT_WEB_ID;
+		if (Validator.isNull(webId) || (properties.get("companyId") != null)) {
+			return;
 		}
 
 		try {
@@ -64,32 +56,24 @@ public class WebIdToCompanyConfigurationPluginImpl
 				return;
 			}
 
-			DataSource dataSource = _bundleContext.getService(
-				dataSourceServiceReference);
+			Long companyId = CompanyIdResolver.getCompanyId(
+				_bundleContext.getService(dataSourceServiceReference), webId);
 
-			try (Connection connection = dataSource.getConnection();
-
-				PreparedStatement preparedStatement =
-					connection.prepareStatement(
-						_db.buildSQL(
-							"select companyId from Company where webId = ?"))) {
-
-				preparedStatement.setString(1, webId);
-
-				try (ResultSet resultSet = preparedStatement.executeQuery()) {
-					if (resultSet.next()) {
-						long companyId = resultSet.getLong("companyId");
-
-						properties.put("companyId", companyId);
-
-						if (_log.isInfoEnabled()) {
-							_log.info(
-								StringBundler.concat(
-									"Injected company ID ", companyId,
-									" for web ID ", webId));
-						}
-					}
+			if (companyId == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Skip web ID " + webId);
 				}
+
+				return;
+			}
+
+			properties.put("companyId", companyId);
+
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					StringBundler.concat(
+						"Injected company ID ", companyId, " for web ID ",
+						webId));
 			}
 		}
 		catch (Exception exception) {
@@ -107,6 +91,5 @@ public class WebIdToCompanyConfigurationPluginImpl
 		WebIdToCompanyConfigurationPluginImpl.class);
 
 	private final BundleContext _bundleContext;
-	private final DB _db = DBManagerUtil.getDB();
 
 }
