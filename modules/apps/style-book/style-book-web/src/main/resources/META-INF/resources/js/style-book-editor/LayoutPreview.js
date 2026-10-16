@@ -17,6 +17,7 @@ import {
 	useSetLoading,
 } from './contexts/LayoutContext';
 import {useFrontendTokensValues} from './contexts/StyleBookEditorContext';
+import {getResolvedFrontendTokensValues} from './utils/getResolvedFrontendTokensValues';
 
 export default React.memo(function LayoutPreview() {
 	const frontendTokensValues = useFrontendTokensValues();
@@ -38,7 +39,9 @@ export default React.memo(function LayoutPreview() {
 				for (const {
 					cssVariableMapping,
 					value,
-				} of config.sortFrontendTokenValues(frontendTokensValues)) {
+				} of config.sortFrontendTokenValues(
+					getResolvedFrontendTokensValues(frontendTokensValues)
+				)) {
 					root.style.setProperty(`--${cssVariableMapping}`, value);
 				}
 

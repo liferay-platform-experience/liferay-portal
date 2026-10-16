@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
+import com.liferay.style.book.util.FrontendTokensValuesUtil;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
 import java.util.HashMap;
@@ -59,6 +60,11 @@ public class StyleBookEntryUtil {
 			frontendTokenDefinitionJSONObject.getJSONArray(
 				"frontendTokenCategories");
 
+		Map<String, String> defaultFrontendTokenValues =
+			_getDefaultFrontendTokenValues(
+				frontendTokenCategoriesJSONArray,
+				frontendTokenDefinition.getThemeId());
+
 		for (int i = 0; i < frontendTokenCategoriesJSONArray.length(); i++) {
 			JSONObject frontendTokenCategoryJSONObject =
 				frontendTokenCategoriesJSONArray.getJSONObject(i);
@@ -81,6 +87,7 @@ public class StyleBookEntryUtil {
 					frontendTokensValues.put(
 						frontendTokenJSONObject.getString("name"),
 						_getProcessedFrontendTokenValue(
+							defaultFrontendTokenValues,
 							frontendTokenCategoryJSONObject.getString("label"),
 							frontendTokenJSONObject,
 							frontendTokenSetJSONObject.getString("label"),
@@ -109,6 +116,41 @@ public class StyleBookEntryUtil {
 			styleBookEntry -> _getStyleBookEntryMap(
 				frontendTokenDefinition, groupId, includeFrontendTokensValues,
 				scopeGroups, styleBookEntry, themeDisplay));
+	}
+
+	private static Map<String, String> _getDefaultFrontendTokenValues(
+		JSONArray frontendTokenCategoriesJSONArray, String themeId) {
+
+		Map<String, String> defaultFrontendTokenValues = new HashMap<>();
+
+		for (int i = 0; i < frontendTokenCategoriesJSONArray.length(); i++) {
+			JSONObject frontendTokenCategoryJSONObject =
+				frontendTokenCategoriesJSONArray.getJSONObject(i);
+
+			JSONArray frontendTokenSetsJSONArray =
+				frontendTokenCategoryJSONObject.getJSONArray(
+					"frontendTokenSets");
+
+			for (int j = 0; j < frontendTokenSetsJSONArray.length(); j++) {
+				JSONObject frontendTokenSetJSONObject =
+					frontendTokenSetsJSONArray.getJSONObject(j);
+
+				JSONArray frontendTokensJSONArray =
+					frontendTokenSetJSONObject.getJSONArray("frontendTokens");
+
+				for (int k = 0; k < frontendTokensJSONArray.length(); k++) {
+					JSONObject frontendTokenJSONObject =
+						frontendTokensJSONArray.getJSONObject(k);
+
+					defaultFrontendTokenValues.put(
+						themeId + StringPool.COLON +
+							frontendTokenJSONObject.getString("name"),
+						frontendTokenJSONObject.getString("defaultValue"));
+				}
+			}
+		}
+
+		return defaultFrontendTokenValues;
 	}
 
 	private static JSONObject _getFrontendTokenDefinitionJSONObject(
@@ -152,26 +194,31 @@ public class StyleBookEntryUtil {
 	}
 
 	private static Map<String, Object> _getProcessedFrontendTokenValue(
+		Map<String, String> defaultFrontendTokenValues,
 		String frontendTokenCategoryLabel, JSONObject frontendTokenJSONObject,
 		String frontendTokenSetLabel, JSONObject frontendTokenValuesJSONObject,
 		String themeId) {
 
 		String name = frontendTokenJSONObject.getString("name");
 
+		String key =
+			StyleBookConstants.FRONTEND_TOKEN_DEFINITION_ID_CUSTOM +
+				StringPool.COLON + name;
+
 		JSONObject valueJSONObject =
-			frontendTokenValuesJSONObject.getJSONObject(
-				StyleBookConstants.FRONTEND_TOKEN_DEFINITION_ID_CUSTOM +
-					StringPool.COLON + name);
+			frontendTokenValuesJSONObject.getJSONObject(key);
 
 		if ((valueJSONObject == null) && Validator.isNotNull(themeId)) {
-			valueJSONObject = frontendTokenValuesJSONObject.getJSONObject(
-				themeId + StringPool.COLON + name);
+			key = themeId + StringPool.COLON + name;
+
+			valueJSONObject = frontendTokenValuesJSONObject.getJSONObject(key);
 		}
 
 		String value = StringPool.BLANK;
 
 		if (valueJSONObject != null) {
-			value = valueJSONObject.getString("value");
+			value = FrontendTokensValuesUtil.getFrontendTokenValue(
+				defaultFrontendTokenValues, frontendTokenValuesJSONObject, key);
 		}
 		else {
 			value = frontendTokenJSONObject.getString("defaultValue");
