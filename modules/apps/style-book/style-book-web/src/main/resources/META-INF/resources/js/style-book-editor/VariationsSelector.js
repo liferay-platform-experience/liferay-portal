@@ -19,7 +19,7 @@ import {
 	useSelectVariation,
 	useVariations,
 } from './contexts/StyleBookEditorContext';
-import {DEFAULT_VARIATION} from './utils/variations';
+import {COLOR_SCHEMES, DEFAULT_VARIATION} from './utils/variations';
 
 export default function VariationsSelector() {
 	const activeVariation = useActiveVariation();
@@ -117,9 +117,12 @@ export default function VariationsSelector() {
 					>
 						{getLabel(key)}
 
-						{key !== DEFAULT_VARIATION && (
-							<span className="ml-2 text-secondary">{key}</span>
-						)}
+						{key !== DEFAULT_VARIATION &&
+							!COLOR_SCHEMES.includes(key) && (
+								<span className="ml-2 text-secondary">
+									{key}
+								</span>
+							)}
 					</ClayDropDown.Item>
 				))}
 

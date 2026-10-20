@@ -41,6 +41,7 @@ const renderComponent = () =>
 				redoHistory: [],
 				undoHistory: [],
 				variations: {
+					calm: {name: 'Calm', tokens: {}},
 					dark: {name: 'Dark', tokens: {}},
 					default: {name: 'default', tokens: {}},
 				},
@@ -63,7 +64,8 @@ describe('VariationsSelector', () => {
 			.map((item) => item.textContent);
 
 		expect(items[0]).toBe('default');
-		expect(items[1]).toContain('Dark');
+		expect(items[1]).toBe('Calmcalm');
+		expect(items[2]).toBe('Dark');
 		expect(items).toContain('create-variation');
 		expect(items).not.toContain('delete-variation');
 	});
@@ -72,7 +74,7 @@ describe('VariationsSelector', () => {
 		renderComponent();
 
 		await userEvent.click(screen.getByRole('button', {name: 'variations'}));
-		await userEvent.click(screen.getByRole('menuitem', {name: /Dark/}));
+		await userEvent.click(screen.getByRole('menuitem', {name: 'Dark'}));
 
 		expect(screen.getByTestId('active-variation')).toHaveTextContent(
 			'dark'

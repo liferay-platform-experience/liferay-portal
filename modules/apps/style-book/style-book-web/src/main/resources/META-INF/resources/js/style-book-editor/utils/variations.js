@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export const COLOR_SCHEMES = [
+	'dark',
+	'dark-high-contrast',
+	'light',
+	'light-high-contrast',
+];
+
 export const DEFAULT_VARIATION = 'default';
 
 export function getVariations({
