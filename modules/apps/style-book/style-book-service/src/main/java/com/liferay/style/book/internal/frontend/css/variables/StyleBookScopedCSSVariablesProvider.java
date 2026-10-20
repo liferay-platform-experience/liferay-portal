@@ -142,19 +142,30 @@ public class StyleBookScopedCSSVariablesProvider
 				scopedCSSVariablesList.add(
 					_createScopedCSSVariables(
 						nativeColorScheme, mergedCSSVariables, mediaQuery,
-						":root:not([data-color-scheme])"));
-			}
-
-			String scope = ":root [data-color-scheme='" + colorScheme + "']";
-
-			if (followsColorScheme) {
-				scope = StringBundler.concat(
-					"[data-color-scheme='", colorScheme, "']:root, ", scope);
+						":root:not([data-color-scheme]), " +
+							":root[data-color-scheme='system']"));
 			}
 
 			scopedCSSVariablesList.add(
 				_createScopedCSSVariables(
-					nativeColorScheme, mergedCSSVariables, null, scope));
+					nativeColorScheme, mergedCSSVariables, null,
+					_getScope(colorScheme, followsColorScheme)));
+
+			// As Clay does, a high contrast variation also applies on top of
+			// the color scheme it refines when the user asks for more
+			// contrast. Sorted keys emit it after that color scheme.
+
+			if ((nativeColorScheme == null) ||
+				nativeColorScheme.equals(colorScheme)) {
+
+				continue;
+			}
+
+			scopedCSSVariablesList.add(
+				_createScopedCSSVariables(
+					nativeColorScheme, mergedCSSVariables,
+					"(prefers-contrast: more)",
+					_getScope(nativeColorScheme, followsColorScheme)));
 		}
 
 		return scopedCSSVariablesList;
@@ -262,6 +273,17 @@ public class StyleBookScopedCSSVariablesProvider
 		}
 
 		return cssVariables;
+	}
+
+	private String _getScope(String colorScheme, boolean followsColorScheme) {
+		String scope = ":root [data-color-scheme='" + colorScheme + "']";
+
+		if (followsColorScheme) {
+			scope = StringBundler.concat(
+				"[data-color-scheme='", colorScheme, "']:root, ", scope);
+		}
+
+		return scope;
 	}
 
 	private List<String> _getSortedKeys(long companyId, JSONObject jsonObject) {

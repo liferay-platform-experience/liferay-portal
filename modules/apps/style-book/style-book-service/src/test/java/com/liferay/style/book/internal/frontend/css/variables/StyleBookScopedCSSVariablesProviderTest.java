@@ -185,7 +185,8 @@ public class StyleBookScopedCSSVariablesProviderTest {
 
 		_testGetScopedCSSVariablesCollectionWithVariations(
 			":root [data-color-scheme='calm']",
-			":root [data-color-scheme='dark']", "#fff");
+			":root [data-color-scheme='dark']",
+			":root [data-color-scheme='dark-high-contrast']", "#fff");
 	}
 
 	@Test
@@ -256,6 +257,8 @@ public class StyleBookScopedCSSVariablesProviderTest {
 		_testGetScopedCSSVariablesCollectionWithVariations(
 			"[data-color-scheme='calm']:root, :root [data-color-scheme='calm']",
 			"[data-color-scheme='dark']:root, :root [data-color-scheme='dark']",
+			"[data-color-scheme='dark-high-contrast']:root, :root " +
+				"[data-color-scheme='dark-high-contrast']",
 			"light-dark(#fff, #000)");
 	}
 
@@ -406,7 +409,8 @@ public class StyleBookScopedCSSVariablesProviderTest {
 	}
 
 	private void _testGetScopedCSSVariablesCollectionWithVariations(
-			String calmScope, String darkScope, String themeTokenDefaultValue)
+			String calmScope, String darkScope, String darkHighContrastScope,
+			String themeTokenDefaultValue)
 		throws Exception {
 
 		List<ScopedCSSVariables> scopedCSSVariablesList =
@@ -451,12 +455,23 @@ public class StyleBookScopedCSSVariablesProviderTest {
 								_createTokenValueJSONObject(
 									"--primary", "theme", "#fff"))
 						)
+					).put(
+						"dark-high-contrast",
+						JSONUtil.put(
+							"name", "Dark High Contrast"
+						).put(
+							"tokens",
+							JSONUtil.put(
+								"theme:secondaryColor",
+								_createTokenValueJSONObject(
+									"--secondary", "theme", "#eee"))
+						)
 					),
 					FrontendTokenDefinitionConstants.PRIORITY_THEME,
 					themeTokenDefaultValue));
 
 		Assert.assertEquals(
-			scopedCSSVariablesList.toString(), 4,
+			scopedCSSVariablesList.toString(), 7,
 			scopedCSSVariablesList.size());
 
 		ScopedCSSVariables rootScopedCSSVariables = scopedCSSVariablesList.get(
@@ -496,7 +511,7 @@ public class StyleBookScopedCSSVariablesProviderTest {
 			"(prefers-color-scheme: dark)",
 			darkMediaScopedCSSVariables.getMediaQuery());
 		Assert.assertEquals(
-			":root:not([data-color-scheme])",
+			":root:not([data-color-scheme]), :root[data-color-scheme='system']",
 			darkMediaScopedCSSVariables.getScope());
 
 		ScopedCSSVariables darkScopedCSSVariables = scopedCSSVariablesList.get(
@@ -511,6 +526,50 @@ public class StyleBookScopedCSSVariablesProviderTest {
 
 		Assert.assertEquals("#fff", darkCSSVariables.get("--primary"));
 		Assert.assertEquals("#111", darkCSSVariables.get("--secondary"));
+
+		ScopedCSSVariables darkHighContrastMediaScopedCSSVariables =
+			scopedCSSVariablesList.get(4);
+
+		Assert.assertEquals(
+			"dark", darkHighContrastMediaScopedCSSVariables.getColorScheme());
+		Assert.assertEquals(
+			"(prefers-color-scheme: dark) and (prefers-contrast: more)",
+			darkHighContrastMediaScopedCSSVariables.getMediaQuery());
+		Assert.assertEquals(
+			":root:not([data-color-scheme]), :root[data-color-scheme='system']",
+			darkHighContrastMediaScopedCSSVariables.getScope());
+
+		ScopedCSSVariables darkHighContrastScopedCSSVariables =
+			scopedCSSVariablesList.get(5);
+
+		Assert.assertEquals(
+			"dark", darkHighContrastScopedCSSVariables.getColorScheme());
+		Assert.assertNull(darkHighContrastScopedCSSVariables.getMediaQuery());
+		Assert.assertEquals(
+			darkHighContrastScope,
+			darkHighContrastScopedCSSVariables.getScope());
+
+		Map<String, String> darkHighContrastCSSVariables =
+			darkHighContrastScopedCSSVariables.getCSSVariables();
+
+		Assert.assertEquals(
+			"#000", darkHighContrastCSSVariables.get("--primary"));
+		Assert.assertEquals(
+			"#eee", darkHighContrastCSSVariables.get("--secondary"));
+
+		ScopedCSSVariables darkMoreContrastScopedCSSVariables =
+			scopedCSSVariablesList.get(6);
+
+		Assert.assertEquals(
+			"dark", darkMoreContrastScopedCSSVariables.getColorScheme());
+		Assert.assertEquals(
+			"(prefers-contrast: more)",
+			darkMoreContrastScopedCSSVariables.getMediaQuery());
+		Assert.assertEquals(
+			darkScope, darkMoreContrastScopedCSSVariables.getScope());
+		Assert.assertEquals(
+			darkHighContrastCSSVariables,
+			darkMoreContrastScopedCSSVariables.getCSSVariables());
 	}
 
 	private class TestStyleBookScopedCSSVariablesProvider
