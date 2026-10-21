@@ -214,6 +214,7 @@ module.exports = {
 			'react-dom-18/client',
 		],
 		'@liferay/frontend-js-state-web': ['./react'],
+		'@liferay/frontend-js-tour-sample-web': [],
 		'@liferay/frontend-js-tour-web': [],
 		'@liferay/frontend-js-walkthrough-sample-web': [],
 		'@liferay/frontend-js-walkthrough-web': [],

@@ -1,0 +1,15 @@
+{
+	"dependencies": {
+		"@clayui/button": "^3.166.0",
+		"@clayui/form": "^3.166.0",
+		"react": "18.2.0"
+	},
+	"main": "js/App.tsx",
+	"name": "@liferay/frontend-js-tour-sample-web",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format"
+	},
+	"version": "1.0.0"
+}
