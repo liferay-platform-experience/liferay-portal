@@ -4,7 +4,8 @@
  */
 
 import {doAlign, observeRect} from '@clayui/shared';
-import React, {useEffect, useRef} from 'react';
+import {ReactPortal} from '@liferay/frontend-js-react-web';
+import React, {useEffect, useRef, useState} from 'react';
 
 import './Hotspot.scss';
 
@@ -19,6 +20,24 @@ type Props = {
  */
 export default function Hotspot({element, onClick}: Props) {
 	const hotspotRef = useRef<HTMLButtonElement>(null);
+
+	// The hotspot is rendered right before the element it marks, so keyboard
+	// users reach it where the element is in the tab order instead of at the
+	// end of the page. The anchor takes no space of its own.
+
+	const [anchor] = useState(() => {
+		const anchor = document.createElement('span');
+
+		anchor.className = 'lfr-tour-hotspot-anchor';
+
+		return anchor;
+	});
+
+	useEffect(() => {
+		element.before(anchor);
+
+		return () => anchor.remove();
+	}, [anchor, element]);
 
 	useEffect(() => {
 		const hotspot = hotspotRef.current;
@@ -44,14 +63,16 @@ export default function Hotspot({element, onClick}: Props) {
 	}, [element]);
 
 	return (
-		<button
-			aria-label={Liferay.Language.get('resume-the-tour')}
-			className="lfr-tour-hotspot"
-			onClick={onClick}
-			ref={hotspotRef}
-			type="button"
-		>
-			<span className="lfr-tour-hotspot-inner" />
-		</button>
+		<ReactPortal container={anchor} wrapper={false}>
+			<button
+				aria-label={Liferay.Language.get('resume-the-tour')}
+				className="lfr-tour-hotspot"
+				onClick={onClick}
+				ref={hotspotRef}
+				type="button"
+			>
+				<span className="lfr-tour-hotspot-inner" />
+			</button>
+		</ReactPortal>
 	);
 }

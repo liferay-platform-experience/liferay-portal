@@ -284,6 +284,11 @@ describe('Tour', () => {
 		const hotspot = screen.getByRole('button', {name: 'resume-the-tour'});
 
 		expect(hotspot).toHaveFocus();
+		expect(
+			hotspot.compareDocumentPosition(
+				document.getElementById('search')!
+			) & Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
 		expect(doAlign).toHaveBeenLastCalledWith(
 			expect.objectContaining({
 				points: ['cc', 'tl'],
