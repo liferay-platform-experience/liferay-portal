@@ -5,6 +5,7 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {FocusTrap, OverlayMask} from '@clayui/core';
+import {ClayCheckbox} from '@clayui/form';
 import ClayLayout from '@clayui/layout';
 import ClayPopover from '@clayui/popover';
 import {doAlign, observeRect} from '@clayui/shared';
@@ -20,7 +21,12 @@ import React, {
 
 import Hotspot from './Hotspot';
 
-import type {AlignPosition, TourDefinition, TourStep} from './types';
+import type {
+	AlignPosition,
+	TourCloseReason,
+	TourDefinition,
+	TourStep,
+} from './types';
 
 const ALIGNMENTS_MAP: Record<AlignPosition, readonly [string, string]> = {
 	'bottom': ['tc', 'bc'],
@@ -145,6 +151,7 @@ function getArrowAlignment(
 
 export default function Tour({
 	closeable = true,
+	dismissable = false,
 	lockScroll = false,
 	onClose,
 	pauseable = false,
@@ -161,6 +168,8 @@ export default function Tour({
 	);
 
 	const [bounds, setBounds] = useState(INITIAL_BOUNDS);
+
+	const [dismissed, setDismissed] = useState(false);
 
 	const [status, setStatus] = useState<'closed' | 'open' | 'paused'>('open');
 
@@ -274,8 +283,11 @@ export default function Tour({
 		}
 	}, [status]);
 
-	const close = (reason: 'closed' | 'finished') => {
-		if (pauseable && reason === 'closed') {
+	const close = (reason: TourCloseReason) => {
+		if (dismissed) {
+			reason = 'dismissed';
+		}
+		else if (pauseable && reason === 'closed') {
 			setStatus('paused');
 
 			return;
@@ -382,8 +394,22 @@ export default function Tour({
 						{step.content}
 					</p>
 
-					<ClayLayout.ContentRow className="mt-3" noGutters>
-						<ClayLayout.ContentCol expand />
+					<ClayLayout.ContentRow
+						className="mt-3"
+						noGutters
+						verticalAlign="center"
+					>
+						<ClayLayout.ContentCol expand>
+							{dismissable && (
+								<ClayCheckbox
+									checked={dismissed}
+									label={Liferay.Language.get(
+										'do-not-show-me-this-again'
+									)}
+									onChange={() => setDismissed(!dismissed)}
+								/>
+							)}
+						</ClayLayout.ContentCol>
 
 						<ClayLayout.ContentCol>
 							<ClayButton.Group spaced>

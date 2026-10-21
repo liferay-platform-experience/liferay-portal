@@ -247,6 +247,29 @@ describe('Tour', () => {
 		).not.toBeInTheDocument();
 	});
 
+	it('does not show the dismiss checkbox by default', () => {
+		renderTour();
+
+		expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+	});
+
+	it('reports a dismissed tour when the checkbox is checked, even if it is pauseable', async () => {
+		const onClose = jest.fn();
+
+		renderTour({dismissable: true, onClose, pauseable: true});
+
+		await userEvent.click(
+			screen.getByRole('checkbox', {name: 'do-not-show-me-this-again'})
+		);
+		await userEvent.click(screen.getByRole('button', {name: 'close'}));
+
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: 'resume-the-tour'})
+		).not.toBeInTheDocument();
+		expect(onClose).toHaveBeenCalledWith('dismissed');
+	});
+
 	it('pauses a pauseable tour on close and resumes it from the same step', async () => {
 		const onClose = jest.fn();
 

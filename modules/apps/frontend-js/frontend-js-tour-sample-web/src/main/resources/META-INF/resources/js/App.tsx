@@ -20,6 +20,7 @@ export function App() {
 			<ClayButton
 				onClick={() =>
 					Liferay.Tour.start({
+						dismissable: true,
 						lockScroll: true,
 						pauseable: true,
 						steps: [

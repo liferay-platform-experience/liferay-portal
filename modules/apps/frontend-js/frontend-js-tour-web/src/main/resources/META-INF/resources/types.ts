@@ -7,7 +7,7 @@ import type {ALIGN_POSITIONS} from '@clayui/popover';
 
 export type AlignPosition = (typeof ALIGN_POSITIONS)[number];
 
-export type TourCloseReason = 'closed' | 'finished';
+export type TourCloseReason = 'closed' | 'dismissed' | 'finished';
 
 export type TourStep = {
 
@@ -43,6 +43,14 @@ export type TourDefinition = {
 	closeable?: boolean;
 
 	/**
+	 * Whether the popover shows a "Do not show me this again" checkbox. The
+	 * tour does not persist anything: when the tour ends with the checkbox
+	 * checked, `onClose` receives the `dismissed` reason and the trigger
+	 * decides where to store that preference.
+	 */
+	dismissable?: boolean;
+
+	/**
 	 * Whether the page cannot be scrolled while the tour is open, so the
 	 * highlighted element never leaves the viewport.
 	 */
@@ -50,7 +58,7 @@ export type TourDefinition = {
 
 	/**
 	 * Called when the tour ends, either because the user finished the last
-	 * step or dismissed it.
+	 * step, closed it, or asked not to see it again.
 	 */
 	onClose?: (reason: TourCloseReason) => void;
 
