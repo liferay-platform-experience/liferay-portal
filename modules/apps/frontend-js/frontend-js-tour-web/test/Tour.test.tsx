@@ -237,6 +237,69 @@ describe('Tour', () => {
 		expect(document.documentElement.style.overflow).toBe('');
 	});
 
+	it('ends the tour on close by default', async () => {
+		renderTour();
+
+		await userEvent.click(screen.getByRole('button', {name: 'close'}));
+
+		expect(
+			screen.queryByRole('button', {name: 'resume-the-tour'})
+		).not.toBeInTheDocument();
+	});
+
+	it('pauses a pauseable tour on close and resumes it from the same step', async () => {
+		const onClose = jest.fn();
+
+		renderTour({onClose, pauseable: true});
+
+		await userEvent.click(screen.getByRole('button', {name: 'next'}));
+		await userEvent.click(screen.getByRole('button', {name: 'close'}));
+
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		expect(onClose).not.toHaveBeenCalled();
+
+		const hotspot = screen.getByRole('button', {name: 'resume-the-tour'});
+
+		expect(hotspot).toHaveFocus();
+		expect(doAlign).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				points: ['cc', 'tl'],
+				sourceElement: hotspot,
+				targetElement: document.getElementById('search'),
+			})
+		);
+
+		await userEvent.click(hotspot);
+
+		expect(screen.getByRole('dialog')).toHaveAccessibleName(/Title 2$/);
+		expect(
+			screen.queryByRole('button', {name: 'resume-the-tour'})
+		).not.toBeInTheDocument();
+	});
+
+	it('pauses a pauseable tour with the Escape key', async () => {
+		renderTour({pauseable: true});
+
+		await userEvent.keyboard('{Escape}');
+
+		expect(
+			screen.getByRole('button', {name: 'resume-the-tour'})
+		).toBeInTheDocument();
+	});
+
+	it('does not leave a hotspot when a pauseable tour is finished', async () => {
+		const onClose = jest.fn();
+
+		renderTour({onClose, pauseable: true, steps: [STEPS[0]]});
+
+		await userEvent.click(screen.getByRole('button', {name: 'done'}));
+
+		expect(
+			screen.queryByRole('button', {name: 'resume-the-tour'})
+		).not.toBeInTheDocument();
+		expect(onClose).toHaveBeenCalledWith('finished');
+	});
+
 	it('aligns the popover to the side requested by the step', async () => {
 		renderTour();
 

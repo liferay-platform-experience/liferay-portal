@@ -54,5 +54,12 @@ export type TourDefinition = {
 	 */
 	onClose?: (reason: TourCloseReason) => void;
 
+	/**
+	 * Whether closing the popover pauses the tour instead of ending it: a
+	 * hotspot stays on the highlighted element and resumes the tour from
+	 * that step. Finishing the last step always ends the tour.
+	 */
+	pauseable?: boolean;
+
 	steps: TourStep[];
 };

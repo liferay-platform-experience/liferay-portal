@@ -9,6 +9,7 @@ declare module Liferay {
 			closeable?: boolean;
 			lockScroll?: boolean;
 			onClose?: (reason: 'closed' | 'finished') => void;
+			pauseable?: boolean;
 			steps: Array<{
 				content: string;
 				positioning?:

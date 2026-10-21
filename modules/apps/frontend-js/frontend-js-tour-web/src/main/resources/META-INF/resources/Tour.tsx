@@ -18,6 +18,8 @@ import React, {
 	useState,
 } from 'react';
 
+import Hotspot from './Hotspot';
+
 import type {AlignPosition, TourDefinition, TourStep} from './types';
 
 const ALIGNMENTS_MAP: Record<AlignPosition, readonly [string, string]> = {
@@ -141,6 +143,7 @@ export default function Tour({
 	closeable = true,
 	lockScroll = false,
 	onClose,
+	pauseable = false,
 	steps,
 }: TourDefinition) {
 	const [currentStepIndex, setCurrentStepIndex] = useState(() =>
@@ -155,7 +158,7 @@ export default function Tour({
 
 	const [bounds, setBounds] = useState(INITIAL_BOUNDS);
 
-	const [open, setOpen] = useState(true);
+	const [status, setStatus] = useState<'closed' | 'open' | 'paused'>('open');
 
 	const contentId = useId();
 
@@ -209,7 +212,7 @@ export default function Tour({
 	// the overlay on the element after a scroll or a reflow.
 
 	useEffect(() => {
-		if (!element || !open) {
+		if (!element || status !== 'open') {
 			return;
 		}
 
@@ -221,13 +224,13 @@ export default function Tour({
 
 			align();
 		});
-	}, [align, element, open]);
+	}, [align, element, status]);
 
 	// The lock goes before the scroll below: changing the overflow of the
 	// scrolling element while a smooth scroll is in progress cancels it.
 
 	useEffect(() => {
-		if (!lockScroll || !open) {
+		if (!lockScroll || status !== 'open') {
 			return;
 		}
 
@@ -242,16 +245,16 @@ export default function Tour({
 			document.documentElement.style.overflow = documentElementOverflow;
 			document.body.style.overflow = bodyOverflow;
 		};
-	}, [lockScroll, open]);
+	}, [lockScroll, status]);
 
 	useEffect(() => {
-		if (element && open) {
+		if (element && status === 'open') {
 			element.scrollIntoView({
 				behavior: isReducedMotion() ? 'auto' : 'smooth',
 				block: 'center',
 			});
 		}
-	}, [element, open]);
+	}, [element, status]);
 
 	// Focus goes back to the trigger once the popover is gone, after the focus
 	// trap has released the rest of the page.
@@ -259,13 +262,22 @@ export default function Tour({
 	useEffect(() => {
 		const previouslyFocusedElement = previouslyFocusedElementRef.current;
 
-		if (!open && previouslyFocusedElement instanceof HTMLElement) {
+		if (
+			status === 'closed' &&
+			previouslyFocusedElement instanceof HTMLElement
+		) {
 			previouslyFocusedElement.focus();
 		}
-	}, [open]);
+	}, [status]);
 
 	const close = (reason: 'closed' | 'finished') => {
-		setOpen(false);
+		if (pauseable && reason === 'closed') {
+			setStatus('paused');
+
+			return;
+		}
+
+		setStatus('closed');
 
 		onClose?.(reason);
 	};
@@ -298,8 +310,12 @@ export default function Tour({
 		}
 	};
 
-	if (!element || !open || !step) {
+	if (!element || !step || status === 'closed') {
 		return null;
+	}
+
+	if (status === 'paused') {
+		return <Hotspot element={element} onClick={() => setStatus('open')} />;
 	}
 
 	return (

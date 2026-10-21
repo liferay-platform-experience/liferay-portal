@@ -21,6 +21,7 @@ export function App() {
 				onClick={() =>
 					Liferay.Tour.start({
 						lockScroll: true,
+						pauseable: true,
 						steps: [
 							{
 								content:
