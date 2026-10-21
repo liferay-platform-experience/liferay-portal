@@ -38,11 +38,15 @@
 	}
 
 	// The pulse also drives box-shadow, so the animation is paused while
-	// focused to hand the property over to the focus ring.
+	// focused to hand the property over to the focus ring. The ring mirrors
+	// the Clay one with opaque tokens, since site themes do not define
+	// --component-focus-box-shadow.
 
 	&:focus-visible {
 		animation: none;
-		box-shadow: $component-focus-box-shadow;
+		box-shadow:
+			0 0 0 2px $white,
+			0 0 0 4px $primary-l1;
 		outline: 0;
 	}
 

@@ -56,7 +56,11 @@ const DEFAULT_ALIGN_POSITION: AlignPosition = 'right-top';
 
 const INITIAL_BOUNDS = {height: 0, width: 0, x: 0, y: 0};
 
-const POPOVER_GAP = 10;
+const OVERLAY_BORDER_RADIUS = 12;
+
+const OVERLAY_PADDING = 12;
+
+const POPOVER_GAP = 24;
 
 /**
  * Returns the index of the first step, from the given index in the given
@@ -320,7 +324,13 @@ export default function Tour({
 
 	return (
 		<>
-			<OverlayMask bounds={bounds} onBoundsChange={setBounds} visible />
+			<OverlayMask
+				borderRadius={OVERLAY_BORDER_RADIUS}
+				bounds={bounds}
+				onBoundsChange={setBounds}
+				padding={OVERLAY_PADDING}
+				visible
+			/>
 
 			<FocusTrap active focusElementRef={popoverRef}>
 				<ClayPopover
@@ -328,8 +338,8 @@ export default function Tour({
 					aria-describedby={contentId}
 					aria-labelledby={titleId}
 					aria-modal="true"
+					className="lfr-tour-popover"
 					disableScroll
-					displayType="secondary"
 					header={
 						<ClayLayout.ContentRow noGutters verticalAlign="center">
 							<ClayLayout.ContentCol expand>
