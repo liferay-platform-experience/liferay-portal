@@ -5,9 +5,62 @@
 
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
-import React from 'react';
+import {sessionStorage} from 'frontend-js-web';
+import React, {useEffect} from 'react';
+
+const PAUSED_STEP_KEY = 'frontend-js-tour-sample-web.pausedStep';
+
+/**
+ * The trigger owns the tour state: it stores the step a paused tour stopped
+ * at, so the tour can be started again paused at that step after a reload.
+ */
+function startTour(options: {initialStep?: number; paused?: boolean} = {}) {
+	Liferay.Tour.start({
+		...options,
+		dismissable: true,
+		lockScroll: true,
+		onClose: () => sessionStorage.removeItem(PAUSED_STEP_KEY),
+		onPause: (stepIndex) =>
+			sessionStorage.setItem(
+				PAUSED_STEP_KEY,
+				String(stepIndex),
+				sessionStorage.TYPES.NECESSARY
+			),
+		pauseable: true,
+		steps: [
+			{
+				content: 'Your account, notifications and settings live here.',
+				selector: '.portlet-user-personal-bar',
+				title: 'Your profile',
+			},
+			{
+				content: 'Submit the form from here once you are done.',
+				positioning: 'bottom',
+				selector: '#tourSampleSubmit',
+				title: 'Submit',
+			},
+			{
+				content: 'Type your name in this field.',
+				positioning: 'top',
+				selector: '#tourSampleName',
+				title: 'Name',
+			},
+		],
+	});
+}
 
 export function App() {
+	useEffect(() => {
+		const pausedStep = sessionStorage.getItem(
+			PAUSED_STEP_KEY,
+			sessionStorage.TYPES.NECESSARY
+		);
+
+		if (pausedStep !== null) {
+			startTour({initialStep: Number(pausedStep), paused: true});
+		}
+	}, []);
+
 	return (
 		<div>
 			<h2>Tour Sample Portlet</h2>
@@ -17,38 +70,7 @@ export function App() {
 				below to start a tour of this widget and of the page header.
 			</p>
 
-			<ClayButton
-				onClick={() =>
-					Liferay.Tour.start({
-						dismissable: true,
-						lockScroll: true,
-						pauseable: true,
-						steps: [
-							{
-								content:
-									'Your account, notifications and settings live here.',
-								selector: '.portlet-user-personal-bar',
-								title: 'Your profile',
-							},
-							{
-								content:
-									'Submit the form from here once you are done.',
-								positioning: 'bottom',
-								selector: '#tourSampleSubmit',
-								title: 'Submit',
-							},
-							{
-								content: 'Type your name in this field.',
-								positioning: 'top',
-								selector: '#tourSampleName',
-								title: 'Name',
-							},
-						],
-					})
-				}
-			>
-				Take the Tour
-			</ClayButton>
+			<ClayButton onClick={() => startTour()}>Take the Tour</ClayButton>
 
 			<hr />
 

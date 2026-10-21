@@ -310,6 +310,35 @@ describe('Tour', () => {
 		).toBeInTheDocument();
 	});
 
+	it('starts at the given step', () => {
+		renderTour({initialStep: 1});
+
+		expect(screen.getByRole('dialog')).toHaveAccessibleName(/Title 2$/);
+	});
+
+	it('reports the step a pauseable tour is paused at', async () => {
+		const onPause = jest.fn();
+
+		renderTour({onPause, pauseable: true});
+
+		await userEvent.click(screen.getByRole('button', {name: 'next'}));
+		await userEvent.click(screen.getByRole('button', {name: 'close'}));
+
+		expect(onPause).toHaveBeenCalledWith(1);
+	});
+
+	it('starts paused at the given step when asked to', async () => {
+		renderTour({initialStep: 2, pauseable: true, paused: true});
+
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'resume-the-tour'})
+		);
+
+		expect(screen.getByRole('dialog')).toHaveAccessibleName(/Title 3$/);
+	});
+
 	it('does not leave a hotspot when a pauseable tour is finished', async () => {
 		const onClose = jest.fn();
 

@@ -51,6 +51,12 @@ export type TourDefinition = {
 	dismissable?: boolean;
 
 	/**
+	 * Index of the step the tour starts at, 0 by default. Steps whose element
+	 * is not in the DOM are skipped from there on.
+	 */
+	initialStep?: number;
+
+	/**
 	 * Whether the page cannot be scrolled while the tour is open, so the
 	 * highlighted element never leaves the viewport.
 	 */
@@ -63,11 +69,25 @@ export type TourDefinition = {
 	onClose?: (reason: TourCloseReason) => void;
 
 	/**
+	 * Called when a pauseable tour is paused, with the index of the step it
+	 * stopped at, so the trigger can store it and start the tour again paused
+	 * at that step after a reload or a navigation.
+	 */
+	onPause?: (stepIndex: number) => void;
+
+	/**
 	 * Whether closing the popover pauses the tour instead of ending it: a
 	 * hotspot stays on the highlighted element and resumes the tour from
 	 * that step. Finishing the last step always ends the tour.
 	 */
 	pauseable?: boolean;
+
+	/**
+	 * Whether the tour starts paused, showing the hotspot on the element of
+	 * the initial step instead of the popover. Meant for a pauseable tour
+	 * that the trigger restores after a reload or a navigation.
+	 */
+	paused?: boolean;
 
 	steps: TourStep[];
 };

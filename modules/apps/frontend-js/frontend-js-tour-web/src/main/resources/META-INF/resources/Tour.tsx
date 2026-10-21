@@ -152,13 +152,20 @@ function getArrowAlignment(
 export default function Tour({
 	closeable = true,
 	dismissable = false,
+	initialStep = 0,
 	lockScroll = false,
 	onClose,
+	onPause,
 	pauseable = false,
+	paused = false,
 	steps,
 }: TourDefinition) {
 	const [currentStepIndex, setCurrentStepIndex] = useState(() =>
-		findStepIndex(steps, 0, 1)
+		findStepIndex(
+			steps,
+			Math.max(0, Math.min(initialStep, steps.length - 1)),
+			1
+		)
 	);
 
 	const step: TourStep | undefined = steps[currentStepIndex];
@@ -171,7 +178,9 @@ export default function Tour({
 
 	const [dismissed, setDismissed] = useState(false);
 
-	const [status, setStatus] = useState<'closed' | 'open' | 'paused'>('open');
+	const [status, setStatus] = useState<'closed' | 'open' | 'paused'>(
+		paused ? 'paused' : 'open'
+	);
 
 	const contentId = useId();
 
@@ -289,6 +298,8 @@ export default function Tour({
 		}
 		else if (pauseable && reason === 'closed') {
 			setStatus('paused');
+
+			onPause?.(currentStepIndex);
 
 			return;
 		}
