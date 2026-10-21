@@ -6,50 +6,157 @@
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import {sessionStorage} from 'frontend-js-web';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+
+const DISMISSED_KEY = 'frontend-js-tour-sample-web.dismissed';
 
 const PAUSED_STEP_KEY = 'frontend-js-tour-sample-web.pausedStep';
 
+const STEPS = [
+	{
+		content: 'Your account, notifications and settings live here.',
+		selector: '.portlet-user-personal-bar',
+		title: 'Your profile',
+	},
+	{
+		content: 'Submit the form from here once you are done.',
+		positioning: 'bottom' as const,
+		selector: '#tourSampleSubmit',
+		title: 'Submit',
+	},
+	{
+		content: 'Type your name in this field.',
+		positioning: 'top' as const,
+		selector: '#tourSampleName',
+		title: 'Name',
+	},
+];
+
+type Scenario = {
+	description: string;
+	name: string;
+	start: (log: (event: string) => void) => void;
+};
+
 /**
- * The trigger owns the tour state: it stores the step a paused tour stopped
- * at, so the tour can be started again paused at that step after a reload.
+ * One scenario per option combination. The trigger (this widget) owns
+ * whatever has to survive a reload: the paused step and the dismissal are
+ * kept in the session storage.
  */
-function startTour(options: {initialStep?: number; paused?: boolean} = {}) {
+const SCENARIOS: Scenario[] = [
+	{
+		description:
+			'No options. Closing with the X or Escape ends the tour, and so does Done on the last step.',
+		name: 'Basic',
+		start: (log) =>
+			Liferay.Tour.start({
+				onClose: (reason) => log(`onClose(${reason})`),
+				steps: STEPS,
+			}),
+	},
+	{
+		description:
+			'The page cannot be scrolled while a step is open; the tour still scrolls between steps.',
+		name: 'Locked scroll',
+		start: (log) =>
+			Liferay.Tour.start({
+				lockScroll: true,
+				onClose: (reason) => log(`onClose(${reason})`),
+				steps: STEPS,
+			}),
+	},
+	{
+		description:
+			'No close button. Escape still ends the tour, so the user is never trapped.',
+		name: 'Not closeable',
+		start: (log) =>
+			Liferay.Tour.start({
+				closeable: false,
+				onClose: (reason) => log(`onClose(${reason})`),
+				steps: STEPS,
+			}),
+	},
+	{
+		description:
+			'Closing pauses the tour and leaves a hotspot on the element. The paused step is stored, so reloading the page restores the hotspot.',
+		name: 'Pauseable',
+		start: (log) => startPauseable(log),
+	},
+	{
+		description:
+			'Shows the "Do not show me this again" checkbox. Once checked, this scenario stops starting the tour until you reset it.',
+		name: 'Dismissable',
+		start: (log) => {
+			if (
+				sessionStorage.getItem(
+					DISMISSED_KEY,
+					sessionStorage.TYPES.NECESSARY
+				)
+			) {
+				log('not started: the user asked not to see it again');
+
+				return;
+			}
+
+			Liferay.Tour.start({
+				dismissable: true,
+				onClose: (reason) => {
+					log(`onClose(${reason})`);
+
+					if (reason === 'dismissed') {
+						sessionStorage.setItem(
+							DISMISSED_KEY,
+							'true',
+							sessionStorage.TYPES.NECESSARY
+						);
+					}
+				},
+				steps: STEPS,
+			});
+		},
+	},
+	{
+		description:
+			'Starts directly on the second step, the way a trigger resumes a tour it stored.',
+		name: 'From the second step',
+		start: (log) =>
+			Liferay.Tour.start({
+				initialStep: 1,
+				onClose: (reason) => log(`onClose(${reason})`),
+				steps: STEPS,
+			}),
+	},
+];
+
+function startPauseable(
+	log: (event: string) => void,
+	options: {initialStep?: number; paused?: boolean} = {}
+) {
 	Liferay.Tour.start({
 		...options,
-		dismissable: true,
 		lockScroll: true,
-		onClose: () => sessionStorage.removeItem(PAUSED_STEP_KEY),
-		onPause: (stepIndex) =>
+		onClose: (reason) => {
+			log(`onClose(${reason})`);
+
+			sessionStorage.removeItem(PAUSED_STEP_KEY);
+		},
+		onPause: (stepIndex) => {
+			log(`onPause(${stepIndex})`);
+
 			sessionStorage.setItem(
 				PAUSED_STEP_KEY,
 				String(stepIndex),
 				sessionStorage.TYPES.NECESSARY
-			),
+			);
+		},
 		pauseable: true,
-		steps: [
-			{
-				content: 'Your account, notifications and settings live here.',
-				selector: '.portlet-user-personal-bar',
-				title: 'Your profile',
-			},
-			{
-				content: 'Submit the form from here once you are done.',
-				positioning: 'bottom',
-				selector: '#tourSampleSubmit',
-				title: 'Submit',
-			},
-			{
-				content: 'Type your name in this field.',
-				positioning: 'top',
-				selector: '#tourSampleName',
-				title: 'Name',
-			},
-		],
+		steps: STEPS,
 	});
 }
 
 export function App() {
+	const [lastEvent, setLastEvent] = useState('none yet');
+
 	useEffect(() => {
 		const pausedStep = sessionStorage.getItem(
 			PAUSED_STEP_KEY,
@@ -57,7 +164,10 @@ export function App() {
 		);
 
 		if (pausedStep !== null) {
-			startTour({initialStep: Number(pausedStep), paused: true});
+			startPauseable(setLastEvent, {
+				initialStep: Number(pausedStep),
+				paused: true,
+			});
 		}
 	}, []);
 
@@ -66,11 +176,46 @@ export function App() {
 			<h2>Tour Sample Portlet</h2>
 
 			<p>
-				This widget shows how a trigger starts a tour. Click the button
-				below to start a tour of this widget and of the page header.
+				Each button starts the same three step tour with a different
+				option combination. The widget plays the role of the trigger: it
+				decides when to start the tour and stores what has to survive a
+				reload.
 			</p>
 
-			<ClayButton onClick={() => startTour()}>Take the Tour</ClayButton>
+			<p>
+				Last event received: <code>{lastEvent}</code>
+			</p>
+
+			<ul className="list-unstyled">
+				{SCENARIOS.map((scenario) => (
+					<li className="mb-3" key={scenario.name}>
+						<ClayButton
+							displayType="secondary"
+							onClick={() => scenario.start(setLastEvent)}
+							size="sm"
+						>
+							{scenario.name}
+						</ClayButton>
+
+						<span className="ml-2 text-secondary">
+							{scenario.description}
+						</span>
+					</li>
+				))}
+			</ul>
+
+			<ClayButton
+				displayType="link"
+				onClick={() => {
+					sessionStorage.removeItem(DISMISSED_KEY);
+					sessionStorage.removeItem(PAUSED_STEP_KEY);
+
+					setLastEvent('stored state reset');
+				}}
+				size="sm"
+			>
+				Reset the stored state
+			</ClayButton>
 
 			<hr />
 
