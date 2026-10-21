@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '6f1fe54d27472833e7ffed23e089532da55ad56da961c18cc2b0d55455a9702b',
+	hash: '0a597b771cd1d95aa48169998f120aceb4b83c22b0421be4ce9a4c7b3a6eb991',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -214,6 +214,7 @@ module.exports = {
 			'react-dom-18/client',
 		],
 		'@liferay/frontend-js-state-web': ['./react'],
+		'@liferay/frontend-js-tour-web': [],
 		'@liferay/frontend-js-walkthrough-sample-web': [],
 		'@liferay/frontend-js-walkthrough-web': [],
 		'@liferay/frontend-taglib': [],
