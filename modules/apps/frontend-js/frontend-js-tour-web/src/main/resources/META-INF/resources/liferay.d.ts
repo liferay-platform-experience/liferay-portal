@@ -8,6 +8,7 @@ declare module Liferay {
 		export function start(tourDefinition: {
 			closeable?: boolean;
 			dismissable?: boolean;
+			id?: string;
 			initialStep?: number;
 			lockScroll?: boolean;
 			onClose?: (reason: 'closed' | 'dismissed' | 'finished') => void;

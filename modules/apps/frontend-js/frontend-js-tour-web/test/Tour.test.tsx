@@ -389,4 +389,82 @@ describe('Tour', () => {
 
 		expect(screen.getByRole('dialog')).toHaveClass('clay-popover-bottom');
 	});
+
+	describe('events', () => {
+		function fired(type: string) {
+			return (Liferay.fire as jest.Mock).mock.calls
+				.filter(([eventType]) => eventType === `tour:${type}`)
+				.map(([, payload]) => payload);
+		}
+
+		it('publishes started and the viewed step when the tour opens', () => {
+			renderTour({id: 'demo'});
+
+			expect(fired('started')).toEqual([{totalSteps: 3, tourId: 'demo'}]);
+			expect(fired('stepViewed')).toEqual([
+				{stepIndex: 0, stepTitle: 'Title 1', tourId: 'demo'},
+			]);
+		});
+
+		it('publishes every viewed step and how the tour ended', async () => {
+			renderTour({id: 'demo'});
+
+			await userEvent.click(screen.getByRole('button', {name: 'next'}));
+			await userEvent.click(screen.getByRole('button', {name: 'next'}));
+			await userEvent.click(screen.getByRole('button', {name: 'done'}));
+
+			expect(fired('stepViewed').map(({stepIndex}) => stepIndex)).toEqual(
+				[0, 1, 2]
+			);
+			expect(fired('ended')).toEqual([
+				{
+					duration: expect.any(Number),
+					reason: 'finished',
+					stepIndex: 2,
+					tourId: 'demo',
+				},
+			]);
+		});
+
+		it('publishes paused and resumed, and starts only once', async () => {
+			renderTour({id: 'demo', pauseable: true});
+
+			await userEvent.click(screen.getByRole('button', {name: 'close'}));
+			await userEvent.click(
+				screen.getByRole('button', {name: 'resume-the-tour'})
+			);
+
+			expect(fired('paused')).toEqual([{stepIndex: 0, tourId: 'demo'}]);
+			expect(fired('resumed')).toEqual([{stepIndex: 0, tourId: 'demo'}]);
+			expect(fired('started')).toHaveLength(1);
+			expect(fired('stepViewed')).toHaveLength(2);
+		});
+
+		it('reports a restored paused tour as resumed, not started', async () => {
+			renderTour({id: 'demo', pauseable: true, paused: true});
+
+			expect(fired('stepViewed')).toHaveLength(0);
+
+			await userEvent.click(
+				screen.getByRole('button', {name: 'resume-the-tour'})
+			);
+
+			expect(fired('started')).toHaveLength(0);
+			expect(fired('resumed')).toEqual([{stepIndex: 0, tourId: 'demo'}]);
+		});
+
+		it('publishes the steps skipped because their element is missing', async () => {
+			jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+			document.getElementById('search')!.remove();
+
+			renderTour({id: 'demo'});
+
+			await userEvent.click(screen.getByRole('button', {name: 'next'}));
+
+			expect(fired('stepSkipped')).toEqual([
+				{selector: '#search', stepIndex: 1, tourId: 'demo'},
+			]);
+		});
+	});
 });

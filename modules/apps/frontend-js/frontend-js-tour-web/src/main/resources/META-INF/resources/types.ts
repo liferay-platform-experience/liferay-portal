@@ -9,6 +9,25 @@ export type AlignPosition = (typeof ALIGN_POSITIONS)[number];
 
 export type TourCloseReason = 'closed' | 'dismissed' | 'finished';
 
+/**
+ * Events published on the Liferay event bus as `tour:<type>`, for example
+ * `Liferay.on('tour:ended', ({reason, tourId}) => ...)`. Every payload
+ * carries the `tourId` of the definition, plus:
+ *
+ * - `started`: `totalSteps`
+ * - `stepViewed`: `stepIndex` and `stepTitle`
+ * - `stepSkipped`: `stepIndex` and `selector`
+ * - `paused` and `resumed`: `stepIndex`
+ * - `ended`: `reason`, `stepIndex` and `duration` in milliseconds
+ */
+export type TourEventType =
+	| 'ended'
+	| 'paused'
+	| 'resumed'
+	| 'started'
+	| 'stepSkipped'
+	| 'stepViewed';
+
 export type TourStep = {
 
 	/**
@@ -49,6 +68,12 @@ export type TourDefinition = {
 	 * decides where to store that preference.
 	 */
 	dismissable?: boolean;
+
+	/**
+	 * Identifies the tour in the events it publishes, so analytics can tell
+	 * one tour from another.
+	 */
+	id?: string;
 
 	/**
 	 * Index of the step the tour starts at, 0 by default. Steps whose element

@@ -25,6 +25,7 @@ import type {
 	AlignPosition,
 	TourCloseReason,
 	TourDefinition,
+	TourEventType,
 	TourStep,
 } from './types';
 
@@ -72,7 +73,12 @@ const POPOVER_GAP = 24;
  * Returns the index of the first step, from the given index in the given
  * direction, whose element is in the DOM, or -1 when there is none.
  */
-function findStepIndex(steps: TourStep[], index: number, direction: 1 | -1) {
+function findStepIndex(
+	steps: TourStep[],
+	index: number,
+	direction: 1 | -1,
+	tourId?: string
+) {
 	for (let i = index; i >= 0 && i < steps.length; i += direction) {
 		if (document.querySelector(steps[i].selector)) {
 			return i;
@@ -81,9 +87,23 @@ function findStepIndex(steps: TourStep[], index: number, direction: 1 | -1) {
 		console.warn(
 			`Tour: skipping step "${steps[i].title}" because its "${steps[i].selector}" element does not exist in the DOM`
 		);
+
+		fireTourEvent('stepSkipped', {
+			selector: steps[i].selector,
+			stepIndex: i,
+			tourId,
+		});
 	}
 
 	return -1;
+}
+
+/**
+ * Publishes a tour event on the Liferay event bus, so analytics tools can
+ * follow a tour without the trigger or the component knowing about them.
+ */
+function fireTourEvent(type: TourEventType, payload: object) {
+	Liferay.fire(`tour:${type}`, payload);
 }
 
 /**
@@ -152,6 +172,7 @@ function getArrowAlignment(
 export default function Tour({
 	closeable = true,
 	dismissable = false,
+	id,
 	initialStep = 0,
 	lockScroll = false,
 	onClose,
@@ -164,7 +185,8 @@ export default function Tour({
 		findStepIndex(
 			steps,
 			Math.max(0, Math.min(initialStep, steps.length - 1)),
-			1
+			1,
+			id
 		)
 	);
 
@@ -187,6 +209,13 @@ export default function Tour({
 	const popoverRef = useRef<HTMLDivElement>(null);
 
 	const previouslyFocusedElementRef = useRef(document.activeElement);
+
+	const startTimeRef = useRef(Date.now());
+
+	// A tour restored paused was started on an earlier page load, so it only
+	// reports that it resumed.
+
+	const startedRef = useRef(paused);
 
 	const titleId = useId();
 
@@ -278,6 +307,24 @@ export default function Tour({
 		}
 	}, [element, status]);
 
+	useEffect(() => {
+		if (status !== 'open' || !steps[currentStepIndex]) {
+			return;
+		}
+
+		if (!startedRef.current) {
+			startedRef.current = true;
+
+			fireTourEvent('started', {totalSteps: steps.length, tourId: id});
+		}
+
+		fireTourEvent('stepViewed', {
+			stepIndex: currentStepIndex,
+			stepTitle: steps[currentStepIndex].title,
+			tourId: id,
+		});
+	}, [currentStepIndex, id, status, steps]);
+
 	// Focus goes back to the trigger once the popover is gone, after the focus
 	// trap has released the rest of the page.
 
@@ -299,12 +346,21 @@ export default function Tour({
 		else if (pauseable && reason === 'closed') {
 			setStatus('paused');
 
+			fireTourEvent('paused', {stepIndex: currentStepIndex, tourId: id});
+
 			onPause?.(currentStepIndex);
 
 			return;
 		}
 
 		setStatus('closed');
+
+		fireTourEvent('ended', {
+			duration: Date.now() - startTimeRef.current,
+			reason,
+			stepIndex: currentStepIndex,
+			tourId: id,
+		});
 
 		onClose?.(reason);
 	};
@@ -315,7 +371,7 @@ export default function Tour({
 	};
 
 	const onNext = () => {
-		const nextStepIndex = findStepIndex(steps, currentStepIndex + 1, 1);
+		const nextStepIndex = findStepIndex(steps, currentStepIndex + 1, 1, id);
 
 		if (nextStepIndex === -1) {
 			close('finished');
@@ -329,7 +385,8 @@ export default function Tour({
 		const previousStepIndex = findStepIndex(
 			steps,
 			currentStepIndex - 1,
-			-1
+			-1,
+			id
 		);
 
 		if (previousStepIndex !== -1) {
@@ -342,7 +399,19 @@ export default function Tour({
 	}
 
 	if (status === 'paused') {
-		return <Hotspot element={element} onClick={() => setStatus('open')} />;
+		return (
+			<Hotspot
+				element={element}
+				onClick={() => {
+					fireTourEvent('resumed', {
+						stepIndex: currentStepIndex,
+						tourId: id,
+					});
+
+					setStatus('open');
+				}}
+			/>
+		);
 	}
 
 	return (

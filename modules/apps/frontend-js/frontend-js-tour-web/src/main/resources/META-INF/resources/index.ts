@@ -9,7 +9,12 @@ import Tour from './Tour';
 
 import type {TourDefinition} from './types';
 
-export type {TourCloseReason, TourDefinition, TourStep} from './types';
+export type {
+	TourCloseReason,
+	TourDefinition,
+	TourEventType,
+	TourStep,
+} from './types';
 
 const COMPONENT_ID = 'tour';
 
