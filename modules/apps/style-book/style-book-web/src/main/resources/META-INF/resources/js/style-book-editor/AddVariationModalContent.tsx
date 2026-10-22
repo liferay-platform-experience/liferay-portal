@@ -62,15 +62,12 @@ export default function AddVariationModalContent({
 		({key}) => key === COLOR_SCHEME_CUSTOM || !variationKeys.includes(key)
 	);
 
-	const [colorScheme, setColorScheme] = useState<React.Key>(
-		colorSchemes[0].key
-	);
-	const [customKey, setCustomKey] = useState<string>('');
-	const [customKeyErrorMessage, setCustomKeyErrorMessage] =
-		useState<string>('');
+	const [colorScheme, setColorScheme] = useState(colorSchemes[0].key);
+	const [customKey, setCustomKey] = useState('');
+	const [customKeyErrorMessage, setCustomKeyErrorMessage] = useState('');
 	const [loading, setLoading] = useState(false);
-	const [name, setName] = useState<string>(getLabel(colorSchemes[0].key));
-	const [nameErrorMessage, setNameErrorMessage] = useState<string>('');
+	const [name, setName] = useState(getLabel(colorSchemes[0].key));
+	const [nameErrorMessage, setNameErrorMessage] = useState('');
 
 	const validateCustomKey = (customKey: string) => {
 		let errorMessage = '';
@@ -116,10 +113,7 @@ export default function AddVariationModalContent({
 		setLoading(true);
 
 		onAdd({
-			key:
-				colorScheme === COLOR_SCHEME_CUSTOM
-					? customKey
-					: String(colorScheme),
+			key: colorScheme === COLOR_SCHEME_CUSTOM ? customKey : colorScheme,
 			name: name.trim(),
 		}).catch((error) => {
 			setNameErrorMessage(
@@ -160,7 +154,7 @@ export default function AddVariationModalContent({
 							items={colorSchemes}
 							messages={PICKER_MESSAGES}
 							onSelectionChange={(key: React.Key) => {
-								setColorScheme(key);
+								setColorScheme(String(key));
 								setCustomKeyErrorMessage('');
 
 								if (key !== COLOR_SCHEME_CUSTOM) {
