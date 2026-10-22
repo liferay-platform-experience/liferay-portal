@@ -6,7 +6,7 @@
 import Icon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import classNames from 'classnames';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import {AlertIndicator} from './AlertIndicator';
 import {ConditionalContainer} from './ConditionalContainer';
@@ -35,6 +35,12 @@ export interface IClayAlertProps
 	 * is passed in, the timeout will be 10000ms.
 	 */
 	autoClose?: boolean | number;
+
+	/**
+	 * Flag to indicate the alert should receive focus when it is shown, so
+	 * screen readers announce it and keyboard users can reach it.
+	 */
+	autoFocus?: boolean;
 
 	/**
 	 * Aria label for the dismissable alert close button.
@@ -101,6 +107,7 @@ const VARIANTS = ['inline', 'feedback'];
 function ClayAlert({
 	actions,
 	autoClose,
+	autoFocus = false,
 	children,
 	className,
 	closeButtonAriaLabel = 'Close',
@@ -121,6 +128,15 @@ function ClayAlert({
 	});
 	const showDismissible = onClose && !hideCloseIcon;
 
+	const contentRowRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		if (autoFocus && contentRowRef.current) {
+			contentRowRef.current.setAttribute('tabindex', '-1');
+			contentRowRef.current.focus();
+		}
+	}, []);
+
 	return (
 		<div
 			{...otherProps}
@@ -140,6 +156,7 @@ function ClayAlert({
 			>
 				<ClayLayout.ContentRow
 					className="alert-autofit-row"
+					ref={contentRowRef}
 					role={role as string}
 				>
 					{!VARIANTS.includes(variant as string) && (
