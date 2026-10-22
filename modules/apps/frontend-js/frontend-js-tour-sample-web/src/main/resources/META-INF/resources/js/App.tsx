@@ -32,6 +32,27 @@ const STEPS = [
 	},
 ];
 
+const TOUR_EVENT_KEYS = [
+	'duration',
+	'reason',
+	'selector',
+	'stepIndex',
+	'stepTitle',
+	'totalSteps',
+	'tourId',
+];
+
+const TOUR_EVENT_TYPES = [
+	'ended',
+	'paused',
+	'resumed',
+	'started',
+	'stepSkipped',
+	'stepViewed',
+];
+
+const TOUR_ID = 'tour-sample';
+
 type Scenario = {
 	description: string;
 	name: string;
@@ -50,6 +71,7 @@ const SCENARIOS: Scenario[] = [
 		name: 'Basic',
 		start: (log) =>
 			Liferay.Tour.start({
+				id: TOUR_ID,
 				onClose: (reason) => log(`onClose(${reason})`),
 				steps: STEPS,
 			}),
@@ -60,6 +82,7 @@ const SCENARIOS: Scenario[] = [
 		name: 'Locked scroll',
 		start: (log) =>
 			Liferay.Tour.start({
+				id: TOUR_ID,
 				lockScroll: true,
 				onClose: (reason) => log(`onClose(${reason})`),
 				steps: STEPS,
@@ -72,6 +95,7 @@ const SCENARIOS: Scenario[] = [
 		start: (log) =>
 			Liferay.Tour.start({
 				closeable: false,
+				id: TOUR_ID,
 				onClose: (reason) => log(`onClose(${reason})`),
 				steps: STEPS,
 			}),
@@ -100,6 +124,7 @@ const SCENARIOS: Scenario[] = [
 
 			Liferay.Tour.start({
 				dismissable: true,
+				id: TOUR_ID,
 				onClose: (reason) => {
 					log(`onClose(${reason})`);
 
@@ -121,6 +146,7 @@ const SCENARIOS: Scenario[] = [
 		name: 'From the second step',
 		start: (log) =>
 			Liferay.Tour.start({
+				id: TOUR_ID,
 				initialStep: 1,
 				onClose: (reason) => log(`onClose(${reason})`),
 				steps: STEPS,
@@ -134,6 +160,7 @@ function startPauseable(
 ) {
 	Liferay.Tour.start({
 		...options,
+		id: TOUR_ID,
 		lockScroll: true,
 		onClose: (reason) => {
 			log(`onClose(${reason})`);
@@ -156,6 +183,29 @@ function startPauseable(
 
 export function App() {
 	const [lastEvent, setLastEvent] = useState('none yet');
+
+	const [lastTourEvent, setLastTourEvent] = useState('none yet');
+
+	// The tour publishes its events on the Liferay event bus. This is what an
+	// analytics adapter listens to, for example to forward them to Pendo.
+
+	useEffect(() => {
+		const handles = TOUR_EVENT_TYPES.map((type) =>
+			Liferay.on(`tour:${type}`, (event) =>
+				setLastTourEvent(
+					`tour:${type} ${JSON.stringify(
+						Object.fromEntries(
+							TOUR_EVENT_KEYS.filter(
+								(key) => event[key] !== undefined
+							).map((key) => [key, event[key]])
+						)
+					)}`
+				)
+			)
+		);
+
+		return () => handles.forEach((handle) => handle.detach());
+	}, []);
 
 	useEffect(() => {
 		const pausedStep = sessionStorage.getItem(
@@ -182,8 +232,12 @@ export function App() {
 				reload.
 			</p>
 
+			<p className="mb-1">
+				Last callback received: <code>{lastEvent}</code>
+			</p>
+
 			<p>
-				Last event received: <code>{lastEvent}</code>
+				Last event published: <code>{lastTourEvent}</code>
 			</p>
 
 			<ul className="list-unstyled">
