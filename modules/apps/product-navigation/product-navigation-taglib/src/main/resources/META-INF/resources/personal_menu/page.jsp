@@ -26,6 +26,8 @@ String impersonateStickerCssClasses = "sticker";
 if (size != null) {
 	impersonateStickerCssClasses += " sticker-sm";
 }
+
+boolean showColorSchemeButton = FeatureFlagManagerUtil.isEnabled("LPD-57922") && (themeDisplay.isShowControlPanelIcon() || GroupPermissionUtil.contains(themeDisplay.getPermissionChecker(), themeDisplay.getScopeGroup(), ActionKeys.VIEW_SITE_ADMINISTRATION));
 %>
 
 <aui:link hashedFile="<%= true %>" href="product-navigation-taglib/css/main.css" rel="stylesheet" type="text/css" />
@@ -82,6 +84,8 @@ if (size != null) {
 		).buildString()
 	).put(
 		"label", label
+	).put(
+		"showColorSchemeButton", showColorSchemeButton
 	).put(
 		"size", size
 	).put(
