@@ -118,7 +118,7 @@ public class ScopedCSSVariablesTopHeadDynamicInclude
 				printWriter.print(_escapeCSSValue(mediaQuery));
 				printWriter.print(" {\n");
 
-				indent = "\t\t";
+				indent += StringPool.TAB;
 			}
 
 			printWriter.print(indent);
