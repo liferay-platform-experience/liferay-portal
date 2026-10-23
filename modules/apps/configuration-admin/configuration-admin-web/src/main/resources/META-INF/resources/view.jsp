@@ -14,6 +14,8 @@ ConfigurationEntryRetriever configurationEntryRetriever = (ConfigurationEntryRet
 ConfigurationScopeDisplayContext configurationScopeDisplayContext = ConfigurationScopeDisplayContextFactory.create(renderRequest);
 
 ExtendedObjectClassDefinition.Scope scope = configurationScopeDisplayContext.getScope();
+
+Map<String, ConfigurationCategoryMenuDisplay> configurationCategoryMenuDisplays = configurationEntryRetriever.getConfigurationCategoryMenuDisplays(themeDisplay.getLanguageId(), scope, configurationScopeDisplayContext.getScopePK());
 %>
 
 <aui:style type="text/css">
@@ -74,7 +76,7 @@ ExtendedObjectClassDefinition.Scope scope = configurationScopeDisplayContext.get
 
 					<%
 					for (ConfigurationCategoryDisplay configurationCategoryDisplay : configurationCategorySectionDisplay.getConfigurationCategoryDisplays()) {
-						ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay = configurationEntryRetriever.getConfigurationCategoryMenuDisplay(configurationCategoryDisplay.getCategoryKey(), themeDisplay.getLanguageId(), configurationScopeDisplayContext.getScope(), configurationScopeDisplayContext.getScopePK());
+						ConfigurationCategoryMenuDisplay configurationCategoryMenuDisplay = configurationCategoryMenuDisplays.get(configurationCategoryDisplay.getCategoryKey());
 
 						if (configurationCategoryMenuDisplay.isEmpty()) {
 							continue;
