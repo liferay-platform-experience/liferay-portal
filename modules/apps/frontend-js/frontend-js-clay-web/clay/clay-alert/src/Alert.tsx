@@ -6,8 +6,10 @@
 import Icon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import classNames from 'classnames';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 
+import {AlertIndicator} from './AlertIndicator';
+import {ConditionalContainer} from './ConditionalContainer';
 import {ClayAlertFooter} from './Footer';
 import {ClayToastContainer} from './ToastContainer';
 import {useAutoClose} from './useAutoClose';
@@ -35,6 +37,12 @@ export interface IClayAlertProps
 	autoClose?: boolean | number;
 
 	/**
+	 * Flag to indicate the alert should receive focus when it is shown, so
+	 * screen readers announce it and keyboard users can reach it.
+	 */
+	autoFocus?: boolean;
+
+	/**
 	 * Aria label for the dismissable alert close button.
 	 */
 	closeButtonAriaLabel?: string;
@@ -58,7 +66,7 @@ export interface IClayAlertProps
 	/**
 	 * Callback function for when the 'x' is clicked.
 	 */
-	onClose?: () => void;
+	onClose?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
 
 	/**
 	 * The alert role is for important, and usually time-sensitive, information.
@@ -99,6 +107,7 @@ const VARIANTS = ['inline', 'feedback'];
 function ClayAlert({
 	actions,
 	autoClose,
+	autoFocus = false,
 	children,
 	className,
 	closeButtonAriaLabel = 'Close',
@@ -117,23 +126,16 @@ function ClayAlert({
 		autoClose,
 		onClose,
 	});
-	const ConditionalContainer = ({children}: any) =>
-		variant === 'stripe' ? (
-			<div className={classNames('container', containerClassName)}>
-				{children}
-			</div>
-		) : (
-			<>{children}</>
-		);
 	const showDismissible = onClose && !hideCloseIcon;
-	const AlertIndicator = () => (
-		<span className="alert-indicator">
-			<Icon
-				spritemap={spritemap}
-				symbol={symbol || ICON_MAP[displayType]}
-			/>
-		</span>
-	);
+
+	const contentRowRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		if (autoFocus && contentRowRef.current) {
+			contentRowRef.current.setAttribute('tabindex', '-1');
+			contentRowRef.current.focus();
+		}
+	}, []);
 
 	return (
 		<div
@@ -148,15 +150,22 @@ function ClayAlert({
 			onMouseOut={startAutoCloseTimer}
 			onMouseOver={pauseAutoCloseTimer}
 		>
-			<ConditionalContainer>
+			<ConditionalContainer
+				className={containerClassName}
+				variant={variant}
+			>
 				<ClayLayout.ContentRow
 					className="alert-autofit-row"
+					ref={contentRowRef}
 					role={role as string}
 				>
 					{!VARIANTS.includes(variant as string) && (
 						<ClayLayout.ContentCol>
 							<ClayLayout.ContentSection>
-								<AlertIndicator />
+								<AlertIndicator
+									spritemap={spritemap}
+									symbol={symbol || ICON_MAP[displayType]}
+								/>
 							</ClayLayout.ContentSection>
 						</ClayLayout.ContentCol>
 					)}
@@ -164,7 +173,10 @@ function ClayAlert({
 					<ClayLayout.ContentCol expand>
 						<ClayLayout.ContentSection>
 							{VARIANTS.includes(variant as string) && (
-								<AlertIndicator />
+								<AlertIndicator
+									spritemap={spritemap}
+									symbol={symbol || ICON_MAP[displayType]}
+								/>
 							)}
 
 							{title && <strong className="lead">{title}</strong>}
