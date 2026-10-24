@@ -71,6 +71,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 import com.liferay.style.book.util.StyleBookUtil;
 import com.liferay.style.book.web.internal.util.StyleBookFrontendTokenDefinitionUtil;
 
@@ -145,8 +146,9 @@ public class EditStyleBookEntryDisplayContext {
 			() -> {
 				StyleBookEntry styleBookEntry = _getStyleBookEntry();
 
-				return JSONFactoryUtil.createJSONObject(
-					styleBookEntry.getFrontendTokensValues());
+				return StyleBookFrontendTokensValuesUtil.
+					getVariationsJSONObject(
+						styleBookEntry.getFrontendTokensValues());
 			}
 		).put(
 			"isPrivateLayoutsEnabled",

@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.style.book.internal.upgrade.v1_10_0.StyleBookEntryFrontendTokensValuesUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_10_1.StyleBookEntryDefaultStyleBookEntryUpgradeProcess;
+import com.liferay.style.book.internal.upgrade.v1_12_0.StyleBookEntryFrontendTokensValuesVariationsUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_1_0.StyleBookEntryUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_2_0.StyleBookEntryVersionUpgradeProcess;
 import com.liferay.style.book.internal.upgrade.v1_7_0.StyleBookEntryThemeIdUpgradeProcess;
@@ -125,6 +126,10 @@ public class StyleBookServiceUpgradeStepRegistrator
 					WorkflowConstants.STATUS_APPROVED,
 				"update StyleBookEntryVersion set status = " +
 					WorkflowConstants.STATUS_APPROVED));
+
+		registry.register(
+			"1.11.0", "1.12.0",
+			new StyleBookEntryFrontendTokensValuesVariationsUpgradeProcess());
 	}
 
 	@Reference

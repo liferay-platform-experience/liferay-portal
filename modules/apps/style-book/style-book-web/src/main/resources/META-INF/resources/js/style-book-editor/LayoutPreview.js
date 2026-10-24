@@ -17,10 +17,15 @@ import {
 	usePreviewLayoutType,
 	useSetLoading,
 } from './contexts/LayoutContext';
-import {useFrontendTokensValues} from './contexts/StyleBookEditorContext';
+import {
+	useActiveVariation,
+	useEffectiveFrontendTokensValues,
+} from './contexts/StyleBookEditorContext';
+import {DEFAULT_VARIATION} from './utils/variations';
 
 export default React.memo(function LayoutPreview() {
-	const frontendTokensValues = useFrontendTokensValues();
+	const activeVariation = useActiveVariation();
+	const frontendTokensValues = useEffectiveFrontendTokensValues();
 	const loading = useLoading();
 	const previewLayout = usePreviewLayout();
 	const previewLayoutType = usePreviewLayoutType();
@@ -36,6 +41,16 @@ export default React.memo(function LayoutPreview() {
 			if (root) {
 				root.removeAttribute('style');
 
+				// The variation key is the color scheme the preview follows, so
+				// a theme that reacts to it (Prism) shows its own matching
+				// values too. The default variation is previewed as light, so
+				// neither the user's nor the OS's dark preference leaks in.
+
+				root.dataset.colorScheme =
+					activeVariation === DEFAULT_VARIATION
+						? 'light'
+						: activeVariation;
+
 				for (const {
 					cssVariableMapping,
 					value,
@@ -46,7 +61,7 @@ export default React.memo(function LayoutPreview() {
 				setLoading(false);
 			}
 		}
-	}, [frontendTokensValues, iframeLoaded, setLoading]);
+	}, [activeVariation, frontendTokensValues, iframeLoaded, setLoading]);
 
 	useEffect(() => {
 		loadFrontendTokenValues();

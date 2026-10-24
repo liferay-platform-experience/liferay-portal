@@ -71,17 +71,17 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		String frontendTokenDefinition =
 			FrontendTokenDefinitionTestUtil.getFrontendTokenDefinition(
 				frontendTokenName);
-		String frontendTokensValues = JSONUtil.put(
-			StringBundler.concat(
-				StyleBookConstants.FRONTEND_TOKEN_DEFINITION_ID_CUSTOM,
-				StringPool.COLON, frontendTokenName),
-			JSONUtil.put("value", RandomTestUtil.randomString())
-		).toString();
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-				false, frontendTokenDefinition, frontendTokensValues,
+				false, frontendTokenDefinition,
+				JSONUtil.put(
+					StringBundler.concat(
+						StyleBookConstants.FRONTEND_TOKEN_DEFINITION_ID_CUSTOM,
+						StringPool.COLON, frontendTokenName),
+					JSONUtil.put("value", RandomTestUtil.randomString())
+				).toString(),
 				RandomTestUtil.randomString(), StringPool.BLANK,
 				_THEME_ID_ADMIN,
 				ServiceContextTestUtil.getServiceContext(
@@ -108,7 +108,7 @@ public class StyleBookEntryStagedModelDataHandlerTest
 			frontendTokenDefinition,
 			importedStyleBookEntry.getFrontendTokenDefinition());
 		Assert.assertEquals(
-			frontendTokensValues,
+			styleBookEntry.getFrontendTokensValues(),
 			importedStyleBookEntry.getFrontendTokensValues());
 		Assert.assertTrue(importedStyleBookEntry.getPreviewFileEntryId() > 0);
 		DateTestUtil.assertEquals(

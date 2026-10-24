@@ -60,6 +60,7 @@ import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
+import com.liferay.style.book.util.StyleBookFrontendTokensValuesUtil;
 import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessorImportResultEntry;
 
 import java.io.File;
@@ -811,8 +812,9 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 				_targetGroup.getGroupId(), styleBookEntryKey);
 
 		JSONObject frontendTokensValuesJSONObject =
-			JSONFactoryUtil.createJSONObject(
-				targetGroupStyleBookEntry.getFrontendTokensValues());
+			StyleBookFrontendTokensValuesUtil.
+				getDefaultFrontendTokensValuesJSONObject(
+					targetGroupStyleBookEntry.getFrontendTokensValues());
 
 		JSONObject frontendTokenValueJSONObject =
 			frontendTokensValuesJSONObject.getJSONObject(
