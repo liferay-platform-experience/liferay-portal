@@ -15,6 +15,7 @@ const rectAttrs: Array<keyof DOMRect> = [
 interface IRectState {
 	callback: (rect?: DOMRect) => void;
 	hasRectChanged: boolean;
+	rafId?: number;
 	rect: DOMRect | undefined;
 }
 
@@ -22,21 +23,27 @@ function rectChanged(a: DOMRect = {} as DOMRect, b: DOMRect = {} as DOMRect) {
 	return rectAttrs.some((prop) => a[prop] !== b[prop]);
 }
 
-let rafId: number;
-
 function run(node: Element, state: IRectState) {
 	const newRect = node.getBoundingClientRect();
 	if (rectChanged(newRect, state.rect)) {
 		state.rect = newRect;
 		state.callback(state.rect);
 	}
-	rafId = window.requestAnimationFrame(() => run(node, state));
+	state.rafId = window.requestAnimationFrame(() => run(node, state));
 }
 
 export function observeRect(node: Element, callback: (rect?: DOMRect) => void) {
-	run(node, {callback, hasRectChanged: false, rect: undefined});
+	const state: IRectState = {
+		callback,
+		hasRectChanged: false,
+		rect: undefined,
+	};
+
+	run(node, state);
 
 	return () => {
-		cancelAnimationFrame(rafId);
+		if (state.rafId) {
+			cancelAnimationFrame(state.rafId);
+		}
 	};
 }

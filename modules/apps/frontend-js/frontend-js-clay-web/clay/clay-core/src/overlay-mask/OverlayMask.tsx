@@ -23,14 +23,15 @@ function MoveTo(x: number, y: number) {
 function LineTo(x: number, y: number) {
 	return `L ${x} ${y}`;
 }
-function EllipticalArcCurve(toX: number, toY: number) {
-	return `A 0,0 0 0 0 ${toX},${toY}`;
+function EllipticalArcCurve(radius: number, toX: number, toY: number) {
+	return `A ${radius},${radius} 0 0 0 ${toX},${toY}`;
 }
 
 function createClipPath(
 	bounds: Bounds,
 	containerBounds: Bounds,
-	padding: number
+	padding: number,
+	borderRadius: number
 ) {
 	const parentBounds = {
 		endX: containerBounds.width,
@@ -43,21 +44,29 @@ function createClipPath(
 	const startY = bounds.y - padding;
 	const endY = startY + bounds.height + padding * 2;
 
+	// The corners cannot be rounder than half of the shortest side.
+
+	const radius = Math.min(
+		borderRadius,
+		(endX - startX) / 2,
+		(endY - startY) / 2
+	);
+
 	return [
 		MoveTo(parentBounds.startX, parentBounds.startY),
 		LineTo(parentBounds.startX, parentBounds.endY),
 		LineTo(parentBounds.endX, parentBounds.endY),
 		LineTo(parentBounds.endX, parentBounds.startY),
 		'z',
-		MoveTo(startX, startY),
-		LineTo(startX, endY),
-		EllipticalArcCurve(startX, endY),
-		LineTo(endX, endY),
-		EllipticalArcCurve(endX, endY),
-		LineTo(endX, startY),
-		EllipticalArcCurve(endX, startY),
-		LineTo(startX, startY),
-		EllipticalArcCurve(startX, startY),
+		MoveTo(startX, startY + radius),
+		LineTo(startX, endY - radius),
+		EllipticalArcCurve(radius, startX + radius, endY),
+		LineTo(endX - radius, endY),
+		EllipticalArcCurve(radius, endX, endY - radius),
+		LineTo(endX, startY + radius),
+		EllipticalArcCurve(radius, endX - radius, startY),
+		LineTo(startX + radius, startY),
+		EllipticalArcCurve(radius, startX, startY + radius),
 	].join(' ');
 }
 
@@ -124,6 +133,11 @@ function SVG({children}: ContainerProps) {
 type Props<T> = {
 
 	/**
+	 * Sets the radius of the corners of the highlight area.
+	 */
+	borderRadius?: number;
+
+	/**
 	 * Sets the current value of bounds to define the highlight area (controlled).
 	 */
 	bounds?: Bounds;
@@ -161,6 +175,7 @@ type Props<T> = {
 
 export function OverlayMask<T extends HTMLElement>({
 	defaultBounds = initialBounds,
+	borderRadius = 0,
 	bounds,
 	children,
 	onClick,
@@ -233,7 +248,8 @@ export function OverlayMask<T extends HTMLElement>({
 										d={createClipPath(
 											internalBounds,
 											containerBounds,
-											padding
+											padding,
+											borderRadius
 										)}
 									/>
 								</clipPath>

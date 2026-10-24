@@ -154,6 +154,8 @@ export default [
 	'@liferay/frontend-js-item-selector-web',
 	'@liferay/frontend-js-react-web',
 	'@liferay/frontend-js-state-web',
+	'@liferay/frontend-js-tour-sample-web',
+	'@liferay/frontend-js-tour-web',
 	'@liferay/frontend-js-walkthrough-sample-web',
 	'@liferay/frontend-js-walkthrough-web',
 	'@liferay/frontend-taglib',
