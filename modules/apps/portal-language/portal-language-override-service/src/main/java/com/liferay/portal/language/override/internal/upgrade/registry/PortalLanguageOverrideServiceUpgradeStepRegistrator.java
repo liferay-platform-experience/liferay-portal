@@ -7,6 +7,7 @@ package com.liferay.portal.language.override.internal.upgrade.registry;
 
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.language.override.internal.upgrade.v1_1_0.PLOEntryExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.language.override.internal.upgrade.v1_2_0.PLOEntryLanguageIdUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -30,6 +31,11 @@ public class PortalLanguageOverrideServiceUpgradeStepRegistrator
 
 		registry.register(
 			"1.1.0", "1.2.0", new PLOEntryLanguageIdUpgradeProcess());
+
+		registry.register(
+			"1.2.0", "1.3.0",
+			UpgradeProcessFactory.addColumns(
+				"PLOEntry", "userName VARCHAR(75) null"));
 	}
 
 }
