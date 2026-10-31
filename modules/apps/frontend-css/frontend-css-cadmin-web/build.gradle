@@ -4,3 +4,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
 }
+
+packageRunBuild {
+	inputs.files fileTree("../../frontend-js/frontend-js-clay-web/clay/clay-css/src/scss")
+}
