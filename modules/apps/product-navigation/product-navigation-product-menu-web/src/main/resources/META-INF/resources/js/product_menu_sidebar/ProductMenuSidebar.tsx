@@ -18,22 +18,41 @@ import {
 	useUnifiedSidebarItems,
 	useUnifiedSidebarStuck,
 } from 'frontend-js-components-web';
-import React, {useMemo, useRef} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 
+import ProductMenuSidebarPageTree from './ProductMenuSidebarPageTree';
+import ProductMenuSidebarStaging, {
+	ProductMenuSidebarStagingProps,
+} from './ProductMenuSidebarStaging';
 import {useProductMenuSidebarExpandedKeys} from './useProductMenuSidebarExpandedKeys';
 import {useProductMenuSidebarVisibility} from './useProductMenuSidebarVisibility';
+
+const NO_ITEMS: Array<ProductMenuSidebarItem> = [];
+
+const PAGE_TREE_ITEM_ID = 'pageTree';
+
+type ProductMenuSidebarItem = UnifiedSidebarItem & {
+	disabled?: boolean;
+	pageTree?: boolean;
+};
 
 interface Props {
 	canonicalName: string;
 	expandedKeys: Array<React.Key>;
 	expandedKeysSessionKey: string;
 	imageURL: string;
-	items: Array<UnifiedSidebarItem>;
+	items: Array<ProductMenuSidebarItem>;
 	label: string;
 	navigationItemsURL: string;
+	pageTree?: {
+		stateSessionKey: string;
+		url: string;
+		visible: boolean;
+	};
 	selectedPortletId: string;
 	siteItemSelectedEventName: string;
 	siteItemSelectorURL: string;
+	staging?: ProductMenuSidebarStagingProps;
 	visible: boolean;
 	visibleSessionKey: string;
 }
@@ -60,9 +79,11 @@ function ProductMenuSidebar({
 	items: externalItems,
 	label,
 	navigationItemsURL,
+	pageTree,
 	selectedPortletId,
 	siteItemSelectedEventName,
 	siteItemSelectorURL,
+	staging,
 	visible: initialVisible,
 	visibleSessionKey,
 }: Props) {
@@ -99,6 +120,50 @@ function ProductMenuSidebar({
 			isFilterActive,
 		});
 
+	const onExpandedChange = useCallback(
+		(updatedExpandedKeys: Set<React.Key>) => {
+
+			// The Page Tree item opens a view instead of a group, so it must
+			// not persist an expanded key that would race the Page Tree state.
+
+			if (updatedExpandedKeys.has(PAGE_TREE_ITEM_ID)) {
+				return;
+			}
+
+			updateExpandedKeys(updatedExpandedKeys);
+		},
+		[updateExpandedKeys]
+	);
+
+	const [pageTreeVisible, setPageTreeVisible] = useState(
+		Boolean(pageTree?.visible)
+	);
+
+	const updatePageTreeVisible = useCallback(
+		(pageTreeVisible: boolean) => {
+			if (!pageTree) {
+				return;
+			}
+
+			setPageTreeVisible(pageTreeVisible);
+			setQuery('');
+
+			Liferay.Util.Session.set(
+				pageTree.stateSessionKey,
+				pageTreeVisible
+					? String(Liferay.ThemeDisplay.getScopeGroupId())
+					: ''
+			).catch((error: Error) => {
+
+				// eslint-disable-next-line no-console
+				console.error(error);
+			});
+		},
+		[pageTree, setQuery]
+	);
+
+	const showPageTree = pageTree && pageTreeVisible;
+
 	const numberOfResults = useMemo(
 		() => (isFilterActive ? numberOfMatches : countNavigableItems(items)),
 		[isFilterActive, items, numberOfMatches]
@@ -111,7 +176,13 @@ function ProductMenuSidebar({
 
 	const scrollRef = useRef<HTMLDivElement>(null);
 
-	const stuck = useUnifiedSidebarStuck(scrollRef, items);
+	// The list unmounts while the Page Tree shows, so swap the items to
+	// observe the remounted list once the Page Tree closes.
+
+	const stuck = useUnifiedSidebarStuck(
+		scrollRef,
+		showPageTree ? NO_ITEMS : items
+	);
 
 	return (
 		<UnifiedSidebar
@@ -121,92 +192,147 @@ function ProductMenuSidebar({
 			categoryImageUrl={imageURL}
 			containerRef={containerRef}
 			headerActions={
-				<UnifiedSidebarSiteSelector
-					eventName={siteItemSelectedEventName}
-					url={siteItemSelectorURL}
-				/>
+				showPageTree ? undefined : (
+					<UnifiedSidebarSiteSelector
+						eventName={siteItemSelectedEventName}
+						url={siteItemSelectorURL}
+					/>
+				)
 			}
-			label={label}
+			label={showPageTree ? Liferay.Language.get('page-tree') : label}
 			navigationId="com_liferay_product_navigation_product_menu_web_sidebar"
+			onBack={
+				showPageTree ? () => updatePageTreeVisible(false) : undefined
+			}
 			onOpenChange={updateVisible}
 			open={visible}
 			testId="sideNavigation"
 		>
-			<UnifiedSidebar.Top>
-				<UnifiedSidebarSearchInput
-					onChange={setQuery}
-					onFocus={prefetchFilterOnlyItems}
-				/>
+			{showPageTree ? (
+				<ProductMenuSidebarPageTree url={pageTree.url} />
+			) : (
+				<>
+					<UnifiedSidebar.Top>
+						{staging && <ProductMenuSidebarStaging {...staging} />}
 
-				<SearchResultsMessage
-					numberOfResults={
-						showResultsSkeleton ? null : numberOfResults
-					}
-					resultType={Liferay.Language.get('navigation-items')}
-				/>
-			</UnifiedSidebar.Top>
-
-			<div
-				className={classNames('unified-sidebar-scroll', {
-					'unified-sidebar-scroll-stuck': stuck,
-				})}
-				ref={scrollRef}
-			>
-				<UnifiedSidebar.Body className="c-px-0">
-					{showResultsSkeleton ? (
-						<UnifiedSidebarResultsSkeleton />
-					) : numberOfResults ? (
-						<ClayVerticalNav
-							active={selectedPortletId}
-							defaultExpandedKeys={initialExpandedKeys}
-							displayType="primary"
-							expandedKeys={expandedKeys}
-							itemAriaCurrent={true}
-							items={items}
-							onExpandedChange={updateExpandedKeys}
-							stacked={true}
-						>
-							{(collectionItem) => {
-								if (typeof collectionItem === 'string') {
-									return <span>{collectionItem}</span>;
-								}
-
-								const item =
-									collectionItem as UnifiedSidebarItem;
-
-								return (
-									<ClayVerticalNav.Item
-										className={classNames({
-											'unified-sidebar-section-item':
-												item.parentLabel,
-										})}
-										data-canonical-name={item.canonicalName}
-										href={item.href}
-										items={item.items}
-										key={item.id}
-										textValue={item.label}
-									>
-										<UnifiedSidebarItemContent
-											item={item}
-										/>
-									</ClayVerticalNav.Item>
-								);
-							}}
-						</ClayVerticalNav>
-					) : (
-						<ClayEmptyState
-							className="c-mt-n2 c-px-4 text-center"
-							description={Liferay.Language.get(
-								'adjust-or-clear-the-search-to-view-all-navigation-items'
-							)}
-							small
-							title={Liferay.Language.get('no-matching-items')}
+						<UnifiedSidebarSearchInput
+							onChange={setQuery}
+							onFocus={prefetchFilterOnlyItems}
 						/>
-					)}
-				</UnifiedSidebar.Body>
 
-				<div className="unified-sidebar-scroll-shadow" />
-			</div>
+						<SearchResultsMessage
+							numberOfResults={
+								showResultsSkeleton ? null : numberOfResults
+							}
+							resultType={Liferay.Language.get(
+								'navigation-items'
+							)}
+						/>
+					</UnifiedSidebar.Top>
+
+					<div
+						className={classNames('unified-sidebar-scroll', {
+							'unified-sidebar-scroll-stuck': stuck,
+						})}
+						ref={scrollRef}
+					>
+						<UnifiedSidebar.Body className="c-px-0">
+							{showResultsSkeleton ? (
+								<UnifiedSidebarResultsSkeleton />
+							) : numberOfResults ? (
+								<ClayVerticalNav
+									active={selectedPortletId}
+									defaultExpandedKeys={initialExpandedKeys}
+									displayType="primary"
+									expandedKeys={expandedKeys}
+									itemAriaCurrent={true}
+									items={items}
+									onExpandedChange={onExpandedChange}
+									stacked={true}
+								>
+									{(collectionItem) => {
+										if (
+											typeof collectionItem === 'string'
+										) {
+											return (
+												<span>{collectionItem}</span>
+											);
+										}
+
+										const item =
+											collectionItem as ProductMenuSidebarItem;
+
+										if (item.disabled) {
+											return (
+												<li
+													className="nav-item"
+													key={item.id}
+													role="none"
+												>
+													<button
+														className="btn btn-unstyled disabled nav-link"
+														data-canonical-name={
+															item.canonicalName
+														}
+														disabled
+														role="menuitem"
+														type="button"
+													>
+														<UnifiedSidebarItemContent
+															item={item}
+														/>
+													</button>
+												</li>
+											);
+										}
+
+										return (
+											<ClayVerticalNav.Item
+												className={classNames({
+													'unified-sidebar-section-item':
+														item.parentLabel,
+												})}
+												data-canonical-name={
+													item.canonicalName
+												}
+												href={item.href}
+												items={item.items}
+												key={item.id}
+												onClick={
+													item.pageTree
+														? () =>
+																updatePageTreeVisible(
+																	true
+																)
+														: undefined
+												}
+												textValue={item.label}
+											>
+												<UnifiedSidebarItemContent
+													item={item}
+												/>
+											</ClayVerticalNav.Item>
+										);
+									}}
+								</ClayVerticalNav>
+							) : (
+								<ClayEmptyState
+									className="c-mt-n2 c-px-4 text-center"
+									description={Liferay.Language.get(
+										'adjust-or-clear-the-search-to-view-all-navigation-items'
+									)}
+									small
+									title={Liferay.Language.get(
+										'no-matching-items'
+									)}
+								/>
+							)}
+						</UnifiedSidebar.Body>
+
+						<div className="unified-sidebar-scroll-shadow" />
+					</div>
+				</>
+			)}
 		</UnifiedSidebar>
 	);
 }
