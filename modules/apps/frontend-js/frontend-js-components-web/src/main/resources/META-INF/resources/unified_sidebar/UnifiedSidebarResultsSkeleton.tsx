@@ -5,11 +5,11 @@
 
 import React from 'react';
 
-function SideNavigationResultsSkeleton() {
+function UnifiedSidebarResultsSkeleton() {
 	return (
 		<div
 			aria-label={Liferay.Language.get('loading')}
-			className="side-navigation-results-skeleton"
+			className="unified-sidebar-results-skeleton"
 			role="progressbar"
 		>
 			<svg viewBox="0 120 320 530">
@@ -23,4 +23,4 @@ function SideNavigationResultsSkeleton() {
 	);
 }
 
-export default SideNavigationResultsSkeleton;
+export default UnifiedSidebarResultsSkeleton;

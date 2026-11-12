@@ -4,6 +4,7 @@
  */
 
 import {SidePanel} from '@clayui/core';
+import {IPortalBaseProps} from '@clayui/shared';
 import ClaySticker from '@clayui/sticker';
 import {sub} from 'frontend-js-web';
 import React, {useRef} from 'react';
@@ -18,6 +19,8 @@ export type HeaderMessages = {
 };
 
 export interface UnifiedSidebarProps {
+	backdrop?: boolean;
+	backdropContainerProps?: IPortalBaseProps;
 	canonicalName?: string;
 	categoryImageUrl: string;
 	children?: React.ReactNode;
@@ -28,6 +31,7 @@ export interface UnifiedSidebarProps {
 	headerMessages?: HeaderMessages;
 	label: string;
 	navigationId?: string;
+	onBack?: () => void;
 	onOpenChange?: (open: boolean) => void;
 	open?: boolean;
 	testId?: string;
@@ -38,6 +42,8 @@ function UnifiedSidebarTop({children}: {children?: React.ReactNode}) {
 }
 
 export default function UnifiedSidebar({
+	backdrop,
+	backdropContainerProps,
 	canonicalName,
 	categoryImageUrl,
 	children,
@@ -48,6 +54,7 @@ export default function UnifiedSidebar({
 	headerMessages,
 	label,
 	navigationId,
+	onBack,
 	onOpenChange,
 	open = false,
 	testId = 'unified-sidebar',
@@ -72,6 +79,9 @@ export default function UnifiedSidebar({
 	return (
 		<SidePanel
 			aria-label={sub(Liferay.Language.get('x-menu'), label)}
+			backdrop={backdrop}
+			backdropContainerProps={backdropContainerProps}
+			className="unified-sidebar"
 			closeOnEscape={false}
 			containerRef={containerRef}
 			data-canonical-name={canonicalName}
@@ -89,6 +99,7 @@ export default function UnifiedSidebar({
 				closeButtonProps={closeButtonProps}
 				data-qa-id="unifiedSidebarHeader"
 				messages={mergedHeaderMessages}
+				onBack={onBack}
 			>
 				<SidePanel.Title className="align-items-center c-my-0 d-flex">
 					<ClaySticker
@@ -109,7 +120,7 @@ export default function UnifiedSidebar({
 
 					{headerActions}
 
-					{Liferay.FeatureFlags['LPD-57922'] && (
+					{Liferay.FeatureFlags['LPD-57922'] && !onBack && (
 						<UnifiedSidebarColorSchemeButton
 							className="c-ml-2"
 							colorScheme={colorScheme}
