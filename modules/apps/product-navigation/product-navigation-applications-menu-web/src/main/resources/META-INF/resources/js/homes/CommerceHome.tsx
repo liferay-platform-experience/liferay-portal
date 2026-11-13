@@ -5,17 +5,10 @@
 
 import React from 'react';
 
-import HomePageLayout from './components/HomePageLayout';
+import HomePageHorizontalLayout from './components/HomePageHorizontalLayout';
 import {HomeProps} from './types';
 
 const CommerceHome = ({icon, items, title}: HomeProps) => {
-	return (
-		<HomePageLayout
-			displayType="horizontal"
-			icon={icon}
-			items={items}
-			title={title}
-		/>
-	);
+	return <HomePageHorizontalLayout icon={icon} items={items} title={title} />;
 };
 export default CommerceHome;
