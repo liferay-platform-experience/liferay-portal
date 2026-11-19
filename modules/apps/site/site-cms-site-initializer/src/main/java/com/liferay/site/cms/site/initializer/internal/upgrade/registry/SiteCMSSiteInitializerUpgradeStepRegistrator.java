@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.upgrade.registry;
 
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -37,6 +38,7 @@ import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_4.CMSFileType
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_5.CMSSpaceAdministratorRoleUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6.CMSPlanningAndTasksPagesUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_7.CMSCommentRatingsUpgradeProcess;
+import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_8.CMSSidebarFragmentUpgradeProcess;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 
@@ -125,6 +127,13 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 			new CMSCommentRatingsUpgradeProcess(
 				_classNameLocalService, _companyLocalService,
 				_objectDefinitionLocalService, _objectFolderLocalService));
+
+		registry.register(
+			"3.0.7", "3.0.8",
+			new CMSSidebarFragmentUpgradeProcess(
+				_companyLocalService, _fragmentEntryLinkLocalService,
+				_fragmentEntryLocalService, _groupLocalService,
+				_userLocalService));
 	}
 
 	@Reference
@@ -140,6 +149,9 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
