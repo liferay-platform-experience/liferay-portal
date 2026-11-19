@@ -138,6 +138,7 @@ export {
 	filterUnifiedSidebarItems,
 	useUnifiedSidebarFilter,
 } from './unified_sidebar/useUnifiedSidebarFilter';
+export {useUnifiedSidebarFocusReturn} from './unified_sidebar/useUnifiedSidebarFocusReturn';
 export {useUnifiedSidebarItems} from './unified_sidebar/useUnifiedSidebarItems';
 export {useUnifiedSidebarShortcut} from './unified_sidebar/useUnifiedSidebarShortcut';
 export {useUnifiedSidebarStuck} from './unified_sidebar/useUnifiedSidebarStuck';

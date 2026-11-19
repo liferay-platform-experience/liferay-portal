@@ -16,6 +16,7 @@ import {
 	useUnifiedSidebarAnnouncement,
 	useUnifiedSidebarExpandedKeys,
 	useUnifiedSidebarFilter,
+	useUnifiedSidebarFocusReturn,
 	useUnifiedSidebarShortcut,
 	useUnifiedSidebarStuck,
 } from 'frontend-js-components-web';
@@ -74,6 +75,7 @@ type Props = {
 	label: string;
 	navigationId: string;
 	sections: Array<Section>;
+	triggerElement: HTMLButtonElement | null;
 	visible: boolean;
 };
 
@@ -176,10 +178,28 @@ export default function CMSSidebar({
 	label,
 	navigationId,
 	sections,
+	triggerElement,
 	visible: initialVisible,
 }: Props) {
 	const {overlay, updateVisible, visible} =
 		useCMSSidebarVisibility(initialVisible);
+
+	const triggerRef = useMemo(
+		() => ({current: triggerElement}),
+		[triggerElement]
+	);
+
+	const trackFocus = useUnifiedSidebarFocusReturn({
+		buttonRef: triggerRef,
+		navigationId,
+		visible,
+	});
+
+	const changeVisible = (visible: boolean) => {
+		trackFocus(visible);
+
+		updateVisible(visible);
+	};
 
 	const {announceNextChange, announcement} =
 		useUnifiedSidebarAnnouncement(visible);
@@ -187,7 +207,7 @@ export default function CMSSidebar({
 	useUnifiedSidebarShortcut(navigationId, () => {
 		announceNextChange();
 
-		updateVisible(!visible);
+		changeVisible(!visible);
 	});
 
 	const navigation = useMemo(() => getNavigation(sections), [sections]);
@@ -238,7 +258,7 @@ export default function CMSSidebar({
 				categoryImageUrl={imageURL}
 				label={label}
 				navigationId={navigationId}
-				onOpenChange={updateVisible}
+				onOpenChange={changeVisible}
 				open={visible}
 				testId="cmsSidebar"
 			>

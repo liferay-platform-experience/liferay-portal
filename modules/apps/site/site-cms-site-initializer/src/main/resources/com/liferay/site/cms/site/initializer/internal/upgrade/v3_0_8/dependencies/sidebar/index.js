@@ -120,16 +120,6 @@ function mountUnifiedSidebar() {
 		sidebarVisible = event.visible;
 
 		updateSidebarTrigger(sidebarVisible);
-
-		const sidebarElement = document.getElementById(navigationId);
-
-		if (
-			!sidebarVisible &&
-			sidebarTrigger &&
-			sidebarElement?.contains(document.activeElement)
-		) {
-			sidebarTrigger.focus();
-		}
 	}
 
 	Liferay.on(stateChangedEventName, handleStateChanged);
@@ -191,6 +181,7 @@ function mountUnifiedSidebar() {
 						sidebar.getAttribute('aria-label'),
 					navigationId,
 					sections,
+					triggerElement: sidebarTrigger,
 					visible,
 				}
 			);
