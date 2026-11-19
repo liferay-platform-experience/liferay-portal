@@ -131,6 +131,7 @@ export type {
 	UnifiedSidebarItem,
 	UnifiedSidebarItemsMap,
 } from './unified_sidebar/types';
+export {useUnifiedSidebarAnnouncement} from './unified_sidebar/useUnifiedSidebarAnnouncement';
 export {useUnifiedSidebarExpandedKeys} from './unified_sidebar/useUnifiedSidebarExpandedKeys';
 export type {UnifiedSidebarFilter} from './unified_sidebar/useUnifiedSidebarFilter';
 export {
@@ -138,5 +139,6 @@ export {
 	useUnifiedSidebarFilter,
 } from './unified_sidebar/useUnifiedSidebarFilter';
 export {useUnifiedSidebarItems} from './unified_sidebar/useUnifiedSidebarItems';
+export {useUnifiedSidebarShortcut} from './unified_sidebar/useUnifiedSidebarShortcut';
 export {useUnifiedSidebarStuck} from './unified_sidebar/useUnifiedSidebarStuck';
 export {useUnifiedSidebarVisibility} from './unified_sidebar/useUnifiedSidebarVisibility';

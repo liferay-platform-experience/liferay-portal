@@ -149,6 +149,7 @@ function mountUnifiedSidebar() {
 
 		Liferay.once('cmsSidebarReady', () => {
 			sidebarTrigger.setAttribute('aria-controls', navigationId);
+			sidebarTrigger.setAttribute('aria-keyshortcuts', 'Control+Alt+M');
 
 			sidebarTrigger.addEventListener('click', () =>
 				Liferay.fire(stateRequestedEventName, {
