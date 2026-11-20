@@ -9,6 +9,7 @@ import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
 import {closeProductMenu, openProductMenu} from '../../../utils/productMenu';
 import {waitForPageToBeLoaded} from '../../../utils/waitForPageToBeLoaded';
 import {contentDashboardPagesTest} from '../../content-dashboard-web/main/fixtures/contentDashboardPagesTest';
@@ -111,7 +112,6 @@ test(
 		});
 
 		const menu = page.getByLabel('Applications Menu', {exact: true});
-		const toggler = page.getByTestId('sideNavigationToggler');
 
 		const testCases = [
 			{expectedState: false, initialState: true},
@@ -124,7 +124,12 @@ test(
 					visible: initialState,
 				});
 
-				await toggler.click();
+				if (expectedState) {
+					await openProductMenu(page);
+				}
+				else {
+					await closeProductMenu(page);
+				}
 
 				await expect(menu).toBeVisible({
 					visible: expectedState,
@@ -257,13 +262,13 @@ test(
 			const toggler = page.getByTestId('sideNavigationToggler');
 
 			await expect(sideNavigation).toBeVisible();
-			await expect(toggler).toBeVisible();
 
-			await toggler.click();
+			await closeProductMenu(page);
 
 			await expect(sideNavigation).toBeHidden();
+			await expect(toggler).toBeVisible();
 
-			await toggler.click();
+			await openProductMenu(page);
 
 			await expect(sideNavigation).toBeVisible();
 		}
@@ -426,5 +431,76 @@ test(
 				})
 			).toHaveAttribute('aria-expanded');
 		});
+	}
+);
+
+test(
+	'Hovering the toggle makes the hidden side navigation peek without moving the page',
+	{tag: '@LPD-110660'},
+	async ({globalMenuPage, page}) => {
+		const menu = page.getByLabel('Control Panel Menu', {exact: true});
+		const pageBody = page.locator('.portlet-boundary').first();
+		const toggler = page.getByTestId('sideNavigationToggler');
+
+		try {
+			await test.step('Go to the Control Panel and hide the menu', async () => {
+				await globalMenuPage.goToControlPanel();
+
+				await closeProductMenu(page);
+
+				await expect(menu).toBeHidden();
+			});
+
+			const pageBodyBox = await pageBody.boundingBox();
+
+			await test.step('Hover the toggle and wait for the slide-in to end', async () => {
+				await hoverAndExpectToBeVisible({
+					target: menu,
+					trigger: toggler,
+				});
+
+				await expect(menu).toBeInViewport({ratio: 1});
+			});
+
+			await test.step('The page did not move', async () => {
+				expect(await pageBody.boundingBox()).toEqual(pageBodyBox);
+			});
+		}
+		finally {
+			await openProductMenu(page);
+		}
+	}
+);
+
+test(
+	'The Control Menu renders the toggle placeholder only while the side navigation is unpinned',
+	{tag: '@LPD-110660'},
+	async ({globalMenuPage, page}) => {
+		try {
+			await test.step('A pinned side navigation leaves out the placeholder', async () => {
+				await globalMenuPage.goToControlPanel();
+
+				await openProductMenu(page);
+
+				await expect
+					.poll(async () =>
+						(await page.request.get(page.url())).text()
+					)
+					.not.toContain('product-menu-toast-toggle');
+			});
+
+			await test.step('An unpinned side navigation renders the placeholder', async () => {
+				await closeProductMenu(page);
+
+				await expect
+					.poll(async () =>
+						(await page.request.get(page.url())).text()
+					)
+					.toContain('product-menu-toast-toggle');
+			});
+		}
+		finally {
+			await openProductMenu(page);
+		}
 	}
 );

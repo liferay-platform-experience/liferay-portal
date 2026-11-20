@@ -68,7 +68,9 @@ export class ProductMenuPage {
 		this.pagesButton = page.getByRole('menuitem', {name: 'Pages'});
 		this.peopleButton = page.getByRole('menuitem', {name: 'People'});
 		this.openProductMenuButton = page.getByLabel('Open Product Menu');
-		this.closeProductMenuButton = page.getByLabel('Close Product Menu');
+		this.closeProductMenuButton = page.getByRole('tab', {
+			name: 'Close Product Menu',
+		});
 		this.productMenuHeader = page.locator(
 			'[id="_com_liferay_product_navigation_product_menu_web_portlet_ProductMenuPortlet_site_administrationHeading"] div'
 		);
@@ -192,9 +194,6 @@ export class ProductMenuPage {
 	}
 
 	async openProductMenuIfClosed() {
-		await clickAndExpectToBeVisible({
-			target: this.productMenuWrapper,
-			trigger: this.openProductMenuButton,
-		});
+		await openProductMenu(this.page);
 	}
 }

@@ -47,6 +47,8 @@ definition {
 		}
 
 		task ("When hover on the back button via keyboard") {
+			ProductMenuHelper.closeProductMenu();
+
 			KeyPress(
 				locator1 = "ProductMenu#TOGGLE",
 				value1 = "\TAB");

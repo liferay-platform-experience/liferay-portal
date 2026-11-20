@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {act, fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {
+	act,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -33,7 +40,7 @@ function pressShortcut(
 }
 
 function renderToggler(visible: boolean) {
-	render(
+	const {container} = render(
 		<UnifiedSidebarToggler
 			navigationId="navigationId"
 			stateChangedEventName="stateChanged"
@@ -42,7 +49,7 @@ function renderToggler(visible: boolean) {
 		/>
 	);
 
-	return screen.getByRole('button');
+	return within(container).getByRole('button', {hidden: true});
 }
 
 describe('UnifiedSidebarToggler', () => {
@@ -61,6 +68,8 @@ describe('UnifiedSidebarToggler', () => {
 
 	afterEach(() => {
 		navigation.remove();
+
+		jest.useRealTimers();
 	});
 
 	it('advertises the shortcut', () => {
@@ -155,10 +164,37 @@ describe('UnifiedSidebarToggler', () => {
 		expect(texts).not.toContain('the-product-menu-is-open');
 	});
 
+	it('does not take a peeking navigation for a pinned one', () => {
+		const overlay = document.createElement('div');
+
+		overlay.classList.add('c-slideout', 'c-slideout-overlay');
+
+		overlay.appendChild(navigation);
+
+		document.body.appendChild(overlay);
+
+		try {
+			expect(renderToggler(true)).toBeVisible();
+		}
+		finally {
+			overlay.remove();
+		}
+	});
+
 	it('follows a navigation that rendered before it', () => {
 		navigation.classList.remove('c-slideout-show');
 
 		expect(renderToggler(true)).toHaveAttribute('aria-expanded', 'false');
+	});
+
+	it('is hidden while the navigation is pinned', () => {
+		const toggler = renderToggler(true);
+
+		expect(toggler).not.toBeVisible();
+
+		changeState(false);
+
+		expect(toggler).toBeVisible();
 	});
 
 	it('ignores the shortcut on another key', () => {
@@ -267,10 +303,12 @@ describe('UnifiedSidebarToggler', () => {
 	});
 
 	it('requests the opposite state on click', async () => {
-		await userEvent.click(renderToggler(true));
+		navigation.classList.remove('c-slideout-show');
+
+		await userEvent.click(renderToggler(false));
 
 		expect(Liferay.fire).toHaveBeenCalledWith('stateRequested', {
-			visible: false,
+			visible: true,
 		});
 	});
 
@@ -328,5 +366,37 @@ describe('UnifiedSidebarToggler', () => {
 		pressShortcut(document.body, {key: 'ь'});
 
 		expect(Liferay.fire).toHaveBeenCalledTimes(2);
+	});
+
+	it('leaves the focus where it is when unpinning from outside the navigation', () => {
+		jest.useFakeTimers();
+
+		const input = document.createElement('input');
+
+		document.body.appendChild(input);
+
+		const toggler = renderToggler(true);
+
+		input.focus();
+
+		changeState(false);
+
+		jest.runAllTimers();
+
+		expect(input).toHaveFocus();
+		expect(toggler).not.toHaveFocus();
+	});
+
+	it('does not take the focus when the navigation settles on load', () => {
+		jest.useFakeTimers();
+
+		navigation.classList.remove('c-slideout-show');
+
+		const toggler = renderToggler(true);
+
+		jest.runAllTimers();
+
+		expect(toggler).toBeVisible();
+		expect(toggler).not.toHaveFocus();
 	});
 });

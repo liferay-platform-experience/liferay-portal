@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -11,6 +11,11 @@ import '@testing-library/jest-dom';
 
 import UnifiedSidebar from '../../src/main/resources/META-INF/resources/unified_sidebar/UnifiedSidebar';
 import UnifiedSidebarSiteSelector from '../../src/main/resources/META-INF/resources/unified_sidebar/UnifiedSidebarSiteSelector';
+
+jest.mock('@clayui/shared', () => ({
+	...jest.requireActual('@clayui/shared'),
+	useIsMobileDevice: () => false,
+}));
 
 const DEFAULT_PROPS = {
 	categoryImageUrl: '/images/test-icon.svg',
@@ -22,15 +27,6 @@ describe('UnifiedSidebar', () => {
 		render(<UnifiedSidebar {...DEFAULT_PROPS} />);
 
 		expect(screen.getByText('Control Panel')).toBeInTheDocument();
-	});
-
-	it('renders the product icon with the given image URL', () => {
-		const {container} = render(<UnifiedSidebar {...DEFAULT_PROPS} />);
-
-		expect(container.querySelector('img')).toHaveAttribute(
-			'src',
-			'/images/test-icon.svg'
-		);
 	});
 
 	it('renders children inside the panel body', () => {
@@ -123,35 +119,99 @@ describe('UnifiedSidebar', () => {
 		).not.toBeInTheDocument();
 	});
 
-	it('calls onOpenChange when the close button is clicked', async () => {
-		const onOpenChange = jest.fn();
+	describe('when the pointer is over the toggle', () => {
+		function renderWithToggle(
+			props: Partial<React.ComponentProps<typeof UnifiedSidebar>> = {}
+		) {
+			render(
+				<>
+					<button aria-controls="navigation">Toggle</button>
 
-		render(
-			<UnifiedSidebar
-				{...DEFAULT_PROPS}
-				onOpenChange={onOpenChange}
-				open
-			/>
-		);
+					<UnifiedSidebar
+						{...DEFAULT_PROPS}
+						navigationId="navigation"
+						{...props}
+					/>
+				</>
+			);
+		}
 
-		await userEvent.click(screen.getByLabelText('close-product-menu'));
+		it('shows the peek as an overlay without the backdrop', async () => {
+			renderWithToggle({backdrop: true});
 
-		expect(onOpenChange).toHaveBeenCalledWith(false);
+			const panel = screen.getByTestId('unified-sidebar');
+
+			expect(panel).not.toHaveClass('c-slideout-show');
+
+			await userEvent.hover(screen.getByText('Toggle'));
+
+			expect(panel.closest('.c-slideout')).toHaveClass(
+				'c-slideout-overlay'
+			);
+			expect(panel).toHaveClass('c-slideout-show');
+			expect(
+				document.querySelector('.c-slideout-backdrop')
+			).not.toBeInTheDocument();
+		});
+
+		it('hides the peek on Escape without unpinning the sidebar', async () => {
+			const onOpenChange = jest.fn();
+
+			renderWithToggle({onOpenChange});
+
+			const panel = screen.getByTestId('unified-sidebar');
+
+			await userEvent.hover(screen.getByText('Toggle'));
+
+			expect(panel).toHaveClass('c-slideout-show');
+
+			await userEvent.keyboard('{Escape}');
+
+			await waitFor(() =>
+				expect(panel).not.toHaveClass('c-slideout-show')
+			);
+
+			expect(onOpenChange).not.toHaveBeenCalled();
+		});
+
+		it('pins the sidebar from the header toggle of the peek', async () => {
+			const onOpenChange = jest.fn();
+
+			renderWithToggle({onOpenChange});
+
+			await userEvent.hover(screen.getByText('Toggle'));
+
+			const headerToggle = screen.getByLabelText('pin-product-menu');
+
+			expect(headerToggle).toHaveAttribute('aria-expanded', 'false');
+			expect(headerToggle.querySelector('img')).toHaveAttribute(
+				'src',
+				'/images/test-icon.svg'
+			);
+
+			await userEvent.click(headerToggle);
+
+			expect(onOpenChange).toHaveBeenCalledWith(true);
+		});
 	});
 
-	it('uses the custom headerMessages when provided', async () => {
+	it('unpins the pinned sidebar from its header toggle', async () => {
 		const onOpenChange = jest.fn();
 
-		render(
+		const {container} = render(
 			<UnifiedSidebar
 				{...DEFAULT_PROPS}
-				headerMessages={{closeAriaLabel: 'close-site-panel'}}
 				onOpenChange={onOpenChange}
 				open
 			/>
 		);
 
-		await userEvent.click(screen.getByLabelText('close-site-panel'));
+		const headerToggle = screen.getByLabelText('close-product-menu');
+
+		expect(headerToggle).toHaveAttribute('aria-expanded', 'true');
+		expect(container.querySelector('img')).not.toBeInTheDocument();
+
+		await userEvent.click(headerToggle);
 
 		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});

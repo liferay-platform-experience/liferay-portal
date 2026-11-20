@@ -6,6 +6,8 @@ definition {
 			Click(locator1 = "ProductMenu#TOGGLE");
 		}
 
+		MouseOver(locator1 = "ControlMenu#CONTROL_MENU");
+
 		AssertElementPresent(locator1 = "ProductMenu#PRODUCT_MENU_CLOSED");
 	}
 

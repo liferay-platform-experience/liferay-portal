@@ -6,6 +6,7 @@
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {liferayConfig} from '../../../liferay.config';
+import {openProductMenu} from '../../../utils/productMenu';
 
 export class CommerceLayoutsPage {
 	readonly accountSelectorButton: (name: string) => Locator;
@@ -605,7 +606,7 @@ export class CommerceLayoutsPage {
 			await this.designMenuItem.click();
 		}
 		else if (await this.openProductMenuButton.isVisible()) {
-			await this.openProductMenuButton.click();
+			await openProductMenu(this.page);
 
 			const promise = new Promise(() => {
 				if (this.pageTemplatesMenuItem.isHidden()) {
@@ -664,7 +665,7 @@ export class CommerceLayoutsPage {
 				await this.siteBuilderMenuItem.click();
 			}
 			else if (await this.openProductMenuButton.isVisible()) {
-				await this.openProductMenuButton.click();
+				await openProductMenu(this.page);
 
 				if (await this.pagesMenuItem.isHidden()) {
 					await this.siteBuilderMenuItem.click();

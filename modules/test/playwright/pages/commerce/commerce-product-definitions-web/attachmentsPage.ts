@@ -5,6 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {openProductMenu} from '../../../utils/productMenu';
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
 
 export class AttachmentsPage {
@@ -124,7 +125,7 @@ export class AttachmentsPage {
 			await this.contentAndDataMenuItem.click();
 		}
 		else if (await this.layoutsPage.openProductMenuButton.isVisible()) {
-			await this.layoutsPage.openProductMenuButton.click();
+			await openProductMenu(this.page);
 			await this.contentAndDataMenuItem.click();
 		}
 

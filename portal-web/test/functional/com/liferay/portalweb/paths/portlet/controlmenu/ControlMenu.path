@@ -26,6 +26,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>CONTROL_MENU</td>
+	<td>//*[@data-qa-id='controlMenu']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DISPLAY_PAGE_PREVIEW_ITEM_SELECTOR</td>
 	<td>//button[contains(@class,'display-page-preview-item-selector')]</td>
 	<td></td>

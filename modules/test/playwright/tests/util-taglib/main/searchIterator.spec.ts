@@ -12,6 +12,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {openProductMenu} from '../../../utils/productMenu';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {samplePageTest} from '../../frontend-taglib/main/fixtures/samplePageTest';
 import {TabName} from '../../frontend-taglib/main/pages/SamplePage';
@@ -115,7 +116,7 @@ testLegacy(
 		const openProductButton = page.getByLabel('Open Product Menu');
 
 		if (await openProductButton.isVisible()) {
-			await openProductButton.click();
+			await openProductMenu(page);
 		}
 
 		const contentAndDataTab = page.getByRole('menuitem', {
