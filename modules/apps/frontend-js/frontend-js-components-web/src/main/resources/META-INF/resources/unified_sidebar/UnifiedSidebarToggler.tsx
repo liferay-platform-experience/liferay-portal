@@ -5,7 +5,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ReactPortal} from '@liferay/frontend-js-react-web';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {useUnifiedSidebarAnnouncement} from './useUnifiedSidebarAnnouncement';
 import {useUnifiedSidebarFocusReturn} from './useUnifiedSidebarFocusReturn';
@@ -54,7 +54,10 @@ function UnifiedSidebarToggler({
 		const navigation = document.getElementById(navigationId);
 
 		if (navigation) {
-			setVisible(navigation.classList.contains('c-slideout-show'));
+			const shown = navigation.classList.contains('c-slideout-show');
+			const peeking = !!navigation.closest('.c-slideout-overlay');
+
+			setVisible(shown && !peeking);
 		}
 
 		return () => Liferay.detach(stateChangedEventName, handleStateChanged);
@@ -69,30 +72,23 @@ function UnifiedSidebarToggler({
 		toggle();
 	});
 
-	const title = useMemo(
-		() =>
-			visible
-				? Liferay.Language.get('close-product-menu')
-				: Liferay.Language.get('open-product-menu'),
-		[visible]
-	);
-
 	return (
 		<>
 			<ClayButtonWithIcon
 				aria-controls={navigationId}
 				aria-expanded={visible}
 				aria-keyshortcuts="Control+Alt+M"
-				aria-label={title}
+				aria-label={Liferay.Language.get('open-product-menu')}
 				className="control-menu-nav-link"
 				data-qa-id="sideNavigationToggler"
 				displayType="unstyled"
+				hidden={visible}
 				monospaced
 				onClick={toggle}
 				ref={buttonRef}
 				size="sm"
-				symbol={visible ? 'product-menu-open' : 'product-menu-closed'}
-				title={title}
+				symbol="product-menu-closed"
+				title={Liferay.Language.get('open-product-menu')}
 			/>
 
 			<ReactPortal className="cadmin">

@@ -22,6 +22,24 @@ $side-navigation-scope-item-height: 2.5rem;
 }
 
 html#{$cadmin-selector} {
+	.cadmin {
+		.control-menu-level-1-nav {
+			> div,
+			> li {
+				> .control-menu-nav
+					> .control-menu-nav-item.sidebar-toggler-item {
+					margin-left: 0;
+				}
+			}
+		}
+
+		.control-menu-nav-item.sidebar-toggler-item:not(
+				:has(.control-menu-nav-link:not([hidden]))
+			) {
+			display: none;
+		}
+	}
+
 	.cadmin.side-navigation-container {
 		--cadmin-c-slideout-sidebar-width: 280px;
 		--cadmin-c-slideout-transition-in: all 0.14s ease-out;

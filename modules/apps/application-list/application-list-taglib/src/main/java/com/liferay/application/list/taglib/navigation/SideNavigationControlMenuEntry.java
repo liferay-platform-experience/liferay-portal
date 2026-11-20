@@ -67,29 +67,22 @@ public class SideNavigationControlMenuEntry
 		try {
 			PrintWriter printWriter = httpServletResponse.getWriter();
 
-			printWriter.write("<li class=\"control-menu-nav-item");
+			printWriter.write(
+				"<li class=\"control-menu-nav-item sidebar-toggler-item");
 
 			if (sideNavigationDisplayContext.isVisible()) {
 				printWriter.write(" active");
 			}
 
 			printWriter.write("\"><div>");
-			printWriter.write(
-				StringBundler.concat(
-					"<button class=\"btn btn-monospaced btn-sm ",
-					"control-menu-nav-link lfr-portal-tooltip ",
-					"product-menu-toast-toggle\">"));
 
-			if (sideNavigationDisplayContext.isVisible()) {
-				IconTag openIconTag = new IconTag();
+			if (!sideNavigationDisplayContext.isVisible()) {
+				printWriter.write(
+					StringBundler.concat(
+						"<button class=\"btn btn-monospaced btn-sm ",
+						"control-menu-nav-link lfr-portal-tooltip ",
+						"product-menu-toast-toggle\">"));
 
-				openIconTag.setCssClass(
-					"icon-monospaced icon-product-menu-open");
-				openIconTag.setSymbol("product-menu-open");
-
-				openIconTag.doTag(httpServletRequest, httpServletResponse);
-			}
-			else {
 				IconTag closedIconTag = new IconTag();
 
 				closedIconTag.setCssClass(
@@ -97,9 +90,9 @@ public class SideNavigationControlMenuEntry
 				closedIconTag.setSymbol("product-menu-closed");
 
 				closedIconTag.doTag(httpServletRequest, httpServletResponse);
-			}
 
-			printWriter.write("</button>");
+				printWriter.write("</button>");
+			}
 
 			_reactRenderer.renderReact(
 				new ComponentDescriptor(
