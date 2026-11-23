@@ -19,6 +19,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 
 import {FocusTrap} from '../focus-trap';
+import {useIsFirstRender} from '../hooks';
 import {ResizeHandle} from '../resize-handle';
 import {Body} from './Body';
 import {Footer} from './Footer';
@@ -220,6 +221,34 @@ export function SidePanel({
 		}
 	}, []);
 
+	const isFirstRender = useIsFirstRender();
+
+	useLayoutEffect(() => {
+		if (isFirstRender && !open) {
+			return;
+		}
+
+		const container = containerRef.current;
+
+		container?.classList.add('c-slideout-transition');
+		container?.classList.toggle('c-slideout-transition-in', !!open);
+		container?.classList.toggle('c-slideout-transition-out', !open);
+		container?.classList.toggle(pushClassName, !!open);
+
+		const timer = setTimeout(
+			() => {
+				container?.classList.remove(
+					'c-slideout-transition',
+					'c-slideout-transition-in',
+					'c-slideout-transition-out'
+				);
+			},
+			prefersReducedMotion ? 0 : open ? 300 : 200
+		);
+
+		return () => clearTimeout(timer);
+	}, [open]);
+
 	useEffect(() => {
 		if (open) {
 
@@ -325,20 +354,8 @@ export function SidePanel({
 						exitActive: '',
 					}}
 					in={open}
-					onEnter={() => {
-						containerRef.current?.classList.add(
-							'c-slideout-transition',
-							'c-slideout-transition-in',
-							pushClassName
-						);
-					}}
 					onEntered={(_, isAppearing) => {
 						slideoutRef.current?.classList.add('c-slideout-shown');
-
-						containerRef.current?.classList.remove(
-							'c-slideout-transition',
-							'c-slideout-transition-in'
-						);
 
 						if (!isAppearing) {
 
@@ -348,22 +365,9 @@ export function SidePanel({
 							sidePanelRef.current?.focus({preventScroll: true});
 						}
 					}}
-					onExit={() => {
-						containerRef.current?.classList.add(
-							'c-slideout-transition',
-							'c-slideout-transition-out'
-						);
-
-						containerRef.current?.classList.remove(pushClassName);
-					}}
 					onExited={() => {
 						slideoutRef.current?.classList.remove(
 							'c-slideout-shown'
-						);
-
-						containerRef.current?.classList.remove(
-							'c-slideout-transition',
-							'c-slideout-transition-out'
 						);
 					}}
 					timeout={prefersReducedMotion ? 0 : open ? 300 : 200}
