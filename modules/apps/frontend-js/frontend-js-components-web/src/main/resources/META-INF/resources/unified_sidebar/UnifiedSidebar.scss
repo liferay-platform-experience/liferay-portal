@@ -180,10 +180,27 @@ html#{$cadmin-selector} {
 		}
 	}
 
-	.unified-sidebar-header .sticker img {
-		height: 20px;
-		object-fit: contain;
-		width: 20px;
+	.unified-sidebar-header-toggler {
+		.unified-sidebar-header-toggler-category-image {
+			height: 20px;
+			object-fit: contain;
+			width: 20px;
+		}
+
+		.unified-sidebar-header-toggler-category-image ~ .lexicon-icon {
+			display: none;
+		}
+
+		&:focus-visible,
+		&:hover {
+			.unified-sidebar-header-toggler-category-image {
+				display: none;
+			}
+
+			.unified-sidebar-header-toggler-category-image ~ .lexicon-icon {
+				display: inline-block;
+			}
+		}
 	}
 }
 
