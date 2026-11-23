@@ -28,6 +28,12 @@ type Props = {
 	closeButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 	/**
+	 * Flag to hide the close button, for example when the content of the
+	 * Header already holds a control that closes the Side Panel.
+	 */
+	hideCloseButton?: boolean;
+
+	/**
 	 * Messages for the Side Panel Header.
 	 */
 	messages?: Messages;
@@ -54,6 +60,7 @@ export function Header({
 	children,
 	className,
 	closeButtonProps,
+	hideCloseButton = false,
 	messages = {
 		backAriaLabel: 'Go back.',
 		closeAriaLabel: 'Close the side panel.',
@@ -88,26 +95,28 @@ export function Header({
 
 				<div className="autofit-col autofit-col-expand">{children}</div>
 
-				<div className="autofit-col">
-					<button
-						aria-label={messages.closeAriaLabel}
-						{...closeButtonProps}
-						className={classnames(
-							'close',
-							closeButtonProps?.className
-						)}
-						onClick={(event) => {
-							closeButtonProps?.onClick?.(event);
+				{!hideCloseButton && (
+					<div className="autofit-col">
+						<button
+							aria-label={messages.closeAriaLabel}
+							{...closeButtonProps}
+							className={classnames(
+								'close',
+								closeButtonProps?.className
+							)}
+							onClick={(event) => {
+								closeButtonProps?.onClick?.(event);
 
-							if (!event.defaultPrevented) {
-								onOpenChange(false);
-							}
-						}}
-						type="button"
-					>
-						<Icon symbol="times" />
-					</button>
-				</div>
+								if (!event.defaultPrevented) {
+									onOpenChange(false);
+								}
+							}}
+							type="button"
+						>
+							<Icon symbol="times" />
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);
