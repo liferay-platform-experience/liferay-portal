@@ -50,3 +50,15 @@
 .c-slideout-height-full {
 	@include clay-slideout-variant($cadmin-c-slideout-height-full);
 }
+
+.c-slideout-overlay {
+	@include clay-slideout-variant($cadmin-c-slideout-overlay);
+}
+
+.c-slideout-overlay.c-slideout-end {
+	@include clay-slideout-variant($cadmin-c-slideout-overlay-end);
+}
+
+.c-slideout-overlay.c-slideout-start {
+	@include clay-slideout-variant($cadmin-c-slideout-overlay-start);
+}
