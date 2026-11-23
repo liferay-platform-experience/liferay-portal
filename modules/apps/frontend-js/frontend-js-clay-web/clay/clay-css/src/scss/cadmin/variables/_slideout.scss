@@ -13,6 +13,12 @@ $cadmin-c-slideout-fluid-sidebar-width-md: '50vw' !default;
 
 $cadmin-c-slideout-fluid-sidebar-width: '33vw' !default;
 
+$cadmin-c-slideout-overlay-box-shadow: $cadmin-box-shadow-lg !default;
+
+$cadmin-c-slideout-overlay-offset: 56px !default;
+
+$cadmin-c-slideout-overlay-transition-duration: 140ms !default;
+
 // C Slideout Transitions
 
 $cadmin-c-slideout-transition-in: () !default;
@@ -130,6 +136,11 @@ $cadmin-c-slideout: map-deep-merge(
 			flex-shrink: 0,
 			position: relative,
 			width: $cadmin-c-slideout-sidebar-width,
+
+			'&:not(.c-slideout-transition)': (
+				transition: box-shadow
+					$cadmin-c-slideout-overlay-transition-duration ease-out,
+			),
 
 			sidebar-body: (
 				flex-grow: 1,
@@ -384,4 +395,54 @@ $cadmin-c-slideout-height-full: map-deep-merge(
 		z-index: $cadmin-zindex-c-slideout-height-full,
 	),
 	$cadmin-c-slideout-height-full
+);
+
+$cadmin-c-slideout-overlay: () !default;
+$cadmin-c-slideout-overlay: map-deep-merge(
+	(
+		overflow: visible,
+
+		sidebar: (
+			box-shadow: $cadmin-c-slideout-overlay-box-shadow,
+			opacity: 0,
+		),
+
+		sidebar-c-slideout-show: (
+			opacity: 1,
+		),
+
+		sidebar-c-slideout-transition: (
+			transition: all $cadmin-c-slideout-overlay-transition-duration
+				ease-out,
+		),
+	),
+	$cadmin-c-slideout-overlay
+);
+
+$cadmin-c-slideout-overlay-end: () !default;
+$cadmin-c-slideout-overlay-end: map-deep-merge(
+	(
+		sidebar: (
+			right: $cadmin-c-slideout-overlay-offset * -1,
+		),
+
+		sidebar-c-slideout-show: (
+			right: 0px,
+		),
+	),
+	$cadmin-c-slideout-overlay-end
+);
+
+$cadmin-c-slideout-overlay-start: () !default;
+$cadmin-c-slideout-overlay-start: map-deep-merge(
+	(
+		sidebar: (
+			left: $cadmin-c-slideout-overlay-offset * -1,
+		),
+
+		sidebar-c-slideout-show: (
+			left: 0px,
+		),
+	),
+	$cadmin-c-slideout-overlay-start
 );

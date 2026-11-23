@@ -10,6 +10,12 @@ $c-slideout-fluid-sidebar-width-md: '50vw' !default;
 
 $c-slideout-fluid-sidebar-width: '33vw' !default;
 
+$c-slideout-overlay-box-shadow: $box-shadow-lg !default;
+
+$c-slideout-overlay-offset: 56px !default;
+
+$c-slideout-overlay-transition-duration: 140ms !default;
+
 // C Slideout Transitions
 
 $c-slideout-transition-in: () !default;
@@ -127,6 +133,11 @@ $c-slideout: map-deep-merge(
 			flex-shrink: 0,
 			position: relative,
 			width: $c-slideout-sidebar-width,
+
+			'&:not(.c-slideout-transition)': (
+				transition: box-shadow $c-slideout-overlay-transition-duration
+					ease-out,
+			),
 
 			sidebar-body: (
 				flex-grow: 1,
@@ -380,4 +391,53 @@ $c-slideout-height-full: map-deep-merge(
 		z-index: $zindex-c-slideout-height-full,
 	),
 	$c-slideout-height-full
+);
+
+$c-slideout-overlay: () !default;
+$c-slideout-overlay: map-deep-merge(
+	(
+		overflow: visible,
+
+		sidebar: (
+			box-shadow: $c-slideout-overlay-box-shadow,
+			opacity: 0,
+		),
+
+		sidebar-c-slideout-show: (
+			opacity: 1,
+		),
+
+		sidebar-c-slideout-transition: (
+			transition: all $c-slideout-overlay-transition-duration ease-out,
+		),
+	),
+	$c-slideout-overlay
+);
+
+$c-slideout-overlay-end: () !default;
+$c-slideout-overlay-end: map-deep-merge(
+	(
+		sidebar: (
+			right: $c-slideout-overlay-offset * -1,
+		),
+
+		sidebar-c-slideout-show: (
+			right: 0rem,
+		),
+	),
+	$c-slideout-overlay-end
+);
+
+$c-slideout-overlay-start: () !default;
+$c-slideout-overlay-start: map-deep-merge(
+	(
+		sidebar: (
+			left: $c-slideout-overlay-offset * -1,
+		),
+
+		sidebar-c-slideout-show: (
+			left: 0rem,
+		),
+	),
+	$c-slideout-overlay-start
 );
