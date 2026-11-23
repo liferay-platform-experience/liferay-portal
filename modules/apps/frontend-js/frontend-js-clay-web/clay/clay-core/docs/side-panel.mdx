@@ -180,6 +180,14 @@ When the SidePanel covers the page content, for example on small screens, set th
 <SidePanel backdrop position="fixed" />
 ```
 
+## Overlay
+
+Set the `overlay` property to show the open SidePanel over the page content instead of pushing its container. It has no effect on small screens or when `backdrop` is set.
+
+```jsx
+<SidePanel overlay position="fixed" />
+```
+
 ## Full Height
 
 A fixed SidePanel starts below its container and stacks below fixed or sticky navigation, such as a sticky header. Set the `fullHeight` property to run it the full height of the page instead, from the top and above that navigation. It adds the `c-slideout-height-full` class. Because it then stacks above dropdowns, popovers and other portals rendered inside it mount inside the SidePanel instead of the body, like the ones rendered inside a Modal.

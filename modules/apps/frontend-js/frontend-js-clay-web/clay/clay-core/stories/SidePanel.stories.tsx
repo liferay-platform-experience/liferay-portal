@@ -5,7 +5,7 @@
 
 import Button from '@clayui/button';
 import {ClayCardWithNavigation} from '@clayui/card';
-import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
+import ClayForm, {ClayInput, ClaySelect, ClayToggle} from '@clayui/form';
 import Panel from '@clayui/panel';
 import {useId} from '@clayui/shared';
 import Toolbar from '@clayui/toolbar';
@@ -563,6 +563,70 @@ export function Drilldown() {
 					position="fixed"
 					selectedPanelKey={panelKey}
 				/>
+			</div>
+		</div>
+	);
+}
+export function Overlay() {
+	const [open, setOpen] = useState(false);
+	const [overlay, setOverlay] = useState(true);
+	const sidePanelId = useId();
+
+	const ref = useRef<HTMLDivElement | null>(null);
+
+	return (
+		<div className="m-n3 min-vh-100">
+			<Toolbar className="bg-white sticky-top">
+				<Toolbar.Nav>
+					<Toolbar.Item className="ml-2" expand>
+						Presentation: {overlay ? 'Overlay' : 'Push'}
+					</Toolbar.Item>
+
+					<Toolbar.Item>
+						<ClayToggle
+							label="Overlay"
+							onToggle={setOverlay}
+							toggled={overlay}
+						/>
+					</Toolbar.Item>
+
+					<Toolbar.Item className="mr-2">
+						<Button
+							aria-controls={sidePanelId}
+							aria-pressed={open}
+							onClick={() => setOpen(!open)}
+						>
+							{open ? 'Close' : 'Open'}
+						</Button>
+					</Toolbar.Item>
+				</Toolbar.Nav>
+			</Toolbar>
+
+			<div className="side-panel-container vh-100" ref={ref}>
+				<div className="container-fluid">
+					<BodyContent />
+				</div>
+
+				<SidePanel
+					containerRef={ref}
+					id={sidePanelId}
+					onOpenChange={setOpen}
+					open={open}
+					overlay={overlay}
+					position="fixed"
+				>
+					<SidePanel.Header
+						messages={{
+							closeAriaLabel: 'Close the Overlay side panel.',
+						}}
+					>
+						<SidePanel.Title>Overlay Panel</SidePanel.Title>
+					</SidePanel.Header>
+
+					<SidePanel.Body>
+						<BodyContent />
+					</SidePanel.Body>
+				</SidePanel>
 			</div>
 		</div>
 	);
