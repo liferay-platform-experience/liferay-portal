@@ -17,7 +17,6 @@ import './UnifiedSidebar.scss';
 
 export type HeaderMessages = {
 	backAriaLabel?: string;
-	closeAriaLabel?: string;
 };
 
 export interface UnifiedSidebarProps {
@@ -70,16 +69,8 @@ export default function UnifiedSidebar({
 		open,
 	});
 
-	const closeButtonProps = Liferay.FeatureFlags['LPD-57922']
-		? {
-				className:
-					'btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm unified-sidebar-close-button',
-			}
-		: undefined;
-
 	const mergedHeaderMessages = {
 		backAriaLabel: Liferay.Language.get('go-back'),
-		closeAriaLabel: Liferay.Language.get('close-product-menu'),
 		...headerMessages,
 	};
 
@@ -109,8 +100,8 @@ export default function UnifiedSidebar({
 		>
 			<SidePanel.Header
 				className="c-mx-1 c-px-2 unified-sidebar-header"
-				closeButtonProps={closeButtonProps}
 				data-qa-id="unifiedSidebarHeader"
+				hideCloseButton
 				messages={mergedHeaderMessages}
 				onBack={onBack}
 			>
