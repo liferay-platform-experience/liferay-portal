@@ -258,7 +258,10 @@ export function SidePanel({
 					'c-slideout-transition-out'
 				);
 			},
-			prefersReducedMotion ? 0 : isContainerPushed ? 300 : 200
+			getTransitionDuration({
+				open: isContainerPushed,
+				prefersReducedMotion,
+			})
 		);
 
 		return () => clearTimeout(timer);
@@ -401,15 +404,11 @@ export function SidePanel({
 					onExited={() => {
 						setShown(false);
 					}}
-					timeout={
-						prefersReducedMotion
-							? 0
-							: isOverlay
-								? 140
-								: open
-									? 300
-									: 200
-					}
+					timeout={getTransitionDuration({
+						open,
+						overlay: isOverlay,
+						prefersReducedMotion,
+					})}
 				>
 					<As
 						{...otherProps}
@@ -463,6 +462,26 @@ export function SidePanel({
 			)}
 		</>
 	);
+}
+
+function getTransitionDuration({
+	open,
+	overlay = false,
+	prefersReducedMotion,
+}: {
+	open?: boolean;
+	overlay?: boolean;
+	prefersReducedMotion?: boolean;
+}) {
+	if (prefersReducedMotion) {
+		return 0;
+	}
+
+	if (overlay) {
+		return 140;
+	}
+
+	return open ? 300 : 200;
 }
 
 function useOffsetTop(ref: React.RefObject<HTMLElement>) {
