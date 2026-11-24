@@ -279,7 +279,23 @@ export function SidePanel({
 				null;
 
 			return () => {
+				const slideout = slideoutRef.current;
+
+				if (!slideout?.classList.contains('c-slideout-overlay')) {
+					element?.focus();
+
+					return;
+				}
+
+				if (!slideout.contains(document.activeElement)) {
+					return;
+				}
+
 				element?.focus();
+
+				if (slideout.contains(document.activeElement)) {
+					triggerRef?.current?.focus();
+				}
 			};
 		}
 	}, [open]);
@@ -377,7 +393,7 @@ export function SidePanel({
 					onEntered={(_, isAppearing) => {
 						setShown(true);
 
-						if (!isAppearing) {
+						if (!isAppearing && !isOverlay) {
 
 							// Move focus to sidepanel when opening but not if
 							// opened on first load.
