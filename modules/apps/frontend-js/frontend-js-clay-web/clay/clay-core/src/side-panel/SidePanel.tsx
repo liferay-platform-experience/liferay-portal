@@ -225,9 +225,6 @@ export function SidePanel({
 		direction === 'left' ? 'c-slideout-push-start' : 'c-slideout-push-end';
 
 	useEffect(() => {
-
-		// Ensures SidePanel is open when initial state is open.
-
 		if (isContainerPushed) {
 			containerRef.current?.classList.add(pushClassName);
 		}
