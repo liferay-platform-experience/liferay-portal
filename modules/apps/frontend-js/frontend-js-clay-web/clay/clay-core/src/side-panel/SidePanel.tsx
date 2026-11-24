@@ -208,14 +208,15 @@ export function SidePanel({
 		value: externalOpen,
 	});
 
+	const pushClassName =
+		direction === 'left' ? 'c-slideout-push-start' : 'c-slideout-push-end';
+
 	useEffect(() => {
 
 		// Ensures SidePanel is open when initial state is open.
 
 		if (open) {
-			containerRef.current?.classList.add(
-				`c-slideout-push-${direction === 'left' ? 'start' : 'end'}`
-			);
+			containerRef.current?.classList.add(pushClassName);
 		}
 	}, []);
 
@@ -328,9 +329,7 @@ export function SidePanel({
 						containerRef.current?.classList.add(
 							'c-slideout-transition',
 							'c-slideout-transition-in',
-							`c-slideout-push-${
-								direction === 'left' ? 'start' : 'end'
-							}`
+							pushClassName
 						);
 					}}
 					onEntered={(_, isAppearing) => {
@@ -355,11 +354,7 @@ export function SidePanel({
 							'c-slideout-transition-out'
 						);
 
-						containerRef.current?.classList.remove(
-							`c-slideout-push-${
-								direction === 'left' ? 'start' : 'end'
-							}`
-						);
+						containerRef.current?.classList.remove(pushClassName);
 					}}
 					onExited={() => {
 						slideoutRef.current?.classList.remove(
