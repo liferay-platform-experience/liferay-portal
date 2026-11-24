@@ -18,8 +18,7 @@ const OVERLAY_MEDIA_QUERY = '(max-width: 991.98px)';
 
 const TRANSITION_TIMEOUT = 300;
 
-const VISIBLE_SESSION_KEY =
-	'com.liferay.site.cms.site.initializer_sidebarState';
+const VISIBLE_SESSION_KEY = 'com.liferay.application.list_sidebarState';
 
 export function useCMSSidebarVisibility(initialVisible: boolean) {
 	const [closedAsOverlay] = useState(
@@ -69,13 +68,11 @@ export function useCMSSidebarVisibility(initialVisible: boolean) {
 	}, []);
 
 	const {updateVisible, visible} = useUnifiedSidebarVisibility({
-		hiddenSessionValue: 'closed',
 		initialVisible: initialVisible && !closedAsOverlay,
 		onVisibleChange: updateBody,
 		sessionKey: VISIBLE_SESSION_KEY,
 		stateChangedEventName: CMS_SIDEBAR_STATE_CHANGED_EVENT_NAME,
 		stateRequestedEventName: CMS_SIDEBAR_STATE_REQUESTED_EVENT_NAME,
-		visibleSessionValue: 'open',
 	});
 
 	useEffect(function cleanupTransition() {

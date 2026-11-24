@@ -51,8 +51,8 @@ public class CMSSidebarTemplateContextContributor
 				" cms-unified-sidebar";
 
 		String sidebarState = SessionClicks.get(
-			httpServletRequest,
-			"com.liferay.site.cms.site.initializer_sidebarState", "open");
+			httpServletRequest, "com.liferay.application.list_sidebarState",
+			"closed");
 
 		if (Objects.equals(sidebarState, "open")) {
 			cssClass += " cms-sidebar-open";
