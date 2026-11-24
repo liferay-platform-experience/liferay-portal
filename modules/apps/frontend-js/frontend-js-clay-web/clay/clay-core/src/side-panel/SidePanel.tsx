@@ -146,6 +146,12 @@ export type Props = {
 	'id'?: string;
 
 	/**
+	 * Flag to show the open SidePanel over the content instead of pushing its
+	 * container. It is ignored on mobile devices and when `backdrop` is set.
+	 */
+	'overlay'?: boolean;
+
+	/**
 	 * Sets a custom width on the sidebar panel. The minimum width is 280px.
 	 */
 	'panelWidth'?: number;
@@ -182,6 +188,7 @@ export function SidePanel({
 	'id': externalId,
 	onOpenChange,
 	'open': externalOpen,
+	overlay = false,
 	'panelWidth': externalPanelWidth,
 	position = 'absolute',
 	triggerRef,
@@ -198,6 +205,8 @@ export function SidePanel({
 	const sidePanelObservedMaxWidth = useObservedMaxWidth(sidePanelRef);
 	const {prefersReducedMotion} = useProvider();
 
+	const isOverlay = overlay && !isMobile && !backdrop;
+
 	const closeOnEscape = isMobile || backdrop || externalCloseOnEscape;
 	const isResizable = fluid && !isMobile;
 
@@ -210,6 +219,8 @@ export function SidePanel({
 		value: externalOpen,
 	});
 
+	const isContainerPushed = !!open && !isOverlay;
+
 	const pushClassName =
 		direction === 'left' ? 'c-slideout-push-start' : 'c-slideout-push-end';
 
@@ -217,7 +228,7 @@ export function SidePanel({
 
 		// Ensures SidePanel is open when initial state is open.
 
-		if (open) {
+		if (isContainerPushed) {
 			containerRef.current?.classList.add(pushClassName);
 		}
 	}, []);
@@ -225,16 +236,22 @@ export function SidePanel({
 	const isFirstRender = useIsFirstRender();
 
 	useLayoutEffect(() => {
-		if (isFirstRender && !open) {
+		if (isFirstRender && !isContainerPushed) {
 			return;
 		}
 
 		const container = containerRef.current;
 
 		container?.classList.add('c-slideout-transition');
-		container?.classList.toggle('c-slideout-transition-in', !!open);
-		container?.classList.toggle('c-slideout-transition-out', !open);
-		container?.classList.toggle(pushClassName, !!open);
+		container?.classList.toggle(
+			'c-slideout-transition-in',
+			isContainerPushed
+		);
+		container?.classList.toggle(
+			'c-slideout-transition-out',
+			!isContainerPushed
+		);
+		container?.classList.toggle(pushClassName, isContainerPushed);
 
 		const timer = setTimeout(
 			() => {
@@ -244,11 +261,11 @@ export function SidePanel({
 					'c-slideout-transition-out'
 				);
 			},
-			prefersReducedMotion ? 0 : open ? 300 : 200
+			prefersReducedMotion ? 0 : isContainerPushed ? 300 : 200
 		);
 
 		return () => clearTimeout(timer);
-	}, [open]);
+	}, [isContainerPushed]);
 
 	useEffect(() => {
 		if (open) {
@@ -329,6 +346,7 @@ export function SidePanel({
 					{
 						'c-slideout-end': direction === 'right',
 						'c-slideout-height-full': heightFull,
+						'c-slideout-overlay': isOverlay,
 						'c-slideout-shown': shown,
 						'c-slideout-start': direction === 'left',
 					}
@@ -370,7 +388,15 @@ export function SidePanel({
 					onExited={() => {
 						setShown(false);
 					}}
-					timeout={prefersReducedMotion ? 0 : open ? 300 : 200}
+					timeout={
+						prefersReducedMotion
+							? 0
+							: isOverlay
+								? 140
+								: open
+									? 300
+									: 200
+					}
 				>
 					<As
 						{...otherProps}
