@@ -188,6 +188,7 @@ export function SidePanel({
 	...otherProps
 }: Props) {
 	const [resizeWidth, setResizeWidth] = useState(window.innerWidth / 2);
+	const [shown, setShown] = useState(false);
 	const internalSidePanelRef = useRef<HTMLDivElement>(null);
 	const slideoutRef = useRef<HTMLDivElement>(null);
 
@@ -328,6 +329,7 @@ export function SidePanel({
 					{
 						'c-slideout-end': direction === 'right',
 						'c-slideout-height-full': heightFull,
+						'c-slideout-shown': shown,
 						'c-slideout-start': direction === 'left',
 					}
 				)}
@@ -355,7 +357,7 @@ export function SidePanel({
 					}}
 					in={open}
 					onEntered={(_, isAppearing) => {
-						slideoutRef.current?.classList.add('c-slideout-shown');
+						setShown(true);
 
 						if (!isAppearing) {
 
@@ -366,9 +368,7 @@ export function SidePanel({
 						}
 					}}
 					onExited={() => {
-						slideoutRef.current?.classList.remove(
-							'c-slideout-shown'
-						);
+						setShown(false);
 					}}
 					timeout={prefersReducedMotion ? 0 : open ? 300 : 200}
 				>
