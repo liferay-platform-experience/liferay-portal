@@ -74,7 +74,7 @@ public class SideNavigationControlMenuEntry
 				printWriter.write(" active");
 			}
 
-			printWriter.write("\"><div>");
+			printWriter.write("\">");
 
 			if (!sideNavigationDisplayContext.isVisible()) {
 				printWriter.write(
@@ -110,7 +110,7 @@ public class SideNavigationControlMenuEntry
 				).build(),
 				httpServletRequest, printWriter);
 
-			printWriter.write("</div></li>");
+			printWriter.write("</li>");
 		}
 		catch (Exception exception) {
 			throw new IOException(exception);

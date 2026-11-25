@@ -111,7 +111,7 @@ public class ProductMenuProductNavigationControlMenuEntry
 					writer.write(" active");
 				}
 
-				writer.write("\"><div>");
+				writer.write("\">");
 
 				if (!open) {
 					writer.write(
@@ -144,7 +144,7 @@ public class ProductMenuProductNavigationControlMenuEntry
 					).build(),
 					httpServletRequest, writer);
 
-				writer.write("</div></li>");
+				writer.write("</li>");
 
 				return true;
 			}
