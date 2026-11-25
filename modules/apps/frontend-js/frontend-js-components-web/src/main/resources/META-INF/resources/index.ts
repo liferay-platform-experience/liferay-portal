@@ -122,6 +122,7 @@ export type {
 } from './unified_sidebar/UnifiedSidebar';
 export {default as UnifiedSidebarColorSchemeButton} from './unified_sidebar/UnifiedSidebarColorSchemeButton';
 export {default as UnifiedSidebarItemContent} from './unified_sidebar/UnifiedSidebarItemContent';
+export {default as UnifiedSidebarNavigation} from './unified_sidebar/UnifiedSidebarNavigation';
 export {default as UnifiedSidebarResultsSkeleton} from './unified_sidebar/UnifiedSidebarResultsSkeleton';
 export {default as UnifiedSidebarSearchInput} from './unified_sidebar/UnifiedSidebarSearchInput';
 export {default as UnifiedSidebarSiteSelector} from './unified_sidebar/UnifiedSidebarSiteSelector';

@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayEmptyState from '@clayui/empty-state';
 import {ClayVerticalNav} from '@clayui/nav';
 import {SearchResultsMessage} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {
 	UnifiedSidebar,
 	UnifiedSidebarItemContent,
-	UnifiedSidebarResultsSkeleton,
+	UnifiedSidebarNavigation,
 	UnifiedSidebarSearchInput,
 	UnifiedSidebarSiteSelector,
 	countUnifiedSidebarItems,
@@ -18,7 +17,6 @@ import {
 	useUnifiedSidebarExpandedKeys,
 	useUnifiedSidebarFilter,
 	useUnifiedSidebarItems,
-	useUnifiedSidebarStuck,
 	useUnifiedSidebarVisibility,
 } from 'frontend-js-components-web';
 import React, {useMemo, useRef} from 'react';
@@ -71,8 +69,6 @@ function SideNavigation({
 
 	const baseId = useId();
 
-	const scrollRef = useRef<HTMLDivElement>(null);
-
 	const {
 		items: navigationItems,
 		loading,
@@ -113,12 +109,6 @@ function SideNavigation({
 
 	const showResultsSkeleton = isFilterActive && loading && !numberOfResults;
 
-	const stuck = useUnifiedSidebarStuck(
-		scrollRef,
-		items,
-		'.side-navigation-scope-item'
-	);
-
 	return (
 		<UnifiedSidebar
 			canonicalName={canonicalName}
@@ -155,87 +145,53 @@ function SideNavigation({
 				/>
 			</UnifiedSidebar.Top>
 
-			<div
-				className={classNames('unified-sidebar-scroll', {
-					'unified-sidebar-scroll-stuck': stuck,
-				})}
-				ref={scrollRef}
-			>
-				<UnifiedSidebar.Body className="c-px-0">
-					{showResultsSkeleton ? (
-						<UnifiedSidebarResultsSkeleton />
-					) : numberOfResults ? (
-						<ClayVerticalNav
-							active={selectedPortletId}
-							aria-label={label}
-							defaultExpandedKeys={initialExpandedKeys}
-							displayType="primary"
-							expandedKeys={expandedKeys}
-							itemAriaCurrent={true}
-							items={items}
-							onExpandedChange={updateExpandedKeys}
-							stacked={true}
+			<UnifiedSidebarNavigation
+				active={selectedPortletId}
+				expandedKeys={expandedKeys}
+				initialExpandedKeys={initialExpandedKeys}
+				items={items}
+				label={label}
+				loading={showResultsSkeleton}
+				numberOfResults={numberOfResults}
+				onExpandedChange={updateExpandedKeys}
+				renderItem={(item) => {
+					const scopeItemId = `${baseId}-${item.scope}`;
+
+					if (isScopeMarker(item)) {
+						return (
+							<SideNavigationScopeItem
+								id={scopeItemId}
+								key={item.id}
+								label={item.label}
+								scope={item.scope}
+							/>
+						);
+					}
+
+					return (
+						<ClayVerticalNav.Item
+							aria-describedby={
+								item.scope ? scopeItemId : undefined
+							}
+							className={classNames({
+								'side-navigation-scope-zone': item.scope,
+								[`side-navigation-scope-zone-${item.scope}`]:
+									item.scope,
+								'unified-sidebar-section-item':
+									item.parentLabel,
+							})}
+							data-canonical-name={item.canonicalName}
+							href={item.href}
+							items={item.items}
+							key={item.id}
+							textValue={item.label}
 						>
-							{(collectionItem) => {
-								if (typeof collectionItem === 'string') {
-									return <span>{collectionItem}</span>;
-								}
-
-								const item =
-									collectionItem as SideNavigationItem;
-								const scopeItemId = `${baseId}-${item.scope}`;
-
-								if (isScopeMarker(item)) {
-									return (
-										<SideNavigationScopeItem
-											id={scopeItemId}
-											key={item.id}
-											label={item.label}
-											scope={item.scope}
-										/>
-									);
-								}
-
-								return (
-									<ClayVerticalNav.Item
-										aria-describedby={
-											item.scope ? scopeItemId : undefined
-										}
-										className={classNames({
-											'side-navigation-scope-zone':
-												item.scope,
-											[`side-navigation-scope-zone-${item.scope}`]:
-												item.scope,
-											'unified-sidebar-section-item':
-												item.parentLabel,
-										})}
-										data-canonical-name={item.canonicalName}
-										href={item.href}
-										items={item.items}
-										key={item.id}
-										textValue={item.label}
-									>
-										<UnifiedSidebarItemContent
-											item={item}
-										/>
-									</ClayVerticalNav.Item>
-								);
-							}}
-						</ClayVerticalNav>
-					) : (
-						<ClayEmptyState
-							className="c-mt-n2 c-px-4 text-center"
-							description={Liferay.Language.get(
-								'adjust-or-clear-the-search-to-view-all-navigation-items'
-							)}
-							small
-							title={Liferay.Language.get('no-matching-items')}
-						/>
-					)}
-				</UnifiedSidebar.Body>
-
-				<div className="unified-sidebar-scroll-shadow" />
-			</div>
+							<UnifiedSidebarItemContent item={item} />
+						</ClayVerticalNav.Item>
+					);
+				}}
+				stuckAnchorSelector=".side-navigation-scope-item"
+			/>
 		</UnifiedSidebar>
 	);
 }

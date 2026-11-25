@@ -3,14 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayEmptyState from '@clayui/empty-state';
 import {ClayVerticalNav} from '@clayui/nav';
 import {SearchResultsMessage} from '@liferay/layout-js-components-web';
-import classNames from 'classnames';
 import {
 	UnifiedSidebar,
 	UnifiedSidebarItem,
 	UnifiedSidebarItemContent,
+	UnifiedSidebarNavigation,
 	UnifiedSidebarSearchInput,
 	countUnifiedSidebarItems,
 	useUnifiedSidebarAnnouncement,
@@ -19,7 +18,6 @@ import {
 	useUnifiedSidebarFocusReturn,
 	useUnifiedSidebarPageVisibility,
 	useUnifiedSidebarShortcut,
-	useUnifiedSidebarStuck,
 } from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useMemo, useRef} from 'react';
@@ -238,10 +236,6 @@ export default function CMSSidebar({
 		? numberOfMatches
 		: countUnifiedSidebarItems(items);
 
-	const scrollRef = useRef<HTMLDivElement>(null);
-
-	const stuck = useUnifiedSidebarStuck(scrollRef, items);
-
 	const elementsRef = useRef<HTMLDivElement>(null);
 
 	useEffect(
@@ -277,74 +271,36 @@ export default function CMSSidebar({
 					/>
 				</UnifiedSidebar.Top>
 
-				<div
-					className={classNames('unified-sidebar-scroll', {
-						'unified-sidebar-scroll-stuck': stuck,
-					})}
-					ref={scrollRef}
+				<UnifiedSidebarNavigation
+					active={navigation.active}
+					expandedKeys={expandedKeys}
+					initialExpandedKeys={initialExpandedKeys}
+					items={items}
+					label={label}
+					numberOfResults={numberOfResults}
+					onExpandedChange={updateExpandedKeys}
+					renderItem={(item) => (
+						<ClayVerticalNav.Item
+							href={item.href}
+							items={item.items}
+							key={item.id}
+							textValue={item.label}
+						>
+							{item.logoColor ? (
+								<SpaceSticker
+									aria-hidden="true"
+									displayType={item.logoColor}
+									name={item.label}
+									size="sm"
+								/>
+							) : (
+								<UnifiedSidebarItemContent item={item} />
+							)}
+						</ClayVerticalNav.Item>
+					)}
 				>
-					<UnifiedSidebar.Body className="c-px-0">
-						{numberOfResults ? (
-							<ClayVerticalNav
-								active={navigation.active}
-								aria-label={label}
-								defaultExpandedKeys={initialExpandedKeys}
-								displayType="primary"
-								expandedKeys={expandedKeys}
-								itemAriaCurrent={true}
-								items={items}
-								onExpandedChange={updateExpandedKeys}
-								stacked={true}
-							>
-								{(collectionItem) => {
-									if (typeof collectionItem === 'string') {
-										return <span>{collectionItem}</span>;
-									}
-
-									const item =
-										collectionItem as CMSSidebarItem;
-
-									return (
-										<ClayVerticalNav.Item
-											href={item.href}
-											items={item.items}
-											key={item.id}
-											textValue={item.label}
-										>
-											{item.logoColor ? (
-												<SpaceSticker
-													aria-hidden="true"
-													displayType={item.logoColor}
-													name={item.label}
-													size="sm"
-												/>
-											) : (
-												<UnifiedSidebarItemContent
-													item={item}
-												/>
-											)}
-										</ClayVerticalNav.Item>
-									);
-								}}
-							</ClayVerticalNav>
-						) : (
-							<ClayEmptyState
-								className="c-mt-n2 c-px-4 text-center"
-								description={Liferay.Language.get(
-									'adjust-or-clear-the-search-to-view-all-navigation-items'
-								)}
-								small
-								title={Liferay.Language.get(
-									'no-matching-items'
-								)}
-							/>
-						)}
-
-						<div hidden={isFilterActive} ref={elementsRef} />
-					</UnifiedSidebar.Body>
-
-					<div className="unified-sidebar-scroll-shadow" />
-				</div>
+					<div hidden={isFilterActive} ref={elementsRef} />
+				</UnifiedSidebarNavigation>
 			</UnifiedSidebar>
 
 			<span aria-live="polite" className="sr-only">
