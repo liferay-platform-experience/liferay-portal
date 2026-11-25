@@ -192,7 +192,9 @@ describe('CMSSidebar', () => {
 	it('announces that it listens for requests', () => {
 		renderComponent();
 
-		expect(Liferay.fire).toHaveBeenCalledWith('cmsSidebarReady');
+		expect(Liferay.fire).toHaveBeenCalledWith('cmsSidebarReady', {
+			visible: true,
+		});
 	});
 
 	it('closes from the backdrop on a narrow screen', async () => {

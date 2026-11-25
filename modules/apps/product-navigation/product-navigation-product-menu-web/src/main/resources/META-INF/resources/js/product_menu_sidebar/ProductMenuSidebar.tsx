@@ -9,6 +9,7 @@ import {
 	useUnifiedSidebarExpandedKeys,
 	useUnifiedSidebarFilter,
 	useUnifiedSidebarItems,
+	useUnifiedSidebarPageVisibility,
 } from 'frontend-js-components-web';
 import React, {useCallback, useState} from 'react';
 
@@ -17,7 +18,6 @@ import ProductMenuSidebarNavigation, {
 } from './ProductMenuSidebarNavigation';
 import ProductMenuSidebarPageTree from './ProductMenuSidebarPageTree';
 import {ProductMenuSidebarStagingProps} from './ProductMenuSidebarStaging';
-import {useProductMenuSidebarVisibility} from './useProductMenuSidebarVisibility';
 
 interface Props {
 	canonicalName: string;
@@ -56,10 +56,14 @@ function ProductMenuSidebar({
 	staging,
 	visible: initialVisible,
 }: Props) {
-	const {overlay, updateVisible, visible} = useProductMenuSidebarVisibility(
+	const {overlay, updateVisible, visible} = useUnifiedSidebarPageVisibility({
+		bodyClassName: 'open product-menu-open',
 		initialVisible,
-		sidebarStateSessionKey
-	);
+		readyEventName: 'productMenuSidebarReady',
+		sessionKey: sidebarStateSessionKey,
+		stateChangedEventName: 'productMenuSidebarStateChanged',
+		stateRequestedEventName: 'productMenuSidebarStateRequested',
+	});
 
 	const {
 		items: navigationItems,

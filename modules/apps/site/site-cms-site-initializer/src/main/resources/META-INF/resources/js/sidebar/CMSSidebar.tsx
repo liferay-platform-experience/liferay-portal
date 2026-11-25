@@ -17,6 +17,7 @@ import {
 	useUnifiedSidebarExpandedKeys,
 	useUnifiedSidebarFilter,
 	useUnifiedSidebarFocusReturn,
+	useUnifiedSidebarPageVisibility,
 	useUnifiedSidebarShortcut,
 	useUnifiedSidebarStuck,
 } from 'frontend-js-components-web';
@@ -25,7 +26,6 @@ import React, {useEffect, useMemo, useRef} from 'react';
 
 import SpaceSticker from '../common/components/SpaceSticker';
 import {LogoColor} from '../common/types/Space';
-import {useCMSSidebarVisibility} from './useCMSSidebarVisibility';
 
 interface CMSSidebarItem extends UnifiedSidebarItem {
 	items?: Array<CMSSidebarItem>;
@@ -181,8 +181,14 @@ export default function CMSSidebar({
 	triggerElement,
 	visible: initialVisible,
 }: Props) {
-	const {overlay, updateVisible, visible} =
-		useCMSSidebarVisibility(initialVisible);
+	const {overlay, updateVisible, visible} = useUnifiedSidebarPageVisibility({
+		bodyClassName: 'cms-sidebar-open',
+		initialVisible,
+		readyEventName: 'cmsSidebarReady',
+		sessionKey: 'com.liferay.application.list_sidebarState',
+		stateChangedEventName: 'cmsSidebarStateChanged',
+		stateRequestedEventName: 'cmsSidebarStateRequested',
+	});
 
 	const triggerRef = useMemo(
 		() => ({current: triggerElement}),
