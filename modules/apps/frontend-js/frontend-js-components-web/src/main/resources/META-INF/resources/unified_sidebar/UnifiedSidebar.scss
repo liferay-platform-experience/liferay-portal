@@ -24,14 +24,9 @@ html#{$cadmin-selector} {
 		background-image: clay-icon(search, #a2a2b9);
 	}
 
-	// Outrank the cadmin rules, which add a shadow, stop the body from
-	// scrolling, pad the rows more and keep the hidden close button at its
-	// full size when the sidebar renders inside a .cadmin host.
-
 	.c-slideout .sidebar.unified-sidebar.sidebar-light {
 		background-color: $cadmin-light-l1;
 		border-right: 0.5px solid $cadmin-secondary-l0;
-		box-shadow: none;
 		overflow: hidden;
 
 		.menubar-primary .nav-link {
@@ -69,6 +64,11 @@ html#{$cadmin-selector} {
 				}
 			}
 		}
+	}
+
+	.c-slideout:not(.c-slideout-overlay)
+		.sidebar.unified-sidebar.sidebar-light {
+		box-shadow: none;
 	}
 
 	.unified-sidebar {
