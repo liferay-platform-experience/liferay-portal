@@ -260,3 +260,115 @@ test(
 		});
 	}
 );
+
+function getContrastRatio(color1: string, color2: string) {
+	const [luminance1, luminance2] = [color1, color2].map((color) => {
+		const [red, green, blue] = (color.match(/[\d.]+/g) ?? []).map(
+			(value) => {
+				const channel = Number(value) / 255;
+
+				return channel <= 0.04045
+					? channel / 12.92
+					: ((channel + 0.055) / 1.055) ** 2.4;
+			}
+		);
+
+		return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+	});
+
+	return (
+		(Math.max(luminance1, luminance2) + 0.05) /
+		(Math.min(luminance1, luminance2) + 0.05)
+	);
+}
+
+async function getSeparatorContrastRatios(body: Locator, cadmin: Locator) {
+	return [
+		getContrastRatio(
+			await getResolvedColor(body, 'var(--separator-color)'),
+			await getResolvedColor(body, 'var(--white)')
+		),
+		getContrastRatio(
+			await getResolvedColor(cadmin, 'var(--cadmin-separator-color)'),
+			await getResolvedColor(cadmin, 'var(--cadmin-white)')
+		),
+	];
+}
+
+test(
+	'Separator color token keeps a 3:1 contrast on high density screens and softens on standard density screens',
+	{tag: '@LPD-107964'},
+	async ({context, page}) => {
+		const body = page.locator('body');
+		const cadmin = page.locator('.cadmin').first();
+		const cdpSession = await context.newCDPSession(page);
+		const highDensityContrastRatios: Record<string, number[]> = {};
+		const html = page.locator('html');
+
+		for (const deviceScaleFactor of [2, 1]) {
+			await cdpSession.send('Emulation.setDeviceMetricsOverride', {
+				deviceScaleFactor,
+				height: 0,
+				mobile: false,
+				width: 0,
+			});
+
+			// Load the page at each device scale factor because Chromium does not always apply a resolution media query again when the emulated value changes on an open page.
+
+			await page.goto('/group/control_panel/manage');
+
+			for (const colorScheme of ['light', 'dark']) {
+				await test.step(`${colorScheme} color scheme at a device scale factor of ${deviceScaleFactor}`, async () => {
+					await html.evaluate(
+						(element, colorScheme) =>
+							element.setAttribute(
+								'data-color-scheme',
+								colorScheme
+							),
+						colorScheme
+					);
+
+					const contrastRatios = await getSeparatorContrastRatios(
+						body,
+						cadmin
+					);
+
+					if (deviceScaleFactor === 2) {
+						for (const contrastRatio of contrastRatios) {
+							expect(contrastRatio).toBeGreaterThanOrEqual(3);
+						}
+
+						highDensityContrastRatios[colorScheme] = contrastRatios;
+
+						return;
+					}
+
+					for (const [
+						index,
+						contrastRatio,
+					] of contrastRatios.entries()) {
+						expect(contrastRatio).toBeGreaterThanOrEqual(2);
+						expect(contrastRatio).toBeLessThan(
+							highDensityContrastRatios[colorScheme][index]
+						);
+					}
+
+					await html.evaluate((element) =>
+						element.setAttribute('data-prefers-contrast', 'more')
+					);
+
+					for (const contrastRatio of await getSeparatorContrastRatios(
+						body,
+						cadmin
+					)) {
+						expect(contrastRatio).toBeGreaterThanOrEqual(3);
+					}
+
+					await html.evaluate((element) =>
+						element.removeAttribute('data-prefers-contrast')
+					);
+				});
+			}
+		}
+	}
+);
