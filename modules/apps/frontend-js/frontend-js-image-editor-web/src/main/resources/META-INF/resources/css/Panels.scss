@@ -7,7 +7,11 @@
 
 .image-editor .editor-sidebar {
 	background: var(--editor-surface);
-	border-left: 1px solid var(--editor-border);
+	border-left: 0.05rem solid
+		var(
+			--cadmin-separator-color,
+			var(--separator-color, var(--editor-border))
+		);
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
@@ -188,7 +192,11 @@
 @media (max-width: 700px) {
 	.image-editor .editor-sidebar {
 		border-left: 0;
-		border-top: 1px solid var(--editor-border);
+		border-top: 0.05rem solid
+			var(
+				--cadmin-separator-color,
+				var(--separator-color, var(--editor-border))
+			);
 		max-height: 45%;
 		width: 100%;
 	}

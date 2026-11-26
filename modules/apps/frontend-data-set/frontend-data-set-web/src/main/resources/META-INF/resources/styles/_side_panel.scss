@@ -17,7 +17,7 @@
 	.fds-side-panel-header {
 		align-items: center;
 		background: $gray-100;
-		border-bottom: 1px solid $border-color;
+		border-bottom: 0.05rem solid var(--separator-color, $border-color);
 		display: flex;
 		height: 65px;
 		justify-content: space-between;
@@ -94,7 +94,7 @@
 	}
 
 	.nav {
-		border-bottom: 1px solid $border-color;
+		border-bottom: 0.05rem solid var(--separator-color, $border-color);
 	}
 
 	.fds-side-menu {

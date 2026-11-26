@@ -1,8 +1,8 @@
 .page-toolbar-root {
 	&.navbar {
-		border-color: var(--gray-300);
+		border-color: var(--separator-color, var(--gray-300));
 		border-style: solid;
-		border-width: 0 0 1px;
+		border-width: 0 0 0.05rem;
 		height: 4rem;
 		left: 0;
 		position: fixed;

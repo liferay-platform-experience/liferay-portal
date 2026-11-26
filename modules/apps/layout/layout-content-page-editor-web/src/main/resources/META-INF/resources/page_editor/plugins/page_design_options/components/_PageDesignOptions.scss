@@ -1,7 +1,7 @@
 html#{$cadmin-selector} {
 	.cadmin {
 		.page-editor__sidebar__page-design-options__tabs {
-			border-bottom: 1px solid $cadmin-secondary-l3;
+			border-bottom: 0.05rem solid $cadmin-separator-color;
 			font-size: 12px;
 
 			.nav-link:not(.active) {

@@ -12,7 +12,7 @@ html#{$cadmin-selector} .cadmin .page-editor__sidebar__browser {
 	flex-grow: 1;
 
 	&__tabs {
-		border-bottom: 1px solid $cadmin-gray-300;
+		border-bottom: 0.05rem solid $cadmin-separator-color;
 		flex-shrink: 0;
 		font-size: 0.75rem;
 		margin: 0 $tabsBottomMargin;

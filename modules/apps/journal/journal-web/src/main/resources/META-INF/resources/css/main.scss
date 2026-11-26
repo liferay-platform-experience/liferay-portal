@@ -108,7 +108,8 @@ $productMenuWidth: var(--product-menu-width, 320px);
 					}
 
 					> .tbar-item:first-child {
-						border-bottom: solid thin $gray-300;
+						border-bottom: 0.05rem solid
+							var(--separator-color, $gray-300);
 						width: 100%;
 					}
 
@@ -207,7 +208,7 @@ $productMenuWidth: var(--product-menu-width, 320px);
 		}
 
 		.edit-article-sidebar {
-			border-left: 1px $gray-300 solid;
+			border-left: 0.05rem solid var(--separator-color, $gray-300);
 			box-shadow: none;
 			max-width: 320px;
 			outline: 0;

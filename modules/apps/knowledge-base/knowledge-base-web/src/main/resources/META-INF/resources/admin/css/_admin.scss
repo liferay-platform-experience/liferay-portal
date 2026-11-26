@@ -63,11 +63,11 @@ $toolbarZIndex: 971;
 		}
 
 		nav {
-			border-right: 1px solid $gray-300;
+			border-right: 0.05rem solid var(--separator-color, $gray-300);
 		}
 
 		.sidebar {
-			border-right: 1px solid $secondary-l3;
+			border-right: 0.05rem solid var(--separator-color, $secondary-l3);
 			box-shadow: none;
 
 			.sidebar-body {
@@ -128,7 +128,7 @@ $toolbarZIndex: 971;
 
 	.edit-knowledge-base-article-form {
 		.contextual-sidebar {
-			border-left: 1px $gray-300 solid;
+			border-left: 0.05rem solid var(--separator-color, $gray-300);
 			box-shadow: none;
 			margin-top: 2.5rem;
 			overflow-y: scroll;
@@ -202,7 +202,8 @@ $toolbarZIndex: 971;
 					}
 
 					> .tbar-item:first-child {
-						border-top: solid thin $gray-300;
+						border-top: 0.05rem solid
+							var(--separator-color, $gray-300);
 						order: 1;
 						width: 100%;
 					}

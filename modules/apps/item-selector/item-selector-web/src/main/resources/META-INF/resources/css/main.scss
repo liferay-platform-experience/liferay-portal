@@ -2,7 +2,7 @@
 
 .portlet-item-selector {
 	.management-bar {
-		border-bottom-color: $secondary-l3;
+		border-bottom-color: var(--separator-color, $secondary-l3);
 	}
 
 	.item-selector .entry-selector {

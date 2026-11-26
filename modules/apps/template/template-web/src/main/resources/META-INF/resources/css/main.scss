@@ -57,7 +57,7 @@ $productMenuWidth: var(--product-menu-width, 320px);
 				}
 
 				> .tbar-item:first-child {
-					border-top: solid thin $gray-300;
+					border-top: 0.05rem solid var(--separator-color, $gray-300);
 					order: 1;
 					width: 100%;
 				}

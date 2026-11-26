@@ -10,7 +10,7 @@ html#{$cadmin-selector} {
 			}
 
 			&__tabs {
-				border-bottom: 1px solid $cadmin-gray-300;
+				border-bottom: 0.05rem solid $cadmin-separator-color;
 				color: $cadmin-dark;
 				font-size: 12px;
 				margin-bottom: 16px;

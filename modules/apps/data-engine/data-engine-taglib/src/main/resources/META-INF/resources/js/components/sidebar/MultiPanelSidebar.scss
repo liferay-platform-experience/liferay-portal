@@ -46,7 +46,7 @@ $zIndexPanel: 1;
 
 	&-buttons {
 		background-color: $white;
-		border-left: solid thin $secondary-l3;
+		border-left: 0.05rem solid var(--separator-color, $secondary-l3);
 		flex-direction: column;
 		padding-top: 16px;
 		width: $multiPanelSidebarButtonWidth;
@@ -104,7 +104,7 @@ $zIndexPanel: 1;
 
 	&-content {
 		background-color: $white;
-		border-left: 1px solid $gray-300;
+		border-left: 0.05rem solid var(--separator-color, $gray-300);
 		overflow-x: hidden;
 		position: fixed;
 		right: $multiPanelSidebarButtonWidth;

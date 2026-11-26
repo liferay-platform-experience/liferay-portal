@@ -2,9 +2,7 @@ html#{$cadmin-selector} {
 	.cadmin {
 		.page-editor__toolbar {
 			background-color: $cadmin-white;
-			border-bottom: unquote(
-				'1px solid hsl(from #{$cadmin-secondary-l2} h s l / 0.5)'
-			);
+			border-bottom: 0.05rem solid $cadmin-separator-color;
 			color: $cadmin-secondary;
 			display: flex;
 			margin-bottom: 0;
