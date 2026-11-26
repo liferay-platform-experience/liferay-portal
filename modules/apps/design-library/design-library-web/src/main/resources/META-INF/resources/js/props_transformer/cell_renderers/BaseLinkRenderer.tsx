@@ -35,49 +35,55 @@ export function BaseLinkRenderer({
 }) {
 	const markedAsDefaultIconId = useId();
 
-	if (!action || !action?.href) {
-		return (
-			<span className="align-items-center d-inline-flex">
-				{value}
-
-				{markedAsDefault && <MarkedAsDefaultIcon />}
-			</span>
-		);
+	if (!action?.href && !markedAsDefault) {
+		return <>{value}</>;
 	}
-
-	const formattedHref = formatActionURL(action.href, itemData, action.target);
 
 	return (
 		<div className="align-items-center d-flex table-list-title">
-			<ClaySticker
-				className={classNames(
-					'c-mr-2',
-					'flex-shrink-0',
-					'inline-item',
-					'inline-item-before',
-					stickerClassName
-				)}
-				style={stickerStyle}
-			>
-				<ClayIcon symbol={symbol} />
-			</ClaySticker>
+			{action?.href ? (
+				<>
+					<ClaySticker
+						className={classNames(
+							'c-mr-2',
+							'flex-shrink-0',
+							'inline-item',
+							'inline-item-before',
+							stickerClassName
+						)}
+						style={stickerStyle}
+					>
+						<ClayIcon symbol={symbol} />
+					</ClaySticker>
 
-			<ClayLink
-				aria-describedby={
-					markedAsDefault ? markedAsDefaultIconId : undefined
-				}
-				aria-label={value}
-				className="align-items-center d-inline-flex"
-				data-senna-off
-				href={formattedHref}
-				onClick={(event) => event.stopPropagation()}
-			>
-				{value}
+					<ClayLink
+						aria-describedby={
+							markedAsDefault ? markedAsDefaultIconId : undefined
+						}
+						aria-label={value}
+						className="align-items-center d-inline-flex"
+						data-senna-off
+						href={formatActionURL(
+							action.href,
+							itemData,
+							action.target
+						)}
+						onClick={(event) => event.stopPropagation()}
+					>
+						{value}
 
-				{markedAsDefault && (
-					<MarkedAsDefaultIcon id={markedAsDefaultIconId} />
-				)}
-			</ClayLink>
+						{markedAsDefault && (
+							<MarkedAsDefaultIcon id={markedAsDefaultIconId} />
+						)}
+					</ClayLink>
+				</>
+			) : (
+				<>
+					<span>{value}</span>
+
+					<MarkedAsDefaultIcon />
+				</>
+			)}
 		</div>
 	);
 }
