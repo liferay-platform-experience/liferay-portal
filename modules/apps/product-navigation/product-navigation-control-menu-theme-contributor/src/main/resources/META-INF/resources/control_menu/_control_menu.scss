@@ -70,10 +70,6 @@ html#{$cadmin-selector} {
 			border-bottom: $control-menu-level-1-light-border;
 			color: $control-menu-level-1-light-color;
 
-			@media (max-resolution: 1dppx) {
-				border-bottom-color: $control-menu-level-1-light-border-color;
-			}
-
 			.control-menu-nav-link {
 				color: $control-menu-level-1-light-link-color;
 
@@ -124,7 +120,7 @@ html#{$cadmin-selector} {
 
 		.control-menu-level-2 {
 			background-color: $control-menu-level-2-bg;
-			border-bottom: 1px solid $cadmin-secondary-l3;
+			border-bottom: $control-menu-level-1-light-border;
 			color: $control-menu-level-2-color;
 			padding-bottom: 7px;
 			padding-top: 6px;
@@ -245,13 +241,13 @@ html#{$cadmin-selector} {
 		}
 
 		.control-menu-nav-item-separator:not(:first-child):before {
-			background-color: $cadmin-gray-600;
+			border-left: 0.05rem solid $cadmin-separator-color;
 			content: '';
 			height: 16px;
 			margin-right: 16px;
 			position: relative;
 			top: 8px;
-			width: 1px;
+			width: 0;
 		}
 
 		.control-menu-nav-item-field {
