@@ -177,6 +177,7 @@ $cadmin-c-root: map-merge(
 		--cadmin-warning-l3: light-dark(#fff4ec, #331600),
 		--cadmin-warning: light-dark(#b95000, #ff7a14),
 		--cadmin-border-color: var(--cadmin-gray-200),
+		--cadmin-separator-color: var(--cadmin-secondary-l0),
 		--cadmin-box-shadow-lg:
 			unquote('0 1rem 3rem hsl(from var(--cadmin-black) h s l / 0.175)'),
 		--cadmin-box-shadow-sm:
