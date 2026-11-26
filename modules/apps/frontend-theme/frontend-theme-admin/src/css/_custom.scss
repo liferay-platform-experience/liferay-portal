@@ -11,6 +11,10 @@
 html:root {
 	@include clay-css($c-root);
 
+	@media (max-resolution: 1dppx) {
+		@include clay-css($c-standard-density);
+	}
+
 	@media (prefers-contrast: more) {
 		@include clay-css($c-high-contrast);
 	}

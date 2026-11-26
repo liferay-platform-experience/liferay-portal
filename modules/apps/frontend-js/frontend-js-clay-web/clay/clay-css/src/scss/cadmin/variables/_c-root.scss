@@ -469,3 +469,13 @@ $cadmin-c-high-contrast: map-deep-merge(
 	),
 	$cadmin-c-high-contrast
 );
+
+// This map outputs custom properties on standard density screens, where the one device pixel a hairline takes is twice as wide as on high density screens.
+
+$cadmin-c-standard-density: () !default;
+$cadmin-c-standard-density: map-deep-merge(
+	(
+		--cadmin-separator-color: var(--cadmin-secondary-l1),
+	),
+	$cadmin-c-standard-density
+);

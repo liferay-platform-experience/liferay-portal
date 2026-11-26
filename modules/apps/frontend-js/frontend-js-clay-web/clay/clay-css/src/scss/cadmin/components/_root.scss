@@ -12,6 +12,16 @@
 	}
 }
 
+@if (variable-exists(cadmin-c-standard-density)) {
+	html#{$cadmin-selector} {
+		&:root .cadmin {
+			@media (max-resolution: 1dppx) {
+				@include clay-css($cadmin-c-standard-density);
+			}
+		}
+	}
+}
+
 @if (variable-exists(cadmin-c-dark)) {
 	html#{$cadmin-selector} {
 		&[data-color-scheme='dark']:root .cadmin {
