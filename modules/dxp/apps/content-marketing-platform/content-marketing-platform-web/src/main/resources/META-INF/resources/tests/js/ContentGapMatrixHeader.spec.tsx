@@ -50,7 +50,8 @@ describe('ContentGapMatrixHeader', () => {
 			'.lfr-cmp__content-gap-matrix-header-stats .label'
 		);
 
-		expect(label).toHaveClass('label-inverse-secondary');
+		expect(label).toHaveClass('label-secondary');
+		expect(label).not.toHaveClass('label-inverse-secondary');
 	});
 
 	it('colors the coverage badge success at full coverage', () => {
@@ -62,7 +63,8 @@ describe('ContentGapMatrixHeader', () => {
 			'.lfr-cmp__content-gap-matrix-header-stats .label'
 		);
 
-		expect(label).toHaveClass('label-inverse-success');
+		expect(label).toHaveClass('label-success');
+		expect(label).not.toHaveClass('label-inverse-success');
 	});
 
 	it('colors the coverage badge warning at zero coverage', () => {
@@ -74,7 +76,8 @@ describe('ContentGapMatrixHeader', () => {
 			'.lfr-cmp__content-gap-matrix-header-stats .label'
 		);
 
-		expect(label).toHaveClass('label-inverse-warning');
+		expect(label).toHaveClass('label-warning');
+		expect(label).not.toHaveClass('label-inverse-warning');
 	});
 
 	it('gives the AI assistant the project, its content type, and the available spaces', async () => {

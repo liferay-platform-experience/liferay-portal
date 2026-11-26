@@ -11,16 +11,14 @@ import {ROOM_STATUS} from '../../../common/utils/roomStatus';
 const RoomStatusFieldRenderer = ({value}: {value?: number}) => {
 	if (value === ROOM_STATUS.INACTIVE) {
 		return (
-			<Label displayType="warning" inverse>
+			<Label displayType="warning">
 				{Liferay.Language.get('archived')}
 			</Label>
 		);
 	}
 
 	return (
-		<Label displayType="success" inverse>
-			{Liferay.Language.get('active')}
-		</Label>
+		<Label displayType="success">{Liferay.Language.get('active')}</Label>
 	);
 };
 

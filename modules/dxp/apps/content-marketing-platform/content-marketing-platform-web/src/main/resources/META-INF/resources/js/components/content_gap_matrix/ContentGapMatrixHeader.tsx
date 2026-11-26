@@ -53,7 +53,7 @@ export default function ContentGapMatrixHeader({
 
 				{data ? (
 					<div className="lfr-cmp__content-gap-matrix-header-stats">
-						<ClayLabel displayType={coverageDisplayType} inverse>
+						<ClayLabel displayType={coverageDisplayType}>
 							{sub(
 								Liferay.Language.get('x-covered'),
 								`${coveragePercentage}%`
@@ -61,11 +61,11 @@ export default function ContentGapMatrixHeader({
 						</ClayLabel>
 
 						{noAssets ? (
-							<ClayLabel displayType="danger" inverse>
+							<ClayLabel displayType="danger">
 								{Liferay.Language.get('no-assets-found')}
 							</ClayLabel>
 						) : criticalGaps > 0 ? (
-							<ClayLabel displayType="warning" inverse>
+							<ClayLabel displayType="warning">
 								{sub(
 									Liferay.Language.get('x-critical-gaps'),
 									String(criticalGaps)
