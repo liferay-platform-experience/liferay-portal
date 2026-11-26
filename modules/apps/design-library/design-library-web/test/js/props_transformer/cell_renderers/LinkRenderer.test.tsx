@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -128,26 +128,35 @@ describe('LinkRenderer', () => {
 		expect(screen.getByText('Set 1')).toBeInTheDocument();
 	});
 
-	it('describes the link as default when the item is marked as default', () => {
-		_renderLinkRenderer({
-			actions: [
-				{
-					data: {id: 'edit'},
-					href: '/display-page-template',
-					label: 'edit',
+	it.each([
+		[true, 'default', 1],
+		[false, '', 0],
+	])(
+		'describes the link as default only when markedAsDefault is %s',
+		(markedAsDefault, description, defaultIconCount) => {
+			_renderLinkRenderer({
+				actions: [
+					{
+						data: {id: 'edit'},
+						href: '/display-page-template',
+						label: 'edit',
+					},
+				],
+				itemData: {
+					entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+					name: 'Set 1',
 				},
-			],
-			itemData: {
-				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
-				name: 'Set 1',
-			},
-			markedAsDefault: true,
-		});
+				markedAsDefault,
+			});
 
-		expect(
-			screen.getByRole('link', {name: 'Set 1'})
-		).toHaveAccessibleDescription('default');
-	});
+			const link = screen.getByRole('link', {name: 'Set 1'});
+
+			expect(link).toHaveAccessibleDescription(description);
+			expect(within(link).queryAllByText('default')).toHaveLength(
+				defaultIconCount
+			);
+		}
+	);
 
 	it('shows the default icon next to the plain text when no action matches the actionId', () => {
 		_renderLinkRenderer({
@@ -161,27 +170,6 @@ describe('LinkRenderer', () => {
 
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 		expect(screen.getByText('default')).toBeInTheDocument();
-	});
-
-	it('does not show the default icon when the item is not marked as default', () => {
-		_renderLinkRenderer({
-			actions: [
-				{
-					data: {id: 'edit'},
-					href: '/display-page-template',
-					label: 'edit',
-				},
-			],
-			itemData: {
-				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
-				name: 'Set 1',
-			},
-		});
-
-		expect(
-			screen.getByRole('link', {name: 'Set 1'})
-		).not.toHaveAccessibleDescription();
-		expect(screen.queryByText('default')).not.toBeInTheDocument();
 	});
 
 	it('decorates the link href with backURL and redirect when the action target is a portlet link', () => {
