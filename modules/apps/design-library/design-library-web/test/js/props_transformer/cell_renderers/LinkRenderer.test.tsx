@@ -18,10 +18,12 @@ const STYLE_BOOK_ENTRY_CLASS_NAME =
 const _renderLinkRenderer = ({
 	actions,
 	itemData,
+	markedAsDefault,
 	onRowClick,
 }: {
 	actions: any;
 	itemData: any;
+	markedAsDefault?: boolean;
 	onRowClick?: () => void;
 }) =>
 	render(
@@ -29,6 +31,7 @@ const _renderLinkRenderer = ({
 			<LinkRenderer
 				actions={actions as any}
 				itemData={itemData as any}
+				markedAsDefault={markedAsDefault}
 				options={{actionId: 'edit'}}
 				stickerClassName=""
 				symbol="book"
@@ -123,6 +126,62 @@ describe('LinkRenderer', () => {
 
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 		expect(screen.getByText('Set 1')).toBeInTheDocument();
+	});
+
+	it('describes the link as default when the item is marked as default', () => {
+		_renderLinkRenderer({
+			actions: [
+				{
+					data: {id: 'edit'},
+					href: '/display-page-template',
+					label: 'edit',
+				},
+			],
+			itemData: {
+				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+				name: 'Set 1',
+			},
+			markedAsDefault: true,
+		});
+
+		expect(
+			screen.getByRole('link', {name: 'Set 1'})
+		).toHaveAccessibleDescription('default');
+	});
+
+	it('shows the default icon next to the plain text when no action matches the actionId', () => {
+		_renderLinkRenderer({
+			actions: [],
+			itemData: {
+				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+				name: 'Set 1',
+			},
+			markedAsDefault: true,
+		});
+
+		expect(screen.queryByRole('link')).not.toBeInTheDocument();
+		expect(screen.getByText('default')).toBeInTheDocument();
+	});
+
+	it('does not show the default icon when the item is not marked as default', () => {
+		_renderLinkRenderer({
+			actions: [
+				{
+					data: {id: 'edit'},
+					href: '/display-page-template',
+					label: 'edit',
+				},
+			],
+			itemData: {
+				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+				name: 'Set 1',
+			},
+		});
+
+		expect(
+			screen.getByRole('link', {name: 'Set 1'})
+		).not.toHaveAccessibleDescription();
+		expect(screen.queryByText('default')).not.toBeInTheDocument();
 	});
 
 	it('decorates the link href with backURL and redirect when the action target is a portlet link', () => {
