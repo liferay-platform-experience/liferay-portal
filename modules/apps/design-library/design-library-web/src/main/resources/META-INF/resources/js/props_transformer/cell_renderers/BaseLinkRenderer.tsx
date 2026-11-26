@@ -8,19 +8,21 @@ import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import {IItemsActions, formatActionURL} from '@liferay/frontend-data-set-web';
 import classNames from 'classnames';
-import React from 'react';
+import React, {useId} from 'react';
 
 import {DesignLibrary} from '../../types';
 
 export interface BaseLinkRendererProps {
 	action?: IItemsActions;
 	itemData: DesignLibrary;
+	markedAsDefault?: boolean;
 	value: string;
 }
 
 export function BaseLinkRenderer({
 	action,
 	itemData,
+	markedAsDefault,
 	stickerClassName,
 	stickerStyle,
 	symbol,
@@ -30,8 +32,29 @@ export function BaseLinkRenderer({
 	stickerStyle?: React.CSSProperties;
 	symbol: string;
 }) {
+	const defaultIconId = useId();
+
+	const defaultIcon = markedAsDefault && (
+		<span
+			className="c-ml-2 lfr-portal-tooltip text-primary"
+			data-title={Liferay.Language.get('default')}
+		>
+			<ClayIcon symbol="check-circle" />
+
+			<span className="sr-only" id={defaultIconId}>
+				{Liferay.Language.get('default')}
+			</span>
+		</span>
+	);
+
 	if (!action || !action?.href) {
-		return <>{value}</>;
+		return (
+			<>
+				{value}
+
+				{defaultIcon}
+			</>
+		);
 	}
 
 	const formattedHref = formatActionURL(action.href, itemData, action.target);
@@ -52,6 +75,7 @@ export function BaseLinkRenderer({
 			</ClaySticker>
 
 			<ClayLink
+				aria-describedby={markedAsDefault ? defaultIconId : undefined}
 				aria-label={value}
 				data-senna-off
 				href={formattedHref}
@@ -59,6 +83,8 @@ export function BaseLinkRenderer({
 			>
 				{value}
 			</ClayLink>
+
+			{defaultIcon}
 		</div>
 	);
 }
