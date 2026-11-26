@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import React, {useId} from 'react';
 
 import {DesignLibrary} from '../../types';
+import MarkedAsDefaultIcon from './MarkedAsDefaultIcon';
 
 export interface BaseLinkRendererProps {
 	action?: IItemsActions;
@@ -32,28 +33,15 @@ export function BaseLinkRenderer({
 	stickerStyle?: React.CSSProperties;
 	symbol: string;
 }) {
-	const defaultIconId = useId();
-
-	const defaultIcon = markedAsDefault && (
-		<span
-			className="c-ml-2 lfr-portal-tooltip text-primary"
-			data-title={Liferay.Language.get('default')}
-		>
-			<ClayIcon symbol="check-circle" />
-
-			<span className="sr-only" id={defaultIconId}>
-				{Liferay.Language.get('default')}
-			</span>
-		</span>
-	);
+	const markedAsDefaultIconId = useId();
 
 	if (!action || !action?.href) {
 		return (
-			<>
+			<span className="align-items-center d-inline-flex">
 				{value}
 
-				{defaultIcon}
-			</>
+				{markedAsDefault && <MarkedAsDefaultIcon />}
+			</span>
 		);
 	}
 
@@ -75,16 +63,21 @@ export function BaseLinkRenderer({
 			</ClaySticker>
 
 			<ClayLink
-				aria-describedby={markedAsDefault ? defaultIconId : undefined}
+				aria-describedby={
+					markedAsDefault ? markedAsDefaultIconId : undefined
+				}
 				aria-label={value}
+				className="align-items-center d-inline-flex"
 				data-senna-off
 				href={formattedHref}
 				onClick={(event) => event.stopPropagation()}
 			>
 				{value}
-			</ClayLink>
 
-			{defaultIcon}
+				{markedAsDefault && (
+					<MarkedAsDefaultIcon id={markedAsDefaultIconId} />
+				)}
+			</ClayLink>
 		</div>
 	);
 }
