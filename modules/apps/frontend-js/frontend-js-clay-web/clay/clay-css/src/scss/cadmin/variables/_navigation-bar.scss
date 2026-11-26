@@ -3,7 +3,7 @@ $cadmin-navigation-bar-size: map-deep-merge(
 	(
 		scaling-navbar: false,
 
-		border-bottom-width: 1px,
+		border-bottom-width: 0.05rem,
 		font-size: $cadmin-navbar-font-size,
 		height: 48px,
 		padding-x: 0px,
@@ -309,7 +309,7 @@ $cadmin-navigation-bar-light: () !default;
 $cadmin-navigation-bar-light: map-deep-merge(
 	(
 		background-color: $cadmin-white,
-		border-color: $cadmin-gray-200,
+		border-color: $cadmin-separator-color,
 
 		navbar-nav: (
 			nav-link: (

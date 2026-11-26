@@ -166,7 +166,7 @@ $cadmin-nav-item: map-deep-merge(
 
 // .nav-divider
 
-$cadmin-nav-divider-color: $cadmin-gray-600 !default;
+$cadmin-nav-divider-color: $cadmin-separator-color !default;
 $cadmin-nav-divider-margin-y: calc(#{$cadmin-spacer} * 0.5) !default;
 
 $cadmin-nav-divider: () !default;
@@ -177,7 +177,7 @@ $cadmin-nav-divider: map-deep-merge(
 		position: relative,
 
 		before: (
-			background-color: $cadmin-nav-divider-color,
+			border-left: 0.05rem solid $cadmin-nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,
@@ -185,7 +185,7 @@ $cadmin-nav-divider: map-deep-merge(
 			margin-top: -8px,
 			position: absolute,
 			top: 50%,
-			width: 1px,
+			width: 0,
 			z-index: 2,
 		),
 	),
@@ -200,7 +200,7 @@ $cadmin-nav-divider-end: map-deep-merge(
 		position: relative,
 
 		after: (
-			background-color: $cadmin-nav-divider-color,
+			border-left: 0.05rem solid $cadmin-nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,
@@ -208,7 +208,7 @@ $cadmin-nav-divider-end: map-deep-merge(
 			position: absolute,
 			right: 0px,
 			top: 50%,
-			width: 1px,
+			width: 0,
 			z-index: 2,
 		),
 	),

@@ -184,7 +184,7 @@ $nav-item: map-deep-merge(
 
 // .nav-divider
 
-$nav-divider-color: var(--nav-divider-color, $secondary-l1) !default;
+$nav-divider-color: var(--nav-divider-color, $separator-color) !default;
 $nav-divider-margin-y: var(
 	--nav-divider-margin-y,
 	calc(#{$spacer} * 0.5)
@@ -198,7 +198,7 @@ $nav-divider: map-deep-merge(
 		position: relative,
 
 		before: (
-			background-color: $nav-divider-color,
+			border-left: 0.05rem solid $nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,
@@ -206,7 +206,7 @@ $nav-divider: map-deep-merge(
 			margin-top: -8px,
 			position: absolute,
 			top: 50%,
-			width: 1px,
+			width: 0,
 			z-index: 2,
 		),
 	),
@@ -221,7 +221,7 @@ $nav-divider-end: map-deep-merge(
 		position: relative,
 
 		after: (
-			background-color: $nav-divider-color,
+			border-left: 0.05rem solid $nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,
@@ -229,7 +229,7 @@ $nav-divider-end: map-deep-merge(
 			position: absolute,
 			right: 0,
 			top: 50%,
-			width: 1px,
+			width: 0,
 			z-index: 2,
 		),
 	),
