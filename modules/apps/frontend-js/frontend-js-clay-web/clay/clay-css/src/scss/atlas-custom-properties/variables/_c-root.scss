@@ -592,6 +592,7 @@ $c-high-contrast: map-deep-merge(
 		--secondary-l1: light-dark(#6c6f8e, #bcbdcc),
 		--secondary-l2: light-dark(#cdcdda, #a5a7bb),
 		--secondary-l3: light-dark(#f0f0f4, #8b8da7),
+		--separator-color: var(--secondary-l1),
 		--sidebar-light-box-shadow: unquote('-1px 0 0 0 var(--separator-color)'),
 		--sidebar-light-sidenav-start-box-shadow:
 			unquote('1px 0 0 0 var(--separator-color)'),

@@ -438,6 +438,7 @@ $cadmin-c-high-contrast: map-deep-merge(
 		--cadmin-secondary-l2: light-dark(#cdcdda, #a5a7bb),
 		--cadmin-secondary-l3: light-dark(#f0f0f4, #8b8da7),
 		--cadmin-secondary: light-dark(#28282f, #f6f6f8),
+		--cadmin-separator-color: var(--cadmin-secondary-l1),
 		--cadmin-success-d1: light-dark(#0e2a14, #a2e1b2),
 		--cadmin-success-d2: light-dark(#071309, #d9f2df),
 		--cadmin-success-l1: light-dark(#319b4b, #26783a),
