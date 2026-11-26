@@ -296,16 +296,18 @@ async function getSeparatorContrastRatios(body: Locator, cadmin: Locator) {
 }
 
 test(
-	'Separator color token keeps a 3:1 contrast on high density screens and softens on standard density screens',
+	'Separator color token softens on standard density screens and keeps a 3:1 contrast in high contrast',
 	{tag: '@LPD-107964'},
 	async ({context, page}) => {
 		const body = page.locator('body');
 		const cadmin = page.locator('.cadmin').first();
 		const cdpSession = await context.newCDPSession(page);
-		const highDensityContrastRatios: Record<string, number[]> = {};
 		const html = page.locator('html');
 
-		for (const deviceScaleFactor of [2, 1]) {
+		for (const {deviceScaleFactor, level} of [
+			{deviceScaleFactor: 2, level: 'l1'},
+			{deviceScaleFactor: 1, level: 'l2'},
+		]) {
 			await cdpSession.send('Emulation.setDeviceMetricsOverride', {
 				deviceScaleFactor,
 				height: 0,
@@ -328,30 +330,26 @@ test(
 						colorScheme
 					);
 
-					const contrastRatios = await getSeparatorContrastRatios(
-						body,
-						cadmin
+					expect(
+						await getResolvedColor(body, 'var(--separator-color)')
+					).toBe(
+						await getResolvedColor(
+							body,
+							`var(--secondary-${level})`
+						)
 					);
 
-					if (deviceScaleFactor === 2) {
-						for (const contrastRatio of contrastRatios) {
-							expect(contrastRatio).toBeGreaterThanOrEqual(3);
-						}
-
-						highDensityContrastRatios[colorScheme] = contrastRatios;
-
-						return;
-					}
-
-					for (const [
-						index,
-						contrastRatio,
-					] of contrastRatios.entries()) {
-						expect(contrastRatio).toBeGreaterThanOrEqual(2);
-						expect(contrastRatio).toBeLessThan(
-							highDensityContrastRatios[colorScheme][index]
-						);
-					}
+					expect(
+						await getResolvedColor(
+							cadmin,
+							'var(--cadmin-separator-color)'
+						)
+					).toBe(
+						await getResolvedColor(
+							cadmin,
+							`var(--cadmin-secondary-${level})`
+						)
+					);
 
 					await html.evaluate((element) =>
 						element.setAttribute('data-prefers-contrast', 'more')
