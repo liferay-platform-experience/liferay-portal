@@ -1,0 +1,11 @@
+@import '_atlas-custom-properties-variables';
+
+.cms-permissions-aside {
+	border-left: 1px solid $gray-300;
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	gap: map-get($spacers, 4);
+	padding: map-get($spacers, 4);
+	width: 16rem;
+}

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export const DEPOT_ENTRY_CLASS_NAME = 'com.liferay.depot.model.DepotEntry';
 export const OBJECT_DEFINITION_CLASS_NAME =
 	'com.liferay.object.model.ObjectDefinition';
 export const OBJECT_ENTRY_CLASS_NAME = 'com.liferay.object.model.ObjectEntry';

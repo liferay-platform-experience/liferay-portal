@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
@@ -272,6 +273,42 @@ public class ViewContentsSectionDisplayContextTest
 			fdsActionDropdownItems.get(7));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"time", "expire", "Expire", "post", fdsActionDropdownItems.get(8));
+	}
+
+	@FeatureFlag("LPD-114063")
+	@Test
+	@TestInfo("LPD-116791")
+	public void testGetFDSActionDropdownItemsWithEditPermissionsEnabled()
+		throws Exception {
+
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			getFDSActionDropdownItems();
+
+		Assert.assertEquals(
+			fdsActionDropdownItems.toString(), 18,
+			fdsActionDropdownItems.size());
+
+		FDSActionDropdownItem editPermissionsFDSActionDropdownItem =
+			fdsActionDropdownItems.get(15);
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"password-policies", "edit-permissions", "Manage Permissions",
+			"get", editPermissionsFDSActionDropdownItem);
+
+		String href = (String)editPermissionsFDSActionDropdownItem.get("href");
+
+		Assert.assertTrue(
+			href.contains(
+				GroupConstants.CMS_FRIENDLY_URL +
+					"/permissions?className={entryClassName}&classPK=" +
+						"{embedded.id}&backURL="));
+
+		Assert.assertEquals(
+			"link", editPermissionsFDSActionDropdownItem.get("target"));
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"password-policies", "permissions-menu", "Permissions", null,
+			"contextual", null, fdsActionDropdownItems.get(16));
 	}
 
 	@Override
