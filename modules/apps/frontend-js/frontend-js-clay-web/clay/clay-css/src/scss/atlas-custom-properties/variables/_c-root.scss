@@ -219,7 +219,7 @@ $c-root: map-merge(
 		--border-color: var(--gray-200),
 		--border-width: 0.0625rem,
 
-		--separator-color: var(--secondary-l1),
+		--separator-color: var(--secondary-l2),
 		--border-radius: 0.5rem,
 
 		--border-radius-lg: 0.5rem,
@@ -634,7 +634,7 @@ $c-high-contrast: map-deep-merge(
 $c-standard-density: () !default;
 $c-standard-density: map-deep-merge(
 	(
-		--separator-color: var(--secondary-l2),
+		--separator-color: var(--secondary-l3),
 	),
 	$c-standard-density
 );

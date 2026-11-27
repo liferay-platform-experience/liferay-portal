@@ -305,8 +305,8 @@ test(
 		const html = page.locator('html');
 
 		for (const {deviceScaleFactor, level} of [
-			{deviceScaleFactor: 2, level: 'l1'},
-			{deviceScaleFactor: 1, level: 'l2'},
+			{deviceScaleFactor: 2, level: 'l2'},
+			{deviceScaleFactor: 1, level: 'l3'},
 		]) {
 			await cdpSession.send('Emulation.setDeviceMetricsOverride', {
 				deviceScaleFactor,
