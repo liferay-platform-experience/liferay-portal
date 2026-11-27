@@ -4,7 +4,7 @@
 html#{$cadmin-selector} .cadmin .lfr-objects__code-editor-sidebar,
 .lfr-objects__code-editor-sidebar {
 	background-color: $light-l2;
-	border-left: 0.05rem solid var(--separator-color, $gray-300);
+	border-left: 1px solid var(--separator-color, $gray-300);
 	overflow-x: hidden;
 	width: 280px;
 

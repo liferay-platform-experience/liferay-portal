@@ -98,8 +98,7 @@ $productMenuWidth: var(--product-menu-width, 320px);
 					}
 
 					> .tbar-item:first-child {
-						border-bottom: 0.05rem solid
-							var(--separator-color, #e7e7ed);
+						border-bottom: 1px solid var(--separator-color, #e7e7ed);
 						width: 100%;
 					}
 

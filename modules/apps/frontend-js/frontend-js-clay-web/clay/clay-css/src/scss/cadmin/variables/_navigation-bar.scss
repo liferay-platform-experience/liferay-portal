@@ -3,7 +3,7 @@ $cadmin-navigation-bar-size: map-deep-merge(
 	(
 		scaling-navbar: false,
 
-		border-bottom-width: 0.05rem,
+		border-bottom-width: 1px,
 		font-size: $cadmin-navbar-font-size,
 		height: 48px,
 		padding-x: 0px,

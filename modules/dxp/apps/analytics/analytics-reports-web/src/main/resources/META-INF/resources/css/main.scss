@@ -4,7 +4,7 @@ html#{$cadmin-selector} {
 	.cadmin {
 		&.lfr-analytics-reports-panel {
 			.sidebar {
-				border-left: 0.05rem solid $cadmin-separator-color;
+				border-left: 1px solid $cadmin-separator-color;
 				box-shadow: none;
 			}
 

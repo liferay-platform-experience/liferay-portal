@@ -30,7 +30,7 @@ $zIndexContent: 0;
 html#{$cadmin-selector} .cadmin .page-editor__item-configuration-sidebar {
 	@include sidebar;
 	background: $cadmin-white;
-	border-left: 0.05rem solid $cadmin-separator-color;
+	border-left: 1px solid $cadmin-separator-color;
 	right: 0;
 	transition:
 		transform ease $defaultTransitionDuration,
@@ -50,7 +50,7 @@ html#{$cadmin-selector}
 	.cadmin
 	.page-editor__item-configuration-sidebar {
 	&--open {
-		border-left: 0.05rem solid $cadmin-separator-color;
+		border-left: 1px solid $cadmin-separator-color;
 		overflow: unset;
 		width: $defaultSidebarContentWidth;
 	}
@@ -169,7 +169,7 @@ html#{$cadmin-selector} .cadmin .page-editor__sidebar {
 
 	&__content {
 		background-color: $cadmin-white;
-		border-right: 0.05rem solid $cadmin-separator-color;
+		border-right: 1px solid $cadmin-separator-color;
 		display: flex;
 		flex-direction: column;
 		height: calc(

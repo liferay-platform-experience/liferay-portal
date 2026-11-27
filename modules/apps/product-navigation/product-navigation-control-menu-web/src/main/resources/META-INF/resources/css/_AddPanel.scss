@@ -2,7 +2,7 @@ html#{$cadmin-selector} {
 	.cadmin {
 		&.lfr-add-panel {
 			.sidebar {
-				border-left: 0.05rem solid $cadmin-separator-color;
+				border-left: 1px solid $cadmin-separator-color;
 
 				.sidebar-body__add-panel {
 					height: 100%;

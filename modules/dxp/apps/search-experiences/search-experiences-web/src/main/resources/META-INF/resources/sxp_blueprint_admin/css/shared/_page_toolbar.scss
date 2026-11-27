@@ -41,7 +41,7 @@
 	}
 
 	.tbar-divider {
-		border-left: 0.05rem solid var(--separator-color, var(--secondary));
+		border-left: 1px solid var(--separator-color, var(--secondary));
 		height: 16px;
 		width: 0;
 	}

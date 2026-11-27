@@ -1,6 +1,6 @@
 .info-panel {
 	.sidebar {
-		border-left: 0.05rem solid $separator-color;
+		border-left: 1px solid $separator-color;
 		box-shadow: none;
 	}
 
@@ -63,7 +63,7 @@
 	}
 
 	.navbar-collapse {
-		border-bottom: 0.05rem solid $separator-color;
+		border-bottom: 1px solid $separator-color;
 	}
 
 	.navigation-bar-light,

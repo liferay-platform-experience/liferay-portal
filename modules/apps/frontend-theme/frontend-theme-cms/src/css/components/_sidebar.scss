@@ -1,6 +1,6 @@
 .sidebar-container {
 	background-color: $light-l1;
-	border-right: 0.05rem solid $separator-color;
+	border-right: 1px solid $separator-color;
 
 	.lfr-layout-structure-item-sidebar & {
 		position: fixed;
@@ -10,7 +10,7 @@
 .cms-sidebar-nav {
 	@include media-breakpoint-up(md) {
 		background-color: $gray-100;
-		border-right: 0.05rem solid $separator-color;
+		border-right: 1px solid $separator-color;
 		max-width: var(--sidebar-layout-width, 280px);
 		min-height: var(--sidebar-layout-height);
 		min-width: var(--sidebar-layout-width, 280px);
@@ -19,6 +19,6 @@
 }
 
 .fds .sidebar-light {
-	border-left: 0.05rem solid $separator-color;
+	border-left: 1px solid $separator-color;
 	box-shadow: none;
 }

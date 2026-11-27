@@ -53,7 +53,7 @@ html#{$cadmin-selector} {
 			@include product-menu-sidebar-shimmer;
 
 			background-color: $cadmin-light-l1;
-			border-right: 0.05rem solid $cadmin-separator-color;
+			border-right: 1px solid $cadmin-separator-color;
 			box-shadow: none;
 
 			.product-menu-sidebar-skeleton {
@@ -93,7 +93,7 @@ html#{$cadmin-selector} {
 		}
 
 		.pages-administration-link {
-			border-top: 0.05rem solid $cadmin-separator-color;
+			border-top: 1px solid $cadmin-separator-color;
 			padding: 0.25rem 0;
 
 			a {

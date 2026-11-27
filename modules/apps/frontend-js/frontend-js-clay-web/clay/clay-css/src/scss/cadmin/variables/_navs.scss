@@ -177,7 +177,7 @@ $cadmin-nav-divider: map-deep-merge(
 		position: relative,
 
 		before: (
-			border-left: 0.05rem solid $cadmin-nav-divider-color,
+			border-left: 1px solid $cadmin-nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,
@@ -200,7 +200,7 @@ $cadmin-nav-divider-end: map-deep-merge(
 		position: relative,
 
 		after: (
-			border-left: 0.05rem solid $cadmin-nav-divider-color,
+			border-left: 1px solid $cadmin-nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,

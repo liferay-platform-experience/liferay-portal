@@ -254,7 +254,7 @@
 
 		.sidebar {
 			background: #fff;
-			border-left: 0.05rem solid var(--separator-color, #e7e7ed);
+			border-left: 1px solid var(--separator-color, #e7e7ed);
 			display: flex;
 			flex-direction: column;
 			margin-left: 24px;
@@ -262,7 +262,7 @@
 			width: 320px;
 
 			.sidebar-body {
-				border-top: 0.05rem solid
+				border-top: 1px solid
 					var(--separator-color, rgba(0, 0, 0, 0.125));
 				flex-grow: 1;
 				padding-top: 24px !important;

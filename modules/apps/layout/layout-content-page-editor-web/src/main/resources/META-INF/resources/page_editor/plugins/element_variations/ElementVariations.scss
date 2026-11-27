@@ -29,7 +29,7 @@ $element-variations-sidebar-width: 320px;
 }
 
 .c-slideout .element-variations__sidebar {
-	border-right: 0.05rem solid var(--separator-color, $secondary);
+	border-right: 1px solid var(--separator-color, $secondary);
 
 	.alert .close {
 		color: inherit;

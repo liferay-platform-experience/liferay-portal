@@ -241,7 +241,7 @@ html#{$cadmin-selector} {
 		}
 
 		.control-menu-nav-item-separator:not(:first-child):before {
-			border-left: 0.05rem solid $cadmin-separator-color;
+			border-left: 1px solid $cadmin-separator-color;
 			content: '';
 			height: 16px;
 			margin-right: 16px;

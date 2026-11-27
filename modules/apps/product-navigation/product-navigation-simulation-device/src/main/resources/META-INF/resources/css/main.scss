@@ -4,7 +4,7 @@ html#{$cadmin-selector} {
 	.cadmin {
 		&.simulation-panel {
 			.sidebar {
-				border-left: 0.05rem solid $cadmin-separator-color;
+				border-left: 1px solid $cadmin-separator-color;
 			}
 
 			.sidebar-header {

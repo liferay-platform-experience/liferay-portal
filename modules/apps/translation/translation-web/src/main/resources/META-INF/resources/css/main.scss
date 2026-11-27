@@ -66,8 +66,7 @@ $productMenuTransitionDuration: 0.5s;
 					}
 
 					> .tbar-item:first-child {
-						border-top: 0.05rem solid
-							var(--separator-color, #e7e7ed);
+						border-top: 1px solid var(--separator-color, #e7e7ed);
 						order: 1;
 						width: 100%;
 					}

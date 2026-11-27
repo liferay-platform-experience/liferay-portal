@@ -198,7 +198,7 @@ $nav-divider: map-deep-merge(
 		position: relative,
 
 		before: (
-			border-left: 0.05rem solid $nav-divider-color,
+			border-left: 1px solid $nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,
@@ -221,7 +221,7 @@ $nav-divider-end: map-deep-merge(
 		position: relative,
 
 		after: (
-			border-left: 0.05rem solid $nav-divider-color,
+			border-left: 1px solid $nav-divider-color,
 			content: '',
 			display: block,
 			height: 16px,

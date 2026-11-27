@@ -169,7 +169,7 @@ $component-tbar: map-deep-merge(
 	(
 		border-color: var(--component-tbar-border-color, $separator-color),
 		border-style: var(--component-tbar-border-style, solid),
-		border-width: var(--component-tbar-border-width, 0 0 0.05rem 0),
+		border-width: var(--component-tbar-border-width, 0 0 1px 0),
 		color: var(--component-tbar-color, $gray-600),
 		height: var(--component-tbar-height, 56px),
 	),

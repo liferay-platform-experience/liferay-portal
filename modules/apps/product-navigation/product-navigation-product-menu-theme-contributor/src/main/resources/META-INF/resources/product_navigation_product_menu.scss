@@ -82,7 +82,7 @@ html#{$cadmin-selector} {
 
 		.product-menu {
 			background-color: $product-menu-body-bg;
-			border-right: 0.05rem solid $cadmin-separator-color;
+			border-right: 1px solid $cadmin-separator-color;
 
 			a {
 				color: $product-menu-nav-link-color;
