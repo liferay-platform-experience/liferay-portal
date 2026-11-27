@@ -4,6 +4,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import {ReactPortal} from '@liferay/frontend-js-react-web';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import {useUnifiedSidebarAnnouncement} from './useUnifiedSidebarAnnouncement';
@@ -94,9 +95,11 @@ function UnifiedSidebarToggler({
 				title={title}
 			/>
 
-			<span aria-live="polite" className="sr-only">
-				{announcement}
-			</span>
+			<ReactPortal className="cadmin">
+				<span aria-live="polite" className="position-fixed sr-only">
+					{announcement}
+				</span>
+			</ReactPortal>
 		</>
 	);
 }
