@@ -122,6 +122,7 @@ export type {
 } from './unified_sidebar/UnifiedSidebar';
 export {default as UnifiedSidebarColorSchemeButton} from './unified_sidebar/UnifiedSidebarColorSchemeButton';
 export {default as UnifiedSidebarItemContent} from './unified_sidebar/UnifiedSidebarItemContent';
+export {default as UnifiedSidebarNavigation} from './unified_sidebar/UnifiedSidebarNavigation';
 export {default as UnifiedSidebarResultsSkeleton} from './unified_sidebar/UnifiedSidebarResultsSkeleton';
 export {default as UnifiedSidebarSearchInput} from './unified_sidebar/UnifiedSidebarSearchInput';
 export {default as UnifiedSidebarSiteSelector} from './unified_sidebar/UnifiedSidebarSiteSelector';
@@ -131,12 +132,16 @@ export type {
 	UnifiedSidebarItem,
 	UnifiedSidebarItemsMap,
 } from './unified_sidebar/types';
+export {useUnifiedSidebarAnnouncement} from './unified_sidebar/useUnifiedSidebarAnnouncement';
 export {useUnifiedSidebarExpandedKeys} from './unified_sidebar/useUnifiedSidebarExpandedKeys';
 export type {UnifiedSidebarFilter} from './unified_sidebar/useUnifiedSidebarFilter';
 export {
 	filterUnifiedSidebarItems,
 	useUnifiedSidebarFilter,
 } from './unified_sidebar/useUnifiedSidebarFilter';
+export {useUnifiedSidebarFocusReturn} from './unified_sidebar/useUnifiedSidebarFocusReturn';
 export {useUnifiedSidebarItems} from './unified_sidebar/useUnifiedSidebarItems';
+export {useUnifiedSidebarPageVisibility} from './unified_sidebar/useUnifiedSidebarPageVisibility';
+export {useUnifiedSidebarShortcut} from './unified_sidebar/useUnifiedSidebarShortcut';
 export {useUnifiedSidebarStuck} from './unified_sidebar/useUnifiedSidebarStuck';
 export {useUnifiedSidebarVisibility} from './unified_sidebar/useUnifiedSidebarVisibility';

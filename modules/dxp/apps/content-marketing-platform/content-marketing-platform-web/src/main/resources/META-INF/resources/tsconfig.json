@@ -1,5 +1,5 @@
 {
-	"@generated": "b377dabd7056e11e72b20b2a3e7eb6571da150e9",
+	"@generated": "4ab134c238d6a6308c78e636a252c5274bdb3cde",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -49,6 +49,9 @@
 			],
 			"@liferay/site-cms-site-initializer": [
 				"../../../../../../../../../apps/site/site-cms-site-initializer/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/site-cms-site-initializer/renderCMSSidebar": [
+				"../../../../../../../../../apps/site/site-cms-site-initializer/src/main/resources/META-INF/resources/js/renderCMSSidebar.ts"
 			],
 			"document-library-preview-document": [
 				"../../../../../../../../../apps/document-library/document-library-preview-document/src/main/resources/META-INF/resources/preview/js/index.tsx"

@@ -72,7 +72,7 @@
 
 				<li class="${navItemCSSClass}" role="none">
 					[#if navItem.isBrowsable()]
-						[#assign navItemsJSONArray = navItemsJSONArray + '"href": "${navItem.getRegularURL()!}",' /]
+						[#assign navItemsJSONArray = navItemsJSONArray + '"href": "${(navItem.getRegularURL()!)?json_string}",' /]
 
 						<a class="${navLinkCSSClass}" href="${navItem.getRegularURL()!}" ${navItem.getTarget()}>
 							[@labelWithIcon navItem=navItem /]
@@ -105,7 +105,7 @@
 				</li>
 
 				[#assign
-					navItemsJSONArray = navItemsJSONArray + '"icon": "${(navItem.getDisplayIcon??)?then(navItem.getDisplayIcon(), "")}", "id": "${navItem.getLayoutId()}", "label": "${navItem.getName()}"}'
+					navItemsJSONArray = navItemsJSONArray + '"icon": "${(navItem.getDisplayIcon??)?then(navItem.getDisplayIcon(), "")?json_string}", "id": "${navItem.getLayoutId()}", "label": "${navItem.getUnescapedName()?json_string}"}'
 				/]
 			[/#if]
 		[/#list]

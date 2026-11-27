@@ -1,5 +1,5 @@
 {
-	"@generated": "6b948870ed5230d63ac9f6f93e4b689e305f8387",
+	"@generated": "8ede1006c3711d89349335490cda5a6e50c26616",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -52,6 +52,9 @@
 			],
 			"@liferay/object-js-components-web": [
 				"../../../object/object-js-components-web/src/main/resources/META-INF/resources/index.ts"
+			],
+			"@liferay/site-cms-site-initializer/renderCMSSidebar": [
+				"./../src/main/resources/META-INF/resources/js/renderCMSSidebar.ts"
 			],
 			"document-library-preview-document": [
 				"../../../document-library/document-library-preview-document/src/main/resources/META-INF/resources/preview/js/index.tsx"

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayEmptyState from '@clayui/empty-state';
 import {ClayVerticalNav} from '@clayui/nav';
 import {SearchResultsMessage} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
@@ -11,12 +10,11 @@ import {
 	UnifiedSidebar,
 	UnifiedSidebarItem,
 	UnifiedSidebarItemContent,
-	UnifiedSidebarResultsSkeleton,
+	UnifiedSidebarNavigation,
 	UnifiedSidebarSearchInput,
 	countUnifiedSidebarItems,
-	useUnifiedSidebarStuck,
 } from 'frontend-js-components-web';
-import React, {useMemo, useRef} from 'react';
+import React, {useMemo} from 'react';
 
 import ProductMenuSidebarStaging, {
 	ProductMenuSidebarStagingProps,
@@ -69,10 +67,6 @@ function ProductMenuSidebarNavigation({
 
 	const showResultsSkeleton = isFilterActive && loading && !numberOfResults;
 
-	const scrollRef = useRef<HTMLDivElement>(null);
-
-	const stuck = useUnifiedSidebarStuck(scrollRef, items);
-
 	return (
 		<>
 			<UnifiedSidebar.Top>
@@ -91,97 +85,50 @@ function ProductMenuSidebarNavigation({
 				/>
 			</UnifiedSidebar.Top>
 
-			<div
-				className={classNames('unified-sidebar-scroll', {
-					'unified-sidebar-scroll-stuck': stuck,
-				})}
-				ref={scrollRef}
-			>
-				<UnifiedSidebar.Body className="c-px-0">
-					{showResultsSkeleton ? (
-						<UnifiedSidebarResultsSkeleton />
-					) : numberOfResults ? (
-						<ClayVerticalNav
-							active={selectedPortletId}
-							aria-label={label}
-							defaultExpandedKeys={initialExpandedKeys}
-							displayType="primary"
-							expandedKeys={expandedKeys}
-							itemAriaCurrent={true}
-							items={items}
-							onExpandedChange={onExpandedChange}
-							stacked={true}
+			<UnifiedSidebarNavigation
+				active={selectedPortletId}
+				expandedKeys={expandedKeys}
+				initialExpandedKeys={initialExpandedKeys}
+				items={items}
+				label={label}
+				loading={showResultsSkeleton}
+				numberOfResults={numberOfResults}
+				onExpandedChange={onExpandedChange}
+				renderItem={(item) => {
+					if (item.disabled) {
+						return (
+							<li className="nav-item" key={item.id} role="none">
+								<button
+									className="btn btn-unstyled disabled nav-link"
+									data-canonical-name={item.canonicalName}
+									disabled
+									role="menuitem"
+									type="button"
+								>
+									<UnifiedSidebarItemContent item={item} />
+								</button>
+							</li>
+						);
+					}
+
+					return (
+						<ClayVerticalNav.Item
+							className={classNames({
+								'unified-sidebar-section-item':
+									item.parentLabel,
+							})}
+							data-canonical-name={item.canonicalName}
+							href={item.href}
+							items={item.items}
+							key={item.id}
+							onClick={item.pageTree ? onPageTreeOpen : undefined}
+							textValue={item.label}
 						>
-							{(collectionItem) => {
-								if (typeof collectionItem === 'string') {
-									return <span>{collectionItem}</span>;
-								}
-
-								const item =
-									collectionItem as ProductMenuSidebarItem;
-
-								if (item.disabled) {
-									return (
-										<li
-											className="nav-item"
-											key={item.id}
-											role="none"
-										>
-											<button
-												className="btn btn-unstyled disabled nav-link"
-												data-canonical-name={
-													item.canonicalName
-												}
-												disabled
-												role="menuitem"
-												type="button"
-											>
-												<UnifiedSidebarItemContent
-													item={item}
-												/>
-											</button>
-										</li>
-									);
-								}
-
-								return (
-									<ClayVerticalNav.Item
-										className={classNames({
-											'unified-sidebar-section-item':
-												item.parentLabel,
-										})}
-										data-canonical-name={item.canonicalName}
-										href={item.href}
-										items={item.items}
-										key={item.id}
-										onClick={
-											item.pageTree
-												? onPageTreeOpen
-												: undefined
-										}
-										textValue={item.label}
-									>
-										<UnifiedSidebarItemContent
-											item={item}
-										/>
-									</ClayVerticalNav.Item>
-								);
-							}}
-						</ClayVerticalNav>
-					) : (
-						<ClayEmptyState
-							className="c-mt-n2 c-px-4 text-center"
-							description={Liferay.Language.get(
-								'adjust-or-clear-the-search-to-view-all-navigation-items'
-							)}
-							small
-							title={Liferay.Language.get('no-matching-items')}
-						/>
-					)}
-				</UnifiedSidebar.Body>
-
-				<div className="unified-sidebar-scroll-shadow" />
-			</div>
+							<UnifiedSidebarItemContent item={item} />
+						</ClayVerticalNav.Item>
+					);
+				}}
+			/>
 		</>
 	);
 }
