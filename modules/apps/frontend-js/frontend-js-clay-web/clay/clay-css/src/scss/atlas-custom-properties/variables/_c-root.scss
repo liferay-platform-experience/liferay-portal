@@ -219,6 +219,7 @@ $c-root: map-merge(
 		--border-color: var(--gray-200),
 		--border-width: 0.0625rem,
 
+		--separator-color: var(--secondary-l3),
 		--border-radius: 0.5rem,
 
 		--border-radius-lg: 0.5rem,
@@ -591,6 +592,10 @@ $c-high-contrast: map-deep-merge(
 		--secondary-l1: light-dark(#6c6f8e, #bcbdcc),
 		--secondary-l2: light-dark(#cdcdda, #a5a7bb),
 		--secondary-l3: light-dark(#f0f0f4, #8b8da7),
+		--separator-color: var(--secondary-l1),
+		--sidebar-light-box-shadow: unquote('-1px 0 0 0 var(--separator-color)'),
+		--sidebar-light-sidenav-start-box-shadow:
+			unquote('1px 0 0 0 var(--separator-color)'),
 		--secondary: light-dark(#28282f, #f6f6f8),
 		--success-d1: light-dark(#0e2a14, #a2e1b2),
 		--success-d2: light-dark(#071309, #d9f2df),

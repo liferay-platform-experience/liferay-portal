@@ -60,7 +60,7 @@ $sxpElementHeaderHeight: 48px;
 			padding: 0;
 
 			.sidebar {
-				border-color: var(--secondary-l3);
+				border-color: var(--separator-color, var(--secondary-l3));
 				border-right-width: 0.0625rem;
 				border-style: solid;
 

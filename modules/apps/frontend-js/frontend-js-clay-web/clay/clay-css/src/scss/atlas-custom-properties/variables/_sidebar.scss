@@ -284,7 +284,7 @@ $sidebar-light-navigation-bar: map-deep-merge(
 		background-color:
 			var(--sidebar-light-navigation-bar-background-color, $white),
 		border-color:
-			var(--sidebar-light-navigation-bar-border-color, $secondary-l2),
+			var(--sidebar-light-navigation-bar-border-color, $separator-color),
 		navbar-nav: (
 			nav-link: (
 				color:
@@ -328,7 +328,7 @@ $sidebar-light: () !default;
 $sidebar-light: map-deep-merge(
 	(
 		background-color: var(--sidebar-light-background-color, $white),
-		border-color: var(--sidebar-light-border-color, $gray-300),
+		border-color: var(--sidebar-light-border-color, $separator-color),
 		border-left-width: var(--sidebar-light-border-left-width, 0),
 		box-shadow:
 			var(

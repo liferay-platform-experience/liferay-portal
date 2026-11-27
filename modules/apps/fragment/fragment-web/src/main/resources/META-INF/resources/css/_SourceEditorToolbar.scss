@@ -1,6 +1,7 @@
 .source-editor-toolbar {
 	background-color: $toolbarBackgroundColor;
-	border-bottom: solid $toolbarBorderWidth $toolbarBorderColor;
+	border-bottom: solid $toolbarBorderWidth
+		var(--separator-color, $toolbarBorderColor);
 	box-sizing: border-box;
 	height: $toolbarHeight;
 	min-height: $toolbarHeight;

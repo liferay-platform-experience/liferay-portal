@@ -56,7 +56,8 @@
 
 	&__toolbar {
 		background-color: $toolbarBackgroundColor;
-		border-bottom: solid $toolbarBorderWidth $toolbarBorderColor;
+		border-bottom: solid $toolbarBorderWidth
+			var(--separator-color, $toolbarBorderColor);
 		height: $toolbarHeight;
 		justify-content: center;
 		margin: 0 auto;

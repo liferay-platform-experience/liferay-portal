@@ -1,6 +1,6 @@
 .sidebar {
 	background: $white;
-	border-left: 1px solid $gray-300;
+	border-left: 1px solid var(--separator-color, $gray-300);
 	width: 368px;
 
 	.tab-pane {
@@ -165,7 +165,7 @@
 
 	.sidebar-header {
 		align-items: center;
-		border-bottom: 1px solid $gray-300;
+		border-bottom: 1px solid var(--separator-color, $gray-300);
 		display: flex;
 		height: 75px;
 

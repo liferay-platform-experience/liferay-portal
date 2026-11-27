@@ -166,7 +166,7 @@ $cadmin-nav-item: map-deep-merge(
 
 // .nav-divider
 
-$cadmin-nav-divider-color: $cadmin-gray-600 !default;
+$cadmin-nav-divider-color: $cadmin-separator-color !default;
 $cadmin-nav-divider-margin-y: calc(#{$cadmin-spacer} * 0.5) !default;
 
 $cadmin-nav-divider: () !default;

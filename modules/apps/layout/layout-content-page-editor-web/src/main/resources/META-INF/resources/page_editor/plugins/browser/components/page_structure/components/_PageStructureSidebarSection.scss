@@ -10,11 +10,11 @@ html#{$cadmin-selector} {
 			}
 
 			~ .page-editor__page-structure__section {
-				border-top: solid $cadmin-gray-300 thin;
+				border-top: 1px solid $cadmin-separator-color;
 			}
 
 			&__custom-styles {
-				border-bottom: 1px solid $cadmin-secondary-l3;
+				border-bottom: 1px solid $cadmin-separator-color;
 				padding-bottom: calc(#{$pageEditorSpacing} * 2.5);
 			}
 

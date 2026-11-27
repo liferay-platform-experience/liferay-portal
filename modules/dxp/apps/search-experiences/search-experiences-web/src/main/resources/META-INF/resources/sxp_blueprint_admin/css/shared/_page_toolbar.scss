@@ -41,6 +41,7 @@
 	}
 
 	.tbar-divider {
+		background-color: var(--separator-color, var(--secondary));
 		height: 16px;
 		width: 1px;
 	}

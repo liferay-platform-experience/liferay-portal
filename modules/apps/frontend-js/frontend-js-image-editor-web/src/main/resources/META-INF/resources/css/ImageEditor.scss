@@ -34,7 +34,11 @@
 
 .image-editor .editor-bottom-bar {
 	align-items: center;
-	border-top: 1px solid var(--editor-border);
+	border-top: 1px solid
+		var(
+			--cadmin-separator-color,
+			var(--separator-color, var(--editor-border))
+		);
 	column-gap: 1rem;
 	display: flex;
 	flex-wrap: wrap;

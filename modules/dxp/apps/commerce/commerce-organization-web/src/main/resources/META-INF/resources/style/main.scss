@@ -330,7 +330,7 @@ $text: $gray-600;
 	}
 
 	.sidebar-light {
-		border-left: 1px solid $secondary-l3;
+		border-left: 1px solid var(--separator-color, $secondary-l3);
 	}
 
 	&.info-panel {

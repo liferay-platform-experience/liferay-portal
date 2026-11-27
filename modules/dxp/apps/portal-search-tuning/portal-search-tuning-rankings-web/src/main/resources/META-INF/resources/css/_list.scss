@@ -32,8 +32,8 @@
 
 	.search-bar-root {
 		.management-bar {
-			border-bottom: 1px solid var(--gray-300);
-			border-top: 1px solid var(--gray-300);
+			border-bottom: 1px solid var(--separator-color, var(--gray-300));
+			border-top: 1px solid var(--separator-color, var(--gray-300));
 			margin-bottom: 0;
 
 			.navbar-text {
