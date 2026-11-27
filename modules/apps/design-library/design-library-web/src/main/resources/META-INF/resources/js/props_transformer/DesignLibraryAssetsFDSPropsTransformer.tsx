@@ -64,6 +64,10 @@ export default function DesignLibraryAssetsFDSPropsTransformer({
 						return (
 							<LinkRenderer
 								{...rendererProps}
+								markedAsDefault={
+									rendererProps?.itemData?.embedded
+										?.markedAsDefault
+								}
 								options={{
 									actionId: resourceType
 										? resourceType.defaultActionId

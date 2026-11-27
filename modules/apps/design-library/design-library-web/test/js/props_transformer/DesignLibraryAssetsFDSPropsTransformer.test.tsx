@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import '@testing-library/jest-dom';
+import {render, screen} from '@testing-library/react';
+import React from 'react';
+
+import {TableCellContentType} from '../../../src/main/resources/META-INF/resources/js/constants';
 import DesignLibraryAssetsFDSPropsTransformer from '../../../src/main/resources/META-INF/resources/js/props_transformer/DesignLibraryAssetsFDSPropsTransformer';
 
 const mockOpenModal = jest.fn();
@@ -77,6 +82,24 @@ function getBulkAction(id: string) {
 
 	return (bulkActions as Array<any>).find(
 		(bulkAction) => bulkAction.data.id === id
+	);
+}
+
+function renderTitleCell(itemData: any) {
+	const {customRenderers} =
+		DesignLibraryAssetsFDSPropsTransformer(BASE_PROPS);
+
+	const TitleCell = (customRenderers?.tableCell as Array<any>).find(
+		(tableCell) =>
+			tableCell.name === TableCellContentType.DESIGN_LIBRARY_LINK
+	).component;
+
+	return render(
+		<TitleCell
+			actions={[]}
+			itemData={itemData}
+			value={itemData.embedded.name}
+		/>
 	);
 }
 
@@ -163,6 +186,22 @@ describe('DesignLibraryAssetsFDSPropsTransformer', () => {
 				(view) => view.name
 			)
 		).toEqual(['table']);
+	});
+
+	it('shows the default icon in the title of a design asset marked as default', () => {
+		renderTitleCell({
+			...DELETABLE_ITEM,
+			embedded: {...DELETABLE_ITEM.embedded, markedAsDefault: true},
+		});
+
+		expect(screen.getByText('default')).toBeInTheDocument();
+	});
+
+	it('does not show the default icon in the title of the other design assets', () => {
+		renderTitleCell(DELETABLE_ITEM);
+
+		expect(screen.getByText('Style Book')).toBeInTheDocument();
+		expect(screen.queryByText('default')).not.toBeInTheDocument();
 	});
 
 	it('enables the delete bulk action when every selected asset can be deleted', () => {

@@ -37,7 +37,11 @@ interface DeleteAction {
 export interface DesignAsset {
 	actions?: EntryActions;
 	dateModified: string;
-	embedded: {externalReferenceCode: string; name: string};
+	embedded: {
+		externalReferenceCode: string;
+		markedAsDefault?: boolean;
+		name: string;
+	};
 	entryClassName: string;
 }
 

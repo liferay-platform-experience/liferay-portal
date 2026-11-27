@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -18,10 +18,12 @@ const STYLE_BOOK_ENTRY_CLASS_NAME =
 const _renderLinkRenderer = ({
 	actions,
 	itemData,
+	markedAsDefault,
 	onRowClick,
 }: {
 	actions: any;
 	itemData: any;
+	markedAsDefault?: boolean;
 	onRowClick?: () => void;
 }) =>
 	render(
@@ -29,6 +31,7 @@ const _renderLinkRenderer = ({
 			<LinkRenderer
 				actions={actions as any}
 				itemData={itemData as any}
+				markedAsDefault={markedAsDefault}
 				options={{actionId: 'edit'}}
 				stickerClassName=""
 				symbol="book"
@@ -123,6 +126,50 @@ describe('LinkRenderer', () => {
 
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 		expect(screen.getByText('Set 1')).toBeInTheDocument();
+	});
+
+	it.each([
+		[true, 'default', 1],
+		[false, '', 0],
+	])(
+		'describes the link as default only when markedAsDefault is %s',
+		(markedAsDefault, description, defaultIconCount) => {
+			_renderLinkRenderer({
+				actions: [
+					{
+						data: {id: 'edit'},
+						href: '/display-page-template',
+						label: 'edit',
+					},
+				],
+				itemData: {
+					entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+					name: 'Set 1',
+				},
+				markedAsDefault,
+			});
+
+			const link = screen.getByRole('link', {name: 'Set 1'});
+
+			expect(link).toHaveAccessibleDescription(description);
+			expect(within(link).queryAllByText('default')).toHaveLength(
+				defaultIconCount
+			);
+		}
+	);
+
+	it('shows the default icon next to the plain text when no action matches the actionId', () => {
+		_renderLinkRenderer({
+			actions: [],
+			itemData: {
+				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+				name: 'Set 1',
+			},
+			markedAsDefault: true,
+		});
+
+		expect(screen.queryByRole('link')).not.toBeInTheDocument();
+		expect(screen.getByText('default')).toBeInTheDocument();
 	});
 
 	it('decorates the link href with backURL and redirect when the action target is a portlet link', () => {
