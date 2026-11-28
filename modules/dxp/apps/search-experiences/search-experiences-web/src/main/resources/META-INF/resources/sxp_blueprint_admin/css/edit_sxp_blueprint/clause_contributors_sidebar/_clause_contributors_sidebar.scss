@@ -40,7 +40,7 @@
 	}
 
 	.sidebar-header {
-		border-bottom: 1px solid var(--secondary-l3);
+		border-bottom: 1px solid var(--separator-color, var(--secondary-l3));
 	}
 
 	.subnav-tbar {

@@ -1,6 +1,6 @@
 @import 'atlas-variables';
 
-$separator: 0.5px solid var(--secondary-l0);
+$separator: 1px solid var(--separator-color, var(--secondary-l0));
 $sidebar-width: 320px;
 $toolbar-height: 55px;
 
@@ -161,7 +161,7 @@ $toolbar-height: 55px;
 }
 
 .audience-builder-sidebar-header {
-	border-bottom: 1px solid var(--secondary-l3);
+	border-bottom: $separator;
 }
 
 .audience-builder-toolbar {

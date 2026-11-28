@@ -14,7 +14,7 @@
 	&-header {
 		align-items: center;
 		background: $white;
-		border-bottom: 1px solid $gray-300;
+		border-bottom: 1px solid var(--separator-color, $gray-300);
 		display: flex;
 		height: 65px;
 		justify-content: space-between;

@@ -8,7 +8,7 @@
 	}
 
 	.content-site-generator__shell-sidebar {
-		border-right: 1px solid $secondary-l2;
+		border-right: 1px solid var(--separator-color, $secondary-l2);
 		display: flex;
 		flex: 0 0 320px;
 
@@ -341,7 +341,7 @@
 		}
 
 		.content-site-generator__shell-sidebar {
-			border-bottom: 1px solid $secondary-l2;
+			border-bottom: 1px solid var(--separator-color, $secondary-l2);
 			border-right: 0;
 			flex-basis: auto;
 		}

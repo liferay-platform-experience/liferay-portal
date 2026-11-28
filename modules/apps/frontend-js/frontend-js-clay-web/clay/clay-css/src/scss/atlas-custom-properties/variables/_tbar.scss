@@ -167,7 +167,7 @@ $tbar-inline-xl-down: map-deep-merge(
 $component-tbar: () !default;
 $component-tbar: map-deep-merge(
 	(
-		border-color: var(--component-tbar-border-color, $gray-300),
+		border-color: var(--component-tbar-border-color, $separator-color),
 		border-style: var(--component-tbar-border-style, solid),
 		border-width: var(--component-tbar-border-width, 0 0 1px 0),
 		color: var(--component-tbar-color, $gray-600),

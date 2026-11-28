@@ -289,7 +289,7 @@ $navigation-bar-light: () !default;
 $navigation-bar-light: map-deep-merge(
 	(
 		background-color: $white,
-		border-color: $gray-200,
+		border-color: $separator-color,
 
 		navbar-nav: (
 			nav-link: (

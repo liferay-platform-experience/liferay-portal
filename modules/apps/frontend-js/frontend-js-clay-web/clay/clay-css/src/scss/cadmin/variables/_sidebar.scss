@@ -240,7 +240,7 @@ $cadmin-sidebar-light-navigation-bar: () !default;
 $cadmin-sidebar-light-navigation-bar: map-deep-merge(
 	(
 		background-color: $cadmin-white,
-		border-color: $cadmin-secondary-l2,
+		border-color: $cadmin-separator-color,
 
 		navbar-nav: (
 			nav-link: (
@@ -270,7 +270,7 @@ $cadmin-sidebar-light: () !default;
 $cadmin-sidebar-light: map-deep-merge(
 	(
 		background-color: $cadmin-white,
-		border-color: $cadmin-gray-300,
+		border-color: $cadmin-separator-color,
 		border-left-width: 0px,
 		box-shadow:
 			unquote('-4px 0 8px -4px hsl(from #{$cadmin-black} h s l / 0.1)'),

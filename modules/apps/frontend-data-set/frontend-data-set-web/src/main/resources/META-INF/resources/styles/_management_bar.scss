@@ -1,5 +1,5 @@
 .management-bar-wrapper {
-	border-bottom: 1px solid $border-color;
+	border-bottom: 1px solid var(--separator-color, $border-color);
 	margin-bottom: 1rem;
 
 	+ .inline-notification-bar {
@@ -14,7 +14,7 @@
 		}
 
 		& + .management-bar {
-			border-top: 1px solid $border-color;
+			border-top: 1px solid var(--separator-color, $border-color);
 			min-height: 3.5rem;
 		}
 	}

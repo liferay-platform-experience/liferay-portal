@@ -1,7 +1,7 @@
 @import 'atlas-variables';
 
 .management-bar-separator-left::before {
-	background-color: $gray-500;
+	background-color: var(--separator-color, $gray-500);
 	content: '';
 	flex-shrink: 0;
 	height: 16px;

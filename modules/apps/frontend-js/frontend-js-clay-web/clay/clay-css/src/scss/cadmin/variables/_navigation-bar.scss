@@ -309,7 +309,7 @@ $cadmin-navigation-bar-light: () !default;
 $cadmin-navigation-bar-light: map-deep-merge(
 	(
 		background-color: $cadmin-white,
-		border-color: $cadmin-gray-200,
+		border-color: $cadmin-separator-color,
 
 		navbar-nav: (
 			nav-link: (

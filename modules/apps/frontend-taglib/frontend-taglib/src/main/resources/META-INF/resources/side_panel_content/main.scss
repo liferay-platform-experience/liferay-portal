@@ -23,7 +23,7 @@ $header-height: 65px;
 	.side-panel-iframe-header {
 		align-items: center;
 		background: $gray-100;
-		border-bottom: 1px solid $border-color;
+		border-bottom: 1px solid var(--separator-color, $border-color);
 		display: flex;
 		height: $header-height;
 		justify-content: space-between;
@@ -38,7 +38,7 @@ $header-height: 65px;
 	}
 
 	.side-panel-iframe-menu-wrapper {
-		border-bottom: 1px solid $gray-300;
+		border-bottom: 1px solid var(--separator-color, $gray-300);
 		position: sticky;
 		top: 0;
 	}

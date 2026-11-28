@@ -90,7 +90,7 @@ html#{$cadmin-selector} .cadmin {
 	}
 
 	.ai-assistant-sidebar {
-		border-left: $cadmin-border-width solid $cadmin-border-color;
+		border-left: $cadmin-border-width solid $cadmin-separator-color;
 		border-radius: 0;
 		max-width: 100vw;
 
@@ -131,7 +131,7 @@ html#{$cadmin-selector} .cadmin {
 
 	.ai-assistant-chat__panel-actions-separator {
 		align-self: center;
-		background-color: $cadmin-gray-500;
+		background-color: $cadmin-separator-color;
 		height: 16px;
 		margin-left: 0.5rem;
 		margin-right: 0.5rem;

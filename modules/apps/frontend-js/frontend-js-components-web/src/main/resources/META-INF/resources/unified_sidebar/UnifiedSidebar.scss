@@ -30,7 +30,7 @@ html#{$cadmin-selector} {
 
 	.c-slideout .sidebar.unified-sidebar.sidebar-light {
 		background-color: $cadmin-light-l1;
-		border-right: 0.5px solid $cadmin-secondary-l0;
+		border-right: 1px solid $cadmin-separator-color;
 		box-shadow: none;
 		overflow: hidden;
 

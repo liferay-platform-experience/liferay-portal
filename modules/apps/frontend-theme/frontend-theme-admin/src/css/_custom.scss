@@ -80,16 +80,6 @@ html[data-color-scheme='dark']:root {
 }
 
 .management-bar.management-bar-light {
-	border-bottom-width: 0.05rem;
-	border-color: $secondary-l0;
-
-	@media (max-resolution: 1dppx) {
-		border-color: $secondary-l2;
-	}
-}
-
-.navigation-bar-light {
-	@media (max-resolution: 1dppx) {
-		border-color: $secondary-l2;
-	}
+	border-bottom-width: 1px;
+	border-color: $separator-color;
 }
