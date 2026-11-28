@@ -88,11 +88,17 @@ html#{$cadmin-selector} {
 	// Consumers change the width by setting --unified-sidebar-width on any
 	// ancestor. A consumer that pushes the page must shift it by the same
 	// width.
+	//
+	// The search field sits on the light-l1 surface, where the default
+	// gray-300 border fades, so it takes gray-400 inside and outside a .cadmin
+	// host.
 
 	.unified-sidebar {
 		--cadmin-c-slideout-sidebar-width: var(--unified-sidebar-width, 280px);
 		--cadmin-c-slideout-transition-in: all 0.14s ease-out;
 		--cadmin-c-slideout-transition-out: all 0.14s ease-out;
+		--cadmin-input-border-color: #{$cadmin-gray-400};
+		--input-border-color: var(--gray-400);
 		--skeleton-shimmer-color: #{$cadmin-light-l1};
 
 		a.nav-link {
