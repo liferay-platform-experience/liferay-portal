@@ -6,7 +6,7 @@
 import Button from '@clayui/button';
 import {Provider} from '@clayui/provider';
 import {ClayPortal} from '@clayui/shared';
-import {cleanup, render, waitFor} from '@testing-library/react';
+import {act, cleanup, render, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, {useRef, useState} from 'react';
 
@@ -105,6 +105,58 @@ function NestedExample({
 				{children}
 			</SidePanel>
 		</div>
+	);
+}
+
+function OverlayExample({
+	backdrop = false,
+	closeOnEscape,
+	defaultOpen = false,
+	defaultOverlay = false,
+	onOpenChange,
+}: {
+	backdrop?: boolean;
+	closeOnEscape?: boolean;
+	defaultOpen?: boolean;
+	defaultOverlay?: boolean;
+	onOpenChange?: (open: boolean) => void;
+}) {
+	const [open, setOpen] = useState(defaultOpen);
+	const [overlay, setOverlay] = useState(defaultOverlay);
+
+	const containerRef = useRef(null);
+	const triggerRef = useRef<HTMLButtonElement>(null);
+
+	return (
+		<Provider reducedMotion="never" spritemap="icons.svg">
+			<Button onClick={() => setOpen(!open)} ref={triggerRef}>
+				Toggle open
+			</Button>
+
+			<Button onClick={() => setOverlay(!overlay)}>Toggle overlay</Button>
+
+			<Button>Outside</Button>
+
+			<div ref={containerRef}>
+				<SidePanel
+					as="aside"
+					backdrop={backdrop}
+					closeOnEscape={closeOnEscape}
+					containerRef={containerRef}
+					onOpenChange={(open) => {
+						setOpen(open);
+						onOpenChange?.(open);
+					}}
+					open={open}
+					overlay={overlay}
+					triggerRef={triggerRef}
+				>
+					<SidePanel.Body>
+						<Button>Inside</Button>
+					</SidePanel.Body>
+				</SidePanel>
+			</div>
+		</Provider>
 	);
 }
 
@@ -293,5 +345,187 @@ describe('SidePanel incremental interactions', () => {
 		expect(document.querySelector('.sidebar')).toHaveClass(
 			'c-slideout-show'
 		);
+	});
+});
+
+describe('SidePanel overlay', () => {
+	let clientWidthSpy: jest.SpyInstance;
+
+	const advance = (ms: number) =>
+		act(() => {
+			jest.advanceTimersByTime(ms);
+		});
+	const click = (element: HTMLElement) =>
+		act(() => {
+			element.click();
+		});
+	const focus = (element: HTMLElement) =>
+		act(() => {
+			element.focus();
+		});
+	const getClasses = (element: Element, prefix: string) =>
+		Array.from(element.classList).filter((name) => name.startsWith(prefix));
+
+	const setup = (props: React.ComponentProps<typeof OverlayExample> = {}) => {
+		const {getByRole, getByText} = render(<OverlayExample {...props} />);
+		const panel = getByRole('complementary');
+		const slideout = panel.parentElement as HTMLElement;
+
+		return {
+			container: slideout.parentElement as HTMLElement,
+			inside: getByText('Inside'),
+			openToggle: getByText('Toggle open'),
+			outside: getByText('Outside'),
+			overlayToggle: getByText('Toggle overlay'),
+			panel,
+			slideout,
+		};
+	};
+
+	beforeEach(() => {
+		jest.useFakeTimers();
+
+		clientWidthSpy = jest
+			.spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+			.mockReturnValue(1024);
+	});
+
+	afterEach(() => {
+		clientWidthSpy.mockRestore();
+
+		jest.useRealTimers();
+	});
+
+	it('opens and closes as an overlay without pushing the container, and returns focus on close', () => {
+		const {container, inside, openToggle, outside, panel, slideout} = setup(
+			{
+				defaultOverlay: true,
+			}
+		);
+
+		focus(outside);
+		click(openToggle);
+		advance(300);
+
+		expect(panel).toHaveClass('c-slideout-show');
+		expect(slideout).toHaveClass('c-slideout-overlay');
+		expect(getClasses(container, 'c-slideout-push-')).toEqual([]);
+		expect(outside).toHaveFocus();
+
+		focus(inside);
+		click(openToggle);
+
+		expect(outside).toHaveFocus();
+		expect(panel).toHaveAttribute('inert');
+
+		advance(300);
+
+		expect(slideout).not.toHaveClass('c-slideout-shown');
+	});
+
+	it('mounts open as an overlay without a push or transition on the container', () => {
+		const {container, panel} = setup({
+			defaultOpen: true,
+			defaultOverlay: true,
+		});
+
+		expect(panel).toHaveClass('c-slideout-show');
+		expect(getClasses(container, 'c-slideout-push-')).toEqual([]);
+		expect(getClasses(container, 'c-slideout-transition')).toEqual([]);
+	});
+
+	it.each([true, false])(
+		'keeps the same shown panel when switching presentation while open (overlay at start: %s)',
+		(overlayAtStart) => {
+			const {container, overlayToggle, panel, slideout} = setup({
+				defaultOpen: true,
+				defaultOverlay: overlayAtStart,
+			});
+
+			advance(70);
+			click(overlayToggle);
+			advance(10);
+			click(overlayToggle);
+			advance(10);
+			click(overlayToggle);
+			advance(500);
+
+			expect(document.querySelector('aside')).toBe(panel);
+			expect(panel).toHaveClass('c-slideout-show');
+			expect(slideout.classList.contains('c-slideout-overlay')).toBe(
+				!overlayAtStart
+			);
+			expect(container.classList.contains('c-slideout-push-end')).toBe(
+				overlayAtStart
+			);
+			expect(getClasses(container, 'c-slideout-transition')).toEqual([]);
+		}
+	);
+
+	it.each([true, false])(
+		'stays open on ESC with closeOnEscape false (overlay: %s)',
+		(overlay) => {
+			const onOpenChange = jest.fn();
+
+			const {panel} = setup({
+				closeOnEscape: false,
+				defaultOpen: true,
+				defaultOverlay: overlay,
+				onOpenChange,
+			});
+
+			act(() => {
+				document.dispatchEvent(
+					new KeyboardEvent('keydown', {bubbles: true, key: 'Escape'})
+				);
+			});
+
+			expect(onOpenChange).not.toHaveBeenCalled();
+			expect(panel).not.toHaveAttribute('inert');
+		}
+	);
+
+	it.each([
+		[
+			'overlay to pushed',
+			true,
+			'overlayToggle',
+			'outside',
+			'overlayToggle',
+		],
+		['pushed to overlay', false, 'overlayToggle', 'outside', 'outside'],
+	] as const)(
+		'moves focus on close by the presentation at close after switching from %s',
+		(_, overlayAtOpen, atOpen, beforeClose, expected) => {
+			const elements = setup({defaultOverlay: overlayAtOpen});
+
+			focus(elements[atOpen]);
+			click(elements.openToggle);
+			advance(300);
+			click(elements.overlayToggle);
+			advance(300);
+
+			expect(elements.slideout).toHaveClass('c-slideout-shown');
+
+			focus(elements[beforeClose]);
+			click(elements.openToggle);
+
+			expect(elements[expected]).toHaveFocus();
+		}
+	);
+
+	it.each([
+		['on a mobile device', {}, 767],
+		['with a backdrop', {backdrop: true}, 1024],
+	])('is not an overlay %s', (_, props, width) => {
+		clientWidthSpy.mockReturnValue(width);
+
+		const {slideout} = setup({
+			...props,
+			defaultOpen: true,
+			defaultOverlay: true,
+		});
+
+		expect(slideout).not.toHaveClass('c-slideout-overlay');
 	});
 });

@@ -100,6 +100,14 @@ The `<SidePanel.Title />` must always be used as a direct child of Header. It au
 </SidePanel.Header>
 ```
 
+Set the `hideCloseButton` property to leave the close button out, for example when the content of the Header already holds a control that closes the SidePanel. Make sure the user can still close the SidePanel some other way.
+
+```jsx
+<SidePanel.Header hideCloseButton>
+	<SidePanel.Title>Title</SidePanel.Title>
+</SidePanel.Header>
+```
+
 ### Body and Footer
 
 The `<SidePanel.Body />` and `<SidePanel.Footer />` components are flexible containers that can render any content. However, you should follow design system guidelines and recommendations to ensure consistent layout and behavior across the application.
@@ -170,6 +178,14 @@ When the SidePanel covers the page content, for example on small screens, set th
 
 ```jsx
 <SidePanel backdrop position="fixed" />
+```
+
+## Overlay
+
+Set the `overlay` property to show the open SidePanel over the page content instead of pushing its container. It has no effect on small screens or when `backdrop` is set.
+
+```jsx
+<SidePanel overlay position="fixed" />
 ```
 
 ## Full Height

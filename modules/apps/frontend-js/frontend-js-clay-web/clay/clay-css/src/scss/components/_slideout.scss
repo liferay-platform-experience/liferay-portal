@@ -49,3 +49,15 @@
 .c-slideout-height-full {
 	@include clay-slideout-variant($c-slideout-height-full);
 }
+
+.c-slideout-overlay {
+	@include clay-slideout-variant($c-slideout-overlay);
+}
+
+.c-slideout-overlay.c-slideout-end {
+	@include clay-slideout-variant($c-slideout-overlay-end);
+}
+
+.c-slideout-overlay.c-slideout-start {
+	@include clay-slideout-variant($c-slideout-overlay-start);
+}

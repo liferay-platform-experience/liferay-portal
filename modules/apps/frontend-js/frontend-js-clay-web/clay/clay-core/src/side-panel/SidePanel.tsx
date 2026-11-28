@@ -19,6 +19,7 @@ import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {CSSTransition} from 'react-transition-group';
 
 import {FocusTrap} from '../focus-trap';
+import {useIsFirstRender} from '../hooks';
 import {ResizeHandle} from '../resize-handle';
 import {Body} from './Body';
 import {Footer} from './Footer';
@@ -145,6 +146,12 @@ export type Props = {
 	'id'?: string;
 
 	/**
+	 * Flag to show the open SidePanel over the content instead of pushing its
+	 * container. It is ignored on mobile devices and when `backdrop` is set.
+	 */
+	'overlay'?: boolean;
+
+	/**
 	 * Sets a custom width on the sidebar panel. The minimum width is 280px.
 	 */
 	'panelWidth'?: number;
@@ -181,12 +188,14 @@ export function SidePanel({
 	'id': externalId,
 	onOpenChange,
 	'open': externalOpen,
+	overlay = false,
 	'panelWidth': externalPanelWidth,
 	position = 'absolute',
 	triggerRef,
 	...otherProps
 }: Props) {
 	const [resizeWidth, setResizeWidth] = useState(window.innerWidth / 2);
+	const [shown, setShown] = useState(false);
 	const internalSidePanelRef = useRef<HTMLDivElement>(null);
 	const slideoutRef = useRef<HTMLDivElement>(null);
 
@@ -195,6 +204,8 @@ export function SidePanel({
 	const isMobile = useIsMobileDevice();
 	const sidePanelObservedMaxWidth = useObservedMaxWidth(sidePanelRef);
 	const {prefersReducedMotion} = useProvider();
+
+	const isOverlay = overlay && !isMobile && !backdrop;
 
 	const closeOnEscape = isMobile || backdrop || externalCloseOnEscape;
 	const isResizable = fluid && !isMobile;
@@ -208,16 +219,53 @@ export function SidePanel({
 		value: externalOpen,
 	});
 
+	const isContainerPushed = !!open && !isOverlay;
+
+	const pushClassName =
+		direction === 'left' ? 'c-slideout-push-start' : 'c-slideout-push-end';
+
 	useEffect(() => {
-
-		// Ensures SidePanel is open when initial state is open.
-
-		if (open) {
-			containerRef.current?.classList.add(
-				`c-slideout-push-${direction === 'left' ? 'start' : 'end'}`
-			);
+		if (isContainerPushed) {
+			containerRef.current?.classList.add(pushClassName);
 		}
 	}, []);
+
+	const isFirstRender = useIsFirstRender();
+
+	useLayoutEffect(() => {
+		if (isFirstRender && !isContainerPushed) {
+			return;
+		}
+
+		const container = containerRef.current;
+
+		container?.classList.add('c-slideout-transition');
+		container?.classList.toggle(
+			'c-slideout-transition-in',
+			isContainerPushed
+		);
+		container?.classList.toggle(
+			'c-slideout-transition-out',
+			!isContainerPushed
+		);
+		container?.classList.toggle(pushClassName, isContainerPushed);
+
+		const timer = setTimeout(
+			() => {
+				container?.classList.remove(
+					'c-slideout-transition',
+					'c-slideout-transition-in',
+					'c-slideout-transition-out'
+				);
+			},
+			getTransitionDuration({
+				open: isContainerPushed,
+				prefersReducedMotion,
+			})
+		);
+
+		return () => clearTimeout(timer);
+	}, [isContainerPushed]);
 
 	useEffect(() => {
 		if (open) {
@@ -231,7 +279,23 @@ export function SidePanel({
 				null;
 
 			return () => {
+				const slideout = slideoutRef.current;
+
+				if (!slideout?.classList.contains('c-slideout-overlay')) {
+					element?.focus();
+
+					return;
+				}
+
+				if (!slideout.contains(document.activeElement)) {
+					return;
+				}
+
 				element?.focus();
+
+				if (slideout.contains(document.activeElement)) {
+					triggerRef?.current?.focus();
+				}
 			};
 		}
 	}, [open]);
@@ -298,6 +362,8 @@ export function SidePanel({
 					{
 						'c-slideout-end': direction === 'right',
 						'c-slideout-height-full': heightFull,
+						'c-slideout-overlay': isOverlay,
+						'c-slideout-shown': shown,
 						'c-slideout-start': direction === 'left',
 					}
 				)}
@@ -324,24 +390,10 @@ export function SidePanel({
 						exitActive: '',
 					}}
 					in={open}
-					onEnter={() => {
-						containerRef.current?.classList.add(
-							'c-slideout-transition',
-							'c-slideout-transition-in',
-							`c-slideout-push-${
-								direction === 'left' ? 'start' : 'end'
-							}`
-						);
-					}}
 					onEntered={(_, isAppearing) => {
-						slideoutRef.current?.classList.add('c-slideout-shown');
+						setShown(true);
 
-						containerRef.current?.classList.remove(
-							'c-slideout-transition',
-							'c-slideout-transition-in'
-						);
-
-						if (!isAppearing) {
+						if (!isAppearing && !isOverlay) {
 
 							// Move focus to sidepanel when opening but not if
 							// opened on first load.
@@ -349,29 +401,14 @@ export function SidePanel({
 							sidePanelRef.current?.focus({preventScroll: true});
 						}
 					}}
-					onExit={() => {
-						containerRef.current?.classList.add(
-							'c-slideout-transition',
-							'c-slideout-transition-out'
-						);
-
-						containerRef.current?.classList.remove(
-							`c-slideout-push-${
-								direction === 'left' ? 'start' : 'end'
-							}`
-						);
-					}}
 					onExited={() => {
-						slideoutRef.current?.classList.remove(
-							'c-slideout-shown'
-						);
-
-						containerRef.current?.classList.remove(
-							'c-slideout-transition',
-							'c-slideout-transition-out'
-						);
+						setShown(false);
 					}}
-					timeout={prefersReducedMotion ? 0 : open ? 300 : 200}
+					timeout={getTransitionDuration({
+						open,
+						overlay: isOverlay,
+						prefersReducedMotion,
+					})}
 				>
 					<As
 						{...otherProps}
@@ -425,6 +462,26 @@ export function SidePanel({
 			)}
 		</>
 	);
+}
+
+function getTransitionDuration({
+	open,
+	overlay = false,
+	prefersReducedMotion,
+}: {
+	open?: boolean;
+	overlay?: boolean;
+	prefersReducedMotion?: boolean;
+}) {
+	if (prefersReducedMotion) {
+		return 0;
+	}
+
+	if (overlay) {
+		return 140;
+	}
+
+	return open ? 300 : 200;
 }
 
 function useOffsetTop(ref: React.RefObject<HTMLElement>) {

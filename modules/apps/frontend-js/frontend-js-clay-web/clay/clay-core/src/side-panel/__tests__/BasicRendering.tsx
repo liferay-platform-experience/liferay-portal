@@ -4,14 +4,14 @@
  */
 
 import {Provider} from '@clayui/provider';
-import {cleanup, render} from '@testing-library/react';
+import {cleanup, render, screen} from '@testing-library/react';
 import React, {useRef} from 'react';
 
 import '@testing-library/jest-dom';
 
 import {SidePanel} from '../SidePanel';
 
-function SidePanelExample(props: any) {
+function SidePanelExample({hideCloseButton, ...props}: any) {
 	const ref = useRef(null);
 
 	return (
@@ -19,6 +19,7 @@ function SidePanelExample(props: any) {
 			<div ref={ref}>
 				<SidePanel containerRef={ref} id="sidepanel" {...props}>
 					<SidePanel.Header
+						hideCloseButton={hideCloseButton}
 						messages={{
 							closeAriaLabel: 'Close the Title side panel.',
 						}}
@@ -76,6 +77,20 @@ describe('SidePanel basic rendering', () => {
 		const sidebar = document.getElementById('sidepanel')!;
 
 		expect(sidebar).toHaveStyle({width: '280px'});
+	});
+
+	it('hides the close button of the header', () => {
+		const {rerender} = render(<SidePanelExample defaultOpen />);
+
+		expect(
+			screen.getByLabelText('Close the Title side panel.')
+		).toBeInTheDocument();
+
+		rerender(<SidePanelExample defaultOpen hideCloseButton />);
+
+		expect(
+			screen.queryByLabelText('Close the Title side panel.')
+		).not.toBeInTheDocument();
 	});
 
 	describe('Focus trap rendering', () => {
