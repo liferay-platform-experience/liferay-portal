@@ -249,11 +249,11 @@ $c-root: map-merge(
 		--component-active-color: var(--white),
 		--component-focus-box-shadow:
 			unquote(
-				'0 0 0 0.125rem var(--white), 0 0 0 0.25rem var(--primary-l1)'
+				'0 0 0 0.125rem light-dark(var(--white), var(--black)), 0 0 0 0.25rem light-dark(var(--primary-l1), var(--primary-d1))'
 			),
 		--component-focus-inset-box-shadow:
 			unquote(
-				'inset 0 0 0 0.125rem var(--primary-l1), inset 0 0 0 0.25rem var(--white)'
+				'inset 0 0 0 0.125rem light-dark(var(--primary-l1), var(--primary-d1)), inset 0 0 0 0.25rem light-dark(var(--white), var(--black))'
 			),
 		--component-disabled-opacity: 0.4,
 
@@ -342,11 +342,11 @@ $c-root: map-merge(
 
 		--focus-ring-animation-from-box-shadow:
 			unquote(
-				'0 0 0 0.25rem var(--white), 0 0 0 0.75rem var(--primary-l2)'
+				'0 0 0 0.25rem light-dark(var(--white), var(--black)), 0 0 0 0.75rem light-dark(var(--primary-l2), var(--primary-d2))'
 			),
 		--focus-ring-animation-to-box-shadow:
 			unquote(
-				'0 0 0 0.125rem var(--white), 0 0 0 0.25rem var(--primary-l0)'
+				'0 0 0 0.125rem light-dark(var(--white), var(--black)), 0 0 0 0.25rem light-dark(var(--primary-l0), var(--primary))'
 			),
 		--btn-outline-secondary-border-color:
 			light-dark(var(--secondary-l2), var(--secondary)),

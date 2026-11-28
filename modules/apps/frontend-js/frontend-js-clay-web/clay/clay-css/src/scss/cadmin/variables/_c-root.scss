@@ -191,11 +191,11 @@ $cadmin-c-root: map-merge(
 		--cadmin-component-active-color: var(--cadmin-white),
 		--cadmin-component-focus-box-shadow:
 			unquote(
-				'0 0 0 0.125rem var(--cadmin-white), 0 0 0 0.25rem var(--cadmin-primary-l1)'
+				'0 0 0 0.125rem light-dark(var(--cadmin-white), var(--cadmin-black)), 0 0 0 0.25rem light-dark(var(--cadmin-primary-l1), var(--cadmin-primary-d1))'
 			),
 		--cadmin-component-focus-inset-box-shadow:
 			unquote(
-				'inset 0 0 0 0.125rem var(--cadmin-primary-l1), inset 0 0 0 0.25rem var(--cadmin-white)'
+				'inset 0 0 0 0.125rem light-dark(var(--cadmin-primary-l1), var(--cadmin-primary-d1)), inset 0 0 0 0.25rem light-dark(var(--cadmin-white), var(--cadmin-black))'
 			),
 		--cadmin-body-background-color: var(--cadmin-white),
 		--cadmin-body-bg: var(--cadmin-body-background-color),
@@ -209,11 +209,11 @@ $cadmin-c-root: map-merge(
 		--cadmin-code-color: var(--cadmin-pink),
 		--cadmin-focus-ring-animation-from-box-shadow:
 			unquote(
-				'0 0 0 0.25rem var(--cadmin-white), 0 0 0 0.75rem var(--cadmin-primary-l2)'
+				'0 0 0 0.25rem light-dark(var(--cadmin-white), var(--cadmin-black)), 0 0 0 0.75rem light-dark(var(--cadmin-primary-l2), var(--cadmin-primary-d2))'
 			),
 		--cadmin-focus-ring-animation-to-box-shadow:
 			unquote(
-				'0 0 0 0.125rem var(--cadmin-white), 0 0 0 0.25rem var(--cadmin-primary-l0)'
+				'0 0 0 0.125rem light-dark(var(--cadmin-white), var(--cadmin-black)), 0 0 0 0.25rem light-dark(var(--cadmin-primary-l0), var(--cadmin-primary))'
 			),
 		--cadmin-btn-outline-secondary-border-color:
 			light-dark(var(--cadmin-secondary-l2), var(--cadmin-secondary)),
