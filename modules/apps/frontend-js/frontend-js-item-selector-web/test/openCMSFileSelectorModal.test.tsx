@@ -13,6 +13,8 @@ import {
 	setLastBreadcrumbFolders,
 } from '../src/main/resources/META-INF/resources/item_selector/lastBreadcrumbFoldersMemory';
 import openCMSFileSelectorModal from '../src/main/resources/META-INF/resources/item_selector/openCMSFileSelectorModal';
+import {clearSitesCache} from '../src/main/resources/META-INF/resources/utils/fetchSites';
+import {decodeSearchURL} from './__lib__';
 
 const FOLDER_MEMORY_KEY = 'test-field';
 
@@ -50,9 +52,7 @@ const mockedFetch = fetch as jest.Mock;
 
 function getDecodedSearchURLs() {
 	return mockedFetch.mock.calls
-		.map(([url]) =>
-			decodeURIComponent(url?.toString?.() ?? '').replace(/\+/g, ' ')
-		)
+		.map(([url]) => decodeSearchURL(url?.toString?.() ?? ''))
 		.filter((url) => url.includes('/o/search/v1.0/search'));
 }
 
@@ -339,5 +339,96 @@ describe('openCMSFileSelectorModal', () => {
 		expect(
 			getDecodedSearchURLs().every((url) => !url.includes('folderId eq '))
 		).toBe(true);
+	});
+
+	describe('with Sites sidebar enabled (LPD-95652)', () => {
+		beforeAll(() => {
+			Object.assign(Liferay.ThemeDisplay, {
+				getCompanyGroupId: () => 999,
+			});
+		});
+
+		afterAll(() => {
+			Object.assign(Liferay.ThemeDisplay, {
+				getCompanyGroupId: undefined,
+			});
+		});
+
+		beforeEach(() => {
+			clearSitesCache();
+
+			Liferay.FeatureFlags['LPD-95652'] = true;
+
+			mockedFetch.mockImplementation((url: string | URL) => {
+				if (url.toString().includes('/my-user-account/sites')) {
+					return Promise.resolve({
+						json: () =>
+							Promise.resolve({
+								items: [
+									{
+										descriptiveName: 'Site A',
+										id: 456,
+										name: 'Site A',
+									},
+								],
+							}),
+						ok: true,
+					});
+				}
+
+				return jsonResponse([fileItem]);
+			});
+		});
+
+		afterEach(() => {
+			Liferay.FeatureFlags['LPD-95652'] = false;
+		});
+
+		it('switches to DL search when clicking a site in the sidebar', async () => {
+			const user = userEvent.setup();
+
+			openModal({
+				allowedExtensions: 'mp4',
+				groupId: 123,
+				onSelect: jest.fn(),
+			});
+
+			await screen.findByRole('dialog');
+
+			await user.click(await screen.findByText('Site A'));
+
+			await waitFor(() => {
+				expect(
+					getDecodedSearchURLs().some((url) =>
+						url.includes('scopeGroupId eq 456')
+					)
+				).toBe(true);
+			});
+		});
+
+		it('applies the extension filter to DL search even when filters prop is also passed', async () => {
+			const user = userEvent.setup();
+
+			openModal({
+				allowedExtensions: 'mp4',
+				filters: ['(videoURL ne null)'],
+				groupId: 123,
+				onSelect: jest.fn(),
+			});
+
+			await screen.findByRole('dialog');
+
+			await user.click(await screen.findByText('Site A'));
+
+			await waitFor(() => {
+				expect(
+					getDecodedSearchURLs().some(
+						(url) =>
+							url.includes('scopeGroupId eq 456') &&
+							url.includes("extension in ('mp4')")
+					)
+				).toBe(true);
+			});
+		});
 	});
 });

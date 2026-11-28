@@ -47,3 +47,80 @@ export type TDetachedItemSelectorModal<T> = Omit<
 	IItemSelectorModalProps<T>,
 	'observer' | 'onOpenChange' | 'open'
 >;
+
+export interface CMSFile {
+	description: string;
+	embedded: {
+		file?: {
+			link?: {
+				href?: string;
+			};
+			mimeType: string;
+			thumbnailURL: string;
+		};
+		id: number;
+		title: string;
+		videoURL?: string;
+	};
+	title: string;
+}
+
+export interface DLFile {
+	embedded: {
+		contentUrl?: string;
+		encodingFormat?: string;
+		id: number;
+		name?: string;
+		title?: string;
+	};
+	title: string;
+}
+
+export type AnyFileItem = {
+	embedded: {
+		contentUrl?: string;
+		encodingFormat?: string;
+		file?: {
+			link?: {href?: string};
+			mimeType: string;
+			thumbnailURL: string;
+		};
+		id: number;
+		name?: string;
+		title?: string;
+		videoURL?: string;
+	};
+	title: string;
+};
+
+export type Site = {id: number; kind: 'global' | 'site'; name: string};
+
+export type ActiveKey = 'cms' | `dm-${number}`;
+
+export type CMSFileItemSelectorModalProps = IItemSelectorModalProps<CMSFile>;
+
+export type CMSFileItemSelectorModalConfig = {
+	items: CMSFileItemSelectorModalProps['items'];
+	locator: CMSFileItemSelectorModalProps['locator'];
+	multiSelect: CMSFileItemSelectorModalProps['multiSelect'];
+};
+
+export type SourceSidebarProps = {
+	activeKey: ActiveKey;
+	onActiveKeyChange: (key: ActiveKey) => void;
+	sites: Site[];
+};
+
+export type CMSFileSelectorModalProps = {
+	allowDragAndDrop: boolean;
+	allowedExtensions?: string;
+	cmsFdsFilters: string[];
+	extensionList: string[];
+	fdsPropsOverride?: Partial<CMSFileItemSelectorModalProps['fdsProps']>;
+	finalConfig: CMSFileItemSelectorModalConfig;
+	folderMemoryKey?: string;
+	groupId?: number;
+	itemTypeLabel?: string;
+	maxFileSize?: number;
+	onSelect: (items: Array<CMSFile>) => void;
+};
